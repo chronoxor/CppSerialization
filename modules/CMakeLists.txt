@@ -1,0 +1,8 @@
+include("asio.cmake")
+include("catch.cmake")
+include("cpp-optparse.cmake")
+include("CppBenchmark.cmake")
+include("CppCommon.cmake")
+include("flatbuffers.cmake")
+include("nanomsg.cmake")
+include("websocketpp.cmake")
