@@ -18,3 +18,7 @@
 	path = modules/flatbuffers
 	url = https://github.com/google/flatbuffers.git
 	branch = master
+[submodule "modules/rapidjson"]
+	path = modules/rapidjson
+	url = https://github.com/miloyip/rapidjson.git
+	branch = master
