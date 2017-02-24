@@ -1,12 +1,13 @@
 var indexSectionsWithContent =
 {
-  0: "cfmostv~",
+  0: "cfmorstv~",
   1: "t",
   2: "c",
-  3: "cfv",
+  3: "cfrv",
   4: "fmost~",
   5: "v",
-  6: "c"
+  6: "r",
+  7: "c"
 };
 
 var indexSectionNames =
@@ -17,7 +18,8 @@ var indexSectionNames =
   3: "files",
   4: "functions",
   5: "variables",
-  6: "pages"
+  6: "defines",
+  7: "pages"
 };
 
 var indexSectionLabels =
@@ -28,6 +30,7 @@ var indexSectionLabels =
   3: "Files",
   4: "Functions",
   5: "Variables",
-  6: "Pages"
+  6: "Macros",
+  7: "Pages"
 };
 
