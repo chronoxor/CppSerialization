@@ -14,6 +14,10 @@
 	path = modules/CppBenchmark
 	url = https://github.com/chronoxor/CppBenchmark.git
 	branch = master
+[submodule "modules/CppCommon"]
+	path = modules/CppCommon
+	url = https://github.com/chronoxor/CppCommon.git
+	branch = master
 [submodule "modules/flatbuffers"]
 	path = modules/flatbuffers
 	url = https://github.com/google/flatbuffers.git

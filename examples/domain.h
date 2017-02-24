@@ -46,7 +46,7 @@ struct Order
     }
 
     template<typename OutputStream>
-    bool SerializeJSON(CppSerialization::JSON::Writer<OutputStream>& writer) const
+    bool JSONSerialize(CppSerialization::JSON::Writer<OutputStream>& writer) const
     {
         if (!writer.StartObject()) return false;
         if (!writer.Key("id")) return false;
@@ -65,7 +65,7 @@ struct Order
         return true;
     }
 
-    bool DeserializeJSON(CppSerialization::JSON::Value& value)
+    bool JSONDeserialize(CppSerialization::JSON::Value& value)
     {
         CppSerialization::JSON::Value::MemberIterator id = value.FindMember("id");
         if ((id == value.MemberEnd()) || !id->value.IsInt()) return false;

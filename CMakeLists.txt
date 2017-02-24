@@ -33,6 +33,7 @@ find_package(Threads REQUIRED)
 
 # Link libraries
 list(APPEND LINKLIBS Threads::Threads)
+list(APPEND LINKLIBS cppcommon)
 
 # Library
 file(GLOB_RECURSE SOURCE_FILES "source/*.cpp")

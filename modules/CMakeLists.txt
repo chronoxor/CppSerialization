@@ -1,4 +1,5 @@
 include("catch.cmake")
 include("CppBenchmark.cmake")
+include("CppCommon.cmake")
 include("flatbuffers.cmake")
 include("rapidjson.cmake")
