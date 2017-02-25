@@ -20,10 +20,10 @@ namespace JSON {
     is used to serialize objects into JSON format.
 */
 template <class OutputStream>
-class Serializer : Writer<OutputStream>
+class Serializer : public Writer<OutputStream>
 {
 public:
-    Serializer(OutputStream& stream) : Writer(stream) {}
+    Serializer(OutputStream& stream) : Writer<OutputStream>(stream) {}
     Serializer(const Serializer&) = delete;
     Serializer(Serializer&&) = default;
     ~Serializer() = default;
