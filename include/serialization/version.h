@@ -2,7 +2,7 @@
     \file version.h
     \brief Version definition
     \author Ivan Shynkarenka
-    \date 24.02.2016
+    \date 24.02.2017
     \copyright MIT License
 */
 

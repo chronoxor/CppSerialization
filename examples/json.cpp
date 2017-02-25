@@ -8,8 +8,6 @@
 
 #include "domain.h"
 
-#include "serialization/json/rapidjson.h"
-
 #include <iostream>
 
 int main(int argc, char** argv)
@@ -22,12 +20,8 @@ int main(int argc, char** argv)
 
     // Serialize the account to the JSON file stream
     CppSerialization::JSON::StringBuffer buffer;
-    CppSerialization::JSON::Writer<CppSerialization::JSON::StringBuffer> writer(buffer);
-    if (!account.SerializeJSON(writer))
-    {
-        std::cerr << "Failed to serialize account!" << std::endl;
-        return -1;
-    }
+    CppSerialization::JSON::Serializer<CppSerialization::JSON::StringBuffer> serializer(buffer);
+    JSONSerialize(serializer, account);
 
     // Show the serialized JSON
     std::cerr << "JSON: " << buffer.GetString() << std::endl;

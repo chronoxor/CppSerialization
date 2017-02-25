@@ -1,13 +1,13 @@
 /*!
-    \file rapidjson.h
-    \brief Rapid JSON C++ Library definition
+    \file json.h
+    \brief JSON C++ Library definition
     \author Ivan Shynkarenka
     \date 24.02.2017
     \copyright MIT License
 */
 
-#ifndef CPPSERIALIZATION_JSON_RAPIDJSON_H
-#define CPPSERIALIZATION_JSON_RAPIDJSON_H
+#ifndef CPPSERIALIZATION_JSON_JSON_H
+#define CPPSERIALIZATION_JSON_JSON_H
 
 #define RAPIDJSON_HAS_STDSTRING 1
 
@@ -17,7 +17,8 @@
 
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
-#include <rapidjson/prettywriter.h>
+
+#include "../exceptions.h"
 
 namespace CppSerialization {
 
@@ -31,4 +32,4 @@ namespace JSON {
 
 } // namespace CppSerialization
 
-#endif // CPPSERIALIZATION_JSON_RAPIDJSON_H
+#endif // CPPSERIALIZATION_JSON_JSON_H

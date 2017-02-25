@@ -6,7 +6,7 @@
     \copyright MIT License
 */
 
-#include "serialization/json/rapidjson.h"
+#include "serialization/json/serializer.h"
 
 #include <map>
 #include <string>
@@ -46,23 +46,16 @@ struct Order
     }
 
     template<typename OutputStream>
-    bool JSONSerialize(CppSerialization::JSON::Writer<OutputStream>& writer) const
+    friend void JSONSerialize(CppSerialization::JSON::Serializer<OutputStream>& serializer, const Order order)
     {
-        if (!writer.StartObject()) return false;
-        if (!writer.Key("id")) return false;
-        if (!writer.Int(Id)) return false;
-        if (!writer.Key("symbol")) return false;
-        if (!writer.String(Symbol)) return false;
-        if (!writer.Key("side")) return false;
-        if (!writer.Int((int)Side)) return false;
-        if (!writer.Key("type")) return false;
-        if (!writer.Int((int)Type)) return false;
-        if (!writer.Key("price")) return false;
-        if (!writer.Double(Price)) return false;
-        if (!writer.Key("volume")) return false;
-        if (!writer.Double(Volume)) return false;
-        if (!writer.EndObject()) return false;
-        return true;
+        serializer.StartObject();
+        serializer.Pair("id", order.Id);
+        serializer.Pair("symbol", order.Symbol);
+        serializer.Pair("side", (int)order.Side);
+        serializer.Pair("type", (int)order.Type);
+        serializer.Pair("price", order.Price);
+        serializer.Pair("volume", order.Volume);
+        serializer.EndObject();
     }
 
     bool JSONDeserialize(CppSerialization::JSON::Value& value)
@@ -110,24 +103,20 @@ struct Account
     }
 
     template<typename OutputStream>
-    bool SerializeJSON(CppSerialization::JSON::Writer<OutputStream>& writer) const
+    friend void JSONSerialize(CppSerialization::JSON::Serializer<OutputStream>& serializer, const Account account)
     {
-        if (!writer.StartObject()) return false;
-        if (!writer.Key("id")) return false;
-        if (!writer.Int(Id)) return false;
-        if (!writer.Key("name")) return false;
-        if (!writer.String(Name)) return false;
-        if (!writer.Key("balance")) return false;
-        if (!writer.Double(Balance)) return false;
-        if (!writer.StartArray()) return false;
-        for (auto& order : Orders)
-            if (!order.second.SerializeJSON(writer)) return false;
-        if (!writer.EndArray()) return false;
-        if (!writer.EndObject()) return false;
-        return true;
+        serializer.StartObject();
+        serializer.Pair("id", account.Id);
+        serializer.Pair("name", account.Name);
+        serializer.Pair("balance", account.Balance);
+        serializer.StartArray();
+        for (auto& order : account.Orders)
+            JSONSerialize(serializer, order.second);
+        serializer.EndArray();
+        serializer.EndObject();
     }
 
-    bool DeserializeJSON(CppSerialization::JSON::Value& value)
+    bool JSONDeserialize(CppSerialization::JSON::Value& value)
     {
         CppSerialization::JSON::Value::MemberIterator id = value.FindMember("id");
         if ((id == value.MemberEnd()) || !id->value.IsInt()) return false;
@@ -144,7 +133,7 @@ struct Account
         for (auto& ord : orders->value.GetArray())
         {
             Order order;
-            if (!order.DeserializeJSON(ord)) return false;
+            if (!order.JSONDeserialize(ord)) return false;
             AddOrder(order);
         }
         return true;
