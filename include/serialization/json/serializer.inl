@@ -59,7 +59,7 @@ inline void Serializer<OutputStream>::Key(const std::string& key)
 }
 
 template <class OutputStream>
-inline void Serializer<OutputStream>::Value(nullptr_t value)
+inline void Serializer<OutputStream>::Value(std::nullptr_t value)
 {
     if (!Writer<OutputStream>::Null())
         throwex SerializationException("Cannot serialize JSON null value!");

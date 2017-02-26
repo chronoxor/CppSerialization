@@ -49,7 +49,7 @@ public:
     void Key(const std::string& key);
 
     //! Put the null value
-    void Value(nullptr_t value);
+    void Value(std::nullptr_t value);
     //! Put the boolean value
     void Value(bool value);
     //! Put the integer value
@@ -70,7 +70,7 @@ public:
     void Value(const std::string& value);
 
     //! Put the null key/value pair
-    void Pair(const char* key, nullptr_t value)
+    void Pair(const char* key, std::nullptr_t value)
     { Key(key); Value(value); }
     //! Put the boolean key/value pair
     void Pair(const char* key, bool value)
