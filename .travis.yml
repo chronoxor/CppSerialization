@@ -6,7 +6,7 @@ matrix:
   include:
     - os: linux
       compiler: gcc
-      env: GCC_VERSION=6
+      env: COMPILER=gcc GCC_VERSION=6
       addons:
         apt:
           sources:
@@ -21,7 +21,7 @@ matrix:
             - uuid-dev
     - os: linux
       compiler: clang
-      env: CLANG_VERSION=3.9
+      env: COMPILER=clang CLANG_VERSION=3.9
       addons:
         apt:
           sources:
@@ -38,6 +38,7 @@ matrix:
             - uuid-dev
     - os: osx
       compiler: clang
+      env: COMPILER=clang
       osx_image: xcode8.2
 
 # Using Trusty environment
@@ -61,31 +62,31 @@ before_install:
   - git config --global user.email "travis@travis-ci.org"
   - git config --global push.default simple
   # gcc
-  - echo ${COMPILER}
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "gcc" ]; then export CC="gcc-${GCC_VERSION}" CXX="g++-${GCC_VERSION}"; fi
+  - echo $COMPILER
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "gcc" ]; then export CC="gcc-${GCC_VERSION}" CXX="g++-${GCC_VERSION}"; fi
   # clang
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then export CC="clang-${CLANG_VERSION}" CXX="clang++-${CLANG_VERSION}"; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then export CC="clang-${CLANG_VERSION}" CXX="clang++-${CLANG_VERSION}"; fi
   # libc++
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then ls /usr/include/c++/v1; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then pushd .; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxx/trunk libcxx; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then cd libcxx/lib && bash buildit; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then sudo cp ./libc++.so.1.0 /usr/lib/; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then cd .. && sudo cp -r include/* /usr/include/c++/v1/; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then cd /usr/lib && sudo ln -sf libc++.so.1.0 libc++.so; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then sudo ln -sf libc++.so.1.0 libc++.so.1 && cd $cwd; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then popd; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then ls /usr/include/c++/v1; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then ls /usr/include/c++/v1; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then pushd .; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxx/trunk libcxx; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then cd libcxx/lib && bash buildit; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then sudo cp ./libc++.so.1.0 /usr/lib/; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then cd .. && sudo cp -r include/* /usr/include/c++/v1/; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then cd /usr/lib && sudo ln -sf libc++.so.1.0 libc++.so; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then sudo ln -sf libc++.so.1.0 libc++.so.1 && cd $cwd; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then popd; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then ls /usr/include/c++/v1; fi
   # libc++abi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then pushd .; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxxabi/trunk libcxxabi; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then cd libcxxabi/lib && bash buildit; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then sudo cp ./libc++abi.so.1.0 /usr/lib/; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then cd .. && sudo cp -r include/* /usr/include/c++/v1/; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then cd /usr/lib && sudo ln -sf libc++abi.so.1.0 libc++abi.so; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then sudo ln -sf libc++abi.so.1.0 libc++abi.so.1 && cd $cwd; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then popd; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "${COMPILER}" = "clang" ]; then ls /usr/include/c++/v1; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then pushd .; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxxabi/trunk libcxxabi; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then cd libcxxabi/lib && bash buildit; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then sudo cp ./libc++abi.so.1.0 /usr/lib/; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then cd .. && sudo cp -r include/* /usr/include/c++/v1/; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then cd /usr/lib && sudo ln -sf libc++abi.so.1.0 libc++abi.so; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then sudo ln -sf libc++abi.so.1.0 libc++abi.so.1 && cd $cwd; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then popd; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then ls /usr/include/c++/v1; fi
   # doxygen
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install doxygen; fi
   # graphviz
