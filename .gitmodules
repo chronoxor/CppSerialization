@@ -26,3 +26,4 @@
 	path = modules/rapidjson
 	url = https://github.com/miloyip/rapidjson.git
 	branch = master
+	ignore = dirty
