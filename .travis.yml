@@ -59,7 +59,7 @@ before_install:
   - git config --global user.email "travis@travis-ci.org"
   - git config --global push.default simple
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "g++" ]; then export CC="gcc-${GCC_VERSION}" CXX="g++-${GCC_VERSION}"; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then pwd fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then pwd; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxx/trunk libcxx; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then cd libcxx/lib && bash buildit; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then sudo cp ./libc++.so.1.0 /usr/lib/; fi
