@@ -62,6 +62,7 @@ before_install:
   # gcc
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "g++" ]; then export CC="gcc-${GCC_VERSION}" CXX="g++-${GCC_VERSION}"; fi
   # libc++
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then ls -d /usr/include/c++/v1; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then pushd .; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxx/trunk libcxx; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then cd libcxx/lib && bash buildit; fi
@@ -70,6 +71,7 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then cd /usr/lib && sudo ln -sf libc++.so.1.0 libc++.so; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then sudo ln -sf libc++.so.1.0 libc++.so.1 && cd $cwd; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then popd; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then ls -d /usr/include/c++/v1; fi
   # libc++abi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then pushd .; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxxabi/trunk libcxxabi; fi
@@ -79,6 +81,7 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then cd /usr/lib && sudo ln -sf libc++abi.so.1.0 libc++abi.so; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then sudo ln -sf libc++abi.so.1.0 libc++abi.so.1 && cd $cwd; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then popd; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then ls -d /usr/include/c++/v1; fi
   # clang
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then export CC="clang-${CLANG_VERSION}" CXX="clang++-${CLANG_VERSION}"; fi
   # doxygen
