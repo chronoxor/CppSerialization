@@ -61,6 +61,7 @@ before_install:
   - git config --global user.email "travis@travis-ci.org"
   - git config --global push.default simple
   # gcc
+  - echo $COMPILER
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "gcc" ]; then export CC="gcc-${GCC_VERSION}" CXX="g++-${GCC_VERSION}"; fi
   # clang
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then export CC="clang-${CLANG_VERSION}" CXX="clang++-${CLANG_VERSION}"; fi
