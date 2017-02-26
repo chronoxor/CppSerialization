@@ -30,6 +30,7 @@ matrix:
           packages:
             - clang-3.9
             - libc++-dev
+            - libc++abi-dev
             - cmake
             - doxygen
             - graphviz
