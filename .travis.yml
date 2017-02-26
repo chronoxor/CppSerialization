@@ -73,14 +73,14 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then sudo ln -sf libc++.so.1.0 libc++.so.1 && cd $cwd; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then popd; fi
   # libc++abi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then pushd .; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxxabi/trunk libcxxabi; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then cd libcxxabi/lib && bash buildit; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then sudo cp ./libc++abi.so.1.0 /usr/lib/; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then cd .. && sudo cp -r include/* /usr/include/c++/v1/; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then cd /usr/lib && sudo ln -sf libc++abi.so.1.0 libc++abi.so; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then sudo ln -sf libc++abi.so.1.0 libc++abi.so.1 && cd $cwd; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then popd; fi
+  #- if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then pushd .; fi
+  #- if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxxabi/trunk libcxxabi; fi
+  #- if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then cd libcxxabi/lib && bash buildit; fi
+  #- if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then sudo cp ./libc++abi.so.1.0 /usr/lib/; fi
+  #- if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then cd .. && sudo cp -r include/* /usr/include/c++/v1/; fi
+  #- if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then cd /usr/lib && sudo ln -sf libc++abi.so.1.0 libc++abi.so; fi
+  #- if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then sudo ln -sf libc++abi.so.1.0 libc++abi.so.1 && cd $cwd; fi
+  #- if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$CXX" = "clang++" ]; then popd; fi
   # doxygen
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install doxygen; fi
   # graphviz
