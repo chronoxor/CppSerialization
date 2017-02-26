@@ -67,19 +67,15 @@ before_install:
   # clang
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then export CC="clang-${CLANG_VERSION}" CXX="clang++-${CLANG_VERSION}"; fi
   # libc++
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then ls /usr/include/c++/v1; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then pushd .; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxx/trunk libcxx; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then cd libcxx/lib && bash buildit; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then sudo cp ./libc++.so.1.0 /usr/lib/; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then cd .. && sudo cp -r include/* /usr/include/c++/v1/; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then cd /usr/lib && sudo ln -sf libc++.so.1.0 libc++.so; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then sudo ln -sf libc++.so.1.0 libc++.so.1 && cd $cwd; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then git clone --depth=1 https://github.com/llvm-mirror/libcxx.git libcxx fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then cd libcxx/lib; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then cmake -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_INSTALL_PREFIX=/usr .; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then make install -j2; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then popd; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then ls /usr/include/c++/v1; fi
   # libc++abi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then pushd .; fi
-  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxxabi/trunk libcxxabi; fi
+  - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then git clone --depth=1 https://github.com/llvm-mirror/libcxxabi.git libcxxabi; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then cd libcxxabi/lib && bash buildit; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then sudo cp ./libc++abi.so.1.0 /usr/lib/; fi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then cd .. && sudo cp -r include/* /usr/include/c++/v1/; fi
