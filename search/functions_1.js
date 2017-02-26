@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['method',['Method',['../class_cpp_template_1_1_template.html#ae418b99510f6295e57f1b340b5d44e8c',1,'CppTemplate::Template']]]
+  ['key',['Key',['../class_cpp_serialization_1_1_j_s_o_n_1_1_serializer.html#ab659410d39c0bfe1eab3789f1ae544f5',1,'CppSerialization::JSON::Serializer::Key(const char *key)'],['../class_cpp_serialization_1_1_j_s_o_n_1_1_serializer.html#add0a5afa607a89e3cddd4024b02fe613',1,'CppSerialization::JSON::Serializer::Key(const char *key, size_t size)'],['../class_cpp_serialization_1_1_j_s_o_n_1_1_serializer.html#ad62d59a28b7c470f29e95801b657fc48',1,'CppSerialization::JSON::Serializer::Key(const std::string &amp;key)']]]
 ];

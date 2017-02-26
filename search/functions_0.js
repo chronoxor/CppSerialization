@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['field',['field',['../class_cpp_template_1_1_template.html#a077b38ebc7c91c672830dcf0006520e9',1,'CppTemplate::Template']]],
-  ['function',['function',['../namespace_cpp_template.html#aa07d7bdc14cfc5cdd4959ad21dc02523',1,'CppTemplate']]]
+  ['endarray',['EndArray',['../class_cpp_serialization_1_1_j_s_o_n_1_1_serializer.html#ab99477079db72b56e0a74e1cb7b98d20',1,'CppSerialization::JSON::Serializer']]],
+  ['endobject',['EndObject',['../class_cpp_serialization_1_1_j_s_o_n_1_1_serializer.html#a773d1e59a7551983ba83f3c9aacd8e72',1,'CppSerialization::JSON::Serializer']]]
 ];

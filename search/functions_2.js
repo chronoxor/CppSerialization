@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['operator_3d',['operator=',['../class_cpp_template_1_1_template.html#abb3a4169cfe0919810e757150a37364f',1,'CppTemplate::Template::operator=(const Template &amp;) noexcept=default'],['../class_cpp_template_1_1_template.html#af9fd72e2403c14c07cedd7fcd6edbb99',1,'CppTemplate::Template::operator=(Template &amp;&amp;) noexcept=default']]]
+  ['operator_3d',['operator=',['../class_cpp_serialization_1_1_j_s_o_n_1_1_serializer.html#aad1a1084c337880ff4d383122d5352c2',1,'CppSerialization::JSON::Serializer::operator=(const Serializer &amp;)=delete'],['../class_cpp_serialization_1_1_j_s_o_n_1_1_serializer.html#a8ba675e7c5ac3576d2f7c41e6bbb4fb5',1,'CppSerialization::JSON::Serializer::operator=(Serializer &amp;&amp;)=default']]]
 ];
