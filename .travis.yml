@@ -57,9 +57,9 @@ git:
 # Scripts that run before install
 before_install:
   # cmake
-  - curl -sSL https://cmake.org/files/v3.6/cmake-3.6.1-Linux-x86_64.sh -o install-cmake.sh
-  - chmod +x install-cmake.sh
-  - sudo ./install-cmake.sh --prefix=/usr/local --skip-license
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then curl -sSL https://cmake.org/files/v3.6/cmake-3.6.1-Linux-x86_64.sh -o install-cmake.sh; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then chmod +x install-cmake.sh; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo ./install-cmake.sh --prefix=/usr/local --skip-license; fi
   - cmake --version
   # git
   - git config --global user.name "Travis CI"
