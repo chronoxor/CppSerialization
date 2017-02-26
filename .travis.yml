@@ -56,13 +56,16 @@ git:
 
 # Scripts that run before install
 before_install:
+  # cmake
+  - curl -sSL https://cmake.org/files/v3.6/cmake-3.6.1-Linux-x86_64.sh -o install-cmake.sh
+  - chmod +x install-cmake.sh
+  - sudo ./install-cmake.sh --prefix=/usr/local --skip-license
   - cmake --version
   # git
   - git config --global user.name "Travis CI"
   - git config --global user.email "travis@travis-ci.org"
   - git config --global push.default simple
   # gcc
-  - echo $COMPILER
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "gcc" ]; then export CC="gcc-${GCC_VERSION}" CXX="g++-${GCC_VERSION}"; fi
   # clang, libc++, libc++abi
   - if [ "$TRAVIS_OS_NAME" != "osx" ] && [ "$COMPILER" = "clang" ]; then export CC="clang-${CLANG_VERSION}" CXX="clang++-${CLANG_VERSION}"; fi
