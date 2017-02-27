@@ -173,6 +173,13 @@ inline bool Deserializer::Find(const JSON& json, const char* key, char (&value)[
 template<typename JSON>
 inline bool Deserializer::FindArray(const JSON& json, const char* key, std::function<void(const Value&)> handler)
 {
+    return FindArray(json, key, [](size_t){}, handler);
+}
+
+
+template<typename JSON>
+inline bool Deserializer::FindArray(const JSON& json, const char* key, std::function<void(size_t)> initialize, std::function<void(const Value&)> handler)
+{
     // Try to find a member with the given key
     Value::ConstMemberIterator member = json.FindMember(key);
     if ((member == json.MemberEnd()) || member->value.IsNull())
@@ -183,6 +190,7 @@ inline bool Deserializer::FindArray(const JSON& json, const char* key, std::func
         throwex SerializationException("Cannot deserialize JSON array!");
 
     // Handle array items
+    initialize(member->value.GetArray().Size());
     for (auto& item : member->value.GetArray())
         handler(item);
     return true;
