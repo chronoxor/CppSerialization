@@ -39,9 +39,9 @@ matrix:
 # Scripts that run after cloning repository
 install:
   # doxygen
-  - choco install doxygen.portable
+#  - choco install doxygen.portable
   # graphviz
-  - choco install graphviz.portable
+#  - choco install graphviz.portable
   # cygwin
   - appveyor DownloadFile "http://cygwin.com/setup-x86_64.exe" -FileName "C:\cygwin64\setup-x86_64.exe"
   - if "%type%"=="Cygwin" C:\cygwin64\setup-x86_64.exe --quiet-mode --no-shortcuts --upgrade-also --root "C:\cygwin64" --local-package-dir "C:\cache\cygwin" --packages cmake,automake,make,gcc-core,gcc-g++,doxygen,graphviz
