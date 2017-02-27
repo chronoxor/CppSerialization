@@ -36,7 +36,7 @@ struct Order
     double Price;
     double Volume;
 
-    Order() : Order(0, "<???>", OrderSide::BUY, OrderType::MARKET, 0.0, 0.0) {}
+    Order() : Order(0, "<unknown>", OrderSide::BUY, OrderType::MARKET, 0.0, 0.0) {}
     Order(int id, const std::string& symbol, OrderSide side, OrderType type, double price, double volume)
     {
         Id = id;
@@ -67,8 +67,8 @@ struct Order
 
         Deserializer::Find(json, "id", Id);
         Deserializer::Find(json, "symbol", Symbol);
-        int side; Deserializer::Find(json, "side", side); Side = (OrderSide)side;
-        int type; Deserializer::Find(json, "type", type); Type = (OrderType)type;
+        int side = 0; Deserializer::Find(json, "side", side); Side = (OrderSide)side;
+        int type = 0; Deserializer::Find(json, "type", type); Type = (OrderType)type;
         Deserializer::Find(json, "price", Price);
         Deserializer::Find(json, "volume", Volume);
     }
@@ -79,7 +79,7 @@ struct Balance
     char Currency[12];
     double Amount;
 
-    Balance() : Balance("<???>", 0.0) {}
+    Balance() : Balance("<?>", 0.0) {}
     Balance(const std::string& currency, double amount)
     {
         std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
@@ -112,7 +112,7 @@ struct Account
     Balance Wallet;
     std::map<int, Order> Orders;
 
-    Account() : Account(0, "<???>", "<???>", 0.0) {}
+    Account() : Account(0, "<unknown>", "<unknown>", 0.0) {}
     Account(int id, const char* name, const char* currency, double amount) : Wallet(currency, amount)
     {
         Id = id;
