@@ -1,5 +1,5 @@
 //
-// Created by Ivan Shynkarenka on 26.05.2016.
+// Created by Ivan Shynkarenka on 28.02.2017
 //
 
 #define CATCH_CONFIG_MAIN

@@ -23,6 +23,7 @@ template <class OutputStream>
 class Serializer : public Writer<OutputStream>
 {
 public:
+    Serializer() = default;
     Serializer(OutputStream& stream) : Writer<OutputStream>(stream) {}
     Serializer(const Serializer&) = delete;
     Serializer(Serializer&&) = default;
