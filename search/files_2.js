@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['serializer_2eh',['serializer.h',['../serializer_8h.html',1,'']]],
-  ['serializer_2einl',['serializer.inl',['../serializer_8inl.html',1,'']]]
+  ['json_2eh',['json.h',['../json_8h.html',1,'']]]
 ];
