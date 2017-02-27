@@ -126,7 +126,7 @@ template <class OutputStream>
 inline void Serializer<OutputStream>::Value(const char* value, size_t size)
 {
     if (!Writer<OutputStream>::String(value, size))
-        throwex SerializationException("Cannot serialize JSON C-string value!");
+        throwex SerializationException("Cannot serialize JSON C-string value with a given size!");
 }
 
 template <class OutputStream>

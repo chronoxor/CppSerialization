@@ -7,6 +7,7 @@
 */
 
 #include "serialization/json/serializer.h"
+#include "serialization/json/deserializer.h"
 
 #include <algorithm>
 #include <map>
@@ -35,11 +36,11 @@ struct Order
     double Price;
     double Volume;
 
-    Order() {}
+    Order() : Order(0, "<???>", OrderSide::BUY, OrderType::MARKET, 0.0, 0.0) {}
     Order(int id, const std::string& symbol, OrderSide side, OrderType type, double price, double volume)
     {
         Id = id;
-        std::memcpy(Symbol, symbol.data(), std::min(symbol.size(), sizeof(Symbol)));
+        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = side;
         Type = type;
         Price = price;
@@ -47,39 +48,60 @@ struct Order
     }
 
     template<typename OutputStream>
-    friend void JSONSerialize(CppSerialization::JSON::Serializer<OutputStream>& serializer, const Order order)
+    void SerializeJSON(CppSerialization::JSON::Serializer<OutputStream>& serializer)
     {
         serializer.StartObject();
-        serializer.Pair("id", order.Id);
-        serializer.Pair("symbol", order.Symbol);
-        serializer.Pair("side", (int)order.Side);
-        serializer.Pair("type", (int)order.Type);
-        serializer.Pair("price", order.Price);
-        serializer.Pair("volume", order.Volume);
+        serializer.Pair("id", Id);
+        serializer.Pair("symbol", Symbol);
+        serializer.Pair("side", (int)Side);
+        serializer.Pair("type", (int)Type);
+        serializer.Pair("price", Price);
+        serializer.Pair("volume", Volume);
         serializer.EndObject();
     }
 
-    bool JSONDeserialize(CppSerialization::JSON::Value& value)
+    template<typename JSON>
+    void DeserializeJSON(const JSON& json)
     {
-        CppSerialization::JSON::Value::MemberIterator id = value.FindMember("id");
-        if ((id == value.MemberEnd()) || !id->value.IsInt()) return false;
-        Id = id->value.GetInt();
-        CppSerialization::JSON::Value::MemberIterator symbol = value.FindMember("symbol");
-        if ((symbol == value.MemberEnd()) || !symbol->value.IsString()) return false;
-        std::memcpy(Symbol, symbol->value.GetString(), std::min((size_t)symbol->value.GetStringLength(), sizeof(Symbol)));
-        CppSerialization::JSON::Value::MemberIterator side = value.FindMember("side");
-        if ((side == value.MemberEnd()) || !side->value.IsInt()) return false;
-        Side = (OrderSide)side->value.GetInt();
-        CppSerialization::JSON::Value::MemberIterator type = value.FindMember("type");
-        if ((type == value.MemberEnd()) || !type->value.IsInt()) return false;
-        Type = (OrderType)type->value.GetInt();
-        CppSerialization::JSON::Value::MemberIterator price = value.FindMember("price");
-        if ((price == value.MemberEnd()) || !price->value.IsDouble()) return false;
-        Price = price->value.GetDouble();
-        CppSerialization::JSON::Value::MemberIterator volume = value.FindMember("volume");
-        if ((volume == value.MemberEnd()) || !volume->value.IsDouble()) return false;
-        Volume = volume->value.GetDouble();
-        return true;
+        using namespace CppSerialization::JSON;
+
+        Deserializer::Find(json, "id", Id);
+        Deserializer::Find(json, "symbol", Symbol);
+        int side; Deserializer::Find(json, "side", side); Side = (OrderSide)side;
+        int type; Deserializer::Find(json, "type", type); Type = (OrderType)type;
+        Deserializer::Find(json, "price", Price);
+        Deserializer::Find(json, "volume", Volume);
+    }
+};
+
+struct Balance
+{
+    char Currency[12];
+    double Amount;
+
+    Balance() : Balance("<???>", 0.0) {}
+    Balance(const std::string& currency, double amount)
+    {
+        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
+        Amount = amount;
+    }
+
+    template<typename OutputStream>
+    void SerializeJSON(CppSerialization::JSON::Serializer<OutputStream>& serializer)
+    {
+        serializer.StartObject();
+        serializer.Pair("currency", Currency);
+        serializer.Pair("amount", Amount);
+        serializer.EndObject();
+    }
+
+    template<typename JSON>
+    void DeserializeJSON(const JSON& json)
+    {
+        using namespace CppSerialization::JSON;
+
+        Deserializer::Find(json, "currency", Currency);
+        Deserializer::Find(json, "amount", Amount);
     }
 };
 
@@ -87,56 +109,53 @@ struct Account
 {
     int Id;
     std::string Name;
-    double Balance;
+    Balance Wallet;
     std::map<int, Order> Orders;
 
-    Account() {}
-    Account(int id, const std::string& name, double balance)
+    Account() : Account(0, "<???>", "<???>", 0.0) {}
+    Account(int id, const char* name, const char* currency, double amount) : Wallet(currency, amount)
     {
         Id = id;
         Name = name;
-        Balance = balance;
+    }
+
+    template<typename OutputStream>
+    void SerializeJSON(CppSerialization::JSON::Serializer<OutputStream>& serializer)
+    {
+        serializer.StartObject();
+        serializer.Pair("id", Id);
+        serializer.Pair("name", Name);
+        serializer.Key("wallet");
+        Wallet.SerializeJSON(serializer);
+        serializer.Key("orders");
+        serializer.StartArray();
+        for (auto& order : Orders)
+            order.second.SerializeJSON(serializer);
+        serializer.EndArray();
+        serializer.EndObject();
+    }
+
+    template<typename JSON>
+    void DeserializeJSON(const JSON& json)
+    {
+        using namespace CppSerialization::JSON;
+
+        Deserializer::Find(json, "id", Id);
+        Deserializer::Find(json, "name", Name);
+        Deserializer::FindObject(json, "wallet", [this](const Value::ConstObject& object)
+        {
+            Wallet.DeserializeJSON(object);
+        });
+        Deserializer::FindArray(json, "orders", [this](const Value& item)
+        {
+            Order order;
+            order.DeserializeJSON(item);
+            AddOrder(order);
+        });
     }
 
     void AddOrder(const Order& order)
     {
         Orders[order.Id] = order;
-    }
-
-    template<typename OutputStream>
-    friend void JSONSerialize(CppSerialization::JSON::Serializer<OutputStream>& serializer, const Account account)
-    {
-        serializer.StartObject();
-        serializer.Pair("id", account.Id);
-        serializer.Pair("name", account.Name);
-        serializer.Pair("balance", account.Balance);
-        serializer.StartArray();
-        for (auto& order : account.Orders)
-            JSONSerialize(serializer, order.second);
-        serializer.EndArray();
-        serializer.EndObject();
-    }
-
-    bool JSONDeserialize(CppSerialization::JSON::Value& value)
-    {
-        CppSerialization::JSON::Value::MemberIterator id = value.FindMember("id");
-        if ((id == value.MemberEnd()) || !id->value.IsInt()) return false;
-        Id = id->value.GetInt();
-        CppSerialization::JSON::Value::MemberIterator name = value.FindMember("name");
-        if ((name == value.MemberEnd()) || !name->value.IsString()) return false;
-        Name = name->value.GetString();
-        CppSerialization::JSON::Value::MemberIterator balance = value.FindMember("balance");
-        if ((balance == value.MemberEnd()) || !balance->value.IsDouble()) return false;
-        Balance = balance->value.GetDouble();
-        CppSerialization::JSON::Value::MemberIterator orders = value.FindMember("orders");
-        if ((orders == value.MemberEnd()) || !orders->value.IsArray()) return false;
-        Orders.clear();
-        for (auto& ord : orders->value.GetArray())
-        {
-            Order order;
-            if (!order.JSONDeserialize(ord)) return false;
-            AddOrder(order);
-        }
-        return true;
     }
 };
