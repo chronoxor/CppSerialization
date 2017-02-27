@@ -59,6 +59,14 @@ inline void Serializer<OutputStream>::Key(const std::string& key)
 }
 
 template <class OutputStream>
+template <std::size_t N>
+inline void Serializer<OutputStream>::Key(const char (&key)[N])
+{
+    if (!Writer<OutputStream>::Key(key, N))
+        throwex SerializationException("Cannot serialize JSON key!");
+}
+
+template <class OutputStream>
 inline void Serializer<OutputStream>::Value(std::nullptr_t value)
 {
     if (!Writer<OutputStream>::Null())
@@ -126,6 +134,14 @@ inline void Serializer<OutputStream>::Value(const std::string& value)
 {
     if (!Writer<OutputStream>::String(value))
         throwex SerializationException("Cannot serialize JSON string value!");
+}
+
+template <class OutputStream>
+template <std::size_t N>
+inline void Serializer<OutputStream>::Value(const char (&value)[N])
+{
+    if (!Writer<OutputStream>::String(value, N))
+        throwex SerializationException("Cannot serialize JSON string array value!");
 }
 
 } // namespace JSON

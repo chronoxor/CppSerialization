@@ -8,6 +8,7 @@
 
 #include "serialization/json/serializer.h"
 
+#include <algorithm>
 #include <map>
 #include <string>
 #include <vector>
@@ -28,7 +29,7 @@ enum class OrderType : uint8_t
 struct Order
 {
     int Id;
-    std::string Symbol;
+    char Symbol[32];
     OrderSide Side;
     OrderType Type;
     double Price;
@@ -38,7 +39,7 @@ struct Order
     Order(int id, const std::string& symbol, OrderSide side, OrderType type, double price, double volume)
     {
         Id = id;
-        Symbol = symbol;
+        std::memcpy(Symbol, symbol.data(), std::min(symbol.size(), sizeof(Symbol)));
         Side = side;
         Type = type;
         Price = price;
@@ -65,7 +66,7 @@ struct Order
         Id = id->value.GetInt();
         CppSerialization::JSON::Value::MemberIterator symbol = value.FindMember("symbol");
         if ((symbol == value.MemberEnd()) || !symbol->value.IsString()) return false;
-        Symbol = symbol->value.GetString();
+        std::memcpy(Symbol, symbol->value.GetString(), std::min((size_t)symbol->value.GetStringLength(), sizeof(Symbol)));
         CppSerialization::JSON::Value::MemberIterator side = value.FindMember("side");
         if ((side == value.MemberEnd()) || !side->value.IsInt()) return false;
         Side = (OrderSide)side->value.GetInt();

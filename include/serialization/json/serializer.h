@@ -47,6 +47,9 @@ public:
     void Key(const char* key, size_t size);
     //! Put the string key
     void Key(const std::string& key);
+    //! Put the fixed string array key
+    template <std::size_t N>
+    void Key(const char (&key)[N]);
 
     //! Put the null value
     void Value(std::nullptr_t value);
@@ -68,6 +71,9 @@ public:
     void Value(const char* value, size_t size);
     //! Put the string value
     void Value(const std::string& value);
+    //! Put the fixed string array value
+    template <std::size_t N>
+    void Value(const char (&value)[N]);
 
     //! Put the null key/value pair
     void Pair(const char* key, std::nullptr_t value)
@@ -98,6 +104,10 @@ public:
     { Key(key); Value(value, size); }
     //! Put the string key/value pair
     void Pair(const char* key, const std::string& value)
+    { Key(key); Value(value); }
+    //! Put the fixed string array key/value pair
+    template <std::size_t N>
+    void Pair(const char* key, const char (&value)[N])
     { Key(key); Value(value); }
 };
 
