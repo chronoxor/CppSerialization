@@ -25,11 +25,8 @@ objects in/from different formats such as Flatbuffers, JSON.
 
 # Features
 * Cross platform (Linux, OSX, Windows)
-* Benchmarks
-* Examples
-* Tests
-* [Doxygen](http://www.doxygen.org) API documentation
-* Continuous integration ([Travis CI](https://travis-ci.com), [AppVeyor](https://www.appveyor.com))
+* Fast binary serialization using [FlatBuffers library](https://google.github.io/flatbuffers)
+* Fast JSON serialization using [RapidJSON library](http://rapidjson.org)
 
 # Requirements
 * Linux
