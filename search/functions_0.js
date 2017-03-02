@@ -14,5 +14,5 @@ var searchData=
   ['add_5fvolume',['add_Volume',['../struct_my_domain_1_1_flat_buffers_1_1_order_builder.html#a7a4847abac5efbcec6c4a185b1a475c3',1,'MyDomain::FlatBuffers::OrderBuilder']]],
   ['add_5fwallet',['add_Wallet',['../struct_my_domain_1_1_flat_buffers_1_1_account_builder.html#a9828401126e55bee3e16d9becbc3689d',1,'MyDomain::FlatBuffers::AccountBuilder']]],
   ['addorder',['AddOrder',['../struct_my_domain_1_1_account.html#aad8f3489c6e2c2277426933b8dfd7d14',1,'MyDomain::Account']]],
-  ['amount',['Amount',['../struct_my_domain_1_1_flat_buffers_1_1_f_l_a_t_b_u_f_f_e_r_s___f_i_n_a_l___c_l_a_s_s.html#a313e161094a2f6fce08886a1fcd61755',1,'MyDomain::FlatBuffers::FLATBUFFERS_FINAL_CLASS']]]
+  ['amount',['Amount',['../struct_my_domain_1_1_flat_buffers_1_1_f_l_a_t_b_u_f_f_e_r_s___f_i_n_a_l___c_l_a_s_s.html#a29f25a080fa9697000b5594ab201d045',1,'MyDomain::FlatBuffers::FLATBUFFERS_FINAL_CLASS']]]
 ];
