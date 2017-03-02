@@ -7,7 +7,7 @@ var searchData=
   ['createbalancedirect',['CreateBalanceDirect',['../namespace_my_domain_1_1_flat_buffers.html#a4a64d35e3ee65ca45c8e577383f07860',1,'MyDomain::FlatBuffers']]],
   ['createorder',['CreateOrder',['../namespace_my_domain_1_1_flat_buffers.html#a84bc53b4e36da2394f411239d643f20e',1,'MyDomain::FlatBuffers']]],
   ['createorderdirect',['CreateOrderDirect',['../namespace_my_domain_1_1_flat_buffers.html#a669b2e13af72cda8444e43e6248d6c1e',1,'MyDomain::FlatBuffers']]],
-  ['currency',['Currency',['../struct_my_domain_1_1_balance.html#a010b55a3e9a74f28440f8558df00673a',1,'MyDomain::Balance::Currency()'],['../struct_my_domain_1_1_flat_buffers_1_1_f_l_a_t_b_u_f_f_e_r_s___f_i_n_a_l___c_l_a_s_s.html#a43ee08d95c25989dfc399398c3ab4878',1,'MyDomain::FlatBuffers::FLATBUFFERS_FINAL_CLASS::Currency()']]],
+  ['currency',['Currency',['../struct_my_domain_1_1_balance.html#a010b55a3e9a74f28440f8558df00673a',1,'MyDomain::Balance::Currency()'],['../struct_my_domain_1_1_flat_buffers_1_1_f_l_a_t_b_u_f_f_e_r_s___f_i_n_a_l___c_l_a_s_s.html#aacd3af5f685b2d4378ab41f4b2e676db',1,'MyDomain::FlatBuffers::FLATBUFFERS_FINAL_CLASS::Currency()']]],
   ['c_2b_2b_20serialization_20library',['C++ Serialization Library',['../index.html',1,'']]],
   ['json',['JSON',['../namespace_cpp_serialization_1_1_j_s_o_n.html',1,'CppSerialization']]]
 ];
