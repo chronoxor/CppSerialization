@@ -4,9 +4,10 @@
 
 #include "benchmark/cppbenchmark.h"
 
-#include "../examples/domain.h"
+#include "domain/domain.h"
 
 using namespace CppSerialization::JSON;
+using namespace MyDomain;
 
 const uint64_t iterations = 1000000;
 

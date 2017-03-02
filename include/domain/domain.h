@@ -14,6 +14,8 @@
 #include <string>
 #include <vector>
 
+namespace MyDomain {
+
 enum class OrderSide : uint8_t
 {
     BUY,
@@ -159,3 +161,5 @@ struct Account
         Orders[order.Id] = order;
     }
 };
+
+} // namespace MyDomain

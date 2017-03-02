@@ -48,6 +48,13 @@ list(APPEND LINKLIBS cppserialization)
 # Additional module components: examples, performance benchmarks, tests, tools and install
 if(NOT CPPSERIALIZATION_MODULE)
 
+  # Domain models
+  file(GLOB FLATBUFFER_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/include/domain" "domain/include/*.fbs")
+  foreach(FLATBUFFER_FILE ${FLATBUFFER_FILES})
+    string(REGEX REPLACE "(.*)\\.cpp" "\\1_generated.h" FLATBUFFER_HEADER ${FLATBUFFER_FILE})
+    add_custom_command(OUTPUT ${FLATBUFFER_HEADER} POST_BUILD COMMAND $<TARGET_FILE:flatc> --cpp --scoped-enums -o "${CMAKE_CURRENT_SOURCE_DIR}/include/domain" "${CMAKE_CURRENT_SOURCE_DIR}/include/domain/${FLATBUFFER_FILE}" DEPENDS flatc)
+  endforeach()
+
   # Examples
   file(GLOB EXAMPLE_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/examples" "examples/*.cpp")
   foreach(EXAMPLE_FILE ${EXAMPLE_FILES})

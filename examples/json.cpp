@@ -6,8 +6,7 @@
     \copyright MIT License
 */
 
-#include "domain.h"
-
+#include "domain/domain.h"
 #include "serialization/json/parser.h"
 
 #include <iostream>
@@ -15,10 +14,10 @@
 int main(int argc, char** argv)
 {
     // Create a new account with some orders
-    Account account(1, "Test", "USD", 1000);
-    account.AddOrder(Order(1, "EURUSD", OrderSide::BUY, OrderType::MARKET, 1.23456, 1000));
-    account.AddOrder(Order(2, "EURUSD", OrderSide::SELL, OrderType::LIMIT, 1.0, 100));
-    account.AddOrder(Order(3, "EURUSD", OrderSide::BUY, OrderType::STOP, 1.5, 10));
+    MyDomain::Account account(1, "Test", "USD", 1000);
+    account.AddOrder(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
+    account.AddOrder(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
+    account.AddOrder(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
 
     // Serialize the account to the JSON file stream
     CppSerialization::JSON::StringBuffer buffer;
@@ -32,7 +31,7 @@ int main(int argc, char** argv)
     CppSerialization::JSON::Document json = CppSerialization::JSON::Parser::Parse(buffer.GetString());
 
     // Deserialize the account from the JSON file stream
-    Account deserialized;
+    MyDomain::Account deserialized;
     deserialized.DeserializeJSON(json);
 
     // Show account content

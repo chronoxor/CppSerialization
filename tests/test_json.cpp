@@ -4,12 +4,12 @@
 
 #include "catch.hpp"
 
-#include "../examples/domain.h"
-
+#include "domain/domain.h"
 #include "serialization/json/parser.h"
 
 using namespace CppCommon;
 using namespace CppSerialization;
+using namespace MyDomain;
 
 TEST_CASE("JSON", "[CppSerialization]")
 {
