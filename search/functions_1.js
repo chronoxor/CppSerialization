@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['endarray',['EndArray',['../class_cpp_serialization_1_1_j_s_o_n_1_1_serializer.html#ab99477079db72b56e0a74e1cb7b98d20',1,'CppSerialization::JSON::Serializer']]],
-  ['endobject',['EndObject',['../class_cpp_serialization_1_1_j_s_o_n_1_1_serializer.html#a773d1e59a7551983ba83f3c9aacd8e72',1,'CppSerialization::JSON::Serializer']]]
+  ['balance',['Balance',['../struct_my_domain_1_1_balance.html#abd92368c0c0c20c2a630182baad7bc04',1,'MyDomain::Balance::Balance()'],['../struct_my_domain_1_1_balance.html#a0c7d30c8526cceb64b44d7912ee85c52',1,'MyDomain::Balance::Balance(const std::string &amp;currency, double amount)']]],
+  ['balancebuilder',['BalanceBuilder',['../struct_my_domain_1_1_flat_buffers_1_1_balance_builder.html#adb1710248d1052652e5d8161ee656d4f',1,'MyDomain::FlatBuffers::BalanceBuilder']]]
 ];
