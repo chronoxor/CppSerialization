@@ -51,6 +51,8 @@ struct Order
         Volume = volume;
     }
 
+    // FlatBuffers serialization
+
     flatbuffers::Offset<flat::Order> SerializeFlatbuffer(flatbuffers::FlatBufferBuilder& builder)
     {
         return flat::CreateOrderDirect(builder, Id, Symbol, (flat::OrderSide)Side, (flat::OrderType)Type, Price, Volume);
@@ -65,6 +67,8 @@ struct Order
         Price = value.Price();
         Volume = value.Volume();
     }
+
+    // JSON serialization
 
     template<typename OutputStream>
     void SerializeJSON(CppSerialization::JSON::Serializer<OutputStream>& serializer)
@@ -105,6 +109,8 @@ struct Balance
         Amount = amount;
     }
 
+    // FlatBuffers serialization
+
     flatbuffers::Offset<flat::Balance> SerializeFlatBuffer(flatbuffers::FlatBufferBuilder& builder)
     {
         return flat::CreateBalanceDirect(builder, Currency, Amount);
@@ -115,6 +121,8 @@ struct Balance
         std::strncpy(Currency, value.Currency()->c_str(), std::min((size_t)value.Currency()->Length() + 1, sizeof(Currency)));
         Amount = value.Amount();
     }
+
+    // JSON serialization
 
     template<typename OutputStream>
     void SerializeJSON(CppSerialization::JSON::Serializer<OutputStream>& serializer)
@@ -149,6 +157,8 @@ struct Account
         Name = name;
     }
 
+    // FlatBuffers serialization
+
     flatbuffers::Offset<flat::Account> SerializeFlatBuffer(flatbuffers::FlatBufferBuilder& builder)
     {
         auto wallet = Wallet.SerializeFlatBuffer(builder);
@@ -173,6 +183,8 @@ struct Account
             }
         }
     }
+
+    // JSON serialization
 
     template<typename OutputStream>
     void SerializeJSON(CppSerialization::JSON::Serializer<OutputStream>& serializer)

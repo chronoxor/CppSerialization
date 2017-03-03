@@ -4,7 +4,8 @@
 
 #include "catch.hpp"
 
-#include "domain/domain.h"
+#include "../domain/domain.h"
+
 #include "serialization/json/parser.h"
 
 using namespace CppCommon;

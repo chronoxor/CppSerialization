@@ -6,7 +6,8 @@
     \copyright MIT License
 */
 
-#include "domain/domain.h"
+#include "../domain/domain.h"
+
 #include "serialization/json/parser.h"
 
 #include <iostream>

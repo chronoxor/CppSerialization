@@ -4,7 +4,8 @@
 
 #include "benchmark/cppbenchmark.h"
 
-#include "domain/domain.h"
+#include "../domain/domain.h"
+
 #include "serialization/json/parser.h"
 
 using namespace CppSerialization::JSON;

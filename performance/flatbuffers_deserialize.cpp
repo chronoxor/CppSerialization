@@ -4,7 +4,7 @@
 
 #include "benchmark/cppbenchmark.h"
 
-#include "domain/domain.h"
+#include "../domain/domain.h"
 
 using namespace MyDomain;
 

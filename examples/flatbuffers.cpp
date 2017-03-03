@@ -6,7 +6,7 @@
     \copyright MIT License
 */
 
-#include "domain/domain.h"
+#include "../domain/domain.h"
 
 #include <iostream>
 

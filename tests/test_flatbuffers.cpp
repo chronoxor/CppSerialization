@@ -4,7 +4,7 @@
 
 #include "catch.hpp"
 
-#include "domain/domain.h"
+#include "../domain/domain.h"
 
 using namespace CppCommon;
 using namespace CppSerialization;
