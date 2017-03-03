@@ -173,14 +173,11 @@ struct Account
         Id = value.Id();
         Name = value.Name()->str();
         Wallet.DeserializeFlatBuffer(*value.Wallet());
-        if (value.Orders() != nullptr)
+        for (auto item : *value.Orders())
         {
-            for (auto item : *value.Orders())
-            {
-                Order order;
-                order.DeserializeFlatbuffer(*item);
-                AddOrder(order);
-            }
+            Order order;
+            order.DeserializeFlatbuffer(*item);
+            AddOrder(order);
         }
     }
 
