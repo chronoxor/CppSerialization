@@ -6,5 +6,5 @@ var searchData=
   ['createbalancedirect',['CreateBalanceDirect',['../namespace_my_domain_1_1flat.html#ab2b6f557a69ef71f0ea91f124c5f2cb2',1,'MyDomain::flat']]],
   ['createorder',['CreateOrder',['../namespace_my_domain_1_1flat.html#a1c806a17522f1dd1855667db6420b2db',1,'MyDomain::flat']]],
   ['createorderdirect',['CreateOrderDirect',['../namespace_my_domain_1_1flat.html#a238cb35efdf2d84dce2fbf9478256538',1,'MyDomain::flat']]],
-  ['currency',['Currency',['../struct_my_domain_1_1flat_1_1_f_l_a_t_b_u_f_f_e_r_s___f_i_n_a_l___c_l_a_s_s.html#aa6426dde33cf63b4e100c6c72dec336e',1,'MyDomain::flat::FLATBUFFERS_FINAL_CLASS']]]
+  ['currency',['Currency',['../struct_my_domain_1_1flat_1_1_f_l_a_t_b_u_f_f_e_r_s___f_i_n_a_l___c_l_a_s_s.html#a99dcd8a84942722644cc14d5aa349f31',1,'MyDomain::flat::FLATBUFFERS_FINAL_CLASS']]]
 ];
