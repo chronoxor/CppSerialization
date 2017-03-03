@@ -26,7 +26,7 @@ objects in/from different formats such as Flatbuffers, JSON.
   * [FlatBuffers serialization](#flatbuffers-serialization)
     * [FlatBuffers schema](#flatbuffers-schema)
     * [FlatBuffers schema compilation](#flatbuffers-schema-compilation)
-    * [FlatBuffers serialization](#flatbuffers-serialization)
+    * [FlatBuffers serialization methods](#flatbuffers-serialization-methods)
     * [FlatBuffers example](#flatbuffers-example)
     * [FlatBuffers performance](#flatbuffers-performance)
 
@@ -242,7 +242,7 @@ add_custom_command(TARGET example POST_BUILD COMMAND flatc --cpp --scoped-enums 
 
 As the result 'domain_generated.h' file will be created.
 
-## FlatBuffers serialization
+## FlatBuffers serialization methods
 Finally you should extend your domain model with a FlatBuffers serialization
 methods:
 
