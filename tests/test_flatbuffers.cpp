@@ -1,17 +1,16 @@
 //
-// Created by Ivan Shynkarenka on 28.02.2017
+// Created by Ivan Shynkarenka on 03.03.2017
 //
 
 #include "catch.hpp"
 
 #include "domain/domain.h"
-#include "serialization/json/parser.h"
 
 using namespace CppCommon;
 using namespace CppSerialization;
 using namespace MyDomain;
 
-TEST_CASE("JSON", "[CppSerialization]")
+TEST_CASE("FlatBuffers", "[CppSerialization]")
 {
     // Create a new account with some orders
     Account account(1, "Test", "USD", 1000);
@@ -19,20 +18,17 @@ TEST_CASE("JSON", "[CppSerialization]")
     account.AddOrder(Order(2, "EURUSD", OrderSide::SELL, OrderType::LIMIT, 1.0, 100));
     account.AddOrder(Order(3, "EURUSD", OrderSide::BUY, OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the JSON file stream
-    CppSerialization::JSON::StringBuffer buffer;
-    CppSerialization::JSON::Serializer<CppSerialization::JSON::StringBuffer> serializer(buffer);
-    account.SerializeJSON(serializer);
+    // Serialize the account to the FlatBuffer stream
+    flatbuffers::FlatBufferBuilder builder;
+    builder.Finish(account.SerializeFlatBuffer(builder));
 
-    REQUIRE(buffer.GetLength() > 0);
-    REQUIRE(buffer.GetString() != nullptr);
+    REQUIRE(builder.GetSize() > 0);
+    REQUIRE(builder.GetBufferPointer() != nullptr);
 
-    // Parse JSON string
-    CppSerialization::JSON::Document json = CppSerialization::JSON::Parser::Parse(buffer.GetString());
-
-    // Deserialize the account from the JSON file stream
-    Account deserialized;
-    deserialized.DeserializeJSON(json);
+    // Deserialize the account from the FlatBuffer stream
+    auto root = MyDomain::flat::GetAccount(builder.GetBufferPointer());
+    MyDomain::Account deserialized;
+    deserialized.DeserializeFlatBuffer(*root);
 
     REQUIRE(deserialized.Id == 1);
     REQUIRE(deserialized.Name == "Test");

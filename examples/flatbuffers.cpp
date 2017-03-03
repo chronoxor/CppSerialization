@@ -1,13 +1,12 @@
 /*!
-    \file json.cpp
-    \brief JSON serialization example
+    \file flatbuffers.cpp
+    \brief FlatBuffers serialization example
     \author Ivan Shynkarenka
-    \date 24.02.2017
+    \date 03.03.2017
     \copyright MIT License
 */
 
 #include "domain/domain.h"
-#include "serialization/json/parser.h"
 
 #include <iostream>
 
@@ -19,20 +18,17 @@ int main(int argc, char** argv)
     account.AddOrder(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
     account.AddOrder(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the JSON stream
-    CppSerialization::JSON::StringBuffer buffer;
-    CppSerialization::JSON::Serializer<CppSerialization::JSON::StringBuffer> serializer(buffer);
-    account.SerializeJSON(serializer);
+    // Serialize the account to the FlatBuffer stream
+    flatbuffers::FlatBufferBuilder builder;
+    builder.Finish(account.SerializeFlatBuffer(builder));
 
-    // Show the serialized JSON
-    std::cout << "JSON: " << buffer.GetString() << std::endl;
+    // Show the serialized FlatBuffer size
+    std::cout << "FlatBuffer size: " << builder.GetSize() << std::endl;
 
-    // Parse JSON string
-    CppSerialization::JSON::Document json = CppSerialization::JSON::Parser::Parse(buffer.GetString());
-
-    // Deserialize the account from the JSON stream
+    // Deserialize the account from the FlatBuffer stream
+    auto root = MyDomain::flat::GetAccount(builder.GetBufferPointer());
     MyDomain::Account deserialized;
-    deserialized.DeserializeJSON(json);
+    deserialized.DeserializeFlatBuffer(*root);
 
     // Show account content
     std::cout << std::endl;

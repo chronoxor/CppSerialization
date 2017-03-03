@@ -51,9 +51,19 @@ struct Order
         Volume = volume;
     }
 
-    flatbuffers::Offset<flat::Order> SerializeFlatbuffer(flatbuffers::FlatBufferBuilder& serializer)
+    flatbuffers::Offset<flat::Order> SerializeFlatbuffer(flatbuffers::FlatBufferBuilder& builder)
     {
-        return flat::CreateOrderDirect(serializer, Id, Symbol, (flat::OrderSide)Side, (flat::OrderType)Type, Price, Volume);
+        return flat::CreateOrderDirect(builder, Id, Symbol, (flat::OrderSide)Side, (flat::OrderType)Type, Price, Volume);
+    }
+
+    void DeserializeFlatbuffer(const MyDomain::flat::Order& value)
+    {
+        Id = value.Id();
+        std::strncpy(Symbol, value.Symbol()->c_str(), std::min((size_t)value.Symbol()->Length() + 1, sizeof(Symbol)));
+        Side = (OrderSide)value.Side();
+        Type = (OrderType)value.Type();
+        Price = value.Price();
+        Volume = value.Volume();
     }
 
     template<typename OutputStream>
@@ -95,9 +105,15 @@ struct Balance
         Amount = amount;
     }
 
-    flatbuffers::Offset<flat::Balance> SerializeFlatbuffer(flatbuffers::FlatBufferBuilder& serializer)
+    flatbuffers::Offset<flat::Balance> SerializeFlatBuffer(flatbuffers::FlatBufferBuilder& builder)
     {
-        return flat::CreateBalanceDirect(serializer, Currency, Amount);
+        return flat::CreateBalanceDirect(builder, Currency, Amount);
+    }
+
+    void DeserializeFlatBuffer(const MyDomain::flat::Balance& value)
+    {
+        std::strncpy(Currency, value.Currency()->c_str(), std::min((size_t)value.Currency()->Length() + 1, sizeof(Currency)));
+        Amount = value.Amount();
     }
 
     template<typename OutputStream>
@@ -133,13 +149,29 @@ struct Account
         Name = name;
     }
 
-    flatbuffers::Offset<flat::Account> SerializeFlatbuffer(flatbuffers::FlatBufferBuilder& serializer)
+    flatbuffers::Offset<flat::Account> SerializeFlatBuffer(flatbuffers::FlatBufferBuilder& builder)
     {
-        auto wallet = Wallet.SerializeFlatbuffer(serializer);
+        auto wallet = Wallet.SerializeFlatBuffer(builder);
         std::vector<flatbuffers::Offset<flat::Order>> orders;
-        for (auto& order : Orders)
-            orders.emplace_back(order.second.SerializeFlatbuffer(serializer));
-        return flat::CreateAccountDirect(serializer, Id, Name.c_str(), wallet, &orders);
+        for (auto order : Orders)
+            orders.emplace_back(order.second.SerializeFlatbuffer(builder));
+        return flat::CreateAccountDirect(builder, Id, Name.c_str(), wallet, &orders);
+    }
+
+    void DeserializeFlatBuffer(const MyDomain::flat::Account& value)
+    {
+        Id = value.Id();
+        Name = value.Name()->str();
+        Wallet.DeserializeFlatBuffer(*value.Wallet());
+        if (value.Orders() != nullptr)
+        {
+            for (auto item : *value.Orders())
+            {
+                Order order;
+                order.DeserializeFlatbuffer(*item);
+                AddOrder(order);
+            }
+        }
     }
 
     template<typename OutputStream>
@@ -152,7 +184,7 @@ struct Account
         Wallet.SerializeJSON(serializer);
         serializer.Key("orders");
         serializer.StartArray();
-        for (auto& order : Orders)
+        for (auto order : Orders)
             order.second.SerializeJSON(serializer);
         serializer.EndArray();
         serializer.EndObject();
