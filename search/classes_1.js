@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['balance',['Balance',['../struct_my_domain_1_1_balance.html',1,'MyDomain']]],
-  ['balancebuilder',['BalanceBuilder',['../struct_my_domain_1_1flat_1_1_balance_builder.html',1,'MyDomain::flat']]]
+  ['parser',['Parser',['../class_cpp_serialization_1_1_j_s_o_n_1_1_parser.html',1,'CppSerialization::JSON']]]
 ];

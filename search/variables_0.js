@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['amount',['Amount',['../struct_my_domain_1_1_balance.html#ad4ee14cbe2f7a08c41a590e2895c7972',1,'MyDomain::Balance']]]
+  ['version',['version',['../namespace_cpp_serialization.html#abc3d6af18e6a0cfd26bccf986376aac6',1,'CppSerialization']]]
 ];
