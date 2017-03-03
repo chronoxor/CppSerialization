@@ -39,7 +39,7 @@ list(APPEND LINKLIBS cppcommon)
 file(GLOB_RECURSE SOURCE_FILES "source/*.cpp")
 set_source_files_properties(${SOURCE_FILES} PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS}")
 add_library(cppserialization ${SOURCE_FILES})
-target_include_directories(cppserialization PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/modules/rapidjson/include")
+target_include_directories(cppserialization PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/modules/flatbuffers/include" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/modules/rapidjson/include")
 target_link_libraries(cppserialization ${LINKLIBS})
 set_target_properties(cppserialization PROPERTIES FOLDER libraries)
 list(APPEND INSTALL_TARGETS cppserialization)
@@ -49,10 +49,12 @@ list(APPEND LINKLIBS cppserialization)
 if(NOT CPPSERIALIZATION_MODULE)
 
   # Domain models
-  file(GLOB FLATBUFFER_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/include/domain" "domain/include/*.fbs")
+  file(GLOB FLATBUFFER_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/include/domain" "include/domain/*.fbs")
   foreach(FLATBUFFER_FILE ${FLATBUFFER_FILES})
     string(REGEX REPLACE "(.*)\\.cpp" "\\1_generated.h" FLATBUFFER_HEADER ${FLATBUFFER_FILE})
-    add_custom_command(OUTPUT ${FLATBUFFER_HEADER} POST_BUILD COMMAND $<TARGET_FILE:flatc> --cpp --scoped-enums -o "${CMAKE_CURRENT_SOURCE_DIR}/include/domain" "${CMAKE_CURRENT_SOURCE_DIR}/include/domain/${FLATBUFFER_FILE}" DEPENDS flatc)
+    set(FLATBUFFER_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/include/domain")
+    set(FLATBUFFER_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/include/domain/${FLATBUFFER_FILE}")
+    add_custom_command(OUTPUT ${FLATBUFFER_HEADER} COMMAND $<TARGET_FILE:flatc> --cpp --scoped-enums -o ${FLATBUFFER_OUTPUT} ${FLATBUFFER_INPUT} DEPENDS flatc)
   endforeach()
 
   # Examples

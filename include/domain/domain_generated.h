@@ -7,7 +7,7 @@
 #include "flatbuffers/flatbuffers.h"
 
 namespace MyDomain {
-namespace FlatBuffers {
+namespace flat {
 
 struct Order;
 
@@ -158,7 +158,7 @@ inline flatbuffers::Offset<Order> CreateOrderDirect(
     OrderType Type = OrderType::MARKET,
     double Price = 0.0,
     double Volume = 0.0) {
-  return MyDomain::FlatBuffers::CreateOrder(
+  return MyDomain::flat::CreateOrder(
       _fbb,
       Id,
       Symbol ? _fbb.CreateString(Symbol) : 0,
@@ -223,7 +223,7 @@ inline flatbuffers::Offset<Balance> CreateBalanceDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *Currency = nullptr,
     double Amount = 0.0) {
-  return MyDomain::FlatBuffers::CreateBalance(
+  return MyDomain::flat::CreateBalance(
       _fbb,
       Currency ? _fbb.CreateString(Currency) : 0,
       Amount);
@@ -309,7 +309,7 @@ inline flatbuffers::Offset<Account> CreateAccountDirect(
     const char *Name = nullptr,
     flatbuffers::Offset<Balance> Wallet = 0,
     const std::vector<flatbuffers::Offset<Order>> *Orders = nullptr) {
-  return MyDomain::FlatBuffers::CreateAccount(
+  return MyDomain::flat::CreateAccount(
       _fbb,
       Id,
       Name ? _fbb.CreateString(Name) : 0,
@@ -317,18 +317,18 @@ inline flatbuffers::Offset<Account> CreateAccountDirect(
       Orders ? _fbb.CreateVector<flatbuffers::Offset<Order>>(*Orders) : 0);
 }
 
-inline const MyDomain::FlatBuffers::Account *GetAccount(const void *buf) {
-  return flatbuffers::GetRoot<MyDomain::FlatBuffers::Account>(buf);
+inline const MyDomain::flat::Account *GetAccount(const void *buf) {
+  return flatbuffers::GetRoot<MyDomain::flat::Account>(buf);
 }
 
 inline bool VerifyAccountBuffer(
     flatbuffers::Verifier &verifier) {
-  return verifier.VerifyBuffer<MyDomain::FlatBuffers::Account>(nullptr);
+  return verifier.VerifyBuffer<MyDomain::flat::Account>(nullptr);
 }
 
 inline void FinishAccountBuffer(
     flatbuffers::FlatBufferBuilder &fbb,
-    flatbuffers::Offset<MyDomain::FlatBuffers::Account> root) {
+    flatbuffers::Offset<MyDomain::flat::Account> root) {
   fbb.Finish(root);
 }
 

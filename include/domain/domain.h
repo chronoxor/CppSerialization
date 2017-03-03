@@ -6,6 +6,8 @@
     \copyright MIT License
 */
 
+#include "domain_generated.h"
+
 #include "serialization/json/serializer.h"
 #include "serialization/json/deserializer.h"
 
@@ -49,6 +51,11 @@ struct Order
         Volume = volume;
     }
 
+    flatbuffers::Offset<flat::Order> SerializeFlatbuffer(flatbuffers::FlatBufferBuilder& serializer)
+    {
+        return flat::CreateOrderDirect(serializer, Id, Symbol, (flat::OrderSide)Side, (flat::OrderType)Type, Price, Volume);
+    }
+
     template<typename OutputStream>
     void SerializeJSON(CppSerialization::JSON::Serializer<OutputStream>& serializer)
     {
@@ -88,6 +95,11 @@ struct Balance
         Amount = amount;
     }
 
+    flatbuffers::Offset<flat::Balance> SerializeFlatbuffer(flatbuffers::FlatBufferBuilder& serializer)
+    {
+        return flat::CreateBalanceDirect(serializer, Currency, Amount);
+    }
+
     template<typename OutputStream>
     void SerializeJSON(CppSerialization::JSON::Serializer<OutputStream>& serializer)
     {
@@ -119,6 +131,15 @@ struct Account
     {
         Id = id;
         Name = name;
+    }
+
+    flatbuffers::Offset<flat::Account> SerializeFlatbuffer(flatbuffers::FlatBufferBuilder& serializer)
+    {
+        auto wallet = Wallet.SerializeFlatbuffer(serializer);
+        std::vector<flatbuffers::Offset<flat::Order>> orders;
+        for (auto& order : Orders)
+            orders.emplace_back(order.second.SerializeFlatbuffer(serializer));
+        return flat::CreateAccountDirect(serializer, Id, Name.c_str(), wallet, &orders);
     }
 
     template<typename OutputStream>
