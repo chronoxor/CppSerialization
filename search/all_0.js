@@ -1,7 +1,9 @@
 var searchData=
 [
-  ['account',['Account',['../struct_my_domain_1_1_account.html',1,'MyDomain::Account'],['../struct_my_domain_1_1_account.html#aec93cf9c9a3c4a546a12256645693123',1,'MyDomain::Account::Account()'],['../struct_my_domain_1_1_account.html#a541cd6e7ebc1585a0c8aa25e25fc9283',1,'MyDomain::Account::Account(int id, const char *name, const char *currency, double amount)']]],
-  ['accountbuilder',['AccountBuilder',['../struct_my_domain_1_1flat_1_1_account_builder.html',1,'MyDomain::flat::AccountBuilder'],['../struct_my_domain_1_1flat_1_1_account_builder.html#a495a4c3187c4458d1a2b63760277da4f',1,'MyDomain::flat::AccountBuilder::AccountBuilder()']]],
+  ['account',['Account',['../struct_my_domain_1_1_account.html',1,'MyDomain']]],
+  ['account',['Account',['../struct_my_domain_1_1_account.html#aec93cf9c9a3c4a546a12256645693123',1,'MyDomain::Account::Account()'],['../struct_my_domain_1_1_account.html#a541cd6e7ebc1585a0c8aa25e25fc9283',1,'MyDomain::Account::Account(int id, const char *name, const char *currency, double amount)']]],
+  ['accountbuilder',['AccountBuilder',['../struct_my_domain_1_1flat_1_1_account_builder.html',1,'MyDomain::flat']]],
+  ['accountbuilder',['AccountBuilder',['../struct_my_domain_1_1flat_1_1_account_builder.html#a495a4c3187c4458d1a2b63760277da4f',1,'MyDomain::flat::AccountBuilder']]],
   ['add_5famount',['add_Amount',['../struct_my_domain_1_1flat_1_1_balance_builder.html#ae1cb0090222a1174e05c205a23ee24d5',1,'MyDomain::flat::BalanceBuilder']]],
   ['add_5fcurrency',['add_Currency',['../struct_my_domain_1_1flat_1_1_balance_builder.html#ae2beaaf7ee033b8a7dd52cc543d15f7c',1,'MyDomain::flat::BalanceBuilder']]],
   ['add_5fid',['add_Id',['../struct_my_domain_1_1flat_1_1_order_builder.html#ab6a08d1b08160d0c93e64b8dfcc34af5',1,'MyDomain::flat::OrderBuilder::add_Id()'],['../struct_my_domain_1_1flat_1_1_account_builder.html#ac2966bcf1390cf3599288b3bdd0e5be5',1,'MyDomain::flat::AccountBuilder::add_Id()']]],
@@ -14,5 +16,5 @@ var searchData=
   ['add_5fvolume',['add_Volume',['../struct_my_domain_1_1flat_1_1_order_builder.html#a57baaa712a8579d84d90c6401e83d1f2',1,'MyDomain::flat::OrderBuilder']]],
   ['add_5fwallet',['add_Wallet',['../struct_my_domain_1_1flat_1_1_account_builder.html#a454904b3d9e2ac5ad158ecdbf89c5342',1,'MyDomain::flat::AccountBuilder']]],
   ['addorder',['AddOrder',['../struct_my_domain_1_1_account.html#aad8f3489c6e2c2277426933b8dfd7d14',1,'MyDomain::Account']]],
-  ['amount',['Amount',['../struct_my_domain_1_1_balance.html#ad4ee14cbe2f7a08c41a590e2895c7972',1,'MyDomain::Balance::Amount()'],['../struct_my_domain_1_1flat_1_1_f_l_a_t_b_u_f_f_e_r_s___f_i_n_a_l___c_l_a_s_s.html#a73e556a36e5d32e321b944554ce3cecc',1,'MyDomain::flat::FLATBUFFERS_FINAL_CLASS::Amount()']]]
+  ['amount',['Amount',['../struct_my_domain_1_1_balance.html#ad4ee14cbe2f7a08c41a590e2895c7972',1,'MyDomain::Balance::Amount()'],['../struct_my_domain_1_1flat_1_1_f_l_a_t_b_u_f_f_e_r_s___f_i_n_a_l___c_l_a_s_s.html#a2ddcbcb7ce14447777c66a682dc929ce',1,'MyDomain::flat::FLATBUFFERS_FINAL_CLASS::Amount()']]]
 ];

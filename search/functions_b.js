@@ -5,5 +5,5 @@ var searchData=
   ['parseinplace',['ParseInPlace',['../class_cpp_serialization_1_1_j_s_o_n_1_1_parser.html#a0077788d1137b2392f5e8ba4666a08b3',1,'CppSerialization::JSON::Parser']]],
   ['parser',['Parser',['../class_cpp_serialization_1_1_j_s_o_n_1_1_parser.html#a7706777f710724858bc9b0ca81f1ec53',1,'CppSerialization::JSON::Parser::Parser()=delete'],['../class_cpp_serialization_1_1_j_s_o_n_1_1_parser.html#a998371db13de0e7bcc9fc04a50576d2c',1,'CppSerialization::JSON::Parser::Parser(const Parser &amp;)=delete'],['../class_cpp_serialization_1_1_j_s_o_n_1_1_parser.html#a9245067574b7d86dd55d497cab68f4d1',1,'CppSerialization::JSON::Parser::Parser(Parser &amp;&amp;)=delete']]],
   ['parsestream',['ParseStream',['../class_cpp_serialization_1_1_j_s_o_n_1_1_parser.html#aa6029a4734fc20d5721b9df6b50a133d',1,'CppSerialization::JSON::Parser']]],
-  ['price',['Price',['../struct_my_domain_1_1flat_1_1_f_l_a_t_b_u_f_f_e_r_s___f_i_n_a_l___c_l_a_s_s.html#a10fa1d6bba35639847be1def6ce68211',1,'MyDomain::flat::FLATBUFFERS_FINAL_CLASS']]]
+  ['price',['Price',['../struct_my_domain_1_1flat_1_1_f_l_a_t_b_u_f_f_e_r_s___f_i_n_a_l___c_l_a_s_s.html#a2cafe380cf26836bc43e5e1fba8933ce',1,'MyDomain::flat::FLATBUFFERS_FINAL_CLASS']]]
 ];
