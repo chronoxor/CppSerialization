@@ -29,6 +29,10 @@ objects in/from different formats such as Flatbuffers, JSON.
     * [FlatBuffers serialization methods](#flatbuffers-serialization-methods)
     * [FlatBuffers example](#flatbuffers-example)
     * [FlatBuffers performance](#flatbuffers-performance)
+  * [JSON serialization](#json-serialization)
+    * [JSON serialization methods](#json-serialization-methods)
+    * [JSON example](#json-example)
+    * [JSON performance](#json-performance)
 
 # Features
 * Cross platform (Linux, OSX, Windows)
@@ -461,5 +465,301 @@ Maximal time: 399 ns / iteration
 Total time: 397.788 ms
 Total iterations: 1000000
 Iterations throughput: 2513901 / second
+===============================================================================
+```
+
+# JSON serialization
+JSON serialization is based on [RapidJSON library](http://rapidjson.org).
+
+## JSON serialization methods
+Finally you should extend your domain model with a JSON serialization
+methods:
+
+```C++
+#include "serialization/json/serializer.h"
+#include "serialization/json/deserializer.h"
+
+namespace MyDomain {
+
+struct Order
+{
+    ...
+
+    // JSON serialization
+
+    template<typename OutputStream>
+    void SerializeJSON(CppSerialization::JSON::Serializer<OutputStream>& serializer)
+    {
+        serializer.StartObject();
+        serializer.Pair("id", Id);
+        serializer.Pair("symbol", Symbol);
+        serializer.Pair("side", (int)Side);
+        serializer.Pair("type", (int)Type);
+        serializer.Pair("price", Price);
+        serializer.Pair("volume", Volume);
+        serializer.EndObject();
+    }
+
+    template<typename JSON>
+    void DeserializeJSON(const JSON& json)
+    {
+        using namespace CppSerialization::JSON;
+
+        Deserializer::Find(json, "id", Id);
+        Deserializer::Find(json, "symbol", Symbol);
+        int side = 0; Deserializer::Find(json, "side", side); Side = (OrderSide)side;
+        int type = 0; Deserializer::Find(json, "type", type); Type = (OrderType)type;
+        Deserializer::Find(json, "price", Price);
+        Deserializer::Find(json, "volume", Volume);
+    }
+
+    ...
+};
+
+struct Balance
+{
+    ...
+
+    // JSON serialization
+
+    template<typename OutputStream>
+    void SerializeJSON(CppSerialization::JSON::Serializer<OutputStream>& serializer)
+    {
+        serializer.StartObject();
+        serializer.Pair("currency", Currency);
+        serializer.Pair("amount", Amount);
+        serializer.EndObject();
+    }
+
+    template<typename JSON>
+    void DeserializeJSON(const JSON& json)
+    {
+        using namespace CppSerialization::JSON;
+
+        Deserializer::Find(json, "currency", Currency);
+        Deserializer::Find(json, "amount", Amount);
+    }
+
+    ...
+};
+
+struct Account
+{
+    ...
+
+    // JSON serialization
+
+    template<typename OutputStream>
+    void SerializeJSON(CppSerialization::JSON::Serializer<OutputStream>& serializer)
+    {
+        serializer.StartObject();
+        serializer.Pair("id", Id);
+        serializer.Pair("name", Name);
+        serializer.Key("wallet");
+        Wallet.SerializeJSON(serializer);
+        serializer.Key("orders");
+        serializer.StartArray();
+        for (auto order : Orders)
+            order.second.SerializeJSON(serializer);
+        serializer.EndArray();
+        serializer.EndObject();
+    }
+
+    template<typename JSON>
+    void DeserializeJSON(const JSON& json)
+    {
+        using namespace CppSerialization::JSON;
+
+        Deserializer::Find(json, "id", Id);
+        Deserializer::Find(json, "name", Name);
+        Deserializer::FindObject(json, "wallet", [this](const Value::ConstObject& object)
+        {
+            Wallet.DeserializeJSON(object);
+        });
+        Deserializer::FindArray(json, "orders", [this](const Value& item)
+        {
+            Order order;
+            order.DeserializeJSON(item);
+            AddOrder(order);
+        });
+    }
+
+    ...
+};
+
+} // namespace MyDomain
+```
+
+## JSON example
+Here comes the usage example of JSON serialize/deserialize functionality:
+
+```C++
+#include "../domain/domain.h"
+
+#include "serialization/json/parser.h"
+
+#include <iostream>
+
+int main(int argc, char** argv)
+{
+    // Create a new account with some orders
+    MyDomain::Account account(1, "Test", "USD", 1000);
+    account.AddOrder(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
+    account.AddOrder(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
+    account.AddOrder(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
+
+    // Serialize the account to the JSON stream
+    CppSerialization::JSON::StringBuffer buffer;
+    CppSerialization::JSON::Serializer<CppSerialization::JSON::StringBuffer> serializer(buffer);
+    account.SerializeJSON(serializer);
+
+    // Show the serialized JSON
+    std::cout << "JSON: " << buffer.GetString() << std::endl;
+
+    // Parse JSON string
+    CppSerialization::JSON::Document json = CppSerialization::JSON::Parser::Parse(buffer.GetString());
+
+    // Deserialize the account from the JSON stream
+    MyDomain::Account deserialized;
+    deserialized.DeserializeJSON(json);
+
+    // Show account content
+    std::cout << std::endl;
+    std::cout << "Account.Id = " << deserialized.Id << std::endl;
+    std::cout << "Account.Name = " << deserialized.Name << std::endl;
+    std::cout << "Account.Wallet.Currency = " << deserialized.Wallet.Currency << std::endl;
+    std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
+    for (auto& order : deserialized.Orders)
+    {
+        std::cout << "Account.Order => Id: " << order.second.Id
+            << ", Symbol: " << order.second.Symbol
+            << ", Side: " << (int)order.second.Side
+            << ", Type: " << (int)order.second.Type
+            << ", Price: " << order.second.Price
+            << ", Volume: " << order.second.Volume
+            << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output of the example is the following:
+```
+JSON: {"id":1,"name":"Test","wallet":{"currency":"USD","amount":1000.0},"orders":[{"id":1,"symbol":"EURUSD","side":0,"type":0,"price":1.23456,"volume":1000.0},{"id":2,"symbol":"EURUSD","side":1,"type":1,"price":1.0,"volume":100.0},{"id":3,"symbol":"EURUSD","side":0,"type":2,"price":1.5,"volume":10.0}]}
+
+Account.Id = 1
+Account.Name = Test
+Account.Wallet.Currency = USD
+Account.Wallet.Amount = 1000
+Account.Order => Id: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
+Account.Order => Id: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
+Account.Order => Id: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
+```
+
+## JSON performance
+JSON serialization performance of the provided domain model is the following:
+```
+===============================================================================
+CppBenchmark report. Version 1.0.0.0
+===============================================================================
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+CPU logical cores: 8
+CPU physical cores: 4
+CPU clock speed: 4.008 GHz
+CPU Hyper-Threading: enabled
+RAM total: 31.903 GiB
+RAM free: 17.049 GiB
+===============================================================================
+OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS bits: 64-bit
+Process bits: 64-bit
+Process configuaraion: release
+Local timestamp: Fri Mar  3 17:42:32 2017
+UTC timestamp: Fri Mar  3 14:42:32 2017
+===============================================================================
+Benchmark: JSON-Serialize
+Attempts: 5
+Iterations: 1000000
+-------------------------------------------------------------------------------
+Phase: JSON-Serialize
+Average time: 1.051 mcs / iteration
+Minimal time: 1.051 mcs / iteration
+Maximal time: 1.057 mcs / iteration
+Total time: 1.051 s
+Total iterations: 1000000
+Total bytes: 283.247 MiB
+Iterations throughput: 950673 / second
+Bytes throughput: 269.276 MiB / second
+===============================================================================
+```
+
+JSON document parsing performance of the provided domain model is the following:
+```
+===============================================================================
+CppBenchmark report. Version 1.0.0.0
+===============================================================================
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+CPU logical cores: 8
+CPU physical cores: 4
+CPU clock speed: 4.008 GHz
+CPU Hyper-Threading: enabled
+RAM total: 31.903 GiB
+RAM free: 17.050 GiB
+===============================================================================
+OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS bits: 64-bit
+Process bits: 64-bit
+Process configuaraion: release
+Local timestamp: Fri Mar  3 17:42:56 2017
+UTC timestamp: Fri Mar  3 14:42:56 2017
+===============================================================================
+Benchmark: JSON-Parse
+Attempts: 5
+Iterations: 1000000
+-------------------------------------------------------------------------------
+Phase: JSON-Parse
+Average time: 2.609 mcs / iteration
+Minimal time: 2.609 mcs / iteration
+Maximal time: 2.624 mcs / iteration
+Total time: 2.609 s
+Total iterations: 1000000
+Total bytes: 283.247 MiB
+Iterations throughput: 383266 / second
+Bytes throughput: 108.570 MiB / second
+===============================================================================
+```
+
+JSON deserialization performance of the provided domain model is the following:
+```
+===============================================================================
+CppBenchmark report. Version 1.0.0.0
+===============================================================================
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+CPU logical cores: 8
+CPU physical cores: 4
+CPU clock speed: 4.008 GHz
+CPU Hyper-Threading: enabled
+RAM total: 31.903 GiB
+RAM free: 16.953 GiB
+===============================================================================
+OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS bits: 64-bit
+Process bits: 64-bit
+Process configuaraion: release
+Local timestamp: Fri Mar  3 17:43:11 2017
+UTC timestamp: Fri Mar  3 14:43:11 2017
+===============================================================================
+Benchmark: JSON-Deserialize
+Attempts: 5
+Iterations: 1000000
+-------------------------------------------------------------------------------
+Phase: JSON-Deserialize
+Average time: 709 ns / iteration
+Minimal time: 709 ns / iteration
+Maximal time: 747 ns / iteration
+Total time: 709.339 ms
+Total iterations: 1000000
+Iterations throughput: 1409762 / second
 ===============================================================================
 ```
