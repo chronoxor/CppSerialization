@@ -14,5 +14,5 @@ var searchData=
   ['add_5fvolume',['add_Volume',['../struct_my_domain_1_1flat_1_1_order_builder.html#a57baaa712a8579d84d90c6401e83d1f2',1,'MyDomain::flat::OrderBuilder']]],
   ['add_5fwallet',['add_Wallet',['../struct_my_domain_1_1flat_1_1_account_builder.html#a454904b3d9e2ac5ad158ecdbf89c5342',1,'MyDomain::flat::AccountBuilder']]],
   ['addorder',['AddOrder',['../struct_my_domain_1_1_account.html#aad8f3489c6e2c2277426933b8dfd7d14',1,'MyDomain::Account']]],
-  ['amount',['Amount',['../struct_my_domain_1_1flat_1_1_f_l_a_t_b_u_f_f_e_r_s___f_i_n_a_l___c_l_a_s_s.html#a2ddcbcb7ce14447777c66a682dc929ce',1,'MyDomain::flat::FLATBUFFERS_FINAL_CLASS']]]
+  ['amount',['Amount',['../struct_my_domain_1_1flat_1_1_f_l_a_t_b_u_f_f_e_r_s___f_i_n_a_l___c_l_a_s_s.html#a73e556a36e5d32e321b944554ce3cecc',1,'MyDomain::flat::FLATBUFFERS_FINAL_CLASS']]]
 ];
