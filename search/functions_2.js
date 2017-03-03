@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['createaccount',['CreateAccount',['../namespace_my_domain_1_1_flat_buffers.html#a3fcafce3d623ebb94076619a88941155',1,'MyDomain::FlatBuffers']]],
-  ['createaccountdirect',['CreateAccountDirect',['../namespace_my_domain_1_1_flat_buffers.html#aa14bc8d083d485b6affd930c3e2be2c6',1,'MyDomain::FlatBuffers']]],
-  ['createbalance',['CreateBalance',['../namespace_my_domain_1_1_flat_buffers.html#a86e3c67e9b3fb58f4a17871508be6782',1,'MyDomain::FlatBuffers']]],
-  ['createbalancedirect',['CreateBalanceDirect',['../namespace_my_domain_1_1_flat_buffers.html#a4a64d35e3ee65ca45c8e577383f07860',1,'MyDomain::FlatBuffers']]],
-  ['createorder',['CreateOrder',['../namespace_my_domain_1_1_flat_buffers.html#a84bc53b4e36da2394f411239d643f20e',1,'MyDomain::FlatBuffers']]],
-  ['createorderdirect',['CreateOrderDirect',['../namespace_my_domain_1_1_flat_buffers.html#a669b2e13af72cda8444e43e6248d6c1e',1,'MyDomain::FlatBuffers']]],
-  ['currency',['Currency',['../struct_my_domain_1_1_flat_buffers_1_1_f_l_a_t_b_u_f_f_e_r_s___f_i_n_a_l___c_l_a_s_s.html#aacd3af5f685b2d4378ab41f4b2e676db',1,'MyDomain::FlatBuffers::FLATBUFFERS_FINAL_CLASS']]]
+  ['createaccount',['CreateAccount',['../namespace_my_domain_1_1flat.html#afd13bb430097ed6586eddd5b61d66e78',1,'MyDomain::flat']]],
+  ['createaccountdirect',['CreateAccountDirect',['../namespace_my_domain_1_1flat.html#aa6d7335f76b113abc280a8b0fa9eafb6',1,'MyDomain::flat']]],
+  ['createbalance',['CreateBalance',['../namespace_my_domain_1_1flat.html#af2edbfaae00d08a1ba0ccb8d7824ff5f',1,'MyDomain::flat']]],
+  ['createbalancedirect',['CreateBalanceDirect',['../namespace_my_domain_1_1flat.html#ab2b6f557a69ef71f0ea91f124c5f2cb2',1,'MyDomain::flat']]],
+  ['createorder',['CreateOrder',['../namespace_my_domain_1_1flat.html#a1c806a17522f1dd1855667db6420b2db',1,'MyDomain::flat']]],
+  ['createorderdirect',['CreateOrderDirect',['../namespace_my_domain_1_1flat.html#a238cb35efdf2d84dce2fbf9478256538',1,'MyDomain::flat']]],
+  ['currency',['Currency',['../struct_my_domain_1_1flat_1_1_f_l_a_t_b_u_f_f_e_r_s___f_i_n_a_l___c_l_a_s_s.html#a99dcd8a84942722644cc14d5aa349f31',1,'MyDomain::flat::FLATBUFFERS_FINAL_CLASS']]]
 ];

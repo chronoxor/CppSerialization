@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['fbb_5f',['fbb_',['../struct_my_domain_1_1_flat_buffers_1_1_order_builder.html#a02d5448f146044dc8364f6b6945f7044',1,'MyDomain::FlatBuffers::OrderBuilder::fbb_()'],['../struct_my_domain_1_1_flat_buffers_1_1_balance_builder.html#ae7413959c75b3a3d8a047e485e374424',1,'MyDomain::FlatBuffers::BalanceBuilder::fbb_()'],['../struct_my_domain_1_1_flat_buffers_1_1_account_builder.html#acd6b965941b0ef1a422642e60d376eaf',1,'MyDomain::FlatBuffers::AccountBuilder::fbb_()']]]
+  ['fbb_5f',['fbb_',['../struct_my_domain_1_1flat_1_1_order_builder.html#a890df64477c8bb50632954151e0272fe',1,'MyDomain::flat::OrderBuilder::fbb_()'],['../struct_my_domain_1_1flat_1_1_balance_builder.html#a4c8e1fe62021d0d86cbac8cd81cd8580',1,'MyDomain::flat::BalanceBuilder::fbb_()'],['../struct_my_domain_1_1flat_1_1_account_builder.html#a7bbfdda09e7ca313b4ba79e6a90d3e4b',1,'MyDomain::flat::AccountBuilder::fbb_()']]]
 ];
