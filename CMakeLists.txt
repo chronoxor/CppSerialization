@@ -54,7 +54,7 @@ if(NOT CPPSERIALIZATION_MODULE)
     string(REGEX REPLACE "(.*)\\.cpp" "\\1_generated.h" FLATBUFFER_HEADER ${FLATBUFFER_FILE})
     set(FLATBUFFER_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/domain")
     set(FLATBUFFER_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/domain/${FLATBUFFER_FILE}")
-    add_custom_command(OUTPUT ${FLATBUFFER_HEADER} COMMAND $<TARGET_FILE:flatc> --cpp --scoped-enums -o ${FLATBUFFER_OUTPUT} ${FLATBUFFER_INPUT} DEPENDS flatc)
+    add_custom_command(TARGET cppserialization POST_BUILD COMMAND $<TARGET_FILE:flatc> --cpp --scoped-enums -o ${FLATBUFFER_OUTPUT} ${FLATBUFFER_INPUT})
   endforeach()
 
   # Examples
