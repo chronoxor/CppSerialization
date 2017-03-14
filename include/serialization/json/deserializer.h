@@ -62,14 +62,14 @@ public:
 
     //! Try to get the array key/value pair
     template<typename JSON>
-    static bool FindArray(const JSON& json, const char* key, std::function<void(const Value&)> handler);
+    static bool FindArray(const JSON& json, const char* key, const std::function<void(const Value&)>& handler);
     //! Try to get the array key/value pair with array initialize handler
     template<typename JSON>
-    static bool FindArray(const JSON& json, const char* key, std::function<void(size_t)> initialize, std::function<void(const Value&)> handler);
+    static bool FindArray(const JSON& json, const char* key, const std::function<void(size_t)>& initialize, const std::function<void(const Value&)>& handler);
 
     //! Try to get the object key/value pair
     template<typename JSON>
-    static bool FindObject(const JSON& json, const char* key, std::function<void(const Value::ConstObject&)> handler);
+    static bool FindObject(const JSON& json, const char* key, const std::function<void(const Value::ConstObject&)>& handler);
 };
 
 } // namespace JSON

@@ -171,14 +171,14 @@ inline bool Deserializer::Find(const JSON& json, const char* key, char (&value)[
 }
 
 template<typename JSON>
-inline bool Deserializer::FindArray(const JSON& json, const char* key, std::function<void(const Value&)> handler)
+inline bool Deserializer::FindArray(const JSON& json, const char* key, const std::function<void(const Value&)>& handler)
 {
     return FindArray(json, key, [](size_t){}, handler);
 }
 
 
 template<typename JSON>
-inline bool Deserializer::FindArray(const JSON& json, const char* key, std::function<void(size_t)> initialize, std::function<void(const Value&)> handler)
+inline bool Deserializer::FindArray(const JSON& json, const char* key, const std::function<void(size_t)>& initialize, const std::function<void(const Value&)>& handler)
 {
     // Try to find a member with the given key
     Value::ConstMemberIterator member = json.FindMember(key);
@@ -197,7 +197,7 @@ inline bool Deserializer::FindArray(const JSON& json, const char* key, std::func
 }
 
 template<typename JSON>
-inline bool Deserializer::FindObject(const JSON& json, const char* key, std::function<void(const Value::ConstObject&)> handler)
+inline bool Deserializer::FindObject(const JSON& json, const char* key, const std::function<void(const Value::ConstObject&)>& handler)
 {
     // Try to find a member with the given key
     Value::ConstMemberIterator member = json.FindMember(key);
