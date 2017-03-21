@@ -95,7 +95,7 @@ if(NOT CPPSERIALIZATION_MODULE)
 
   # CTest
   enable_testing()
-  add_test(cppserialization-tests cppserialization-tests)
+  add_test(cppserialization-tests cppserialization-tests --durations yes --order lex)
 
   # Install
   install(TARGETS ${INSTALL_TARGETS}
