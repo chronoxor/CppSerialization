@@ -24,7 +24,7 @@ class Serializer : public Writer<OutputStream>
 {
 public:
     Serializer() = default;
-    Serializer(OutputStream& stream) : Writer<OutputStream>(stream) {}
+    explicit Serializer(OutputStream& stream) : Writer<OutputStream>(stream) {}
     Serializer(const Serializer&) = delete;
     Serializer(Serializer&&) = default;
     ~Serializer() = default;
