@@ -23,7 +23,7 @@ GitHub: https://github.com/chronoxor/CppSerialization
 
 /*!
     \namespace CppSerialization
-    \brief C++ serialization project definitions
+    \brief C++ Serialization project definitions
 */
 namespace CppSerialization {
 
