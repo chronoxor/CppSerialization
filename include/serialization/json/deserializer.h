@@ -26,11 +26,11 @@ class Deserializer
 public:
     Deserializer() = delete;
     Deserializer(const Deserializer&) = delete;
-    Deserializer(Deserializer&&) = delete;
+    Deserializer(Deserializer&&) noexcept = delete;
     ~Deserializer() = delete;
 
     Deserializer& operator=(const Deserializer&) = delete;
-    Deserializer& operator=(Deserializer&&) = delete;
+    Deserializer& operator=(Deserializer&&) noexcept = delete;
 
     //! Try to get the boolean key/value pair
     template<typename JSON>
