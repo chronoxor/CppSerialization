@@ -22,6 +22,14 @@ enum class OrderSide : int8_t {
   MAX = SELL
 };
 
+inline OrderSide (&EnumValuesOrderSide())[2] {
+  static OrderSide values[] = {
+    OrderSide::BUY,
+    OrderSide::SELL
+  };
+  return values;
+}
+
 inline const char **EnumNamesOrderSide() {
   static const char *names[] = {
     "BUY",
@@ -43,6 +51,15 @@ enum class OrderType : int8_t {
   MIN = MARKET,
   MAX = STOP
 };
+
+inline OrderType (&EnumValuesOrderType())[3] {
+  static OrderType values[] = {
+    OrderType::MARKET,
+    OrderType::LIMIT,
+    OrderType::STOP
+  };
+  return values;
+}
 
 inline const char **EnumNamesOrderType() {
   static const char *names[] = {
@@ -89,7 +106,7 @@ struct Order FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<int32_t>(verifier, VT_ID) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_SYMBOL) &&
+           VerifyOffset(verifier, VT_SYMBOL) &&
            verifier.Verify(Symbol()) &&
            VerifyField<int8_t>(verifier, VT_SIDE) &&
            VerifyField<int8_t>(verifier, VT_TYPE) &&
@@ -181,7 +198,7 @@ struct Balance FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_CURRENCY) &&
+           VerifyOffset(verifier, VT_CURRENCY) &&
            verifier.Verify(Currency()) &&
            VerifyField<double>(verifier, VT_AMOUNT) &&
            verifier.EndTable();
@@ -251,11 +268,11 @@ struct Account FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<int32_t>(verifier, VT_ID) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
+           VerifyOffset(verifier, VT_NAME) &&
            verifier.Verify(Name()) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_WALLET) &&
+           VerifyOffset(verifier, VT_WALLET) &&
            verifier.VerifyTable(Wallet()) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_ORDERS) &&
+           VerifyOffset(verifier, VT_ORDERS) &&
            verifier.Verify(Orders()) &&
            verifier.VerifyVectorOfTables(Orders()) &&
            verifier.EndTable();
