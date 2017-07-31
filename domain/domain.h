@@ -6,6 +6,9 @@
     \copyright MIT License
 */
 
+#ifndef CPPSERIALIZATION_DOMAIN_DOMAIN_H
+#define CPPSERIALIZATION_DOMAIN_DOMAIN_H
+
 #include "domain_generated.h"
 
 #include "serialization/json/serializer.h"
@@ -225,3 +228,5 @@ struct Account
 };
 
 } // namespace MyDomain
+
+#endif // CPPSERIALIZATION_DOMAIN_DOMAIN_H
