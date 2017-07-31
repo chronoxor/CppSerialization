@@ -1,5 +1,5 @@
 /*!
-    \file domain.cpp
+    \file domain.h
     \brief Domain model example
     \author Ivan Shynkarenka
     \date 24.02.2017
