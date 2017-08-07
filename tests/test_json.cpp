@@ -9,7 +9,7 @@
 #include "serialization/json/parser.h"
 
 using namespace CppCommon;
-using namespace CppSerialization;
+using namespace CppSerialization::JSON;
 using namespace MyDomain;
 
 TEST_CASE("JSON", "[CppSerialization]")
@@ -21,15 +21,15 @@ TEST_CASE("JSON", "[CppSerialization]")
     account.AddOrder(Order(3, "EURUSD", OrderSide::BUY, OrderType::STOP, 1.5, 10));
 
     // Serialize the account to the JSON file stream
-    CppSerialization::JSON::StringBuffer buffer;
-    CppSerialization::JSON::Serializer<CppSerialization::JSON::StringBuffer> serializer(buffer);
+    StringBuffer buffer;
+    Serializer<StringBuffer> serializer(buffer);
     account.SerializeJSON(serializer);
 
     REQUIRE(buffer.GetLength() > 0);
     REQUIRE(buffer.GetString() != nullptr);
 
     // Parse JSON string
-    CppSerialization::JSON::Document json = CppSerialization::JSON::Parser::Parse(buffer.GetString());
+    Document json = Parser::Parse(buffer.GetString());
 
     // Deserialize the account from the JSON file stream
     Account deserialized;
