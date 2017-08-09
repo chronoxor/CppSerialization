@@ -21,7 +21,7 @@ objects in/from different formats such as Flatbuffers, JSON.
     * [Windows (Cygwin)](#windows-cygwin)
     * [Windows (MinGW)](#windows-mingw)
     * [Windows (MinGW with MSYS)](#windows-mingw-with-msys)
-    * [Windows (Visaul Studio)](#windows-visaul-studio)
+    * [Windows (Visual Studio)](#windows-visual-studio)
   * [Domain model](#domain-model)
   * [FlatBuffers serialization](#flatbuffers-serialization)
     * [FlatBuffers schema](#flatbuffers-schema)
@@ -86,7 +86,7 @@ cd build
 mingw.bat
 ```
 
-## Windows (Visaul Studio)
+## Windows (Visual Studio)
 ```
 cd build
 vs.bat
