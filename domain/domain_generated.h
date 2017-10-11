@@ -137,7 +137,7 @@ struct OrderBuilder {
   void add_Volume(double Volume) {
     fbb_.AddElement<double>(Order::VT_VOLUME, Volume, 0.0);
   }
-  OrderBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit OrderBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
@@ -214,7 +214,7 @@ struct BalanceBuilder {
   void add_Amount(double Amount) {
     fbb_.AddElement<double>(Balance::VT_AMOUNT, Amount, 0.0);
   }
-  BalanceBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit BalanceBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
@@ -294,7 +294,7 @@ struct AccountBuilder {
   void add_Orders(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Order>>> Orders) {
     fbb_.AddOffset(Account::VT_ORDERS, Orders);
   }
-  AccountBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit AccountBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
