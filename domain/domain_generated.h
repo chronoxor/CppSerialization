@@ -143,7 +143,7 @@ struct OrderBuilder {
   }
   OrderBuilder &operator=(const OrderBuilder &);
   flatbuffers::Offset<Order> Finish() {
-    const auto end = fbb_.EndTable(start_, 6);
+    const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Order>(end);
     return o;
   }
@@ -220,7 +220,7 @@ struct BalanceBuilder {
   }
   BalanceBuilder &operator=(const BalanceBuilder &);
   flatbuffers::Offset<Balance> Finish() {
-    const auto end = fbb_.EndTable(start_, 2);
+    const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Balance>(end);
     return o;
   }
@@ -300,7 +300,7 @@ struct AccountBuilder {
   }
   AccountBuilder &operator=(const AccountBuilder &);
   flatbuffers::Offset<Account> Finish() {
-    const auto end = fbb_.EndTable(start_, 4);
+    const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Account>(end);
     return o;
   }
