@@ -2,7 +2,7 @@
 // Created by Ivan Shynkarenka on 03.03.2017
 //
 
-#include "catch.hpp"
+#include "test.h"
 
 #include "../domain/domain.h"
 
