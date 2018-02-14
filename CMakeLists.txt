@@ -35,6 +35,9 @@ add_subdirectory("modules")
 list(APPEND LINKLIBS Threads::Threads)
 list(APPEND LINKLIBS cppcommon)
 
+# System directories
+include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/modules")
+
 # Library
 file(GLOB_RECURSE SOURCE_FILES "source/*.cpp")
 set_source_files_properties(${SOURCE_FILES} PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS}")
@@ -90,8 +93,7 @@ if(NOT CPPSERIALIZATION_MODULE)
   # Tests
   file(GLOB TESTS_SOURCE_FILES "tests/*.cpp")
   set_source_files_properties(${TESTS_SOURCE_FILES} PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS}")
-  add_executable(cppserialization-tests ${CATCH} ${TESTS_SOURCE_FILES})
-  target_include_directories(cppserialization-tests PRIVATE "modules/catch/single_include")
+  add_executable(cppserialization-tests ${CATCH2} ${TESTS_SOURCE_FILES})
   target_link_libraries(cppserialization-tests ${LINKLIBS})
   set_target_properties(cppserialization-tests PROPERTIES FOLDER tests)
   list(APPEND INSTALL_TARGETS cppserialization-tests)
