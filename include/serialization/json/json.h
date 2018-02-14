@@ -9,6 +9,8 @@
 #ifndef CPPSERIALIZATION_JSON_JSON_H
 #define CPPSERIALIZATION_JSON_JSON_H
 
+#include "../exceptions.h"
+
 #if defined(__clang__)
 #pragma clang system_header
 #elif defined(__GNUC__)
@@ -25,8 +27,6 @@
 
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
-
-#include "../exceptions.h"
 
 namespace CppSerialization {
 
