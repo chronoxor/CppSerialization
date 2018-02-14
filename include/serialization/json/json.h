@@ -9,6 +9,14 @@
 #ifndef CPPSERIALIZATION_JSON_JSON_H
 #define CPPSERIALIZATION_JSON_JSON_H
 
+#if defined(__clang__)
+#pragma clang system_header
+#elif defined(__GNUC__)
+#pragma GCC system_header
+#elif defined(_MSC_VER)
+#pragma system_header
+#endif
+
 #define RAPIDJSON_HAS_STDSTRING 1
 
 #define RAPIDJSON_NAMESPACE CppSerialization::JSON
