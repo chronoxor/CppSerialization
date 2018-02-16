@@ -48,7 +48,7 @@ set_target_properties(cppserialization PROPERTIES FOLDER libraries)
 list(APPEND INSTALL_TARGETS cppserialization)
 list(APPEND LINKLIBS cppserialization)
 
-# Additional module components: examples, performance benchmarks, tests, tools and install
+# Additional module components: benchmarks, examples, plugins, tests, tools and install
 if(NOT CPPSERIALIZATION_MODULE)
 
   # Domain models
@@ -77,7 +77,7 @@ if(NOT CPPSERIALIZATION_MODULE)
     list(APPEND INSTALL_TARGETS_PDB ${EXAMPLE_TARGET})
   endforeach()
 
-  # Performance benchmarks
+  # Benchmarks
   file(GLOB BENCHMARK_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/performance" "performance/*.cpp")
   foreach(BENCHMARK_FILE ${BENCHMARK_FILES})
     string(REGEX REPLACE "(.*)\\.cpp" "\\1" BENCHMARK_NAME ${BENCHMARK_FILE})
