@@ -8,15 +8,16 @@
 
 using namespace MyDomain;
 
-const uint64_t iterations = 1000000;
+const uint64_t iterations = 1000;
 
 class DeserializationFixture
 {
 protected:
+    flatbuffers::DefaultAllocator allocator;
     flatbuffers::FlatBufferBuilder builder;
     Account account;
 
-    DeserializationFixture()
+    DeserializationFixture() : builder(1024, &allocator)
     {
         // Create a new account with some orders
         account.AddOrder(Order(1, "EURUSD", OrderSide::BUY, OrderType::MARKET, 1.23456, 1000));
