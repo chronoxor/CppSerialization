@@ -8,7 +8,7 @@
 
 using namespace MyDomain;
 
-const uint64_t iterations = 1000;
+const uint64_t iterations = 1000000;
 
 class DeserializationFixture
 {
