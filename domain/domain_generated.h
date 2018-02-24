@@ -338,15 +338,30 @@ inline const MyDomain::flat::Account *GetAccount(const void *buf) {
   return flatbuffers::GetRoot<MyDomain::flat::Account>(buf);
 }
 
+inline const MyDomain::flat::Account *GetSizePrefixedAccount(const void *buf) {
+  return flatbuffers::GetSizePrefixedRoot<MyDomain::flat::Account>(buf);
+}
+
 inline bool VerifyAccountBuffer(
     flatbuffers::Verifier &verifier) {
   return verifier.VerifyBuffer<MyDomain::flat::Account>(nullptr);
+}
+
+inline bool VerifySizePrefixedAccountBuffer(
+    flatbuffers::Verifier &verifier) {
+  return verifier.VerifySizePrefixedBuffer<MyDomain::flat::Account>(nullptr);
 }
 
 inline void FinishAccountBuffer(
     flatbuffers::FlatBufferBuilder &fbb,
     flatbuffers::Offset<MyDomain::flat::Account> root) {
   fbb.Finish(root);
+}
+
+inline void FinishSizePrefixedAccountBuffer(
+    flatbuffers::FlatBufferBuilder &fbb,
+    flatbuffers::Offset<MyDomain::flat::Account> root) {
+  fbb.FinishSizePrefixed(root);
 }
 
 }  // namespace flat
