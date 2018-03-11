@@ -25,14 +25,10 @@ include(SetCompilerFeatures)
 include(SetCompilerWarnings)
 include(SetPlatformFeatures)
 
-# External packages
-find_package(Threads REQUIRED)
-
 # Modules
 add_subdirectory("modules")
 
 # Link libraries
-list(APPEND LINKLIBS Threads::Threads)
 list(APPEND LINKLIBS cppcommon)
 
 # System directories
