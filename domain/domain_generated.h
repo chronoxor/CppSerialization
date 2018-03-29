@@ -22,16 +22,16 @@ enum class OrderSide : int8_t {
   MAX = SELL
 };
 
-inline OrderSide (&EnumValuesOrderSide())[2] {
-  static OrderSide values[] = {
+inline const OrderSide (&EnumValuesOrderSide())[2] {
+  static const OrderSide values[] = {
     OrderSide::BUY,
     OrderSide::SELL
   };
   return values;
 }
 
-inline const char **EnumNamesOrderSide() {
-  static const char *names[] = {
+inline const char * const *EnumNamesOrderSide() {
+  static const char * const names[] = {
     "BUY",
     "SELL",
     nullptr
@@ -52,8 +52,8 @@ enum class OrderType : int8_t {
   MAX = STOP
 };
 
-inline OrderType (&EnumValuesOrderType())[3] {
-  static OrderType values[] = {
+inline const OrderType (&EnumValuesOrderType())[3] {
+  static const OrderType values[] = {
     OrderType::MARKET,
     OrderType::LIMIT,
     OrderType::STOP
@@ -61,8 +61,8 @@ inline OrderType (&EnumValuesOrderType())[3] {
   return values;
 }
 
-inline const char **EnumNamesOrderType() {
-  static const char *names[] = {
+inline const char * const *EnumNamesOrderType() {
+  static const char * const names[] = {
     "MARKET",
     "LIMIT",
     "STOP",

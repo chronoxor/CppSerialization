@@ -30,6 +30,8 @@ BENCHMARK_FIXTURE(SerializationFixture, "FlatBuffers-Serialize", iterations)
 {
     builder.Clear();
     builder.Finish(account.SerializeFlatBuffer(builder));
+    context.metrics().AddBytes(builder.GetSize());
+    context.metrics().SetCustom("Size", builder.GetSize());
 }
 
 BENCHMARK_MAIN()
