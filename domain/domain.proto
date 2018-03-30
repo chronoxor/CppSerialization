@@ -1,0 +1,43 @@
+// [START declaration]
+syntax = "proto3";
+package MyDomain.protobuf;
+// [END declaration]
+
+// [START messages]
+enum OrderSide
+{
+    BUY = 0;
+    SELL = 1;
+}
+
+enum OrderType
+{
+    MARKET = 0;
+    LIMIT = 1;
+    STOP = 2;
+}
+
+message Order 
+{
+    int32 Id = 1;
+    string Symbol = 2;
+    OrderSide Side = 3;
+    OrderType Type = 4;
+    double Price = 5;
+    double Volume = 6;
+}
+
+message Balance 
+{
+    string Currency = 1;
+    double Amount = 2;
+}
+
+message Account
+{
+    int32 Id = 1;
+    string Name = 2;
+    Balance Wallet = 3;
+    repeated Order Orders = 4;
+}
+// [END messages]

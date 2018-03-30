@@ -1,4 +1,4 @@
-namespace MyDomain.flat;
+namespace MyDomain.flatbuf;
 
 enum OrderSide : byte
 {

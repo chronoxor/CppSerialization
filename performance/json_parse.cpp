@@ -35,8 +35,8 @@ protected:
 BENCHMARK_FIXTURE(ParserFixture, "JSON-Parse", iterations)
 {
     Document json = Parser::Parse(buffer.GetString());
-	context.metrics().AddBytes(buffer.GetSize());
-	context.metrics().SetCustom("Size", buffer.GetSize());
+    context.metrics().AddBytes(buffer.GetSize());
+    context.metrics().SetCustom("Size", (unsigned)buffer.GetSize());
 }
 
 BENCHMARK_MAIN()

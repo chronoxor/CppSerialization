@@ -31,7 +31,7 @@ protected:
 
 BENCHMARK_FIXTURE(DeserializationFixture, "FlatBuffers-Deserialize", iterations)
 {
-    auto root = flat::GetAccount(builder.GetBufferPointer());
+    auto root = flatbuf::GetAccount(builder.GetBufferPointer());
     account.DeserializeFlatBuffer(*root);
     context.metrics().AddBytes(builder.GetSize());
     context.metrics().SetCustom("Size", builder.GetSize());

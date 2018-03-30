@@ -16,7 +16,7 @@ const uint64_t iterations = 1000000;
 class DeserializationFixture
 {
 protected:
-	size_t size;
+    size_t size;
     Document json;
     Account deserialized;
 
@@ -35,15 +35,15 @@ protected:
 
         // Parse JSON string
         json = Parser::Parse(buffer.GetString());
-		size = buffer.GetSize();
+        size = buffer.GetSize();
     }
 };
 
 BENCHMARK_FIXTURE(DeserializationFixture, "JSON-Deserialize", iterations)
 {
     deserialized.DeserializeJSON(json);
-	context.metrics().AddBytes(json.Size());
-	context.metrics().SetCustom("Size", size);
+    context.metrics().AddBytes(json.Size());
+    context.metrics().SetCustom("Size", (unsigned)size);
 }
 
 BENCHMARK_MAIN()
