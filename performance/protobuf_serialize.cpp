@@ -14,7 +14,7 @@ class SerializationFixture
 {
 protected:
     Account account;
-	std::string buffer;
+    std::string buffer;
 
     SerializationFixture() : account(1, "Test", "USD", 1000)
     {
@@ -32,7 +32,7 @@ BENCHMARK_FIXTURE(SerializationFixture, "Protobuf-Serialize", iterations)
     account.Serialize(ouput);
     ouput.SerializeToString(&buffer);
     context.metrics().AddBytes(buffer.size());
-    context.metrics().SetCustom("Size", buffer.size());
+    context.metrics().SetCustom("Size", (unsigned)buffer.size());
 }
 
 BENCHMARK_MAIN()

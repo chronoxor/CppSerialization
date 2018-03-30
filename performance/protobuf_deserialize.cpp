@@ -38,7 +38,7 @@ BENCHMARK_FIXTURE(DeserializationFixture, "Protobuf-Deserialize", iterations)
     Account deserialized;
     deserialized.Deserialize(input);
     context.metrics().AddBytes(buffer.size());
-    context.metrics().SetCustom("Size", buffer.size());
+    context.metrics().SetCustom("Size", (unsigned)buffer.size());
 }
 
 BENCHMARK_MAIN()
