@@ -2,39 +2,39 @@ namespace MyDomain.flatbuf;
 
 enum OrderSide : byte
 {
-    BUY,
-    SELL
+    buy,
+    sell
 }
 
 enum OrderType : byte
 {
-    MARKET,
-    LIMIT,
-    STOP
+    market,
+    limit,
+    stop
 }
 
 table Order 
 {
-    Id : int;
-    Symbol : string;
-    Side : OrderSide;
-    Type : OrderType;
-    Price : double = 0.0;
-    Volume : double = 0.0;
+    id : int;
+    symbol : string;
+    side : OrderSide;
+    type : OrderType;
+    price : double = 0.0;
+    volume : double = 0.0;
 }
 
 table Balance 
 {
-    Currency : string;
-    Amount : double = 0.0;
+    currency : string;
+    amount : double = 0.0;
 }
 
 table Account
 {
-    Id : int;
-    Name : string;
-    Wallet : Balance;
-    Orders:[Order];
+    id : int;
+    name : string;
+    wallet : Balance;
+    orders : [Order];
 }
 
 root_type Account;

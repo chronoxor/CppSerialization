@@ -1,3 +1,4 @@
+include("capnproto.cmake")
 include("Catch2.cmake")
 include("CppBenchmark.cmake")
 include("CppCommon.cmake")

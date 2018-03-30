@@ -70,14 +70,14 @@ namespace MyDomain {
 namespace protobuf {
 
 enum OrderSide {
-  BUY = 0,
-  SELL = 1,
+  buy = 0,
+  sell = 1,
   OrderSide_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
   OrderSide_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
 bool OrderSide_IsValid(int value);
-const OrderSide OrderSide_MIN = BUY;
-const OrderSide OrderSide_MAX = SELL;
+const OrderSide OrderSide_MIN = buy;
+const OrderSide OrderSide_MAX = sell;
 const int OrderSide_ARRAYSIZE = OrderSide_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* OrderSide_descriptor();
@@ -91,15 +91,15 @@ inline bool OrderSide_Parse(
     OrderSide_descriptor(), name, value);
 }
 enum OrderType {
-  MARKET = 0,
-  LIMIT = 1,
-  STOP = 2,
+  market = 0,
+  limit = 1,
+  stop = 2,
   OrderType_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
   OrderType_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
 bool OrderType_IsValid(int value);
-const OrderType OrderType_MIN = MARKET;
-const OrderType OrderType_MAX = STOP;
+const OrderType OrderType_MIN = market;
+const OrderType OrderType_MAX = stop;
 const int OrderType_ARRAYSIZE = OrderType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* OrderType_descriptor();
@@ -201,7 +201,7 @@ class Order : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
 
   // accessors -------------------------------------------------------
 
-  // string Symbol = 2;
+  // string symbol = 2;
   void clear_symbol();
   static const int kSymbolFieldNumber = 2;
   const ::std::string& symbol() const;
@@ -215,31 +215,31 @@ class Order : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   ::std::string* release_symbol();
   void set_allocated_symbol(::std::string* symbol);
 
-  // int32 Id = 1;
+  // int32 id = 1;
   void clear_id();
   static const int kIdFieldNumber = 1;
   ::google::protobuf::int32 id() const;
   void set_id(::google::protobuf::int32 value);
 
-  // .MyDomain.protobuf.OrderSide Side = 3;
+  // .MyDomain.protobuf.OrderSide side = 3;
   void clear_side();
   static const int kSideFieldNumber = 3;
   ::MyDomain::protobuf::OrderSide side() const;
   void set_side(::MyDomain::protobuf::OrderSide value);
 
-  // double Price = 5;
+  // double price = 5;
   void clear_price();
   static const int kPriceFieldNumber = 5;
   double price() const;
   void set_price(double value);
 
-  // double Volume = 6;
+  // double volume = 6;
   void clear_volume();
   static const int kVolumeFieldNumber = 6;
   double volume() const;
   void set_volume(double value);
 
-  // .MyDomain.protobuf.OrderType Type = 4;
+  // .MyDomain.protobuf.OrderType type = 4;
   void clear_type();
   static const int kTypeFieldNumber = 4;
   ::MyDomain::protobuf::OrderType type() const;
@@ -347,7 +347,7 @@ class Balance : public ::google::protobuf::Message /* @@protoc_insertion_point(c
 
   // accessors -------------------------------------------------------
 
-  // string Currency = 1;
+  // string currency = 1;
   void clear_currency();
   static const int kCurrencyFieldNumber = 1;
   const ::std::string& currency() const;
@@ -361,7 +361,7 @@ class Balance : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::std::string* release_currency();
   void set_allocated_currency(::std::string* currency);
 
-  // double Amount = 2;
+  // double amount = 2;
   void clear_amount();
   static const int kAmountFieldNumber = 2;
   double amount() const;
@@ -465,7 +465,7 @@ class Account : public ::google::protobuf::Message /* @@protoc_insertion_point(c
 
   // accessors -------------------------------------------------------
 
-  // repeated .MyDomain.protobuf.Order Orders = 4;
+  // repeated .MyDomain.protobuf.Order orders = 4;
   int orders_size() const;
   void clear_orders();
   static const int kOrdersFieldNumber = 4;
@@ -477,7 +477,7 @@ class Account : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   const ::google::protobuf::RepeatedPtrField< ::MyDomain::protobuf::Order >&
       orders() const;
 
-  // string Name = 2;
+  // string name = 2;
   void clear_name();
   static const int kNameFieldNumber = 2;
   const ::std::string& name() const;
@@ -491,7 +491,7 @@ class Account : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::std::string* release_name();
   void set_allocated_name(::std::string* name);
 
-  // .MyDomain.protobuf.Balance Wallet = 3;
+  // .MyDomain.protobuf.Balance wallet = 3;
   bool has_wallet() const;
   void clear_wallet();
   static const int kWalletFieldNumber = 3;
@@ -503,7 +503,7 @@ class Account : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::MyDomain::protobuf::Balance* mutable_wallet();
   void set_allocated_wallet(::MyDomain::protobuf::Balance* wallet);
 
-  // int32 Id = 1;
+  // int32 id = 1;
   void clear_id();
   static const int kIdFieldNumber = 1;
   ::google::protobuf::int32 id() const;
@@ -531,60 +531,60 @@ class Account : public ::google::protobuf::Message /* @@protoc_insertion_point(c
 #endif  // __GNUC__
 // Order
 
-// int32 Id = 1;
+// int32 id = 1;
 inline void Order::clear_id() {
   id_ = 0;
 }
 inline ::google::protobuf::int32 Order::id() const {
-  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Order.Id)
+  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Order.id)
   return id_;
 }
 inline void Order::set_id(::google::protobuf::int32 value) {
   
   id_ = value;
-  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Order.Id)
+  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Order.id)
 }
 
-// string Symbol = 2;
+// string symbol = 2;
 inline void Order::clear_symbol() {
   symbol_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& Order::symbol() const {
-  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Order.Symbol)
+  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Order.symbol)
   return symbol_.GetNoArena();
 }
 inline void Order::set_symbol(const ::std::string& value) {
   
   symbol_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Order.Symbol)
+  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Order.symbol)
 }
 #if LANG_CXX11
 inline void Order::set_symbol(::std::string&& value) {
   
   symbol_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:MyDomain.protobuf.Order.Symbol)
+  // @@protoc_insertion_point(field_set_rvalue:MyDomain.protobuf.Order.symbol)
 }
 #endif
 inline void Order::set_symbol(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   symbol_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:MyDomain.protobuf.Order.Symbol)
+  // @@protoc_insertion_point(field_set_char:MyDomain.protobuf.Order.symbol)
 }
 inline void Order::set_symbol(const char* value, size_t size) {
   
   symbol_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:MyDomain.protobuf.Order.Symbol)
+  // @@protoc_insertion_point(field_set_pointer:MyDomain.protobuf.Order.symbol)
 }
 inline ::std::string* Order::mutable_symbol() {
   
-  // @@protoc_insertion_point(field_mutable:MyDomain.protobuf.Order.Symbol)
+  // @@protoc_insertion_point(field_mutable:MyDomain.protobuf.Order.symbol)
   return symbol_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* Order::release_symbol() {
-  // @@protoc_insertion_point(field_release:MyDomain.protobuf.Order.Symbol)
+  // @@protoc_insertion_point(field_release:MyDomain.protobuf.Order.symbol)
   
   return symbol_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -595,109 +595,109 @@ inline void Order::set_allocated_symbol(::std::string* symbol) {
     
   }
   symbol_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), symbol);
-  // @@protoc_insertion_point(field_set_allocated:MyDomain.protobuf.Order.Symbol)
+  // @@protoc_insertion_point(field_set_allocated:MyDomain.protobuf.Order.symbol)
 }
 
-// .MyDomain.protobuf.OrderSide Side = 3;
+// .MyDomain.protobuf.OrderSide side = 3;
 inline void Order::clear_side() {
   side_ = 0;
 }
 inline ::MyDomain::protobuf::OrderSide Order::side() const {
-  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Order.Side)
+  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Order.side)
   return static_cast< ::MyDomain::protobuf::OrderSide >(side_);
 }
 inline void Order::set_side(::MyDomain::protobuf::OrderSide value) {
   
   side_ = value;
-  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Order.Side)
+  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Order.side)
 }
 
-// .MyDomain.protobuf.OrderType Type = 4;
+// .MyDomain.protobuf.OrderType type = 4;
 inline void Order::clear_type() {
   type_ = 0;
 }
 inline ::MyDomain::protobuf::OrderType Order::type() const {
-  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Order.Type)
+  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Order.type)
   return static_cast< ::MyDomain::protobuf::OrderType >(type_);
 }
 inline void Order::set_type(::MyDomain::protobuf::OrderType value) {
   
   type_ = value;
-  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Order.Type)
+  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Order.type)
 }
 
-// double Price = 5;
+// double price = 5;
 inline void Order::clear_price() {
   price_ = 0;
 }
 inline double Order::price() const {
-  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Order.Price)
+  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Order.price)
   return price_;
 }
 inline void Order::set_price(double value) {
   
   price_ = value;
-  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Order.Price)
+  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Order.price)
 }
 
-// double Volume = 6;
+// double volume = 6;
 inline void Order::clear_volume() {
   volume_ = 0;
 }
 inline double Order::volume() const {
-  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Order.Volume)
+  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Order.volume)
   return volume_;
 }
 inline void Order::set_volume(double value) {
   
   volume_ = value;
-  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Order.Volume)
+  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Order.volume)
 }
 
 // -------------------------------------------------------------------
 
 // Balance
 
-// string Currency = 1;
+// string currency = 1;
 inline void Balance::clear_currency() {
   currency_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& Balance::currency() const {
-  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Balance.Currency)
+  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Balance.currency)
   return currency_.GetNoArena();
 }
 inline void Balance::set_currency(const ::std::string& value) {
   
   currency_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Balance.Currency)
+  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Balance.currency)
 }
 #if LANG_CXX11
 inline void Balance::set_currency(::std::string&& value) {
   
   currency_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:MyDomain.protobuf.Balance.Currency)
+  // @@protoc_insertion_point(field_set_rvalue:MyDomain.protobuf.Balance.currency)
 }
 #endif
 inline void Balance::set_currency(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   currency_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:MyDomain.protobuf.Balance.Currency)
+  // @@protoc_insertion_point(field_set_char:MyDomain.protobuf.Balance.currency)
 }
 inline void Balance::set_currency(const char* value, size_t size) {
   
   currency_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:MyDomain.protobuf.Balance.Currency)
+  // @@protoc_insertion_point(field_set_pointer:MyDomain.protobuf.Balance.currency)
 }
 inline ::std::string* Balance::mutable_currency() {
   
-  // @@protoc_insertion_point(field_mutable:MyDomain.protobuf.Balance.Currency)
+  // @@protoc_insertion_point(field_mutable:MyDomain.protobuf.Balance.currency)
   return currency_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* Balance::release_currency() {
-  // @@protoc_insertion_point(field_release:MyDomain.protobuf.Balance.Currency)
+  // @@protoc_insertion_point(field_release:MyDomain.protobuf.Balance.currency)
   
   return currency_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -708,81 +708,81 @@ inline void Balance::set_allocated_currency(::std::string* currency) {
     
   }
   currency_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), currency);
-  // @@protoc_insertion_point(field_set_allocated:MyDomain.protobuf.Balance.Currency)
+  // @@protoc_insertion_point(field_set_allocated:MyDomain.protobuf.Balance.currency)
 }
 
-// double Amount = 2;
+// double amount = 2;
 inline void Balance::clear_amount() {
   amount_ = 0;
 }
 inline double Balance::amount() const {
-  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Balance.Amount)
+  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Balance.amount)
   return amount_;
 }
 inline void Balance::set_amount(double value) {
   
   amount_ = value;
-  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Balance.Amount)
+  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Balance.amount)
 }
 
 // -------------------------------------------------------------------
 
 // Account
 
-// int32 Id = 1;
+// int32 id = 1;
 inline void Account::clear_id() {
   id_ = 0;
 }
 inline ::google::protobuf::int32 Account::id() const {
-  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Account.Id)
+  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Account.id)
   return id_;
 }
 inline void Account::set_id(::google::protobuf::int32 value) {
   
   id_ = value;
-  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Account.Id)
+  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Account.id)
 }
 
-// string Name = 2;
+// string name = 2;
 inline void Account::clear_name() {
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& Account::name() const {
-  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Account.Name)
+  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Account.name)
   return name_.GetNoArena();
 }
 inline void Account::set_name(const ::std::string& value) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Account.Name)
+  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Account.name)
 }
 #if LANG_CXX11
 inline void Account::set_name(::std::string&& value) {
   
   name_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:MyDomain.protobuf.Account.Name)
+  // @@protoc_insertion_point(field_set_rvalue:MyDomain.protobuf.Account.name)
 }
 #endif
 inline void Account::set_name(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:MyDomain.protobuf.Account.Name)
+  // @@protoc_insertion_point(field_set_char:MyDomain.protobuf.Account.name)
 }
 inline void Account::set_name(const char* value, size_t size) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:MyDomain.protobuf.Account.Name)
+  // @@protoc_insertion_point(field_set_pointer:MyDomain.protobuf.Account.name)
 }
 inline ::std::string* Account::mutable_name() {
   
-  // @@protoc_insertion_point(field_mutable:MyDomain.protobuf.Account.Name)
+  // @@protoc_insertion_point(field_mutable:MyDomain.protobuf.Account.name)
   return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* Account::release_name() {
-  // @@protoc_insertion_point(field_release:MyDomain.protobuf.Account.Name)
+  // @@protoc_insertion_point(field_release:MyDomain.protobuf.Account.name)
   
   return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -793,10 +793,10 @@ inline void Account::set_allocated_name(::std::string* name) {
     
   }
   name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
-  // @@protoc_insertion_point(field_set_allocated:MyDomain.protobuf.Account.Name)
+  // @@protoc_insertion_point(field_set_allocated:MyDomain.protobuf.Account.name)
 }
 
-// .MyDomain.protobuf.Balance Wallet = 3;
+// .MyDomain.protobuf.Balance wallet = 3;
 inline bool Account::has_wallet() const {
   return this != internal_default_instance() && wallet_ != NULL;
 }
@@ -811,12 +811,12 @@ inline const ::MyDomain::protobuf::Balance& Account::_internal_wallet() const {
 }
 inline const ::MyDomain::protobuf::Balance& Account::wallet() const {
   const ::MyDomain::protobuf::Balance* p = wallet_;
-  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Account.Wallet)
+  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Account.wallet)
   return p != NULL ? *p : *reinterpret_cast<const ::MyDomain::protobuf::Balance*>(
       &::MyDomain::protobuf::_Balance_default_instance_);
 }
 inline ::MyDomain::protobuf::Balance* Account::release_wallet() {
-  // @@protoc_insertion_point(field_release:MyDomain.protobuf.Account.Wallet)
+  // @@protoc_insertion_point(field_release:MyDomain.protobuf.Account.wallet)
   
   ::MyDomain::protobuf::Balance* temp = wallet_;
   wallet_ = NULL;
@@ -828,7 +828,7 @@ inline ::MyDomain::protobuf::Balance* Account::mutable_wallet() {
     auto* p = CreateMaybeMessage<::MyDomain::protobuf::Balance>(GetArenaNoVirtual());
     wallet_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:MyDomain.protobuf.Account.Wallet)
+  // @@protoc_insertion_point(field_mutable:MyDomain.protobuf.Account.wallet)
   return wallet_;
 }
 inline void Account::set_allocated_wallet(::MyDomain::protobuf::Balance* wallet) {
@@ -847,10 +847,10 @@ inline void Account::set_allocated_wallet(::MyDomain::protobuf::Balance* wallet)
     
   }
   wallet_ = wallet;
-  // @@protoc_insertion_point(field_set_allocated:MyDomain.protobuf.Account.Wallet)
+  // @@protoc_insertion_point(field_set_allocated:MyDomain.protobuf.Account.wallet)
 }
 
-// repeated .MyDomain.protobuf.Order Orders = 4;
+// repeated .MyDomain.protobuf.Order orders = 4;
 inline int Account::orders_size() const {
   return orders_.size();
 }
@@ -858,25 +858,25 @@ inline void Account::clear_orders() {
   orders_.Clear();
 }
 inline ::MyDomain::protobuf::Order* Account::mutable_orders(int index) {
-  // @@protoc_insertion_point(field_mutable:MyDomain.protobuf.Account.Orders)
+  // @@protoc_insertion_point(field_mutable:MyDomain.protobuf.Account.orders)
   return orders_.Mutable(index);
 }
 inline ::google::protobuf::RepeatedPtrField< ::MyDomain::protobuf::Order >*
 Account::mutable_orders() {
-  // @@protoc_insertion_point(field_mutable_list:MyDomain.protobuf.Account.Orders)
+  // @@protoc_insertion_point(field_mutable_list:MyDomain.protobuf.Account.orders)
   return &orders_;
 }
 inline const ::MyDomain::protobuf::Order& Account::orders(int index) const {
-  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Account.Orders)
+  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Account.orders)
   return orders_.Get(index);
 }
 inline ::MyDomain::protobuf::Order* Account::add_orders() {
-  // @@protoc_insertion_point(field_add:MyDomain.protobuf.Account.Orders)
+  // @@protoc_insertion_point(field_add:MyDomain.protobuf.Account.orders)
   return orders_.Add();
 }
 inline const ::google::protobuf::RepeatedPtrField< ::MyDomain::protobuf::Order >&
 Account::orders() const {
-  // @@protoc_insertion_point(field_list:MyDomain.protobuf.Account.Orders)
+  // @@protoc_insertion_point(field_list:MyDomain.protobuf.Account.orders)
   return orders_;
 }
 

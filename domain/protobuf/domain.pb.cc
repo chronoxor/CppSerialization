@@ -159,16 +159,16 @@ void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
       "\n\014domain.proto\022\021MyDomain.protobuf\"\232\001\n\005Or"
-      "der\022\n\n\002Id\030\001 \001(\005\022\016\n\006Symbol\030\002 \001(\t\022*\n\004Side\030"
-      "\003 \001(\0162\034.MyDomain.protobuf.OrderSide\022*\n\004T"
+      "der\022\n\n\002id\030\001 \001(\005\022\016\n\006symbol\030\002 \001(\t\022*\n\004side\030"
+      "\003 \001(\0162\034.MyDomain.protobuf.OrderSide\022*\n\004t"
       "ype\030\004 \001(\0162\034.MyDomain.protobuf.OrderType\022"
-      "\r\n\005Price\030\005 \001(\001\022\016\n\006Volume\030\006 \001(\001\"+\n\007Balanc"
-      "e\022\020\n\010Currency\030\001 \001(\t\022\016\n\006Amount\030\002 \001(\001\"y\n\007A"
-      "ccount\022\n\n\002Id\030\001 \001(\005\022\014\n\004Name\030\002 \001(\t\022*\n\006Wall"
+      "\r\n\005price\030\005 \001(\001\022\016\n\006volume\030\006 \001(\001\"+\n\007Balanc"
+      "e\022\020\n\010currency\030\001 \001(\t\022\016\n\006amount\030\002 \001(\001\"y\n\007A"
+      "ccount\022\n\n\002id\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022*\n\006wall"
       "et\030\003 \001(\0132\032.MyDomain.protobuf.Balance\022(\n\006"
-      "Orders\030\004 \003(\0132\030.MyDomain.protobuf.Order*\036"
-      "\n\tOrderSide\022\007\n\003BUY\020\000\022\010\n\004SELL\020\001*,\n\tOrderT"
-      "ype\022\n\n\006MARKET\020\000\022\t\n\005LIMIT\020\001\022\010\n\004STOP\020\002b\006pr"
+      "orders\030\004 \003(\0132\030.MyDomain.protobuf.Order*\036"
+      "\n\tOrderSide\022\007\n\003buy\020\000\022\010\n\004sell\020\001*,\n\tOrderT"
+      "ype\022\n\n\006market\020\000\022\t\n\005limit\020\001\022\010\n\004stop\020\002b\006pr"
       "oto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
@@ -307,7 +307,7 @@ bool Order::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // int32 Id = 1;
+      // int32 id = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
@@ -321,7 +321,7 @@ bool Order::MergePartialFromCodedStream(
         break;
       }
 
-      // string Symbol = 2;
+      // string symbol = 2;
       case 2: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
@@ -330,14 +330,14 @@ bool Order::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->symbol().data(), static_cast<int>(this->symbol().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "MyDomain.protobuf.Order.Symbol"));
+            "MyDomain.protobuf.Order.symbol"));
         } else {
           goto handle_unusual;
         }
         break;
       }
 
-      // .MyDomain.protobuf.OrderSide Side = 3;
+      // .MyDomain.protobuf.OrderSide side = 3;
       case 3: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
@@ -352,7 +352,7 @@ bool Order::MergePartialFromCodedStream(
         break;
       }
 
-      // .MyDomain.protobuf.OrderType Type = 4;
+      // .MyDomain.protobuf.OrderType type = 4;
       case 4: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(32u /* 32 & 0xFF */)) {
@@ -367,7 +367,7 @@ bool Order::MergePartialFromCodedStream(
         break;
       }
 
-      // double Price = 5;
+      // double price = 5;
       case 5: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(41u /* 41 & 0xFF */)) {
@@ -381,7 +381,7 @@ bool Order::MergePartialFromCodedStream(
         break;
       }
 
-      // double Volume = 6;
+      // double volume = 6;
       case 6: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(49u /* 49 & 0xFF */)) {
@@ -421,39 +421,39 @@ void Order::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 Id = 1;
+  // int32 id = 1;
   if (this->id() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->id(), output);
   }
 
-  // string Symbol = 2;
+  // string symbol = 2;
   if (this->symbol().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->symbol().data(), static_cast<int>(this->symbol().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "MyDomain.protobuf.Order.Symbol");
+      "MyDomain.protobuf.Order.symbol");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       2, this->symbol(), output);
   }
 
-  // .MyDomain.protobuf.OrderSide Side = 3;
+  // .MyDomain.protobuf.OrderSide side = 3;
   if (this->side() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       3, this->side(), output);
   }
 
-  // .MyDomain.protobuf.OrderType Type = 4;
+  // .MyDomain.protobuf.OrderType type = 4;
   if (this->type() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       4, this->type(), output);
   }
 
-  // double Price = 5;
+  // double price = 5;
   if (this->price() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(5, this->price(), output);
   }
 
-  // double Volume = 6;
+  // double volume = 6;
   if (this->volume() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(6, this->volume(), output);
   }
@@ -472,40 +472,40 @@ void Order::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 Id = 1;
+  // int32 id = 1;
   if (this->id() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->id(), target);
   }
 
-  // string Symbol = 2;
+  // string symbol = 2;
   if (this->symbol().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->symbol().data(), static_cast<int>(this->symbol().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "MyDomain.protobuf.Order.Symbol");
+      "MyDomain.protobuf.Order.symbol");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         2, this->symbol(), target);
   }
 
-  // .MyDomain.protobuf.OrderSide Side = 3;
+  // .MyDomain.protobuf.OrderSide side = 3;
   if (this->side() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       3, this->side(), target);
   }
 
-  // .MyDomain.protobuf.OrderType Type = 4;
+  // .MyDomain.protobuf.OrderType type = 4;
   if (this->type() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       4, this->type(), target);
   }
 
-  // double Price = 5;
+  // double price = 5;
   if (this->price() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(5, this->price(), target);
   }
 
-  // double Volume = 6;
+  // double volume = 6;
   if (this->volume() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(6, this->volume(), target);
   }
@@ -527,37 +527,37 @@ size_t Order::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // string Symbol = 2;
+  // string symbol = 2;
   if (this->symbol().size() > 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->symbol());
   }
 
-  // int32 Id = 1;
+  // int32 id = 1;
   if (this->id() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int32Size(
         this->id());
   }
 
-  // .MyDomain.protobuf.OrderSide Side = 3;
+  // .MyDomain.protobuf.OrderSide side = 3;
   if (this->side() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->side());
   }
 
-  // double Price = 5;
+  // double price = 5;
   if (this->price() != 0) {
     total_size += 1 + 8;
   }
 
-  // double Volume = 6;
+  // double volume = 6;
   if (this->volume() != 0) {
     total_size += 1 + 8;
   }
 
-  // .MyDomain.protobuf.OrderType Type = 4;
+  // .MyDomain.protobuf.OrderType type = 4;
   if (this->type() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
@@ -728,7 +728,7 @@ bool Balance::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // string Currency = 1;
+      // string currency = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
@@ -737,14 +737,14 @@ bool Balance::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->currency().data(), static_cast<int>(this->currency().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "MyDomain.protobuf.Balance.Currency"));
+            "MyDomain.protobuf.Balance.currency"));
         } else {
           goto handle_unusual;
         }
         break;
       }
 
-      // double Amount = 2;
+      // double amount = 2;
       case 2: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(17u /* 17 & 0xFF */)) {
@@ -784,17 +784,17 @@ void Balance::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string Currency = 1;
+  // string currency = 1;
   if (this->currency().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->currency().data(), static_cast<int>(this->currency().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "MyDomain.protobuf.Balance.Currency");
+      "MyDomain.protobuf.Balance.currency");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->currency(), output);
   }
 
-  // double Amount = 2;
+  // double amount = 2;
   if (this->amount() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->amount(), output);
   }
@@ -813,18 +813,18 @@ void Balance::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string Currency = 1;
+  // string currency = 1;
   if (this->currency().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->currency().data(), static_cast<int>(this->currency().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "MyDomain.protobuf.Balance.Currency");
+      "MyDomain.protobuf.Balance.currency");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->currency(), target);
   }
 
-  // double Amount = 2;
+  // double amount = 2;
   if (this->amount() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(2, this->amount(), target);
   }
@@ -846,14 +846,14 @@ size_t Balance::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // string Currency = 1;
+  // string currency = 1;
   if (this->currency().size() > 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->currency());
   }
 
-  // double Amount = 2;
+  // double amount = 2;
   if (this->amount() != 0) {
     total_size += 1 + 8;
   }
@@ -1025,7 +1025,7 @@ bool Account::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // int32 Id = 1;
+      // int32 id = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
@@ -1039,7 +1039,7 @@ bool Account::MergePartialFromCodedStream(
         break;
       }
 
-      // string Name = 2;
+      // string name = 2;
       case 2: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
@@ -1048,14 +1048,14 @@ bool Account::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->name().data(), static_cast<int>(this->name().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "MyDomain.protobuf.Account.Name"));
+            "MyDomain.protobuf.Account.name"));
         } else {
           goto handle_unusual;
         }
         break;
       }
 
-      // .MyDomain.protobuf.Balance Wallet = 3;
+      // .MyDomain.protobuf.Balance wallet = 3;
       case 3: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(26u /* 26 & 0xFF */)) {
@@ -1067,7 +1067,7 @@ bool Account::MergePartialFromCodedStream(
         break;
       }
 
-      // repeated .MyDomain.protobuf.Order Orders = 4;
+      // repeated .MyDomain.protobuf.Order orders = 4;
       case 4: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(34u /* 34 & 0xFF */)) {
@@ -1105,28 +1105,28 @@ void Account::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 Id = 1;
+  // int32 id = 1;
   if (this->id() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->id(), output);
   }
 
-  // string Name = 2;
+  // string name = 2;
   if (this->name().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->name().data(), static_cast<int>(this->name().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "MyDomain.protobuf.Account.Name");
+      "MyDomain.protobuf.Account.name");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       2, this->name(), output);
   }
 
-  // .MyDomain.protobuf.Balance Wallet = 3;
+  // .MyDomain.protobuf.Balance wallet = 3;
   if (this->has_wallet()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       3, this->_internal_wallet(), output);
   }
 
-  // repeated .MyDomain.protobuf.Order Orders = 4;
+  // repeated .MyDomain.protobuf.Order orders = 4;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->orders_size()); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
@@ -1149,30 +1149,30 @@ void Account::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 Id = 1;
+  // int32 id = 1;
   if (this->id() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->id(), target);
   }
 
-  // string Name = 2;
+  // string name = 2;
   if (this->name().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->name().data(), static_cast<int>(this->name().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "MyDomain.protobuf.Account.Name");
+      "MyDomain.protobuf.Account.name");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         2, this->name(), target);
   }
 
-  // .MyDomain.protobuf.Balance Wallet = 3;
+  // .MyDomain.protobuf.Balance wallet = 3;
   if (this->has_wallet()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
         3, this->_internal_wallet(), deterministic, target);
   }
 
-  // repeated .MyDomain.protobuf.Order Orders = 4;
+  // repeated .MyDomain.protobuf.Order orders = 4;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->orders_size()); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
@@ -1197,7 +1197,7 @@ size_t Account::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // repeated .MyDomain.protobuf.Order Orders = 4;
+  // repeated .MyDomain.protobuf.Order orders = 4;
   {
     unsigned int count = static_cast<unsigned int>(this->orders_size());
     total_size += 1UL * count;
@@ -1208,21 +1208,21 @@ size_t Account::ByteSizeLong() const {
     }
   }
 
-  // string Name = 2;
+  // string name = 2;
   if (this->name().size() > 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->name());
   }
 
-  // .MyDomain.protobuf.Balance Wallet = 3;
+  // .MyDomain.protobuf.Balance wallet = 3;
   if (this->has_wallet()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
         *wallet_);
   }
 
-  // int32 Id = 1;
+  // int32 id = 1;
   if (this->id() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int32Size(

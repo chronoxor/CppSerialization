@@ -64,12 +64,12 @@ struct Order
 
     void Deserialize(const flatbuf::Order& value)
     {
-        Id = value.Id();
-        std::strncpy(Symbol, value.Symbol()->c_str(), std::min((size_t)value.Symbol()->Length() + 1, sizeof(Symbol)));
-        Side = (OrderSide)value.Side();
-        Type = (OrderType)value.Type();
-        Price = value.Price();
-        Volume = value.Volume();
+        Id = value.id();
+        std::strncpy(Symbol, value.symbol()->c_str(), std::min((size_t)value.symbol()->Length() + 1, sizeof(Symbol)));
+        Side = (OrderSide)value.side();
+        Type = (OrderType)value.type();
+        Price = value.price();
+        Volume = value.volume();
     }
 
     // Protobuf serialization
@@ -145,8 +145,8 @@ struct Balance
 
     void Deserialize(const flatbuf::Balance& value)
     {
-        std::strncpy(Currency, value.Currency()->c_str(), std::min((size_t)value.Currency()->Length() + 1, sizeof(Currency)));
-        Amount = value.Amount();
+        std::strncpy(Currency, value.currency()->c_str(), std::min((size_t)value.currency()->Length() + 1, sizeof(Currency)));
+        Amount = value.amount();
     }
 
     // Protobuf serialization
@@ -212,11 +212,11 @@ struct Account
 
     void Deserialize(const flatbuf::Account& value)
     {
-        Id = value.Id();
-        Name = value.Name()->str();
-        Wallet.Deserialize(*value.Wallet());
+        Id = value.id();
+        Name = value.name()->str();
+        Wallet.Deserialize(*value.wallet());
         Orders.clear();
-        for (auto item : *value.Orders())
+        for (auto item : *value.orders())
         {
             Order order;
             order.Deserialize(*item);
