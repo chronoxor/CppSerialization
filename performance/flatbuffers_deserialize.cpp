@@ -15,6 +15,7 @@ class DeserializationFixture
 protected:
     flatbuffers::DefaultAllocator allocator;
     flatbuffers::FlatBufferBuilder builder;
+    Account deserialized;
 
     DeserializationFixture() : builder(1024, &allocator)
     {
@@ -31,9 +32,7 @@ protected:
 
 BENCHMARK_FIXTURE(DeserializationFixture, "FlatBuffers-Deserialize", iterations)
 {
-    auto root = flatbuf::GetAccount(builder.GetBufferPointer());
-    Account account;
-    account.Deserialize(*root);
+    deserialized.Deserialize(*flatbuf::GetAccount(builder.GetBufferPointer()));
     context.metrics().AddBytes(builder.GetSize());
     context.metrics().SetCustom("Size", builder.GetSize());
 }

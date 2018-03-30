@@ -74,15 +74,15 @@ struct Order
 
     // Protobuf serialization
 
-	protobuf::Order& Serialize(protobuf::Order& value)
+    protobuf::Order& Serialize(protobuf::Order& value)
     {
-		value.set_id(Id);
-		value.set_symbol(Symbol);
-		value.set_side((MyDomain::protobuf::OrderSide)Side);
-		value.set_type((MyDomain::protobuf::OrderType)Type);
-		value.set_price(Price);
-		value.set_volume(Volume);
-		return value;
+        value.set_id(Id);
+        value.set_symbol(Symbol);
+        value.set_side((MyDomain::protobuf::OrderSide)Side);
+        value.set_type((MyDomain::protobuf::OrderType)Type);
+        value.set_price(Price);
+        value.set_volume(Volume);
+        return value;
     }
 
     void Deserialize(const protobuf::Order& value)
@@ -149,20 +149,20 @@ struct Balance
         Amount = value.Amount();
     }
 
-	// Protobuf serialization
+    // Protobuf serialization
 
-	protobuf::Balance& Serialize(protobuf::Balance& value)
-	{
-		value.set_currency(Currency);
-		value.set_amount(Amount);
-		return value;
-	}
+    protobuf::Balance& Serialize(protobuf::Balance& value)
+    {
+        value.set_currency(Currency);
+        value.set_amount(Amount);
+        return value;
+    }
 
-	void Deserialize(const protobuf::Balance& value)
-	{
-		std::strncpy(Currency, value.currency().c_str(), std::min((size_t)value.currency().size() + 1, sizeof(Currency)));
-		Amount = value.amount();
-	}
+    void Deserialize(const protobuf::Balance& value)
+    {
+        std::strncpy(Currency, value.currency().c_str(), std::min((size_t)value.currency().size() + 1, sizeof(Currency)));
+        Amount = value.amount();
+    }
 
     // JSON serialization
 
@@ -215,6 +215,7 @@ struct Account
         Id = value.Id();
         Name = value.Name()->str();
         Wallet.Deserialize(*value.Wallet());
+        Orders.clear();
         for (auto item : *value.Orders())
         {
             Order order;
@@ -223,30 +224,31 @@ struct Account
         }
     }
 
-	// Protobuf serialization
+    // Protobuf serialization
 
-	protobuf::Account& Serialize(protobuf::Account& value)
-	{
-		value.set_id(Id);
-		value.set_name(Name);
-		value.set_allocated_wallet(&Wallet.Serialize(*value.wallet().New(value.GetArena())));
-		for (auto& order : Orders)
-			order.second.Serialize(*value.add_orders());
-		return value;
-	}
+    protobuf::Account& Serialize(protobuf::Account& value)
+    {
+        value.set_id(Id);
+        value.set_name(Name);
+        value.set_allocated_wallet(&Wallet.Serialize(*value.wallet().New(value.GetArena())));
+        for (auto& order : Orders)
+            order.second.Serialize(*value.add_orders());
+        return value;
+    }
 
-	void Deserialize(const protobuf::Account& value)
-	{
-		Id = value.id();
-		Name = value.name();
-		Wallet.Deserialize(value.wallet());
-		for (int i = 0; i < value.orders_size(); ++i)
-		{
-			Order order;
-			order.Deserialize(value.orders(i));
-			AddOrder(order);
-		}
-	}
+    void Deserialize(const protobuf::Account& value)
+    {
+        Id = value.id();
+        Name = value.name();
+        Wallet.Deserialize(value.wallet());
+        Orders.clear();
+        for (int i = 0; i < value.orders_size(); ++i)
+        {
+            Order order;
+            order.Deserialize(value.orders(i));
+            AddOrder(order);
+        }
+    }
 
     // JSON serialization
 
@@ -277,6 +279,7 @@ struct Account
         {
             Wallet.Deserialize(object);
         });
+        Orders.clear();
         Deserializer::FindArray(json, "orders", [this](const Value& item)
         {
             Order order;

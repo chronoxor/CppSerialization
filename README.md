@@ -431,14 +431,14 @@ Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: FlatBuffers-Serialize
-Average time: 985 ns / iteration
-Minimal time: 985 ns / iteration
-Maximal time: 986 ns / iteration
-Total time: 985.224 ms
+Average time: 995 ns / iteration
+Minimal time: 995 ns / iteration
+Maximal time: 996 ns / iteration
+Total time: 995.554 ms
 Total iterations: 1000000
 Total bytes: 267.029 MiB
-Iterations throughput: 1014997 / second
-Bytes throughput: 271.034 MiB / second
+Iterations throughput: 1004465 / second
+Bytes throughput: 268.226 MiB / second
 Custom values:
         Size: 280
 ===============================================================================
@@ -470,14 +470,14 @@ Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: FlatBuffers-Deserialize
-Average time: 395 ns / iteration
-Minimal time: 395 ns / iteration
-Maximal time: 403 ns / iteration
-Total time: 395.743 ms
+Average time: 586 ns / iteration
+Minimal time: 586 ns / iteration
+Maximal time: 609 ns / iteration
+Total time: 586.430 ms
 Total iterations: 1000000
 Total bytes: 267.029 MiB
-Iterations throughput: 2526888 / second
-Bytes throughput: 674.770 MiB / second
+Iterations throughput: 1705232 / second
+Bytes throughput: 455.354 MiB / second
 Custom values:
         Size: 280
 ===============================================================================
@@ -745,14 +745,14 @@ Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: Protobuf-Serialize
-Average time: 757 ns / iteration
-Minimal time: 757 ns / iteration
-Maximal time: 814 ns / iteration
-Total time: 757.209 ms
+Average time: 731 ns / iteration
+Minimal time: 731 ns / iteration
+Maximal time: 737 ns / iteration
+Total time: 731.319 ms
 Total iterations: 1000000
 Total bytes: 114.451 MiB
-Iterations throughput: 1320639 / second
-Bytes throughput: 151.138 MiB / second
+Iterations throughput: 1367392 / second
+Bytes throughput: 156.497 MiB / second
 Custom values:
         Size: 120
 ===============================================================================
@@ -779,19 +779,15 @@ Process configuaraion: release
 Local timestamp: Fri Mar 30 14:30:12 2018
 UTC timestamp: Fri Mar 30 11:30:12 2018
 ===============================================================================
-Benchmark: Protobuf-Deserialize
-Attempts: 5
-Iterations: 1000000
--------------------------------------------------------------------------------
 Phase: Protobuf-Deserialize
-Average time: 1.188 mcs / iteration
-Minimal time: 1.188 mcs / iteration
-Maximal time: 1.245 mcs / iteration
-Total time: 1.188 s
+Average time: 1.151 mcs / iteration
+Minimal time: 1.151 mcs / iteration
+Maximal time: 1.179 mcs / iteration
+Total time: 1.151 s
 Total iterations: 1000000
 Total bytes: 114.451 MiB
-Iterations throughput: 841648 / second
-Bytes throughput: 96.326 MiB / second
+Iterations throughput: 868654 / second
+Bytes throughput: 99.419 MiB / second
 Custom values:
         Size: 120
 ===============================================================================
@@ -1013,14 +1009,14 @@ Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: JSON-Serialize
-Average time: 956 ns / iteration
-Minimal time: 956 ns / iteration
-Maximal time: 956 ns / iteration
-Total time: 956.502 ms
+Average time: 922 ns / iteration
+Minimal time: 922 ns / iteration
+Maximal time: 931 ns / iteration
+Total time: 922.530 ms
 Total iterations: 1000000
 Total bytes: 283.247 MiB
-Iterations throughput: 1045475 / second
-Bytes throughput: 296.124 MiB / second
+Iterations throughput: 1083974 / second
+Bytes throughput: 307.027 MiB / second
 Custom values:
         Size: 297
 ===============================================================================
@@ -1051,14 +1047,14 @@ Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: JSON-Parse
-Average time: 2.467 mcs / iteration
-Minimal time: 2.467 mcs / iteration
-Maximal time: 2.471 mcs / iteration
-Total time: 2.467 s
+Average time: 2.479 mcs / iteration
+Minimal time: 2.479 mcs / iteration
+Maximal time: 2.483 mcs / iteration
+Total time: 2.479 s
 Total iterations: 1000000
 Total bytes: 283.247 MiB
-Iterations throughput: 405219 / second
-Bytes throughput: 114.793 MiB / second
+Iterations throughput: 403366 / second
+Bytes throughput: 114.255 MiB / second
 Custom values:
         Size: 297
 ===============================================================================
@@ -1089,16 +1085,15 @@ Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: JSON-Deserialize
-Average time: 671 ns / iteration
-Minimal time: 671 ns / iteration
-Maximal time: 674 ns / iteration
-Total time: 671.917 ms
+Average time: 918 ns / iteration
+Minimal time: 918 ns / iteration
+Maximal time: 975 ns / iteration
+Total time: 918.357 ms
 Total iterations: 1000000
 Total bytes: 3.834 MiB
-Iterations throughput: 1488278 / second
-Bytes throughput: 5.693 MiB / second
+Iterations throughput: 1088900 / second
+Bytes throughput: 4.157 MiB / second
 Custom values:
         Size: 297
 ===============================================================================
 ```
-..

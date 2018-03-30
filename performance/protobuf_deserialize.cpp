@@ -14,6 +14,7 @@ class DeserializationFixture
 {
 protected:
     std::string buffer;
+    Account deserialized;
 
     DeserializationFixture()
     {
@@ -35,7 +36,6 @@ BENCHMARK_FIXTURE(DeserializationFixture, "Protobuf-Deserialize", iterations)
     // Deserialize the account from the Protobuf stream
     protobuf::Account input;
     input.ParseFromString(buffer);
-    Account deserialized;
     deserialized.Deserialize(input);
     context.metrics().AddBytes(buffer.size());
     context.metrics().SetCustom("Size", (unsigned)buffer.size());

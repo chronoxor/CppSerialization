@@ -26,9 +26,8 @@ int main(int argc, char** argv)
     std::cout << "FlatBuffer size: " << builder.GetSize() << std::endl;
 
     // Deserialize the account from the FlatBuffer stream
-    auto root = MyDomain::flatbuf::GetAccount(builder.GetBufferPointer());
     MyDomain::Account deserialized;
-    deserialized.Deserialize(*root);
+    deserialized.Deserialize(*MyDomain::flatbuf::GetAccount(builder.GetBufferPointer()));
 
     // Show account content
     std::cout << std::endl;
