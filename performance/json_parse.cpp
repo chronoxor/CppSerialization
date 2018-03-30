@@ -26,14 +26,15 @@ protected:
         account.AddOrder(Order(2, "EURUSD", OrderSide::SELL, OrderType::LIMIT, 1.0, 100));
         account.AddOrder(Order(3, "EURUSD", OrderSide::BUY, OrderType::STOP, 1.5, 10));
 
-        // Serialize the account to the JSON file stream
+        // Serialize the account to the JSON stream
         Serializer<StringBuffer> serializer(buffer);
-        account.SerializeJSON(serializer);
+        account.Serialize(serializer);
     }
 };
 
 BENCHMARK_FIXTURE(ParserFixture, "JSON-Parse", iterations)
 {
+    // Parse JSON document from the JSON stream
     Document json = Parser::Parse(buffer.GetString());
     context.metrics().AddBytes(buffer.GetSize());
     context.metrics().SetCustom("Size", (unsigned)buffer.GetSize());

@@ -28,10 +28,10 @@ protected:
         account.AddOrder(Order(2, "EURUSD", OrderSide::SELL, OrderType::LIMIT, 1.0, 100));
         account.AddOrder(Order(3, "EURUSD", OrderSide::BUY, OrderType::STOP, 1.5, 10));
 
-        // Serialize the account to the JSON file stream
+        // Serialize the account to the JSON stream
         StringBuffer buffer;
         Serializer<StringBuffer> serializer(buffer);
-        account.SerializeJSON(serializer);
+        account.Serialize(serializer);
 
         // Parse JSON string
         json = Parser::Parse(buffer.GetString());
@@ -41,7 +41,8 @@ protected:
 
 BENCHMARK_FIXTURE(DeserializationFixture, "JSON-Deserialize", iterations)
 {
-    deserialized.DeserializeJSON(json);
+    // Deserialize the account from the JSON stream
+    deserialized.Deserialize(json);
     context.metrics().AddBytes(json.Size());
     context.metrics().SetCustom("Size", (unsigned)size);
 }

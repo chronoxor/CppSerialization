@@ -20,7 +20,7 @@ TEST_CASE("FlatBuffers", "[CppSerialization]")
 
     // Serialize the account to the FlatBuffer stream
     flatbuffers::FlatBufferBuilder builder;
-    builder.Finish(account.SerializeFlatBuffer(builder));
+    builder.Finish(account.Serialize(builder));
 
     REQUIRE(builder.GetSize() > 0);
     REQUIRE(builder.GetBufferPointer() != nullptr);
@@ -28,7 +28,7 @@ TEST_CASE("FlatBuffers", "[CppSerialization]")
     // Deserialize the account from the FlatBuffer stream
     auto root = flatbuf::GetAccount(builder.GetBufferPointer());
     Account deserialized;
-    deserialized.DeserializeFlatBuffer(*root);
+    deserialized.Deserialize(*root);
 
     REQUIRE(deserialized.Id == 1);
     REQUIRE(deserialized.Name == "Test");

@@ -1,18 +1,16 @@
 //
-// Created by Ivan Shynkarenka on 28.02.2017
+// Created by Ivan Shynkarenka on 30.03.2017
 //
 
 #include "test.h"
 
 #include "../domain/domain.h"
 
-#include "serialization/json/parser.h"
-
 using namespace CppCommon;
-using namespace CppSerialization::JSON;
+using namespace CppSerialization;
 using namespace MyDomain;
 
-TEST_CASE("JSON", "[CppSerialization]")
+TEST_CASE("Protobuf", "[CppSerialization]")
 {
     // Create a new account with some orders
     Account account(1, "Test", "USD", 1000);
@@ -20,20 +18,18 @@ TEST_CASE("JSON", "[CppSerialization]")
     account.AddOrder(Order(2, "EURUSD", OrderSide::SELL, OrderType::LIMIT, 1.0, 100));
     account.AddOrder(Order(3, "EURUSD", OrderSide::BUY, OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the JSON file stream
-    StringBuffer buffer;
-    Serializer<StringBuffer> serializer(buffer);
-    account.Serialize(serializer);
+    // Serialize the account to the Protobuf stream
+    MyDomain::protobuf::Account ouput;
+    account.Serialize(ouput);
+    auto buffer = ouput.SerializeAsString();
 
-    REQUIRE(buffer.GetLength() > 0);
-    REQUIRE(buffer.GetString() != nullptr);
+    REQUIRE(buffer.size() > 0);
 
-    // Parse JSON string
-    Document json = Parser::Parse(buffer.GetString());
-
-    // Deserialize the account from the JSON file stream
-    Account deserialized;
-    deserialized.Deserialize(json);
+    // Deserialize the account from the Protobuf stream
+    MyDomain::protobuf::Account input;
+    input.ParseFromString(buffer);
+    MyDomain::Account deserialized;
+    deserialized.Deserialize(input);
 
     REQUIRE(deserialized.Id == 1);
     REQUIRE(deserialized.Name == "Test");

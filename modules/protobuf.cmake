@@ -9,6 +9,7 @@ if(NOT TARGET libprotobuf)
   SET(protobuf_BUILD_EXAMPLES OFF CACHE BOOL "Build examples" FORCE)
   SET(protobuf_BUILD_PROTOC_BINARIES ON CACHE BOOL "Build libprotoc and protoc compiler" FORCE)
   SET(protobuf_BUILD_SHARED_LIBS OFF CACHE BOOL "Build Shared Libraries" FORCE)
+  SET(protobuf_MSVC_STATIC_RUNTIME OFF CACHE BOOL "Link static runtime libraries" FORCE)
   SET(protobuf_WITH_ZLIB OFF CACHE BOOL "Build with zlib support" FORCE)  
 
   # Module subdirectory

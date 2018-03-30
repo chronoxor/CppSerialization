@@ -7,7 +7,7 @@
 [![Windows build status](https://img.shields.io/appveyor/ci/chronoxor/CppSerialization/master.svg?label=Windows)](https://ci.appveyor.com/project/chronoxor/CppSerialization)
 
 C++ Serialization Library provides functionality to serialize/deserialize
-objects in/from different formats such as Flatbuffers, JSON.
+objects in/from different formats such as Flatbuffers, Protobuf, JSON.
 
 [CppSerialization API reference](http://chronoxor.github.io/CppSerialization/index.html)
 
@@ -29,6 +29,12 @@ objects in/from different formats such as Flatbuffers, JSON.
     * [FlatBuffers serialization methods](#flatbuffers-serialization-methods)
     * [FlatBuffers example](#flatbuffers-example)
     * [FlatBuffers performance](#flatbuffers-performance)
+  * [Protobuf serialization](#protobuf-serialization)
+    * [Protobuf schema](#protobuf-schema)
+    * [Protobuf schema compilation](#protobuf-schema-compilation)
+    * [Protobuf serialization methods](#protobuf-serialization-methods)
+    * [Protobuf example](#protobuf-example)
+    * [Protobuf performance](#protobuf-performance)
   * [JSON serialization](#json-serialization)
     * [JSON serialization methods](#json-serialization-methods)
     * [JSON example](#json-example)
@@ -37,6 +43,7 @@ objects in/from different formats such as Flatbuffers, JSON.
 # Features
 * Cross platform (Linux, OSX, Windows)
 * Fast binary serialization using [FlatBuffers library](https://google.github.io/flatbuffers)
+* Fast binary serialization using [Protobuf library](https://developers.google.com/protocol-buffers)
 * Fast JSON serialization using [RapidJSON library](http://rapidjson.org)
 
 # Requirements
@@ -187,7 +194,7 @@ FlatBuffers serialization starts with describing a model schema. For our domain
 model the schema will be the following:
 
 ```
-namespace MyDomain.flat;
+namespace MyDomain.flatbuf;
 
 enum OrderSide : byte
 {
@@ -263,12 +270,12 @@ struct Order
 
     // FlatBuffers serialization
 
-    flatbuffers::Offset<flat::Order> SerializeFlatbuffer(flatbuffers::FlatBufferBuilder& builder)
+    flatbuffers::Offset<flatbuf::Order> Serialize(flatbuffers::FlatBufferBuilder& builder)
     {
-        return flat::CreateOrderDirect(builder, Id, Symbol, (flat::OrderSide)Side, (flat::OrderType)Type, Price, Volume);
+        return flatbuf::CreateOrderDirect(builder, Id, Symbol, (flatbuf::OrderSide)Side, (flatbuf::OrderType)Type, Price, Volume);
     }
 
-    void DeserializeFlatbuffer(const MyDomain::flat::Order& value)
+    void Deserialize(const flatbuf::Order& value)
     {
         Id = value.Id();
         std::strncpy(Symbol, value.Symbol()->c_str(), std::min((size_t)value.Symbol()->Length() + 1, sizeof(Symbol)));
@@ -287,12 +294,12 @@ struct Balance
 
     // FlatBuffers serialization
 
-    flatbuffers::Offset<flat::Balance> SerializeFlatBuffer(flatbuffers::FlatBufferBuilder& builder)
+    flatbuffers::Offset<flatbuf::Balance> Serialize(flatbuffers::FlatBufferBuilder& builder)
     {
-        return flat::CreateBalanceDirect(builder, Currency, Amount);
+        return flatbuf::CreateBalanceDirect(builder, Currency, Amount);
     }
 
-    void DeserializeFlatBuffer(const MyDomain::flat::Balance& value)
+    void Deserialize(const flatbuf::Balance& value)
     {
         std::strncpy(Currency, value.Currency()->c_str(), std::min((size_t)value.Currency()->Length() + 1, sizeof(Currency)));
         Amount = value.Amount();
@@ -307,24 +314,24 @@ struct Account
 
     // FlatBuffers serialization
 
-    flatbuffers::Offset<flat::Account> SerializeFlatBuffer(flatbuffers::FlatBufferBuilder& builder)
+    flatbuffers::Offset<flatbuf::Account> Serialize(flatbuffers::FlatBufferBuilder& builder)
     {
-        auto wallet = Wallet.SerializeFlatBuffer(builder);
-        std::vector<flatbuffers::Offset<flat::Order>> orders;
+        auto wallet = Wallet.Serialize(builder);
+        std::vector<flatbuffers::Offset<flatbuf::Order>> orders;
         for (auto order : Orders)
-            orders.emplace_back(order.second.SerializeFlatbuffer(builder));
-        return flat::CreateAccountDirect(builder, Id, Name.c_str(), wallet, &orders);
+            orders.emplace_back(order.second.Serialize(builder));
+        return flatbuf::CreateAccountDirect(builder, Id, Name.c_str(), wallet, &orders);
     }
 
-    void DeserializeFlatBuffer(const MyDomain::flat::Account& value)
+    void Deserialize(const flatbuf::Account& value)
     {
         Id = value.Id();
         Name = value.Name()->str();
-        Wallet.DeserializeFlatBuffer(*value.Wallet());
-        for (auto item : *value.Orders())
+        Wallet.Deserialize(*value.Wallet());
+        for (auto& item : *value.Orders())
         {
             Order order;
-            order.DeserializeFlatbuffer(*item);
+            order.Deserialize(*item);
             AddOrder(order);
         }
     }
@@ -353,15 +360,15 @@ int main(int argc, char** argv)
 
     // Serialize the account to the FlatBuffer stream
     flatbuffers::FlatBufferBuilder builder;
-    builder.Finish(account.SerializeFlatBuffer(builder));
+    builder.Finish(account.Serialize(builder));
 
     // Show the serialized FlatBuffer size
     std::cout << "FlatBuffer size: " << builder.GetSize() << std::endl;
 
     // Deserialize the account from the FlatBuffer stream
-    auto root = MyDomain::flat::GetAccount(builder.GetBufferPointer());
+    auto root = MyDomain::flatbuf::GetAccount(builder.GetBufferPointer());
     MyDomain::Account deserialized;
-    deserialized.DeserializeFlatBuffer(*root);
+    deserialized.Deserialize(*root);
 
     // Show account content
     std::cout << std::endl;
@@ -424,12 +431,16 @@ Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: FlatBuffers-Serialize
-Average time: 785 ns / iteration
-Minimal time: 785 ns / iteration
-Maximal time: 789 ns / iteration
-Total time: 785.804 ms
+Average time: 985 ns / iteration
+Minimal time: 985 ns / iteration
+Maximal time: 986 ns / iteration
+Total time: 985.224 ms
 Total iterations: 1000000
-Iterations throughput: 1272580 / second
+Total bytes: 267.029 MiB
+Iterations throughput: 1014997 / second
+Bytes throughput: 271.034 MiB / second
+Custom values:
+        Size: 280
 ===============================================================================
 ```
 
@@ -459,12 +470,330 @@ Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: FlatBuffers-Deserialize
-Average time: 397 ns / iteration
-Minimal time: 397 ns / iteration
-Maximal time: 399 ns / iteration
-Total time: 397.788 ms
+Average time: 395 ns / iteration
+Minimal time: 395 ns / iteration
+Maximal time: 403 ns / iteration
+Total time: 395.743 ms
 Total iterations: 1000000
-Iterations throughput: 2513901 / second
+Total bytes: 267.029 MiB
+Iterations throughput: 2526888 / second
+Bytes throughput: 674.770 MiB / second
+Custom values:
+        Size: 280
+===============================================================================
+```
+
+# Protobuf serialization
+Protobuf serialization is based on [Protobuf library](https://developers.google.com/protocol-buffers).
+
+## Protobuf schema
+Protobuf serialization starts with describing a model schema. For our domain
+model the schema will be the following:
+
+```
+// [START declaration]
+syntax = "proto3";
+package MyDomain.protobuf;
+// [END declaration]
+
+// [START messages]
+enum OrderSide
+{
+    BUY = 0;
+    SELL = 1;
+}
+
+enum OrderType
+{
+    MARKET = 0;
+    LIMIT = 1;
+    STOP = 2;
+}
+
+message Order
+{
+    int32 Id = 1;
+    string Symbol = 2;
+    OrderSide Side = 3;
+    OrderType Type = 4;
+    double Price = 5;
+    double Volume = 6;
+}
+
+message Balance
+{
+    string Currency = 1;
+    double Amount = 2;
+}
+
+message Account
+{
+    int32 Id = 1;
+    string Name = 2;
+    Balance Wallet = 3;
+    repeated Order Orders = 4;
+}
+// [END messages]
+```
+
+## Protobuf schema compilation
+The next step is a schema compilation using 'protoc' utility which will create
+a generated code for required programming language.
+
+The following command will create a C++ generated code:
+```
+protoc --proto_path=. --cpp_out=. domain.proto
+```
+
+It is possible to use add_custom_command() in CMakeLists.txt to generate code
+using 'cmake' utility:
+```
+add_custom_command(TARGET example POST_BUILD COMMAND protoc --proto_path=. --cpp_out=. domain.proto)
+```
+
+As the result 'domain.pb.h' and 'domain.pb.cc' files will be created.
+
+## Protobuf serialization methods
+Finally you should extend your domain model with a FlatBuffers serialization
+methods:
+
+```C++
+#include "domain_generated.h"
+
+#include <algorithm>
+
+namespace MyDomain {
+
+struct Order
+{
+    ...
+
+    // Protobuf serialization
+
+    protobuf::Order& Serialize(protobuf::Order& value)
+    {
+        value.set_id(Id);
+        value.set_symbol(Symbol);
+        value.set_side((MyDomain::protobuf::OrderSide)Side);
+        value.set_type((MyDomain::protobuf::OrderType)Type);
+        value.set_price(Price);
+        value.set_volume(Volume);
+        return value;
+    }
+
+    void Deserialize(const protobuf::Order& value)
+    {
+        Id = value.id();
+        std::strncpy(Symbol, value.symbol().c_str(), std::min((size_t)value.symbol().size() + 1, sizeof(Symbol)));
+        Side = (OrderSide)value.side();
+        Type = (OrderType)value.type();
+        Price = value.price();
+        Volume = value.volume();
+    }
+
+    ...
+};
+
+struct Balance
+{
+    ...
+
+    // Protobuf serialization
+
+    protobuf::Balance& Serialize(protobuf::Balance& value)
+    {
+        value.set_currency(Currency);
+        value.set_amount(Amount);
+        return value;
+    }
+
+    void Deserialize(const protobuf::Balance& value)
+    {
+        std::strncpy(Currency, value.currency().c_str(), std::min((size_t)value.currency().size() + 1, sizeof(Currency)));
+        Amount = value.amount();
+    }
+
+    ...
+};
+
+struct Account
+{
+    ...
+
+    // Protobuf serialization
+
+    protobuf::Account& Serialize(protobuf::Account& value)
+    {
+        value.set_id(Id);
+        value.set_name(Name);
+        value.set_allocated_wallet(&Wallet.Serialize(*value.wallet().New(value.GetArena())));
+        for (auto& order : Orders)
+            order.second.Serialize(*value.add_orders());
+        return value;
+    }
+
+    void Deserialize(const protobuf::Account& value)
+    {
+        Id = value.id();
+        Name = value.name();
+        Wallet.Deserialize(value.wallet());
+        for (int i = 0; i < value.orders_size(); ++i)
+        {
+            Order order;
+            order.Deserialize(value.orders(i));
+            AddOrder(order);
+        }
+    }
+
+    ...
+};
+
+} // namespace MyDomain
+```
+
+## Protobuf example
+Here comes the usage example of Protobuf serialize/deserialize functionality:
+
+```C++
+#include "../domain/domain.h"
+
+#include <iostream>
+
+int main(int argc, char** argv)
+{
+    // Create a new account with some orders
+    MyDomain::Account account(1, "Test", "USD", 1000);
+    account.AddOrder(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
+    account.AddOrder(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
+    account.AddOrder(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
+
+    // Serialize the account to the Protobuf stream
+    MyDomain::protobuf::Account ouput;
+    account.Serialize(ouput);
+    auto buffer = ouput.SerializeAsString();
+
+    // Show the serialized Protobuf size
+    std::cout << "Protobuf size: " << buffer.size() << std::endl;
+
+    // Deserialize the account from the Protobuf stream
+    MyDomain::protobuf::Account input;
+    input.ParseFromString(buffer);
+    MyDomain::Account deserialized;
+    deserialized.Deserialize(input);
+
+    // Show account content
+    std::cout << std::endl;
+    std::cout << "Account.Id = " << deserialized.Id << std::endl;
+    std::cout << "Account.Name = " << deserialized.Name << std::endl;
+    std::cout << "Account.Wallet.Currency = " << deserialized.Wallet.Currency << std::endl;
+    std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
+    for (auto& order : deserialized.Orders)
+    {
+        std::cout << "Account.Order => Id: " << order.second.Id
+            << ", Symbol: " << order.second.Symbol
+            << ", Side: " << (int)order.second.Side
+            << ", Type: " << (int)order.second.Type
+            << ", Price: " << order.second.Price
+            << ", Volume: " << order.second.Volume
+            << std::endl;
+    }
+
+    // Delete all global objects allocated by Protobuf
+    google::protobuf::ShutdownProtobufLibrary();
+
+    return 0;
+}
+```
+
+Output of the example is the following:
+```
+Protobuf size: 120
+
+Account.Id = 1
+Account.Name = Test
+Account.Wallet.Currency = USD
+Account.Wallet.Amount = 1000
+Account.Order => Id: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
+Account.Order => Id: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
+Account.Order => Id: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
+```
+
+## Protobuf performance
+Protobuf serialization performance of the provided domain model is the
+following:
+```
+===============================================================================
+CppBenchmark report. Version 1.0.0.0
+===============================================================================
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+CPU logical cores: 8
+CPU physical cores: 4
+CPU clock speed: 4.008 GHz
+CPU Hyper-Threading: enabled
+RAM total: 31.903 GiB
+RAM free: 20.224 GiB
+===============================================================================
+OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS bits: 64-bit
+Process bits: 64-bit
+Process configuaraion: release
+Local timestamp: Fri Mar 30 14:29:43 2018
+UTC timestamp: Fri Mar 30 11:29:43 2018
+===============================================================================
+Benchmark: Protobuf-Serialize
+Attempts: 5
+Iterations: 1000000
+-------------------------------------------------------------------------------
+Phase: Protobuf-Serialize
+Average time: 757 ns / iteration
+Minimal time: 757 ns / iteration
+Maximal time: 814 ns / iteration
+Total time: 757.209 ms
+Total iterations: 1000000
+Total bytes: 114.451 MiB
+Iterations throughput: 1320639 / second
+Bytes throughput: 151.138 MiB / second
+Custom values:
+        Size: 120
+===============================================================================
+```
+
+Protobuf deserialization performance of the provided domain model is the
+following:
+```
+===============================================================================
+CppBenchmark report. Version 1.0.0.0
+===============================================================================
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+CPU logical cores: 8
+CPU physical cores: 4
+CPU clock speed: 4.008 GHz
+CPU Hyper-Threading: enabled
+RAM total: 31.903 GiB
+RAM free: 20.189 GiB
+===============================================================================
+OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS bits: 64-bit
+Process bits: 64-bit
+Process configuaraion: release
+Local timestamp: Fri Mar 30 14:30:12 2018
+UTC timestamp: Fri Mar 30 11:30:12 2018
+===============================================================================
+Benchmark: Protobuf-Deserialize
+Attempts: 5
+Iterations: 1000000
+-------------------------------------------------------------------------------
+Phase: Protobuf-Deserialize
+Average time: 1.188 mcs / iteration
+Minimal time: 1.188 mcs / iteration
+Maximal time: 1.245 mcs / iteration
+Total time: 1.188 s
+Total iterations: 1000000
+Total bytes: 114.451 MiB
+Iterations throughput: 841648 / second
+Bytes throughput: 96.326 MiB / second
+Custom values:
+        Size: 120
 ===============================================================================
 ```
 
@@ -488,7 +817,7 @@ struct Order
     // JSON serialization
 
     template<typename OutputStream>
-    void SerializeJSON(CppSerialization::JSON::Serializer<OutputStream>& serializer)
+    void Serialize(CppSerialization::JSON::Serializer<OutputStream>& serializer)
     {
         serializer.StartObject();
         serializer.Pair("id", Id);
@@ -501,7 +830,7 @@ struct Order
     }
 
     template<typename JSON>
-    void DeserializeJSON(const JSON& json)
+    void Deserialize(const JSON& json)
     {
         using namespace CppSerialization::JSON;
 
@@ -523,7 +852,7 @@ struct Balance
     // JSON serialization
 
     template<typename OutputStream>
-    void SerializeJSON(CppSerialization::JSON::Serializer<OutputStream>& serializer)
+    void Serialize(CppSerialization::JSON::Serializer<OutputStream>& serializer)
     {
         serializer.StartObject();
         serializer.Pair("currency", Currency);
@@ -532,7 +861,7 @@ struct Balance
     }
 
     template<typename JSON>
-    void DeserializeJSON(const JSON& json)
+    void Deserialize(const JSON& json)
     {
         using namespace CppSerialization::JSON;
 
@@ -550,23 +879,23 @@ struct Account
     // JSON serialization
 
     template<typename OutputStream>
-    void SerializeJSON(CppSerialization::JSON::Serializer<OutputStream>& serializer)
+    void Serialize(CppSerialization::JSON::Serializer<OutputStream>& serializer)
     {
         serializer.StartObject();
         serializer.Pair("id", Id);
         serializer.Pair("name", Name);
         serializer.Key("wallet");
-        Wallet.SerializeJSON(serializer);
+        Wallet.Serialize(serializer);
         serializer.Key("orders");
         serializer.StartArray();
-        for (auto order : Orders)
-            order.second.SerializeJSON(serializer);
+        for (auto& order : Orders)
+            order.second.Serialize(serializer);
         serializer.EndArray();
         serializer.EndObject();
     }
 
     template<typename JSON>
-    void DeserializeJSON(const JSON& json)
+    void Deserialize(const JSON& json)
     {
         using namespace CppSerialization::JSON;
 
@@ -574,12 +903,12 @@ struct Account
         Deserializer::Find(json, "name", Name);
         Deserializer::FindObject(json, "wallet", [this](const Value::ConstObject& object)
         {
-            Wallet.DeserializeJSON(object);
+            Wallet.Deserialize(object);
         });
         Deserializer::FindArray(json, "orders", [this](const Value& item)
         {
             Order order;
-            order.DeserializeJSON(item);
+            order.Deserialize(item);
             AddOrder(order);
         });
     }
@@ -611,7 +940,7 @@ int main(int argc, char** argv)
     // Serialize the account to the JSON stream
     CppSerialization::JSON::StringBuffer buffer;
     CppSerialization::JSON::Serializer<CppSerialization::JSON::StringBuffer> serializer(buffer);
-    account.SerializeJSON(serializer);
+    account.Serialize(serializer);
 
     // Show the serialized JSON
     std::cout << "JSON: " << buffer.GetString() << std::endl;
@@ -621,7 +950,7 @@ int main(int argc, char** argv)
 
     // Deserialize the account from the JSON stream
     MyDomain::Account deserialized;
-    deserialized.DeserializeJSON(json);
+    deserialized.Deserialize(json);
 
     // Show account content
     std::cout << std::endl;
@@ -646,7 +975,8 @@ int main(int argc, char** argv)
 
 Output of the example is the following:
 ```
-JSON: {"id":1,"name":"Test","wallet":{"currency":"USD","amount":1000.0},"orders":[{"id":1,"symbol":"EURUSD","side":0,"type":0,"price":1.23456,"volume":1000.0},{"id":2,"symbol":"EURUSD","side":1,"type":1,"price":1.0,"volume":100.0},{"id":3,"symbol":"EURUSD","side":0,"type":2,"price":1.5,"volume":10.0}]}
+JSON content: {"id":1,"name":"Test","wallet":{"currency":"USD","amount":1000.0},"orders":[{"id":1,"symbol":"EURUSD","side":0,"type":0,"price":1.23456,"volume":1000.0},{"id":2,"symbol":"EURUSD","side":1,"type":1,"price":1.0,"volume":100.0},{"id":3,"symbol":"EURUSD","side":0,"type":2,"price":1.5,"volume":10.0}]}
+JSON size: 297
 
 Account.Id = 1
 Account.Name = Test
@@ -683,14 +1013,16 @@ Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: JSON-Serialize
-Average time: 1.051 mcs / iteration
-Minimal time: 1.051 mcs / iteration
-Maximal time: 1.057 mcs / iteration
-Total time: 1.051 s
+Average time: 956 ns / iteration
+Minimal time: 956 ns / iteration
+Maximal time: 956 ns / iteration
+Total time: 956.502 ms
 Total iterations: 1000000
 Total bytes: 283.247 MiB
-Iterations throughput: 950673 / second
-Bytes throughput: 269.276 MiB / second
+Iterations throughput: 1045475 / second
+Bytes throughput: 296.124 MiB / second
+Custom values:
+        Size: 297
 ===============================================================================
 ```
 
@@ -719,14 +1051,16 @@ Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: JSON-Parse
-Average time: 2.609 mcs / iteration
-Minimal time: 2.609 mcs / iteration
-Maximal time: 2.624 mcs / iteration
-Total time: 2.609 s
+Average time: 2.467 mcs / iteration
+Minimal time: 2.467 mcs / iteration
+Maximal time: 2.471 mcs / iteration
+Total time: 2.467 s
 Total iterations: 1000000
 Total bytes: 283.247 MiB
-Iterations throughput: 383266 / second
-Bytes throughput: 108.570 MiB / second
+Iterations throughput: 405219 / second
+Bytes throughput: 114.793 MiB / second
+Custom values:
+        Size: 297
 ===============================================================================
 ```
 
@@ -755,11 +1089,16 @@ Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: JSON-Deserialize
-Average time: 709 ns / iteration
-Minimal time: 709 ns / iteration
-Maximal time: 747 ns / iteration
-Total time: 709.339 ms
+Average time: 671 ns / iteration
+Minimal time: 671 ns / iteration
+Maximal time: 674 ns / iteration
+Total time: 671.917 ms
 Total iterations: 1000000
-Iterations throughput: 1409762 / second
+Total bytes: 3.834 MiB
+Iterations throughput: 1488278 / second
+Bytes throughput: 5.693 MiB / second
+Custom values:
+        Size: 297
 ===============================================================================
 ```
+..

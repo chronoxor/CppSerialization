@@ -23,7 +23,7 @@ int main(int argc, char** argv)
     // Serialize the account to the JSON stream
     CppSerialization::JSON::StringBuffer buffer;
     CppSerialization::JSON::Serializer<CppSerialization::JSON::StringBuffer> serializer(buffer);
-    account.SerializeJSON(serializer);
+    account.Serialize(serializer);
 
     // Show the serialized JSON content
     std::cout << "JSON content: " << buffer.GetString() << std::endl;
@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 
     // Deserialize the account from the JSON stream
     MyDomain::Account deserialized;
-    deserialized.DeserializeJSON(json);
+    deserialized.Deserialize(json);
 
     // Show account content
     std::cout << std::endl;

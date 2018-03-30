@@ -29,6 +29,7 @@ include(SetPlatformFeatures)
 add_subdirectory("modules")
 
 # Link libraries
+list(APPEND LINKLIBS libprotobuf)
 list(APPEND LINKLIBS cppcommon)
 
 # System directories

@@ -1,8 +1,8 @@
 /*!
-    \file flatbuffers.cpp
-    \brief FlatBuffers serialization example
+    \file protobuf.cpp
+    \brief Protobuf serialization example
     \author Ivan Shynkarenka
-    \date 03.03.2017
+    \date 30.03.2017
     \copyright MIT License
 */
 
@@ -18,17 +18,19 @@ int main(int argc, char** argv)
     account.AddOrder(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
     account.AddOrder(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the FlatBuffer stream
-    flatbuffers::FlatBufferBuilder builder;
-    builder.Finish(account.Serialize(builder));
+    // Serialize the account to the Protobuf stream
+	MyDomain::protobuf::Account ouput;
+	account.Serialize(ouput);
+	auto buffer = ouput.SerializeAsString();
 
-    // Show the serialized FlatBuffer size
-    std::cout << "FlatBuffer size: " << builder.GetSize() << std::endl;
+    // Show the serialized Protobuf size
+    std::cout << "Protobuf size: " << buffer.size() << std::endl;
 
-    // Deserialize the account from the FlatBuffer stream
-    auto root = MyDomain::flatbuf::GetAccount(builder.GetBufferPointer());
+    // Deserialize the account from the Protobuf stream
+	MyDomain::protobuf::Account input;
+	input.ParseFromString(buffer);
     MyDomain::Account deserialized;
-    deserialized.Deserialize(*root);
+    deserialized.Deserialize(input);
 
     // Show account content
     std::cout << std::endl;
@@ -46,6 +48,9 @@ int main(int argc, char** argv)
             << ", Volume: " << order.second.Volume
             << std::endl;
     }
+
+	// Delete all global objects allocated by Protobuf
+	google::protobuf::ShutdownProtobufLibrary();
 
     return 0;
 }
