@@ -444,30 +444,30 @@ CPU physical cores: 4
 CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
 RAM total: 31.903 GiB
-RAM free: 16.1011 GiB
+RAM free: 19.084 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Fri Mar  3 17:30:24 2017
-UTC timestamp: Fri Mar  3 14:30:24 2017
+Local timestamp: Sat Mar 31 12:05:59 2018
+UTC timestamp: Sat Mar 31 09:05:59 2018
 ===============================================================================
-Benchmark: FlatBuffers-Serialize
+Benchmark: Cap'n'Proto-Serialize
 Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
-Phase: FlatBuffers-Serialize
-Average time: 995 ns / iteration
-Minimal time: 995 ns / iteration
-Maximal time: 996 ns / iteration
-Total time: 995.554 ms
+Phase: Cap'n'Proto-Serialize
+Average time: 664 ns / iteration
+Minimal time: 664 ns / iteration
+Maximal time: 671 ns / iteration
+Total time: 664.881 ms
 Total iterations: 1000000
-Total bytes: 267.029 MiB
-Iterations throughput: 1004465 / second
-Bytes throughput: 268.226 MiB / second
+Total bytes: 198.373 MiB
+Iterations throughput: 1504027 / second
+Bytes throughput: 298.353 MiB / second
 Custom values:
-        Size: 280
+        Size: 208
 ===============================================================================
 ```
 
@@ -483,30 +483,30 @@ CPU physical cores: 4
 CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
 RAM total: 31.903 GiB
-RAM free: 16.938 GiB
+RAM free: 19.089 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Fri Mar  3 17:31:26 2017
-UTC timestamp: Fri Mar  3 14:31:26 2017
+Local timestamp: Sat Mar 31 12:06:49 2018
+UTC timestamp: Sat Mar 31 09:06:49 2018
 ===============================================================================
-Benchmark: FlatBuffers-Deserialize
+Benchmark: Cap'n'Proto-Deserialize
 Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
-Phase: FlatBuffers-Deserialize
-Average time: 586 ns / iteration
-Minimal time: 586 ns / iteration
-Maximal time: 609 ns / iteration
-Total time: 586.430 ms
+Phase: Cap'n'Proto-Deserialize
+Average time: 677 ns / iteration
+Minimal time: 677 ns / iteration
+Maximal time: 683 ns / iteration
+Total time: 677.032 ms
 Total iterations: 1000000
-Total bytes: 267.029 MiB
-Iterations throughput: 1705232 / second
-Bytes throughput: 455.354 MiB / second
+Total bytes: 198.373 MiB
+Iterations throughput: 1477033 / second
+Bytes throughput: 292.1014 MiB / second
 Custom values:
-        Size: 280
+        Size: 208
 ===============================================================================
 ```
 
