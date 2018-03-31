@@ -34,10 +34,11 @@ protected:
 
 BENCHMARK_FIXTURE(ParserFixture, "JSON-Parse", iterations)
 {
-    // Parse JSON document from the JSON stream
-    Document json = Parser::Parse(buffer.GetString());
     context.metrics().AddBytes(buffer.GetSize());
     context.metrics().SetCustom("Size", (unsigned)buffer.GetSize());
+
+    // Parse JSON document from the JSON stream
+    Document json = Parser::Parse(buffer.GetString());
 }
 
 BENCHMARK_MAIN()

@@ -1,5 +1,5 @@
 //
-// Created by Ivan Shynkarenka on 30.03.2018
+// Created by Ivan Shynkarenka on 31.03.2018
 //
 
 #include "benchmark/cppbenchmark.h"
@@ -14,7 +14,6 @@ class SerializationFixture
 {
 protected:
     Account account;
-    std::string buffer;
 
     SerializationFixture() : account(1, "Test", "USD", 1000)
     {
@@ -23,23 +22,19 @@ protected:
         account.AddOrder(Order(2, "EURUSD", OrderSide::SELL, OrderType::LIMIT, 1.0, 100));
         account.AddOrder(Order(3, "EURUSD", OrderSide::BUY, OrderType::STOP, 1.5, 10));
     }
-
-    ~SerializationFixture()
-    {
-        // Delete all global objects allocated by Protobuf
-        google::protobuf::ShutdownProtobufLibrary();
-    }
 };
 
-BENCHMARK_FIXTURE(SerializationFixture, "Protobuf-Serialize", iterations)
+BENCHMARK_FIXTURE(SerializationFixture, "Cap'n'Proto-Serialize", iterations)
 {
-    // Serialize the account to the Protobuf stream
-    protobuf::Account output;
-    account.Serialize(output);
-    output.SerializeToString(&buffer);
+    // Serialize the account to the Cap'n'Proto stream
+    capnp::MallocMessageBuilder output;
+    MyDomain::capnproto::Account::Builder builder = output.initRoot<MyDomain::capnproto::Account>();
+    account.Serialize(builder);
+    kj::VectorOutputStream buffer;
+    writeMessage(buffer, output);
 
-    context.metrics().AddBytes(buffer.size());
-    context.metrics().SetCustom("Size", (unsigned)buffer.size());
+    context.metrics().AddBytes(buffer.getArray().size());
+    context.metrics().SetCustom("Size", (unsigned)buffer.getArray().size());
 }
 
 BENCHMARK_MAIN()

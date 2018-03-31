@@ -28,8 +28,10 @@ protected:
 
 BENCHMARK_FIXTURE(SerializationFixture, "FlatBuffers-Serialize", iterations)
 {
+    // Serialize the account to the FlatBuffer stream
     builder.Clear();
     builder.Finish(account.Serialize(builder));
+
     context.metrics().AddBytes(builder.GetSize());
     context.metrics().SetCustom("Size", builder.GetSize());
 }

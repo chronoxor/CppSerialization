@@ -25,20 +25,27 @@ protected:
         account.AddOrder(Order(3, "EURUSD", OrderSide::BUY, OrderType::STOP, 1.5, 10));
 
         // Serialize the account to the Protobuf stream
-        protobuf::Account ouput;
-        account.Serialize(ouput);
-        buffer = ouput.SerializeAsString();
+        protobuf::Account output;
+        account.Serialize(output);
+        buffer = output.SerializeAsString();
+    }
+
+    ~DeserializationFixture()
+    {
+        // Delete all global objects allocated by Protobuf
+        google::protobuf::ShutdownProtobufLibrary();
     }
 };
 
 BENCHMARK_FIXTURE(DeserializationFixture, "Protobuf-Deserialize", iterations)
 {
+    context.metrics().AddBytes(buffer.size());
+    context.metrics().SetCustom("Size", (unsigned)buffer.size());
+
     // Deserialize the account from the Protobuf stream
     protobuf::Account input;
     input.ParseFromString(buffer);
     deserialized.Deserialize(input);
-    context.metrics().AddBytes(buffer.size());
-    context.metrics().SetCustom("Size", (unsigned)buffer.size());
 }
 
 BENCHMARK_MAIN()

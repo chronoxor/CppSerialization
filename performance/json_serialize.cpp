@@ -32,6 +32,7 @@ BENCHMARK_FIXTURE(SerializationFixture, "JSON-Serialize", iterations)
     buffer.Clear();
     serializer.Reset(buffer);
     account.Serialize(serializer);
+
     context.metrics().AddBytes(buffer.GetSize());
     context.metrics().SetCustom("Size", (unsigned)buffer.GetSize());
 }

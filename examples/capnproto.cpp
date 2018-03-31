@@ -1,8 +1,8 @@
 /*!
-    \file protobuf.cpp
-    \brief Protobuf serialization example
+    \file capnproto.cpp
+    \brief Cap'n'Proto serialization example
     \author Ivan Shynkarenka
-    \date 30.03.2017
+    \date 31.03.2018
     \copyright MIT License
 */
 
@@ -18,19 +18,21 @@ int main(int argc, char** argv)
     account.AddOrder(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
     account.AddOrder(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the Protobuf stream
-    MyDomain::protobuf::Account output;
-    account.Serialize(output);
-    auto buffer = output.SerializeAsString();
+    // Serialize the account to the Cap'n'Proto stream
+    capnp::MallocMessageBuilder output;
+    MyDomain::capnproto::Account::Builder builder = output.initRoot<MyDomain::capnproto::Account>();
+    account.Serialize(builder);
+	kj::VectorOutputStream buffer;
+	writeMessage(buffer, output);
 
-    // Show the serialized Protobuf size
-    std::cout << "Protobuf size: " << buffer.size() << std::endl;
+    // Show the serialized Cap'n'Proto size
+    std::cout << "Protobuf size: " << buffer.getArray().size() << std::endl;
 
-    // Deserialize the account from the Protobuf stream
-    MyDomain::protobuf::Account input;
-    input.ParseFromString(buffer);
+    // Deserialize the account from the Cap'n'Proto stream
+	kj::ArrayInputStream array(buffer.getArray());
+    capnp::InputStreamMessageReader input(array);
     MyDomain::Account deserialized;
-    deserialized.Deserialize(input);
+    deserialized.Deserialize(input.getRoot<MyDomain::capnproto::Account>());
 
     // Show account content
     std::cout << std::endl;
@@ -48,9 +50,6 @@ int main(int argc, char** argv)
             << ", Volume: " << order.second.Volume
             << std::endl;
     }
-
-    // Delete all global objects allocated by Protobuf
-    google::protobuf::ShutdownProtobufLibrary();
 
     return 0;
 }

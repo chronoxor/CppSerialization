@@ -1,5 +1,5 @@
 //
-// Created by Ivan Shynkarenka on 30.03.2017
+// Created by Ivan Shynkarenka on 31.03.2018
 //
 
 #include "test.h"
@@ -10,7 +10,7 @@ using namespace CppCommon;
 using namespace CppSerialization;
 using namespace MyDomain;
 
-TEST_CASE("Protobuf", "[CppSerialization]")
+TEST_CASE("Cap'n'Proto", "[CppSerialization]")
 {
     // Create a new account with some orders
     Account account(1, "Test", "USD", 1000);
@@ -18,18 +18,20 @@ TEST_CASE("Protobuf", "[CppSerialization]")
     account.AddOrder(Order(2, "EURUSD", OrderSide::SELL, OrderType::LIMIT, 1.0, 100));
     account.AddOrder(Order(3, "EURUSD", OrderSide::BUY, OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the Protobuf stream
-    protobuf::Account output;
-    account.Serialize(output);
-    auto buffer = output.SerializeAsString();
+    // Serialize the account to the Cap'n'Proto stream
+    capnp::MallocMessageBuilder output;
+    MyDomain::capnproto::Account::Builder builder = output.initRoot<MyDomain::capnproto::Account>();
+    account.Serialize(builder);
+    kj::VectorOutputStream buffer;
+    writeMessage(buffer, output);
 
-    REQUIRE(buffer.size() > 0);
+    REQUIRE(buffer.getArray().size() > 0);
 
-    // Deserialize the account from the Protobuf stream
-    protobuf::Account input;
-    input.ParseFromString(buffer);
-    Account deserialized;
-    deserialized.Deserialize(input);
+    // Deserialize the account from the Cap'n'Proto stream
+    kj::ArrayInputStream array(buffer.getArray());
+    capnp::InputStreamMessageReader input(array);
+    MyDomain::Account deserialized;
+    deserialized.Deserialize(input.getRoot<MyDomain::capnproto::Account>());
 
     REQUIRE(deserialized.Id == 1);
     REQUIRE(deserialized.Name == "Test");
@@ -55,7 +57,4 @@ TEST_CASE("Protobuf", "[CppSerialization]")
     REQUIRE(deserialized.Orders[3].Type == OrderType::STOP);
     REQUIRE(deserialized.Orders[3].Price == 1.5);
     REQUIRE(deserialized.Orders[3].Volume == 10);
-
-    // Delete all global objects allocated by Protobuf
-    google::protobuf::ShutdownProtobufLibrary();
 }

@@ -29,6 +29,7 @@ include(SetPlatformFeatures)
 add_subdirectory("modules")
 
 # Link libraries
+list(APPEND LINKLIBS capnp)
 list(APPEND LINKLIBS libprotobuf)
 list(APPEND LINKLIBS cppcommon)
 
@@ -64,6 +65,8 @@ if(NOT CPPSERIALIZATION_MODULE)
     list(APPEND DOMAIN_FILES ${FLATBUFFERS_OUTPUT_FILE})
   endforeach()
 
+  find_package(protobuf CONFIG REQUIRED)
+
   # Domain Protobuf models
   file(GLOB PROTOBUF_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/domain" "domain/*.proto")
   foreach(PROTOBUF_FILE ${PROTOBUF_FILES})
@@ -86,7 +89,8 @@ if(NOT CPPSERIALIZATION_MODULE)
     string(REGEX REPLACE "(.*)\\.capnp" "\\1.capnp.c++" CAPNP_SOURCE ${CAPNP_FILE})
     set(CAPNP_INPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/domain")
     set(CAPNP_INPUT_FILE "${CAPNP_INPUT_DIR}/${CAPNP_FILE}")
-    set(CAPNPC_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/domain/capnproto")
+    set(CAPNPC_SRC_PREFIX "${CAPNP_INPUT_DIR}")
+    set(CAPNPC_OUTPUT_DIR "${CAPNP_INPUT_DIR}/capnproto")
     capnp_generate_cpp(CAPNP_HEADERS CAPNP_SOURCES ${CAPNP_INPUT_FILE})
     list(APPEND DOMAIN_FILES ${CAPNP_HEADERS} ${CAPNP_SOURCES})
   endforeach()

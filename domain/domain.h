@@ -9,6 +9,17 @@
 #ifndef CPPSERIALIZATION_DOMAIN_DOMAIN_H
 #define CPPSERIALIZATION_DOMAIN_DOMAIN_H
 
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable: 4244) // C4244: conversion' conversion from 'type1' to 'type2', possible loss of data
+#pragma warning(disable: 4245) // C4244: conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
+#pragma warning(disable: 4267) // C4267: var' : conversion from 'size_t' to 'type', possible loss of data
+#endif
+#include "capnp/serialize.h"
+#include "capnproto/domain.capnp.h"
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
 #include "flatbuffers/domain_generated.h"
 #include "protobuf/domain.pb.h"
 
@@ -55,6 +66,28 @@ struct Order
         Volume = volume;
     }
 
+    // Cap'n'Proto serialization
+
+    void Serialize(capnproto::Order::Builder& builder)
+    {
+        builder.setId(Id);
+        builder.setSymbol(Symbol);
+        builder.setSide((capnproto::OrderSide)Side);
+        builder.setType((capnproto::OrderType)Type);
+        builder.setPrice(Price);
+        builder.setVolume(Volume);
+    }
+
+    void Deserialize(const capnproto::Order::Reader& reader)
+    {
+        Id = reader.getId();
+        std::strncpy(Symbol, reader.getSymbol().cStr(), std::min((size_t)reader.getSymbol().size() + 1, sizeof(Symbol)));
+        Side = (OrderSide)reader.getSide();
+        Type = (OrderType)reader.getType();
+        Price = reader.getPrice();
+        Volume = reader.getVolume();
+    }
+
     // FlatBuffers serialization
 
     flatbuffers::Offset<flatbuf::Order> Serialize(flatbuffers::FlatBufferBuilder& builder)
@@ -78,8 +111,8 @@ struct Order
     {
         value.set_id(Id);
         value.set_symbol(Symbol);
-        value.set_side((MyDomain::protobuf::OrderSide)Side);
-        value.set_type((MyDomain::protobuf::OrderType)Type);
+        value.set_side((protobuf::OrderSide)Side);
+        value.set_type((protobuf::OrderType)Type);
         value.set_price(Price);
         value.set_volume(Volume);
         return value;
@@ -134,6 +167,20 @@ struct Balance
     {
         std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = amount;
+    }
+
+    // Cap'n'Proto serialization
+
+    void Serialize(capnproto::Balance::Builder& builder)
+    {
+        builder.setCurrency(Currency);
+        builder.setAmount(Amount);
+    }
+
+    void Deserialize(const capnproto::Balance::Reader& reader)
+    {
+        std::strncpy(Currency, reader.getCurrency().cStr(), std::min((size_t)reader.getCurrency().size() + 1, sizeof(Currency)));
+        Amount = reader.getAmount();
     }
 
     // FlatBuffers serialization
@@ -199,6 +246,37 @@ struct Account
         Name = name;
     }
 
+    // Cap'n'Proto serialization
+
+    void Serialize(capnproto::Account::Builder& builder)
+    {
+        builder.setId(Id);
+        builder.setName(Name);
+        auto wallet = builder.initWallet();
+        Wallet.Serialize(wallet);
+        auto orders = builder.initOrders((unsigned)Orders.size());
+        unsigned index = 0;
+        for (auto& order : Orders)
+        {
+            auto o = orders[index++];
+            order.second.Serialize(o);
+        }
+    }
+
+    void Deserialize(const capnproto::Account::Reader& reader)
+    {
+        Id = reader.getId();
+        Name = reader.getName().cStr();
+        Wallet.Deserialize(reader.getWallet());
+        Orders.clear();
+        for (auto o : reader.getOrders())
+        {
+            Order order;
+            order.Deserialize(o);
+            AddOrder(order);
+        }
+    }
+
     // FlatBuffers serialization
 
     flatbuffers::Offset<flatbuf::Account> Serialize(flatbuffers::FlatBufferBuilder& builder)
@@ -216,10 +294,10 @@ struct Account
         Name = value.name()->str();
         Wallet.Deserialize(*value.wallet());
         Orders.clear();
-        for (auto item : *value.orders())
+        for (auto o : *value.orders())
         {
             Order order;
-            order.Deserialize(*item);
+            order.Deserialize(*o);
             AddOrder(order);
         }
     }
