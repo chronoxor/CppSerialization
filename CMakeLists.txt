@@ -65,8 +65,6 @@ if(NOT CPPSERIALIZATION_MODULE)
     list(APPEND DOMAIN_FILES ${FLATBUFFERS_OUTPUT_FILE})
   endforeach()
 
-  find_package(protobuf CONFIG REQUIRED)
-
   # Domain Protobuf models
   file(GLOB PROTOBUF_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/domain" "domain/*.proto")
   foreach(PROTOBUF_FILE ${PROTOBUF_FILES})
