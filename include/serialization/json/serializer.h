@@ -26,11 +26,11 @@ public:
     Serializer() = default;
     explicit Serializer(OutputStream& stream) : Writer<OutputStream>(stream) {}
     Serializer(const Serializer&) = delete;
-    Serializer(Serializer&&) = default;
+    Serializer(Serializer&&) noexcept = default;
     ~Serializer() = default;
 
     Serializer& operator=(const Serializer&) = delete;
-    Serializer& operator=(Serializer&&) = default;
+    Serializer& operator=(Serializer&&) noexcept = default;
 
     //! Start new object
     void StartObject();
