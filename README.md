@@ -7,7 +7,8 @@
 [![Windows build status](https://img.shields.io/appveyor/ci/chronoxor/CppSerialization/master.svg?label=Windows)](https://ci.appveyor.com/project/chronoxor/CppSerialization)
 
 C++ Serialization Library provides functionality to serialize/deserialize
-objects in/from different formats such as Flatbuffers, Protobuf, JSON.
+objects in/from different formats such as Cap'n'Proto, Flatbuffers, Protobuf,
+JSON.
 
 [CppSerialization API reference](http://chronoxor.github.io/CppSerialization/index.html)
 
