@@ -1416,7 +1416,6 @@ Total bytes: 3.834 MiB
 Iterations throughput: 1088900 / second
 Bytes throughput: 4.157 MiB / second
 Custom values:
-        Size: 297               ..
+        Size: 297
 ===============================================================================
 ```
-                                                                                ..
