@@ -1,6 +1,6 @@
-if(NOT RAPIDJSON)
+if(NOT rapidjson)
 
-  # Module header
-  file(GLOB RAPIDJSON "rapidjson/include/rapidjson/rapidjson.h")
+  # Module definition
+  set(rapidjson "${CMAKE_CURRENT_SOURCE_DIR}/rapidjson/include" PARENT_SCOPE)
 
 endif()

@@ -1,4 +1,4 @@
-if(NOT TARGET flatbuffers)
+if(NOT TARGET flatbuf)
 
   # Restore origin compile flags
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_ORIGIN}")
@@ -15,6 +15,9 @@ if(NOT TARGET flatbuffers)
   set_target_properties(flatbuffers PROPERTIES FOLDER modules/flatbuffers/flatbuffers)
   set_target_properties(flatc PROPERTIES FOLDER modules/flatbuffers/flatc)
   set_target_properties(flathash PROPERTIES FOLDER modules/flatbuffers/flathash)
+
+  # Module definition
+  set(flatbuf "${CMAKE_CURRENT_SOURCE_DIR}/flatbuffers/include" PARENT_SCOPE)
 
   # Restore custom compile flags
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_CUSTOM}")

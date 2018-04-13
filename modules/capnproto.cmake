@@ -1,4 +1,4 @@
-if(NOT TARGET capnp)
+if(NOT TARGET capnproto)
 
   # Restore origin compile flags
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_ORIGIN}")
@@ -22,6 +22,9 @@ if(NOT TARGET capnp)
   set_target_properties(kj-async PROPERTIES FOLDER modules/capnproto)
   set_target_properties(kj-http PROPERTIES FOLDER modules/capnproto)
   set_target_properties(kj-test PROPERTIES FOLDER modules/capnproto)
+
+  # Module definition
+  set(capnproto "${CMAKE_CURRENT_SOURCE_DIR}/capnproto/c++/src" PARENT_SCOPE)
 
   # Restore custom compile flags
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_CUSTOM}")
