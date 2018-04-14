@@ -6,10 +6,6 @@
 	path = cmake
 	url = https://github.com/chronoxor/CppCMakeScripts.git
 	branch = master
-[submodule "modules/capnproto"]
-	path = modules/capnproto
-	url = https://github.com/capnproto/capnproto.git
-	branch = master
 [submodule "modules/Catch2"]
 	path = modules/Catch2
 	url = https://github.com/catchorg/Catch2.git
