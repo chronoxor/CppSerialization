@@ -23,7 +23,7 @@ TEST_CASE("Protobuf", "[CppSerialization]")
     account.Serialize(output);
     auto buffer = output.SerializeAsString();
 
-    REQUIRE(buffer.size() > 0);
+    REQUIRE(!buffer.empty());
 
     // Deserialize the account from the Protobuf stream
     protobuf::Account input;
