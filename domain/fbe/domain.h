@@ -90,13 +90,13 @@ struct Order
         , volume((double)0.0)
     {}
 
-    Order(int32_t id, const std::string& symbol, const OrderSide& side, const OrderType& type, double price, double volume)
-        : id(id)
-        , symbol(symbol)
-        , side(side)
-        , type(type)
-        , price(price)
-        , volume(volume)
+    Order(int32_t arg_id, const std::string& arg_symbol, const OrderSide& arg_side, const OrderType& arg_type, double arg_price, double arg_volume)
+        : id(arg_id)
+        , symbol(arg_symbol)
+        , side(arg_side)
+        , type(arg_type)
+        , price(arg_price)
+        , volume(arg_volume)
     {}
 
     bool operator==(const Order& s) const noexcept
@@ -518,9 +518,9 @@ struct Balance
         , amount((double)0.0)
     {}
 
-    Balance(const std::string& currency, double amount)
-        : currency(currency)
-        , amount(amount)
+    Balance(const std::string& arg_currency, double arg_amount)
+        : currency(arg_currency)
+        , amount(arg_amount)
     {}
 
     bool operator==(const Balance& s) const noexcept
@@ -876,11 +876,11 @@ struct Account
         , orders()
     {}
 
-    Account(int32_t id, const std::string& name, const Balance& wallet, const std::vector<Order>& orders)
-        : id(id)
-        , name(name)
-        , wallet(wallet)
-        , orders(orders)
+    Account(int32_t arg_id, const std::string& arg_name, const Balance& arg_wallet, const std::vector<Order>& arg_orders)
+        : id(arg_id)
+        , name(arg_name)
+        , wallet(arg_wallet)
+        , orders(arg_orders)
     {}
 
     bool operator==(const Account& s) const noexcept

@@ -116,7 +116,6 @@ There is an example domain model which describes Account-Wallet-Orders relation
 of some abstract trading platform:
 
 ```C++
-#include <map>
 #include <string>
 #include <vector>
 
@@ -138,13 +137,13 @@ enum class OrderType : uint8_t
 struct Order
 {
     int Id;
-    char Symbol[32];
+    char Symbol[10];
     OrderSide Side;
     OrderType Type;
     double Price;
     double Volume;
 
-    Order() : Order(0, "<unknown>", OrderSide::BUY, OrderType::MARKET, 0.0, 0.0) {}
+    Order() : Order(0, "<\?\?\?>", OrderSide::BUY, OrderType::MARKET, 0.0, 0.0) {}
     Order(int id, const std::string& symbol, OrderSide side, OrderType type, double price, double volume)
     {
         Id = id;
@@ -158,10 +157,10 @@ struct Order
 
 struct Balance
 {
-    char Currency[12];
+    char Currency[10];
     double Amount;
 
-    Balance() : Balance("<?>", 0.0) {}
+    Balance() : Balance("<\?\?\?>", 0.0) {}
     Balance(const std::string& currency, double amount)
     {
         std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
@@ -174,18 +173,13 @@ struct Account
     int Id;
     std::string Name;
     Balance Wallet;
-    std::map<int, Order> Orders;
+    std::vector<Order> Orders;
 
-    Account() : Account(0, "<unknown>", "<unknown>", 0.0) {}
+    Account() : Account(0, "<\?\?\?>", "<\?\?\?>", 0.0) {}
     Account(int id, const char* name, const char* currency, double amount) : Wallet(currency, amount)
     {
         Id = id;
         Name = name;
-    }
-
-    void AddOrder(const Order& order)
-    {
-        Orders[order.Id] = order;
     }
 };
 
@@ -294,7 +288,8 @@ struct Order
     void Deserialize(const capnproto::Order::Reader& reader)
     {
         Id = reader.getId();
-        std::strncpy(Symbol, reader.getSymbol().cStr(), std::min((size_t)reader.getSymbol().size() + 1, sizeof(Symbol)));
+        std::string symbol = reader.getSymbol();
+        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)reader.getSide();
         Type = (OrderType)reader.getType();
         Price = reader.getPrice();
@@ -318,7 +313,8 @@ struct Balance
 
     void Deserialize(const capnproto::Balance::Reader& reader)
     {
-        std::strncpy(Currency, reader.getCurrency().cStr(), std::min((size_t)reader.getCurrency().size() + 1, sizeof(Currency)));
+        std::string currency = reader.getCurrency();
+        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = reader.getAmount();
     }
 
@@ -342,7 +338,7 @@ struct Account
         for (auto& order : Orders)
         {
             auto o = orders[index++];
-            order.second.Serialize(o);
+            order.Serialize(o);
         }
     }
 
@@ -356,7 +352,7 @@ struct Account
         {
             Order order;
             order.Deserialize(o);
-            AddOrder(order);
+            Orders.emplace_back(order);
         }
     }
 
@@ -378,9 +374,9 @@ int main(int argc, char** argv)
 {
     // Create a new account with some orders
     MyDomain::Account account(1, "Test", "USD", 1000);
-    account.AddOrder(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
-    account.AddOrder(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
-    account.AddOrder(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
+    account.Orders.emplace_back(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
+    account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
+    account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
 
     // Serialize the account to the Cap'n'Proto stream
     capnp::MallocMessageBuilder output;
@@ -406,12 +402,12 @@ int main(int argc, char** argv)
     std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
     for (auto& order : deserialized.Orders)
     {
-        std::cout << "Account.Order => Id: " << order.second.Id
-            << ", Symbol: " << order.second.Symbol
-            << ", Side: " << (int)order.second.Side
-            << ", Type: " << (int)order.second.Type
-            << ", Price: " << order.second.Price
-            << ", Volume: " << order.second.Volume
+        std::cout << "Account.Order => Id: " << order.Id
+            << ", Symbol: " << order.Symbol
+            << ", Side: " << (int)order.Side
+            << ", Type: " << (int)order.Type
+            << ", Price: " << order.Price
+            << ", Volume: " << order.Volume
             << std::endl;
     }
 
@@ -439,34 +435,34 @@ following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 4.008 GHz
+CPU clock speed: 3.998 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 19.084 GiB
+RAM total: 31.962 GiB
+RAM free: 18.485 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Sat Mar 31 12:05:59 2018
-UTC timestamp: Sat Mar 31 09:05:59 2018
+Local timestamp: Wed May  9 00:18:42 2018
+UTC timestamp: Tue May  8 21:18:42 2018
 ===============================================================================
 Benchmark: Cap'n'Proto-Serialize
 Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: Cap'n'Proto-Serialize
-Average time: 664 ns / iteration
-Minimal time: 664 ns / iteration
-Maximal time: 671 ns / iteration
-Total time: 664.881 ms
+Average time: 678 ns / iteration
+Minimal time: 678 ns / iteration
+Maximal time: 704 ns / iteration
+Total time: 678.918 ms
 Total iterations: 1000000
 Total bytes: 198.373 MiB
-Iterations throughput: 1504027 / second
-Bytes throughput: 298.353 MiB / second
+Iterations throughput: 1472930 / second
+Bytes throughput: 292.180 MiB / second
 Custom values:
         Size: 208
 ===============================================================================
@@ -478,34 +474,34 @@ following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 4.008 GHz
+CPU clock speed: 3.998 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 19.089 GiB
+RAM total: 31.962 GiB
+RAM free: 18.483 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Sat Mar 31 12:06:49 2018
-UTC timestamp: Sat Mar 31 09:06:49 2018
+Local timestamp: Wed May  9 00:19:20 2018
+UTC timestamp: Tue May  8 21:19:20 2018
 ===============================================================================
 Benchmark: Cap'n'Proto-Deserialize
 Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: Cap'n'Proto-Deserialize
-Average time: 677 ns / iteration
-Minimal time: 677 ns / iteration
-Maximal time: 683 ns / iteration
-Total time: 677.032 ms
+Average time: 480 ns / iteration
+Minimal time: 480 ns / iteration
+Maximal time: 519 ns / iteration
+Total time: 480.625 ms
 Total iterations: 1000000
 Total bytes: 198.373 MiB
-Iterations throughput: 1477033 / second
-Bytes throughput: 292.1014 MiB / second
+Iterations throughput: 2080620 / second
+Bytes throughput: 412.738 MiB / second
 Custom values:
         Size: 208
 ===============================================================================
@@ -603,7 +599,8 @@ struct Order
     void Deserialize(const flatbuf::Order& value)
     {
         Id = value.id();
-        std::strncpy(Symbol, value.symbol()->c_str(), std::min((size_t)value.symbol()->Length() + 1, sizeof(Symbol)));
+        std::string symbol = value.symbol()->str();
+        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)value.side();
         Type = (OrderType)value.type();
         Price = value.price();
@@ -626,7 +623,8 @@ struct Balance
 
     void Deserialize(const flatbuf::Balance& value)
     {
-        std::strncpy(Currency, value.currency()->c_str(), std::min((size_t)value.currency()->Length() + 1, sizeof(Currency)));
+        std::string currency = value.currency()->str();
+        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = value.amount();
     }
 
@@ -644,7 +642,7 @@ struct Account
         auto wallet = Wallet.Serialize(builder);
         std::vector<flatbuffers::Offset<flatbuf::Order>> orders;
         for (auto& order : Orders)
-            orders.emplace_back(order.second.Serialize(builder));
+            orders.emplace_back(order.Serialize(builder));
         return flatbuf::CreateAccountDirect(builder, Id, Name.c_str(), wallet, &orders);
     }
 
@@ -658,7 +656,7 @@ struct Account
         {
             Order order;
             order.Deserialize(*o);
-            AddOrder(order);
+            Orders.emplace_back(order);
         }
     }
 
@@ -680,9 +678,9 @@ int main(int argc, char** argv)
 {
     // Create a new account with some orders
     MyDomain::Account account(1, "Test", "USD", 1000);
-    account.AddOrder(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
-    account.AddOrder(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
-    account.AddOrder(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
+    account.Orders.emplace_back(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
+    account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
+    account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
 
     // Serialize the account to the FlatBuffer stream
     flatbuffers::FlatBufferBuilder builder;
@@ -703,12 +701,12 @@ int main(int argc, char** argv)
     std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
     for (auto& order : deserialized.Orders)
     {
-        std::cout << "Account.Order => Id: " << order.second.Id
-            << ", Symbol: " << order.second.Symbol
-            << ", Side: " << (int)order.second.Side
-            << ", Type: " << (int)order.second.Type
-            << ", Price: " << order.second.Price
-            << ", Volume: " << order.second.Volume
+        std::cout << "Account.Order => Id: " << order.Id
+            << ", Symbol: " << order.Symbol
+            << ", Side: " << (int)order.Side
+            << ", Type: " << (int)order.Type
+            << ", Price: " << order.Price
+            << ", Volume: " << order.Volume
             << std::endl;
     }
 
@@ -736,34 +734,34 @@ following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 4.008 GHz
+CPU clock speed: 3.998 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 16.1011 GiB
+RAM total: 31.962 GiB
+RAM free: 18.493 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Fri Mar  3 17:30:24 2017
-UTC timestamp: Fri Mar  3 14:30:24 2017
+Local timestamp: Wed May  9 00:21:43 2018
+UTC timestamp: Tue May  8 21:21:43 2018
 ===============================================================================
 Benchmark: FlatBuffers-Serialize
 Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: FlatBuffers-Serialize
-Average time: 995 ns / iteration
-Minimal time: 995 ns / iteration
-Maximal time: 996 ns / iteration
-Total time: 995.554 ms
+Average time: 1.024 mcs / iteration
+Minimal time: 1.024 mcs / iteration
+Maximal time: 1.094 mcs / iteration
+Total time: 1.024 s
 Total iterations: 1000000
 Total bytes: 267.029 MiB
-Iterations throughput: 1004465 / second
-Bytes throughput: 268.226 MiB / second
+Iterations throughput: 976463 / second
+Bytes throughput: 260.761 MiB / second
 Custom values:
         Size: 280
 ===============================================================================
@@ -775,34 +773,34 @@ following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 4.008 GHz
+CPU clock speed: 3.998 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 16.938 GiB
+RAM total: 31.962 GiB
+RAM free: 18.495 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Fri Mar  3 17:31:26 2017
-UTC timestamp: Fri Mar  3 14:31:26 2017
+Local timestamp: Wed May  9 00:21:58 2018
+UTC timestamp: Tue May  8 21:21:58 2018
 ===============================================================================
 Benchmark: FlatBuffers-Deserialize
 Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: FlatBuffers-Deserialize
-Average time: 586 ns / iteration
-Minimal time: 586 ns / iteration
-Maximal time: 609 ns / iteration
-Total time: 586.430 ms
+Average time: 385 ns / iteration
+Minimal time: 385 ns / iteration
+Maximal time: 390 ns / iteration
+Total time: 385.867 ms
 Total iterations: 1000000
 Total bytes: 267.029 MiB
-Iterations throughput: 1705232 / second
-Bytes throughput: 455.354 MiB / second
+Iterations throughput: 2591566 / second
+Bytes throughput: 692.023 MiB / second
 Custom values:
         Size: 280
 ===============================================================================
@@ -905,7 +903,8 @@ struct Order
     void Deserialize(const protobuf::Order& value)
     {
         Id = value.id();
-        std::strncpy(Symbol, value.symbol().c_str(), std::min((size_t)value.symbol().size() + 1, sizeof(Symbol)));
+        std::string symbol = value.symbol();
+        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)value.side();
         Type = (OrderType)value.type();
         Price = value.price();
@@ -930,7 +929,8 @@ struct Balance
 
     void Deserialize(const protobuf::Balance& value)
     {
-        std::strncpy(Currency, value.currency().c_str(), std::min((size_t)value.currency().size() + 1, sizeof(Currency)));
+        std::string currency = value.currency();
+        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = value.amount();
     }
 
@@ -949,7 +949,7 @@ struct Account
         value.set_name(Name);
         value.set_allocated_wallet(&Wallet.Serialize(*value.wallet().New(value.GetArena())));
         for (auto& order : Orders)
-            order.second.Serialize(*value.add_orders());
+            order.Serialize(*value.add_orders());
         return value;
     }
 
@@ -963,7 +963,7 @@ struct Account
         {
             Order order;
             order.Deserialize(value.orders(i));
-            AddOrder(order);
+            Orders.emplace_back(order);
         }
     }
 
@@ -985,9 +985,9 @@ int main(int argc, char** argv)
 {
     // Create a new account with some orders
     MyDomain::Account account(1, "Test", "USD", 1000);
-    account.AddOrder(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
-    account.AddOrder(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
-    account.AddOrder(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
+    account.Orders.emplace_back(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
+    account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
+    account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
 
     // Serialize the account to the Protobuf stream
     MyDomain::protobuf::Account ouput;
@@ -1011,12 +1011,12 @@ int main(int argc, char** argv)
     std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
     for (auto& order : deserialized.Orders)
     {
-        std::cout << "Account.Order => Id: " << order.second.Id
-            << ", Symbol: " << order.second.Symbol
-            << ", Side: " << (int)order.second.Side
-            << ", Type: " << (int)order.second.Type
-            << ", Price: " << order.second.Price
-            << ", Volume: " << order.second.Volume
+        std::cout << "Account.Order => Id: " << order.Id
+            << ", Symbol: " << order.Symbol
+            << ", Side: " << (int)order.Side
+            << ", Type: " << (int)order.Type
+            << ", Price: " << order.Price
+            << ", Volume: " << order.Volume
             << std::endl;
     }
 
@@ -1047,34 +1047,34 @@ following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 4.008 GHz
+CPU clock speed: 3.998 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 20.224 GiB
+RAM total: 31.962 GiB
+RAM free: 18.488 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Fri Mar 30 14:29:43 2018
-UTC timestamp: Fri Mar 30 11:29:43 2018
+Local timestamp: Wed May  9 00:23:37 2018
+UTC timestamp: Tue May  8 21:23:37 2018
 ===============================================================================
 Benchmark: Protobuf-Serialize
 Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: Protobuf-Serialize
-Average time: 731 ns / iteration
-Minimal time: 731 ns / iteration
-Maximal time: 737 ns / iteration
-Total time: 731.319 ms
+Average time: 836 ns / iteration
+Minimal time: 836 ns / iteration
+Maximal time: 866 ns / iteration
+Total time: 836.492 ms
 Total iterations: 1000000
 Total bytes: 114.451 MiB
-Iterations throughput: 1367392 / second
-Bytes throughput: 156.497 MiB / second
+Iterations throughput: 1195467 / second
+Bytes throughput: 136.829 MiB / second
 Custom values:
         Size: 120
 ===============================================================================
@@ -1086,30 +1086,34 @@ following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 4.008 GHz
+CPU clock speed: 3.998 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 20.189 GiB
+RAM total: 31.962 GiB
+RAM free: 18.482 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Fri Mar 30 14:30:12 2018
-UTC timestamp: Fri Mar 30 11:30:12 2018
+Local timestamp: Wed May  9 00:24:13 2018
+UTC timestamp: Tue May  8 21:24:13 2018
 ===============================================================================
+Benchmark: Protobuf-Deserialize
+Attempts: 5
+Iterations: 1000000
+-------------------------------------------------------------------------------
 Phase: Protobuf-Deserialize
-Average time: 1.151 mcs / iteration
-Minimal time: 1.151 mcs / iteration
-Maximal time: 1.179 mcs / iteration
-Total time: 1.151 s
+Average time: 1.024 mcs / iteration
+Minimal time: 1.024 mcs / iteration
+Maximal time: 1.091 mcs / iteration
+Total time: 1.024 s
 Total iterations: 1000000
 Total bytes: 114.451 MiB
-Iterations throughput: 868654 / second
-Bytes throughput: 99.419 MiB / second
+Iterations throughput: 976142 / second
+Bytes throughput: 111.727 MiB / second
 Custom values:
         Size: 120
 ===============================================================================
@@ -1207,7 +1211,7 @@ struct Account
         serializer.Key("orders");
         serializer.StartArray();
         for (auto& order : Orders)
-            order.second.Serialize(serializer);
+            order.Serialize(serializer);
         serializer.EndArray();
         serializer.EndObject();
     }
@@ -1227,7 +1231,7 @@ struct Account
         {
             Order order;
             order.Deserialize(item);
-            AddOrder(order);
+            Orders.emplace_back(order);
         });
     }
 
@@ -1251,9 +1255,9 @@ int main(int argc, char** argv)
 {
     // Create a new account with some orders
     MyDomain::Account account(1, "Test", "USD", 1000);
-    account.AddOrder(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
-    account.AddOrder(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
-    account.AddOrder(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
+    account.Orders.emplace_back(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
+    account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
+    account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
 
     // Serialize the account to the JSON stream
     CppSerialization::JSON::StringBuffer buffer;
@@ -1278,12 +1282,12 @@ int main(int argc, char** argv)
     std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
     for (auto& order : deserialized.Orders)
     {
-        std::cout << "Account.Order => Id: " << order.second.Id
-            << ", Symbol: " << order.second.Symbol
-            << ", Side: " << (int)order.second.Side
-            << ", Type: " << (int)order.second.Type
-            << ", Price: " << order.second.Price
-            << ", Volume: " << order.second.Volume
+        std::cout << "Account.Order => Id: " << order.Id
+            << ", Symbol: " << order.Symbol
+            << ", Side: " << (int)order.Side
+            << ", Type: " << (int)order.Type
+            << ", Price: " << order.Price
+            << ", Volume: " << order.Volume
             << std::endl;
     }
 
@@ -1311,34 +1315,34 @@ JSON serialization performance of the provided domain model is the following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 4.008 GHz
+CPU clock speed: 3.998 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 17.049 GiB
+RAM total: 31.962 GiB
+RAM free: 18.475 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Fri Mar  3 17:42:32 2017
-UTC timestamp: Fri Mar  3 14:42:32 2017
+Local timestamp: Wed May  9 00:25:12 2018
+UTC timestamp: Tue May  8 21:25:12 2018
 ===============================================================================
 Benchmark: JSON-Serialize
 Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: JSON-Serialize
-Average time: 922 ns / iteration
-Minimal time: 922 ns / iteration
-Maximal time: 931 ns / iteration
-Total time: 922.530 ms
+Average time: 845 ns / iteration
+Minimal time: 845 ns / iteration
+Maximal time: 871 ns / iteration
+Total time: 845.313 ms
 Total iterations: 1000000
 Total bytes: 283.247 MiB
-Iterations throughput: 1083974 / second
-Bytes throughput: 307.027 MiB / second
+Iterations throughput: 1182993 / second
+Bytes throughput: 335.074 MiB / second
 Custom values:
         Size: 297
 ===============================================================================
@@ -1349,34 +1353,34 @@ JSON document parsing performance of the provided domain model is the following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 4.008 GHz
+CPU clock speed: 3.998 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 17.050 GiB
+RAM total: 31.962 GiB
+RAM free: 18.484 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Fri Mar  3 17:42:56 2017
-UTC timestamp: Fri Mar  3 14:42:56 2017
+Local timestamp: Wed May  9 00:25:44 2018
+UTC timestamp: Tue May  8 21:25:44 2018
 ===============================================================================
 Benchmark: JSON-Parse
 Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: JSON-Parse
-Average time: 2.479 mcs / iteration
-Minimal time: 2.479 mcs / iteration
-Maximal time: 2.483 mcs / iteration
-Total time: 2.479 s
+Average time: 2.560 mcs / iteration
+Minimal time: 2.560 mcs / iteration
+Maximal time: 2.600 mcs / iteration
+Total time: 2.560 s
 Total iterations: 1000000
 Total bytes: 283.247 MiB
-Iterations throughput: 403366 / second
-Bytes throughput: 114.255 MiB / second
+Iterations throughput: 390564 / second
+Bytes throughput: 110.639 MiB / second
 Custom values:
         Size: 297
 ===============================================================================
@@ -1387,34 +1391,34 @@ JSON deserialization performance of the provided domain model is the following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 4.008 GHz
+CPU clock speed: 3.998 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 16.953 GiB
+RAM total: 31.962 GiB
+RAM free: 18.489 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Fri Mar  3 17:43:11 2017
-UTC timestamp: Fri Mar  3 14:43:11 2017
+Local timestamp: Wed May  9 00:26:05 2018
+UTC timestamp: Tue May  8 21:26:05 2018
 ===============================================================================
 Benchmark: JSON-Deserialize
 Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
 Phase: JSON-Deserialize
-Average time: 918 ns / iteration
-Minimal time: 918 ns / iteration
-Maximal time: 975 ns / iteration
-Total time: 918.357 ms
+Average time: 638 ns / iteration
+Minimal time: 638 ns / iteration
+Maximal time: 674 ns / iteration
+Total time: 638.172 ms
 Total iterations: 1000000
 Total bytes: 3.834 MiB
-Iterations throughput: 1088900 / second
-Bytes throughput: 4.157 MiB / second
+Iterations throughput: 1566975 / second
+Bytes throughput: 5.1000 MiB / second
 Custom values:
         Size: 297
 ===============================================================================

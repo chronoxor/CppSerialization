@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <array>
 #include <bitset>
 #include <cassert>
 #include <cstring>
@@ -472,6 +473,20 @@ public:
     }
 
     // Get the bytes value
+    template <std::size_t N>
+    size_t get(uint8_t (&data)[N]) const noexcept
+    {
+        return get(data, N);
+    }
+
+    // Get the bytes value
+    template <std::size_t N>
+    size_t get(std::array<uint8_t, N>& data) const noexcept
+    {
+        return get(data.data(), data.size());
+    }
+
+    // Get the bytes value
     void get(std::vector<uint8_t>& value) const noexcept
     {
         value.clear();
@@ -513,6 +528,20 @@ public:
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_bytes_offset)) = fbe_bytes_size;
 
         memcpy((char*)(_buffer.data() + _buffer.offset() + fbe_bytes_offset + 4), data, fbe_bytes_size);
+    }
+
+    // Set the bytes value
+    template <std::size_t N>
+    void set(const uint8_t (&data)[N])
+    {
+        return set(data, N);
+    }
+
+    // Set the bytes value
+    template <std::size_t N>
+    void set(const std::array<uint8_t, N>& data)
+    {
+        return set(data.data(), data.size());
     }
 
     // Set the bytes value
@@ -574,6 +603,47 @@ public:
     }
 
     // Get the string value
+    size_t get(char* data, size_t size) const noexcept
+    {
+        assert((data != nullptr) && "Invalid buffer!");
+        assert((size > 0) && "Invalid size!");
+
+        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+            return 0;
+
+        uint32_t fbe_string_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        if (fbe_string_offset == 0)
+            return 0;
+
+        assert(((_buffer.offset() + fbe_string_offset + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_string_offset + 4) > _buffer.size())
+            return 0;
+
+        uint32_t fbe_string_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_string_offset));
+        assert(((_buffer.offset() + fbe_string_offset + fbe_string_size) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_string_offset + 4 + fbe_string_size) > _buffer.size())
+            return 0;
+
+        size_t result = std::min(size, (size_t)fbe_string_size);
+        memcpy(data, (const char*)(_buffer.data() + _buffer.offset() + fbe_string_offset + 4), result);
+        return result;
+    }
+
+    // Get the string value
+    template <std::size_t N>
+    size_t get(char (&data)[N]) const noexcept
+    {
+        return get(data, N);
+    }
+
+    // Get the string value
+    template <std::size_t N>
+    size_t get(std::array<char, N>& data) const noexcept
+    {
+        return get(data.data(), data.size());
+    }
+
+    // Get the string value
     void get(std::string& value, const std::string& default_value = "") const noexcept
     {
         value = default_value;
@@ -595,6 +665,39 @@ public:
             return;
 
         value.assign((const char*)(_buffer.data() + _buffer.offset() + fbe_string_offset + 4), fbe_string_size);
+    }
+
+    // Set the string value
+    void set(const char* data, size_t size)
+    {
+        assert((data != nullptr) && "Invalid buffer!");
+        assert((size > 0) && "Invalid size!");
+
+        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+            return;
+
+        uint32_t fbe_string_size = (uint32_t)size;
+        uint32_t fbe_string_offset = (uint32_t)(_buffer.allocate(4 + fbe_string_size) - _buffer.offset());
+        assert(((fbe_string_offset > 0) && ((_buffer.offset() + fbe_string_offset + 4 + fbe_string_size) <= _buffer.size())) && "Model is broken!");
+
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + _offset)) = fbe_string_offset;
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_string_offset)) = fbe_string_size;
+
+        memcpy((char*)(_buffer.data() + _buffer.offset() + fbe_string_offset + 4), data, fbe_string_size);
+    }
+
+    // Set the string value
+    template <std::size_t N>
+    void set(const char (&data)[N])
+    {
+        return set(data, N);
+    }
+
+    // Set the string value
+    template <std::size_t N>
+    void set(const std::array<char, N>& data)
+    {
+        return set(data.data(), data.size());
     }
 
     // Set the string value

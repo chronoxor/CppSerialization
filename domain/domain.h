@@ -28,7 +28,6 @@
 #include "serialization/json/deserializer.h"
 
 #include <algorithm>
-#include <map>
 #include <string>
 #include <vector>
 
@@ -50,13 +49,13 @@ enum class OrderType : uint8_t
 struct Order
 {
     int Id;
-    char Symbol[32];
+    char Symbol[10];
     OrderSide Side;
     OrderType Type;
     double Price;
     double Volume;
 
-    Order() : Order(0, "<unknown>", OrderSide::BUY, OrderType::MARKET, 0.0, 0.0) {}
+    Order() : Order(0, "<\?\?\?>", OrderSide::BUY, OrderType::MARKET, 0.0, 0.0) {}
     Order(int id, const std::string& symbol, OrderSide side, OrderType type, double price, double volume)
     {
         Id = id;
@@ -110,9 +109,7 @@ struct Order
     {
         size_t model_begin = model.get_begin();
         model.id.get(Id);
-        std::string symbol;
-        model.symbol.get(symbol);
-        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
+        model.symbol.get(Symbol);
         domain::OrderSide side;
         model.side.get(side);
         Side = (OrderSide)side;
@@ -197,10 +194,10 @@ struct Order
 
 struct Balance
 {
-    char Currency[12];
+    char Currency[10];
     double Amount;
 
-    Balance() : Balance("<?>", 0.0) {}
+    Balance() : Balance("<\?\?\?>", 0.0) {}
     Balance(const std::string& currency, double amount)
     {
         std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
@@ -237,9 +234,7 @@ struct Balance
     void Deserialize(const FBE::FieldModel<TBuffer, domain::Balance>& model)
     {
         size_t model_begin = model.get_begin();
-        std::string currency;
-        model.currency.get(currency);
-        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
+        model.currency.get(Currency);
         model.amount.get(Amount);
         model.get_end(model_begin);
     }
@@ -302,7 +297,7 @@ struct Account
     Balance Wallet;
     std::vector<Order> Orders;
 
-    Account() : Account(0, "<unknown>", "<unknown>", 0.0) {}
+    Account() : Account(0, "<<\?\?\?>>", "<<\?\?\?>>", 0.0) {}
     Account(int id, const char* name, const char* currency, double amount) : Wallet(currency, amount)
     {
         Id = id;
