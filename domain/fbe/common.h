@@ -753,8 +753,6 @@ public:
     // Unshift the current field offset
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
-    FieldModel<TBuffer, T> value;
-
     //! Is the value present?
     explicit operator bool() const noexcept { return has_value(); }
 
@@ -865,6 +863,9 @@ public:
 private:
     TBuffer& _buffer;
     size_t _offset;
+
+public:
+    FieldModel<TBuffer, T> value;
 };
 
 // Fast Binary Encoding field model array class

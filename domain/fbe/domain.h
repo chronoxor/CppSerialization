@@ -224,13 +224,6 @@ public:
     // Unshift the current field offset
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
-    FieldModel<TBuffer, int32_t> id;
-    FieldModel<TBuffer, std::string> symbol;
-    FieldModel<TBuffer, OrderSide> side;
-    FieldModel<TBuffer, OrderType> type;
-    FieldModel<TBuffer, double> price;
-    FieldModel<TBuffer, double> volume;
-
     // Check if the struct value is valid
     bool verify(bool verify_type = true) const noexcept
     {
@@ -423,6 +416,14 @@ public:
 private:
     TBuffer& _buffer;
     size_t _offset;
+
+public:
+    FieldModel<TBuffer, int32_t> id;
+    FieldModel<TBuffer, std::string> symbol;
+    FieldModel<TBuffer, OrderSide> side;
+    FieldModel<TBuffer, OrderType> type;
+    FieldModel<TBuffer, double> price;
+    FieldModel<TBuffer, double> volume;
 };
 
 } // namespace FBE
@@ -458,7 +459,7 @@ public:
     // Create a new model (begin phase)
     size_t create_begin()
     {
-        size_t fbe_begin = allocate(4 + model.fbe_size());
+        size_t fbe_begin = this->allocate(4 + model.fbe_size());
         return fbe_begin;
     }
 
@@ -628,9 +629,6 @@ public:
     // Unshift the current field offset
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
-    FieldModel<TBuffer, std::string> currency;
-    FieldModel<TBuffer, double> amount;
-
     // Check if the struct value is valid
     bool verify(bool verify_type = true) const noexcept
     {
@@ -777,6 +775,10 @@ public:
 private:
     TBuffer& _buffer;
     size_t _offset;
+
+public:
+    FieldModel<TBuffer, std::string> currency;
+    FieldModel<TBuffer, double> amount;
 };
 
 } // namespace FBE
@@ -812,7 +814,7 @@ public:
     // Create a new model (begin phase)
     size_t create_begin()
     {
-        size_t fbe_begin = allocate(4 + model.fbe_size());
+        size_t fbe_begin = this->allocate(4 + model.fbe_size());
         return fbe_begin;
     }
 
@@ -1007,11 +1009,6 @@ public:
     // Unshift the current field offset
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
-    FieldModel<TBuffer, int32_t> id;
-    FieldModel<TBuffer, std::string> name;
-    FieldModel<TBuffer, Balance> wallet;
-    FieldModelArray<TBuffer, Order> orders;
-
     // Check if the struct value is valid
     bool verify(bool verify_type = true) const noexcept
     {
@@ -1178,6 +1175,12 @@ public:
 private:
     TBuffer& _buffer;
     size_t _offset;
+
+public:
+    FieldModel<TBuffer, int32_t> id;
+    FieldModel<TBuffer, std::string> name;
+    FieldModel<TBuffer, Balance> wallet;
+    FieldModelArray<TBuffer, Order> orders;
 };
 
 } // namespace FBE
@@ -1213,7 +1216,7 @@ public:
     // Create a new model (begin phase)
     size_t create_begin()
     {
-        size_t fbe_begin = allocate(4 + model.fbe_size());
+        size_t fbe_begin = this->allocate(4 + model.fbe_size());
         return fbe_begin;
     }
 
