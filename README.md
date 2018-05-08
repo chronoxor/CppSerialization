@@ -10,6 +10,15 @@ C++ Serialization Library provides functionality to serialize/deserialize
 objects in/from different formats such as Cap'n'Proto, Flatbuffers, Protobuf,
 JSON.
 
+Performance comparison table based on the [Domain model](#domain-model):
+| Format      | Message size | Serialization time | Deserialization time |
+| ----------- | ------------ | ------------------ | -------------------- |
+| Cap'n'Proto | 208 bytes    | 678 ns             | 480 ns               |
+| Fast Binary | 234 bytes    | 115 ns             | 131 ns               |
+| FlatBuffers | 280 bytes    | 1024 ns            | 385 ns               |
+| Protobuf    | 120 bytes    | 836 ns             | 1024 ns              |
+| JSON        | 297 bytes    | 845 ns             | 2560 ns              |
+
 [CppSerialization API reference](http://chronoxor.github.io/CppSerialization/index.html)
 
 # Contents
