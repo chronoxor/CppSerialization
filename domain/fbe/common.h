@@ -18,10 +18,12 @@
 
 #if defined(__clang__)
 #include <experimental/optional>
-#define optional std::experimental::optional
+#define stdoptional std::experimental::optional
+#define stdnullopt std::experimental::nullopt
 #else
 #include <optional>
-#define optional std::optional
+#define stdoptional std::optional
+#define stdnullopt std::nullopt
 #endif
 
 #if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__)
@@ -730,7 +732,7 @@ private:
 
 // Fast Binary Encoding field model class optional specialization
 template <class TBuffer, typename T>
-class FieldModel<TBuffer, optional<T>>
+class FieldModel<TBuffer, stdoptional<T>>
 {
 public:
     FieldModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset), value(buffer, 0) {}
@@ -813,7 +815,7 @@ public:
     }
 
     // Get the optional value
-    void get(optional<T>& opt, const optional<T>& default_value = std::nullopt) const noexcept
+    void get(stdoptional<T>& opt, const stdoptional<T>& default_value = stdnullopt) const noexcept
     {
         opt = default_value;
 
@@ -856,7 +858,7 @@ public:
     }
 
     // Set the optional value
-    void set(const optional<T>& opt)
+    void set(const stdoptional<T>& opt)
     {
         size_t fbe_begin = set_begin(opt.has_value());
         if (fbe_begin == 0)
