@@ -8,7 +8,6 @@
 #include <cstring>
 #include <list>
 #include <map>
-#include <optional>
 #include <set>
 #include <sstream>
 #include <stdexcept>
@@ -16,6 +15,14 @@
 #include <type_traits>
 #include <unordered_map>
 #include <vector>
+
+#if defined(__clang__)
+#include <experimental/optional>
+#define optional std::experimental::optional
+#else
+#include <optional>
+#define optional std::optional
+#endif
 
 #if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__)
 #include <time.h>
@@ -723,7 +730,7 @@ private:
 
 // Fast Binary Encoding field model class optional specialization
 template <class TBuffer, typename T>
-class FieldModel<TBuffer, std::optional<T>>
+class FieldModel<TBuffer, optional<T>>
 {
 public:
     FieldModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset), value(buffer, 0) {}
@@ -806,7 +813,7 @@ public:
     }
 
     // Get the optional value
-    void get(std::optional<T>& opt, const std::optional<T>& default_value = std::nullopt) const noexcept
+    void get(optional<T>& opt, const optional<T>& default_value = std::nullopt) const noexcept
     {
         opt = default_value;
 
@@ -849,7 +856,7 @@ public:
     }
 
     // Set the optional value
-    void set(const std::optional<T>& opt)
+    void set(const optional<T>& opt)
     {
         size_t fbe_begin = set_begin(opt.has_value());
         if (fbe_begin == 0)
