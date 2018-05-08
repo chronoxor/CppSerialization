@@ -11,6 +11,7 @@ objects in/from different formats such as Cap'n'Proto, Flatbuffers, Protobuf,
 JSON.
 
 Performance comparison table based on the [Domain model](#domain-model):
+
 | Format      | Message size | Serialization time | Deserialization time |
 | ----------- | ------------ | ------------------ | -------------------- |
 | Cap'n'Proto | 208 bytes    | 678 ns             | 480 ns               |
