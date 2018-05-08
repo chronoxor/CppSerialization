@@ -1,0 +1,38 @@
+package domain
+
+enum OrderSide : byte
+{
+    buy;
+    sell;
+}
+
+enum OrderType : byte
+{
+    market;
+    limit;
+    stop;
+}
+
+struct Order
+{
+    [key] int32 id;
+    string symbol;
+    OrderSide side;
+    OrderType type;
+    double price = 0.0;
+    double volume = 0.0;
+}
+
+struct Balance
+{
+    [key] string currency;
+    double amount = 0.0;
+}
+
+struct Account
+{
+    [key] int32 id;
+    string name;
+    Balance wallet;
+    Order[] orders;
+}

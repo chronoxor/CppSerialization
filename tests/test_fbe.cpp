@@ -1,5 +1,5 @@
 //
-// Created by Ivan Shynkarenka on 31.03.2018
+// Created by Ivan Shynkarenka on 08.05.2018
 //
 
 #include "test.h"
@@ -9,7 +9,7 @@
 using namespace CppCommon;
 using namespace CppSerialization;
 
-TEST_CASE("Cap'n'Proto", "[CppSerialization]")
+TEST_CASE("FBE", "[CppSerialization]")
 {
     // Create a new account with some orders
     MyDomain::Account account(1, "Test", "USD", 1000);
@@ -17,20 +17,22 @@ TEST_CASE("Cap'n'Proto", "[CppSerialization]")
     account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the Cap'n'Proto stream
-    capnp::MallocMessageBuilder output;
-    MyDomain::capnproto::Account::Builder builder = output.initRoot<MyDomain::capnproto::Account>();
-    account.Serialize(builder);
-    kj::VectorOutputStream buffer;
-    writeMessage(buffer, output);
+    // Serialize the account to the FBE stream
+    FBE::AccountModel<FBE::WriteBuffer> writer;
+    size_t model_begin = writer.create_begin();
+    account.Serialize(writer.model);
+    size_t serialized = writer.create_end(model_begin);
+    assert(writer.verify() && "Model is broken!");
 
-    REQUIRE(buffer.getArray().size() > 0);
+    REQUIRE(serialized > 0);
+    REQUIRE(writer.buffer().size() > 0);
 
-    // Deserialize the account from the Cap'n'Proto stream
-    kj::ArrayInputStream array(buffer.getArray());
-    capnp::InputStreamMessageReader input(array);
+    // Deserialize the account from the FBE stream
     MyDomain::Account deserialized;
-    deserialized.Deserialize(input.getRoot<MyDomain::capnproto::Account>());
+    FBE::AccountModel<FBE::ReadBuffer> reader;
+    reader.attach(writer.buffer());
+    assert(reader.verify() && "Model is broken!");
+    deserialized.Deserialize(reader.model);
 
     REQUIRE(deserialized.Id == 1);
     REQUIRE(deserialized.Name == "Test");

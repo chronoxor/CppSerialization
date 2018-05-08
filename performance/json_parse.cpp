@@ -9,7 +9,6 @@
 #include "serialization/json/parser.h"
 
 using namespace CppSerialization::JSON;
-using namespace MyDomain;
 
 const uint64_t iterations = 1000000;
 
@@ -21,10 +20,10 @@ protected:
     ParserFixture()
     {
         // Create a new account with some orders
-        Account account(1, "Test", "USD", 1000);
-        account.AddOrder(Order(1, "EURUSD", OrderSide::BUY, OrderType::MARKET, 1.23456, 1000));
-        account.AddOrder(Order(2, "EURUSD", OrderSide::SELL, OrderType::LIMIT, 1.0, 100));
-        account.AddOrder(Order(3, "EURUSD", OrderSide::BUY, OrderType::STOP, 1.5, 10));
+        MyDomain::Account account(1, "Test", "USD", 1000);
+        account.Orders.emplace_back(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
+        account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
+        account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
 
         // Serialize the account to the JSON stream
         Serializer<StringBuffer> serializer(buffer);

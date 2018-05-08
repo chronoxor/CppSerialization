@@ -1,22 +1,18 @@
 //
-// Created by Ivan Shynkarenka on 28.02.2017
+// Created by Ivan Shynkarenka on 08.05.2018
 //
 
 #include "benchmark/cppbenchmark.h"
 
 #include "../domain/domain.h"
 
-#include "serialization/json/parser.h"
-
-using namespace CppSerialization::JSON;
-
 const uint64_t iterations = 1000000;
 
 class DeserializationFixture
 {
 protected:
-    size_t size;
-    Document json;
+    FBE::AccountModel<FBE::WriteBuffer> writer;
+    FBE::AccountModel<FBE::ReadBuffer> reader;
     MyDomain::Account deserialized;
 
     DeserializationFixture()
@@ -27,24 +23,23 @@ protected:
         account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
         account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
 
-        // Serialize the account to the JSON stream
-        StringBuffer buffer;
-        Serializer<StringBuffer> serializer(buffer);
-        account.Serialize(serializer);
-
-        // Parse JSON string
-        json = Parser::Parse(buffer.GetString());
-        size = buffer.GetSize();
+        // Serialize the account to the FBE stream
+        size_t model_begin = writer.create_begin();
+        account.Serialize(writer.model);
+        writer.create_end(model_begin);
+        assert(writer.verify() && "Model is broken!");
+        reader.attach(writer.buffer());
+        assert(reader.verify() && "Model is broken!");
     }
 };
 
-BENCHMARK_FIXTURE(DeserializationFixture, "JSON-Deserialize", iterations)
+BENCHMARK_FIXTURE(DeserializationFixture, "FBE-Deserialize", iterations)
 {
-    context.metrics().AddBytes(json.Size());
-    context.metrics().SetCustom("Size", (unsigned)size);
+    context.metrics().AddBytes(reader.buffer().size());
+    context.metrics().SetCustom("Size", reader.buffer().size());
 
-    // Deserialize the account from the JSON stream
-    deserialized.Deserialize(json);
+    // Deserialize the account from the FBE stream
+    deserialized.Deserialize(reader.model);
 }
 
 BENCHMARK_MAIN()

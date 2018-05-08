@@ -1,8 +1,8 @@
 /*!
-    \file protobuf.cpp
-    \brief Protobuf serialization example
+    \file fbe.cpp
+    \brief Fast Binary Encoding serialization example
     \author Ivan Shynkarenka
-    \date 30.03.2017
+    \date 08.05.2018
     \copyright MIT License
 */
 
@@ -18,19 +18,22 @@ int main(int argc, char** argv)
     account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the Protobuf stream
-    MyDomain::protobuf::Account output;
-    account.Serialize(output);
-    auto buffer = output.SerializeAsString();
+    // Serialize the account to the FBE stream
+    FBE::AccountModel<FBE::WriteBuffer> writer;
+    size_t model_begin = writer.create_begin();
+    account.Serialize(writer.model);
+    size_t serialized = writer.create_end(model_begin);
+    assert(writer.verify() && "Model is broken!");
 
-    // Show the serialized Protobuf size
-    std::cout << "Protobuf size: " << buffer.size() << std::endl;
+    // Show the serialized FBE size
+    std::cout << "FBE size: " << serialized << std::endl;
 
-    // Deserialize the account from the Protobuf stream
-    MyDomain::protobuf::Account input;
-    input.ParseFromString(buffer);
+    // Deserialize the account from the FBE stream
     MyDomain::Account deserialized;
-    deserialized.Deserialize(input);
+    FBE::AccountModel<FBE::ReadBuffer> reader;
+    reader.attach(writer.buffer());
+    assert(reader.verify() && "Model is broken!");
+    deserialized.Deserialize(reader.model);
 
     // Show account content
     std::cout << std::endl;
@@ -48,9 +51,6 @@ int main(int argc, char** argv)
             << ", Volume: " << order.Volume
             << std::endl;
     }
-
-    // Delete all global objects allocated by Protobuf
-    google::protobuf::ShutdownProtobufLibrary();
 
     return 0;
 }

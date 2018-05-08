@@ -20,6 +20,7 @@
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
+#include "fbe/domain.h"
 #include "flatbuffers/domain_generated.h"
 #include "protobuf/domain.pb.h"
 
@@ -81,11 +82,46 @@ struct Order
     void Deserialize(const capnproto::Order::Reader& reader)
     {
         Id = reader.getId();
-        std::strncpy(Symbol, reader.getSymbol().cStr(), std::min((size_t)reader.getSymbol().size() + 1, sizeof(Symbol)));
+        std::string symbol = reader.getSymbol();
+        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)reader.getSide();
         Type = (OrderType)reader.getType();
         Price = reader.getPrice();
         Volume = reader.getVolume();
+    }
+
+    // Fast Binary Encoding serialization
+
+    template <class TBuffer>
+    void Serialize(FBE::FieldModel<TBuffer, domain::Order>& model)
+    {
+        size_t model_begin = model.set_begin();
+        model.id.set(Id);
+        model.symbol.set(Symbol);
+        model.side.set((domain::OrderSide)Side);
+        model.type.set((domain::OrderType)Type);
+        model.price.set(Price);
+        model.volume.set(Volume);
+        model.set_end(model_begin);
+    }
+
+    template <class TBuffer>
+    void Deserialize(const FBE::FieldModel<TBuffer, domain::Order>& model)
+    {
+        size_t model_begin = model.get_begin();
+        model.id.get(Id);
+        std::string symbol;
+        model.symbol.get(symbol);
+        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
+        domain::OrderSide side;
+        model.side.get(side);
+        Side = (OrderSide)side;
+        domain::OrderType type;
+        model.type.get(type);
+        Type = (OrderType)type;
+        model.price.get(Price);
+        model.volume.get(Volume);
+        model.get_end(model_begin);
     }
 
     // FlatBuffers serialization
@@ -98,7 +134,8 @@ struct Order
     void Deserialize(const flatbuf::Order& value)
     {
         Id = value.id();
-        std::strncpy(Symbol, value.symbol()->c_str(), std::min((size_t)value.symbol()->Length() + 1, sizeof(Symbol)));
+        std::string symbol = value.symbol()->str();
+        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)value.side();
         Type = (OrderType)value.type();
         Price = value.price();
@@ -121,7 +158,8 @@ struct Order
     void Deserialize(const protobuf::Order& value)
     {
         Id = value.id();
-        std::strncpy(Symbol, value.symbol().c_str(), std::min((size_t)value.symbol().size() + 1, sizeof(Symbol)));
+        std::string symbol = value.symbol();
+        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)value.side();
         Type = (OrderType)value.type();
         Price = value.price();
@@ -179,8 +217,31 @@ struct Balance
 
     void Deserialize(const capnproto::Balance::Reader& reader)
     {
-        std::strncpy(Currency, reader.getCurrency().cStr(), std::min((size_t)reader.getCurrency().size() + 1, sizeof(Currency)));
+        std::string currency = reader.getCurrency();
+        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = reader.getAmount();
+    }
+
+    // Fast Binary Encoding serialization
+
+    template <class TBuffer>
+    void Serialize(FBE::FieldModel<TBuffer, domain::Balance>& model)
+    {
+        size_t model_begin = model.set_begin();
+        model.currency.set(Currency);
+        model.amount.set(Amount);
+        model.set_end(model_begin);
+    }
+
+    template <class TBuffer>
+    void Deserialize(const FBE::FieldModel<TBuffer, domain::Balance>& model)
+    {
+        size_t model_begin = model.get_begin();
+        std::string currency;
+        model.currency.get(currency);
+        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
+        model.amount.get(Amount);
+        model.get_end(model_begin);
     }
 
     // FlatBuffers serialization
@@ -192,7 +253,8 @@ struct Balance
 
     void Deserialize(const flatbuf::Balance& value)
     {
-        std::strncpy(Currency, value.currency()->c_str(), std::min((size_t)value.currency()->Length() + 1, sizeof(Currency)));
+        std::string currency = value.currency()->str();
+        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = value.amount();
     }
 
@@ -207,7 +269,8 @@ struct Balance
 
     void Deserialize(const protobuf::Balance& value)
     {
-        std::strncpy(Currency, value.currency().c_str(), std::min((size_t)value.currency().size() + 1, sizeof(Currency)));
+        std::string currency = value.currency();
+        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = value.amount();
     }
 
@@ -237,7 +300,7 @@ struct Account
     int Id;
     std::string Name;
     Balance Wallet;
-    std::map<int, Order> Orders;
+    std::vector<Order> Orders;
 
     Account() : Account(0, "<unknown>", "<unknown>", 0.0) {}
     Account(int id, const char* name, const char* currency, double amount) : Wallet(currency, amount)
@@ -259,7 +322,7 @@ struct Account
         for (auto& order : Orders)
         {
             auto o = orders[index++];
-            order.second.Serialize(o);
+            order.Serialize(o);
         }
     }
 
@@ -273,8 +336,43 @@ struct Account
         {
             Order order;
             order.Deserialize(o);
-            AddOrder(order);
+            Orders.emplace_back(order);
         }
+    }
+
+    // Fast Binary Encoding serialization
+
+    template <class TBuffer>
+    void Serialize(FBE::FieldModel<TBuffer, domain::Account>& model)
+    {
+        size_t model_begin = model.set_begin();
+        model.id.set(Id);
+        model.name.set(Name);
+        Wallet.Serialize(model.wallet);
+        auto order_model = model.orders.resize(Orders.size());
+        for (auto& order : Orders)
+        {
+            order.Serialize(order_model);
+            order_model.fbe_shift(order_model.fbe_size());
+        }
+        model.set_end(model_begin);
+    }
+
+    template <class TBuffer>
+    void Deserialize(const FBE::FieldModel<TBuffer, domain::Account>& model)
+    {
+        size_t model_begin = model.get_begin();
+        model.id.get(Id);
+        model.name.get(Name);
+        Wallet.Deserialize(model.wallet);
+        Orders.clear();
+        for (size_t i = 0; i < model.orders.size(); ++i)
+        {
+            Order order;
+            order.Deserialize(model.orders[i]);
+            Orders.emplace_back(order);
+        }
+        model.get_end(model_begin);
     }
 
     // FlatBuffers serialization
@@ -284,7 +382,7 @@ struct Account
         auto wallet = Wallet.Serialize(builder);
         std::vector<flatbuffers::Offset<flatbuf::Order>> orders;
         for (auto& order : Orders)
-            orders.emplace_back(order.second.Serialize(builder));
+            orders.emplace_back(order.Serialize(builder));
         return flatbuf::CreateAccountDirect(builder, Id, Name.c_str(), wallet, &orders);
     }
 
@@ -298,7 +396,7 @@ struct Account
         {
             Order order;
             order.Deserialize(*o);
-            AddOrder(order);
+            Orders.emplace_back(order);
         }
     }
 
@@ -310,7 +408,7 @@ struct Account
         value.set_name(Name);
         value.set_allocated_wallet(&Wallet.Serialize(*value.wallet().New(value.GetArena())));
         for (auto& order : Orders)
-            order.second.Serialize(*value.add_orders());
+            order.Serialize(*value.add_orders());
         return value;
     }
 
@@ -324,7 +422,7 @@ struct Account
         {
             Order order;
             order.Deserialize(value.orders(i));
-            AddOrder(order);
+            Orders.emplace_back(order);
         }
     }
 
@@ -341,7 +439,7 @@ struct Account
         serializer.Key("orders");
         serializer.StartArray();
         for (auto& order : Orders)
-            order.second.Serialize(serializer);
+            order.Serialize(serializer);
         serializer.EndArray();
         serializer.EndObject();
     }
@@ -362,13 +460,8 @@ struct Account
         {
             Order order;
             order.Deserialize(item);
-            AddOrder(order);
+            Orders.emplace_back(order);
         });
-    }
-
-    void AddOrder(const Order& order)
-    {
-        Orders[order.Id] = order;
     }
 };
 
