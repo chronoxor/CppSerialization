@@ -10,7 +10,7 @@ C++ Serialization Library provides functionality to serialize/deserialize
 objects in/from different formats such as Cap'n'Proto, Flatbuffers, Protobuf,
 JSON.
 
-Performance comparison table based on the [Domain model](#domain-model):
+Performance comparison based on the [Domain model](#domain-model):
 
 | Format      | Message size | Serialization time | Deserialization time |
 | ----------- | ------------ | ------------------ | -------------------- |
