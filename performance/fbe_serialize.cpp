@@ -32,7 +32,7 @@ BENCHMARK_FIXTURE(SerializationFixture, "FlatBuffers-Serialize", iterations)
     size_t serialized = writer.create_end(model_begin);
 
     context.metrics().AddBytes(serialized);
-    context.metrics().SetCustom("Size", serialized);
+    context.metrics().SetCustom("Size", (unsigned)serialized);
 }
 
 BENCHMARK_MAIN()

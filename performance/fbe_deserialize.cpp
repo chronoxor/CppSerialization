@@ -36,7 +36,7 @@ protected:
 BENCHMARK_FIXTURE(DeserializationFixture, "FBE-Deserialize", iterations)
 {
     context.metrics().AddBytes(reader.buffer().size());
-    context.metrics().SetCustom("Size", reader.buffer().size());
+    context.metrics().SetCustom("Size", (unsigned)reader.buffer().size());
 
     // Deserialize the account from the FBE stream
     deserialized.Deserialize(reader.model);
