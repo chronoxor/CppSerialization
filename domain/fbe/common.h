@@ -16,6 +16,12 @@
 #include <unordered_map>
 #include <vector>
 
+#if (__CYGWIN__)
+#define MAYBE_UNUSED
+#else
+#define MAYBE_UNUSED [[maybe_unused]]
+#endif
+
 #if defined(__clang__) || defined(__CYGWIN__)
 #include <experimental/optional>
 #define stdoptional std::experimental::optional
@@ -923,7 +929,7 @@ public:
         uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
         assert(((fbe_array_offset > 0) && ((_buffer.offset() + fbe_array_offset + 4) <= _buffer.size())) && "Model is broken!");
 
-        uint32_t fbe_array_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_array_offset));
+        MAYBE_UNUSED uint32_t fbe_array_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_array_offset));
         assert((index < fbe_array_size) && "Index is out of bounds!");
         (void)fbe_array_size;
 
@@ -1155,8 +1161,9 @@ public:
         uint32_t fbe_map_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
         assert(((fbe_map_offset > 0) && ((_buffer.offset() + fbe_map_offset + 4) <= _buffer.size())) && "Model is broken!");
 
-        [[maybe_unused]] uint32_t fbe_map_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_map_offset));
+        MAYBE_UNUSED uint32_t fbe_map_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_map_offset));
         assert((index < fbe_map_size) && "Index is out of bounds!");
+        (void)fbe_map_size;
 
         FieldModel<TBuffer, TKey> fbe_model_key(_buffer, fbe_map_offset + 4);
         FieldModel<TBuffer, TValue> fbe_model_value(_buffer, fbe_map_offset + 4 + fbe_model_key.fbe_size());
