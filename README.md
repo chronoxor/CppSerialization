@@ -20,7 +20,7 @@ Performance comparison based on the [Domain model](#domain-model):
 | Protobuf    | 120 bytes    | 836 ns             | 1024 ns              |
 | JSON        | 297 bytes    | 845 ns             | 2560 ns              |
 
-[CppSerialization API reference](http://chronoxor.github.io/CppSerialization/index.html)
+[CppSerialization API reference](https://chronoxor.github.io/CppSerialization/index.html)
 
 # Contents
   * [Features](#features)
@@ -74,15 +74,15 @@ Performance comparison based on the [Domain model](#domain-model):
 * Linux
 * OSX
 * Windows 7 / Windows 10
-* [CMake](http://www.cmake.org)
+* [CMake](https://www.cmake.org)
 * [GIT](https://git-scm.com)
 * [GCC](https://gcc.gnu.org)
 
 Optional:
-* [Clang](http://clang.llvm.org)
+* [Clang](https://clang.llvm.org)
 * [Clion](https://www.jetbrains.com/clion)
 * [Cygwin](https://cygwin.com)
-* [MinGW](http://mingw-w64.org/doku.php)
+* [MinGW](https://mingw-w64.org/doku.php)
 * [Visual Studio](https://www.visualstudio.com)
 
 # How to build?

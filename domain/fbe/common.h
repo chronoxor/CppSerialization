@@ -923,8 +923,9 @@ public:
         uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
         assert(((fbe_array_offset > 0) && ((_buffer.offset() + fbe_array_offset + 4) <= _buffer.size())) && "Model is broken!");
 
-        [[maybe_unused]] uint32_t fbe_array_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_array_offset));
+        uint32_t fbe_array_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_array_offset));
         assert((index < fbe_array_size) && "Index is out of bounds!");
+        (void)fbe_array_size;
 
         FieldModel<TBuffer, T> fbe_model(_buffer, fbe_array_offset + 4);
         fbe_model.fbe_shift(index * fbe_model.fbe_size());
