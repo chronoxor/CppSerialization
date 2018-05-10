@@ -1,6 +1,6 @@
 /*!
     \file fbe.cpp
-    \brief Fast Binary Encoding serialization example
+    \brief FastBinaryEncoding serialization example
     \author Ivan Shynkarenka
     \date 08.05.2018
     \copyright MIT License

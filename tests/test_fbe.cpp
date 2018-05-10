@@ -9,7 +9,7 @@
 using namespace CppCommon;
 using namespace CppSerialization;
 
-TEST_CASE("FBE", "[CppSerialization]")
+TEST_CASE("FastBinaryEncoding", "[CppSerialization]")
 {
     // Create a new account with some orders
     MyDomain::Account account(1, "Test", "USD", 1000);

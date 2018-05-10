@@ -33,7 +33,7 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(DeserializationFixture, "FBE-Deserialize", iterations)
+BENCHMARK_FIXTURE(DeserializationFixture, "FastBinaryEncoding-Deserialize", iterations)
 {
     context.metrics().AddBytes(reader.buffer().size());
     context.metrics().SetCustom("Size", (unsigned)reader.buffer().size());

@@ -7,18 +7,18 @@
 [![Windows build status](https://img.shields.io/appveyor/ci/chronoxor/CppSerialization/master.svg?label=Windows)](https://ci.appveyor.com/project/chronoxor/CppSerialization)
 
 C++ Serialization Library provides functionality to serialize/deserialize
-objects in/from different formats such as Cap'n'Proto, Flatbuffers, Protobuf,
-JSON.
+objects in/from different formats such as Cap'n'Proto, FastBinaryEncoding,
+Flatbuffers, Protobuf, JSON.
 
 Performance comparison based on the [Domain model](#domain-model):
 
-| Format      | Message size | Serialization time | Deserialization time |
-| ----------- | ------------ | ------------------ | -------------------- |
-| Cap'n'Proto | 208 bytes    | 678 ns             | 480 ns               |
-| Fast Binary | 234 bytes    | 115 ns             | 131 ns               |
-| FlatBuffers | 280 bytes    | 1024 ns            | 385 ns               |
-| Protobuf    | 120 bytes    | 836 ns             | 1024 ns              |
-| JSON        | 297 bytes    | 845 ns             | 2560 ns              |
+| Format             | Message size | Serialization time | Deserialization time |
+| ------------------ | ------------ | ------------------ | -------------------- |
+| Cap'n'Proto        | 208 bytes    | 678 ns             | 480 ns               |
+| FastBinaryEncoding | 234 bytes    | 115 ns             | 131 ns               |
+| FlatBuffers        | 280 bytes    | 1024 ns            | 385 ns               |
+| Protobuf           | 120 bytes    | 836 ns             | 1024 ns              |
+| JSON               | 297 bytes    | 845 ns             | 2560 ns              |
 
 [CppSerialization API reference](https://chronoxor.github.io/CppSerialization/index.html)
 
@@ -40,12 +40,12 @@ Performance comparison based on the [Domain model](#domain-model):
     * [Cap'n'Proto serialization methods](#capnproto-serialization-methods)
     * [Cap'n'Proto example](#capnproto-example)
     * [Cap'n'Proto performance](#capnproto-performance)
-  * [Fast Binary serialization](#fast-binary-serialization)
-    * [Fast Binary schema](#fast-binary-schema)
-    * [Fast Binary schema compilation](#fast-binary-schema-compilation)
-    * [Fast Binary serialization methods](#fast-binary-serialization-methods)
-    * [Fast Binary example](#fast-binary-example)
-    * [Fast Binary performance](#fast-binary-performance)
+  * [FastBinaryEncoding serialization](#fastbinaryencoding-serialization)
+    * [FastBinaryEncoding schema](#fastbinaryencoding-schema)
+    * [FastBinaryEncoding schema compilation](#fastbinaryencoding-schema-compilation)
+    * [FastBinaryEncoding serialization methods](#fastbinaryencoding-serialization-methods)
+    * [FastBinaryEncoding example](#fastbinaryencoding-example)
+    * [FastBinaryEncoding performance](#fastbinaryencoding-performance)
   * [FlatBuffers serialization](#flatbuffers-serialization)
     * [FlatBuffers schema](#flatbuffers-schema)
     * [FlatBuffers schema compilation](#flatbuffers-schema-compilation)
@@ -65,10 +65,11 @@ Performance comparison based on the [Domain model](#domain-model):
 
 # Features
 * Cross platform (Linux, OSX, Windows)
-* Fast Binary serialization using [Cap'n'Proto library](https://capnproto.org)
-* Fast Binary serialization using [FlatBuffers library](https://google.github.io/flatbuffers)
-* Fast Binary serialization using [Protobuf library](https://developers.google.com/protocol-buffers)
-* Fast JSON serialization using [RapidJSON library](http://rapidjson.org)
+* Binary serialization using [Cap'n'Proto library](https://capnproto.org)
+* Binary serialization using [FastBinaryEncoding library](https://github.com/chronoxor/FastBinaryEncoding)
+* Binary serialization using [FlatBuffers library](https://google.github.io/flatbuffers)
+* Binary serialization using [Protobuf library](https://developers.google.com/protocol-buffers)
+* JSON serialization using [RapidJSON library](http://rapidjson.org)
 
 # Requirements
 * Linux
@@ -823,12 +824,12 @@ Custom values:
 ===============================================================================
 ```
 
-# Fast Binary serialization
-Fast Binary serialization is based on [Fast Binary library](https://fastbinary.com).
+# FastBinaryEncoding serialization
+FastBinaryEncoding serialization is based on [FastBinaryEncoding library](https://github.com/chronoxor/FastBinaryEncoding).
 
-## Fast Binary schema
-Fast Binary serialization starts with describing a model schema. For our domain
-model the schema will be the following:
+## FastBinaryEncoding schema
+FastBinaryEncoding serialization starts with describing a model schema. For our
+domain model the schema will be the following:
 
 ```
 package domain
@@ -871,7 +872,7 @@ struct Account
 }
 ```
 
-## Fast Binary schema compilation
+## FastBinaryEncoding schema compilation
 The next step is a schema compilation using 'fbec' utility which will create
 a generated code for required programming language.
 
@@ -888,8 +889,8 @@ add_custom_command(TARGET example POST_BUILD COMMAND fbec --c++ --input=domain.f
 
 As the result 'common.h' and 'domain.h' files will be generated.
 
-## Fast Binary serialization methods
-Finally you should extend your domain model with a Fast Binary serialization
+## FastBinaryEncoding serialization methods
+Finally you should extend your domain model with a FastBinaryEncoding serialization
 methods:
 
 ```C++
@@ -903,7 +904,7 @@ struct Order
 {
     ...
 
-    // Fast Binary serialization
+    // FastBinaryEncoding serialization
 
     template <class TBuffer>
     void Serialize(FBE::FieldModel<TBuffer, domain::Order>& model)
@@ -942,7 +943,7 @@ struct Balance
 {
     ...
 
-    // Fast Binary serialization
+    // FastBinaryEncoding serialization
 
     template <class TBuffer>
     void Serialize(FBE::FieldModel<TBuffer, domain::Balance>& model)
@@ -969,7 +970,7 @@ struct Account
 {
     ...
 
-    // Fast Binary serialization
+    // FastBinaryEncoding serialization
 
     template <class TBuffer>
     void Serialize(FBE::FieldModel<TBuffer, domain::Account>& model)
@@ -1010,8 +1011,8 @@ struct Account
 } // namespace MyDomain
 ```
 
-## Fast Binary example
-Here comes the usage example of Fast Binary serialize/deserialize functionality:
+## FastBinaryEncoding example
+Here comes the usage example of FastBinaryEncoding serialize/deserialize functionality:
 
 ```C++
 #include "../domain/domain.h"
@@ -1077,8 +1078,8 @@ Account.Order => Id: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
 Account.Order => Id: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
 ```
 
-## Fast Binary performance
-Fast Binary serialization performance of the provided domain model is the
+## FastBinaryEncoding performance
+FastBinaryEncoding serialization performance of the provided domain model is the
 following:
 ```
 ===============================================================================
@@ -1099,7 +1100,7 @@ Process configuaraion: release
 Local timestamp: Wed May  9 02:34:50 2018
 UTC timestamp: Tue May  8 23:34:50 2018
 ===============================================================================
-Benchmark: FlatBuffers-Serialize
+Benchmark: FastBinaryEncoding-Serialize
 Attempts: 5
 Iterations: 1000000
 -------------------------------------------------------------------------------
@@ -1117,7 +1118,7 @@ Custom values:
 ===============================================================================
 ```
 
-Fast Binary deserialization performance of the provided domain model is the
+FastBinaryEncoding deserialization performance of the provided domain model is the
 following:
 ```
 ===============================================================================

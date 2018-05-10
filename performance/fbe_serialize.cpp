@@ -23,7 +23,7 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(SerializationFixture, "FlatBuffers-Serialize", iterations)
+BENCHMARK_FIXTURE(SerializationFixture, "FastBinaryEncoding-Serialize", iterations)
 {
     // Serialize the account to the FBE stream
     writer.reset();
