@@ -174,8 +174,6 @@ public:
         , volume(buffer, price.fbe_offset() + price.fbe_size())
     {}
 
-    // Get the field type
-    size_t fbe_type() const noexcept { return 1; }
     // Get the field offset
     size_t fbe_offset() const noexcept { return _offset; }
     // Get the field size
@@ -196,11 +194,11 @@ public:
     // Get the field extra size
     size_t fbe_extra() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
-        if ((_buffer.offset() + fbe_struct_offset + 4) > _buffer.size())
+        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if ((fbe_struct_offset == 0) || ((_buffer.offset() + fbe_struct_offset + 4) > _buffer.size()))
             return 0;
 
         _buffer.shift(fbe_struct_offset);
@@ -218,6 +216,8 @@ public:
 
         return fbe_result;
     }
+    // Get the field type
+    size_t fbe_type() const noexcept { return 1; }
 
     // Shift the current field offset
     void fbe_shift(size_t size) noexcept { _offset += size; }
@@ -227,11 +227,11 @@ public:
     // Check if the struct value is valid
     bool verify(bool verify_type = true) const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return true;
 
-        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
-        if ((_buffer.offset() + fbe_struct_offset + 4 + 4) > _buffer.size())
+        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if ((fbe_struct_offset == 0) || ((_buffer.offset() + fbe_struct_offset + 4 + 4) > _buffer.size()))
             return false;
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset));
@@ -295,11 +295,12 @@ public:
     // Get the struct value (begin phase)
     size_t get_begin() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
-        if ((_buffer.offset() + fbe_struct_offset + 4 + 4) > _buffer.size())
+        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        assert(((fbe_struct_offset > 0) && ((_buffer.offset() + fbe_struct_offset + 4 + 4) <= _buffer.size())) && "Model is broken!");
+        if ((fbe_struct_offset == 0) || ((_buffer.offset() + fbe_struct_offset + 4 + 4) > _buffer.size()))
             return 0;
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset));
@@ -368,15 +369,14 @@ public:
     // Set the struct value (begin phase)
     size_t set_begin()
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
         uint32_t fbe_struct_size = (uint32_t)fbe_body();
         uint32_t fbe_struct_offset = (uint32_t)(_buffer.allocate(fbe_struct_size) - _buffer.offset());
+        assert(((fbe_struct_offset > 0) && ((_buffer.offset() + fbe_struct_offset + fbe_struct_size) <= _buffer.size())) && "Model is broken!");
 
-        assert(((_buffer.offset() + fbe_struct_offset + fbe_struct_size) <= _buffer.size()) && "Model is broken!");
-
-        *((uint32_t*)(_buffer.data() + _buffer.offset() + _offset)) = fbe_struct_offset;
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_struct_offset;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset)) = fbe_struct_size;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset + 4)) = (uint32_t)fbe_type();
 
@@ -436,12 +436,10 @@ class OrderModel : public FBE::Model<TBuffer>
 public:
     OrderModel() : model(this->buffer(), 4) {}
 
-    // Get the model type
-    size_t fbe_type() const noexcept { return model.fbe_type(); }
     // Get the model size
     size_t fbe_size() const noexcept { return model.fbe_size() + model.fbe_extra(); }
-
-    FieldModel<TBuffer, Order> model;
+    // Get the model type
+    size_t fbe_type() const noexcept { return model.fbe_type(); }
 
     // Check if the current struct value is valid
     bool verify()
@@ -498,11 +496,14 @@ public:
         return fbe_full_size;
     }
 
-    // Mode to the next struct value
+    // Move to the next struct value
     void next(size_t prev) noexcept
     {
         model.fbe_shift(prev);
     }
+
+public:
+    FieldModel<TBuffer, Order> model;
 };
 
 } // namespace FBE
@@ -587,8 +588,6 @@ public:
         , amount(buffer, currency.fbe_offset() + currency.fbe_size())
     {}
 
-    // Get the field type
-    size_t fbe_type() const noexcept { return 2; }
     // Get the field offset
     size_t fbe_offset() const noexcept { return _offset; }
     // Get the field size
@@ -605,11 +604,11 @@ public:
     // Get the field extra size
     size_t fbe_extra() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
-        if ((_buffer.offset() + fbe_struct_offset + 4) > _buffer.size())
+        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if ((fbe_struct_offset == 0) || ((_buffer.offset() + fbe_struct_offset + 4) > _buffer.size()))
             return 0;
 
         _buffer.shift(fbe_struct_offset);
@@ -623,6 +622,8 @@ public:
 
         return fbe_result;
     }
+    // Get the field type
+    size_t fbe_type() const noexcept { return 2; }
 
     // Shift the current field offset
     void fbe_shift(size_t size) noexcept { _offset += size; }
@@ -632,11 +633,11 @@ public:
     // Check if the struct value is valid
     bool verify(bool verify_type = true) const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return true;
 
-        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
-        if ((_buffer.offset() + fbe_struct_offset + 4 + 4) > _buffer.size())
+        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if ((fbe_struct_offset == 0) || ((_buffer.offset() + fbe_struct_offset + 4 + 4) > _buffer.size()))
             return false;
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset));
@@ -676,11 +677,12 @@ public:
     // Get the struct value (begin phase)
     size_t get_begin() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
-        if ((_buffer.offset() + fbe_struct_offset + 4 + 4) > _buffer.size())
+        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        assert(((fbe_struct_offset > 0) && ((_buffer.offset() + fbe_struct_offset + 4 + 4) <= _buffer.size())) && "Model is broken!");
+        if ((fbe_struct_offset == 0) || ((_buffer.offset() + fbe_struct_offset + 4 + 4) > _buffer.size()))
             return 0;
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset));
@@ -731,15 +733,14 @@ public:
     // Set the struct value (begin phase)
     size_t set_begin()
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
         uint32_t fbe_struct_size = (uint32_t)fbe_body();
         uint32_t fbe_struct_offset = (uint32_t)(_buffer.allocate(fbe_struct_size) - _buffer.offset());
+        assert(((fbe_struct_offset > 0) && ((_buffer.offset() + fbe_struct_offset + fbe_struct_size) <= _buffer.size())) && "Model is broken!");
 
-        assert(((_buffer.offset() + fbe_struct_offset + fbe_struct_size) <= _buffer.size()) && "Model is broken!");
-
-        *((uint32_t*)(_buffer.data() + _buffer.offset() + _offset)) = fbe_struct_offset;
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_struct_offset;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset)) = fbe_struct_size;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset + 4)) = (uint32_t)fbe_type();
 
@@ -791,12 +792,10 @@ class BalanceModel : public FBE::Model<TBuffer>
 public:
     BalanceModel() : model(this->buffer(), 4) {}
 
-    // Get the model type
-    size_t fbe_type() const noexcept { return model.fbe_type(); }
     // Get the model size
     size_t fbe_size() const noexcept { return model.fbe_size() + model.fbe_extra(); }
-
-    FieldModel<TBuffer, Balance> model;
+    // Get the model type
+    size_t fbe_type() const noexcept { return model.fbe_type(); }
 
     // Check if the current struct value is valid
     bool verify()
@@ -853,11 +852,14 @@ public:
         return fbe_full_size;
     }
 
-    // Mode to the next struct value
+    // Move to the next struct value
     void next(size_t prev) noexcept
     {
         model.fbe_shift(prev);
     }
+
+public:
+    FieldModel<TBuffer, Balance> model;
 };
 
 } // namespace FBE
@@ -963,8 +965,6 @@ public:
         , orders(buffer, wallet.fbe_offset() + wallet.fbe_size())
     {}
 
-    // Get the field type
-    size_t fbe_type() const noexcept { return 3; }
     // Get the field offset
     size_t fbe_offset() const noexcept { return _offset; }
     // Get the field size
@@ -983,11 +983,11 @@ public:
     // Get the field extra size
     size_t fbe_extra() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
-        if ((_buffer.offset() + fbe_struct_offset + 4) > _buffer.size())
+        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if ((fbe_struct_offset == 0) || ((_buffer.offset() + fbe_struct_offset + 4) > _buffer.size()))
             return 0;
 
         _buffer.shift(fbe_struct_offset);
@@ -1003,6 +1003,8 @@ public:
 
         return fbe_result;
     }
+    // Get the field type
+    size_t fbe_type() const noexcept { return 3; }
 
     // Shift the current field offset
     void fbe_shift(size_t size) noexcept { _offset += size; }
@@ -1012,11 +1014,11 @@ public:
     // Check if the struct value is valid
     bool verify(bool verify_type = true) const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return true;
 
-        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
-        if ((_buffer.offset() + fbe_struct_offset + 4 + 4) > _buffer.size())
+        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if ((fbe_struct_offset == 0) || ((_buffer.offset() + fbe_struct_offset + 4 + 4) > _buffer.size()))
             return false;
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset));
@@ -1068,11 +1070,12 @@ public:
     // Get the struct value (begin phase)
     size_t get_begin() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
-        if ((_buffer.offset() + fbe_struct_offset + 4 + 4) > _buffer.size())
+        uint32_t fbe_struct_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        assert(((fbe_struct_offset > 0) && ((_buffer.offset() + fbe_struct_offset + 4 + 4) <= _buffer.size())) && "Model is broken!");
+        if ((fbe_struct_offset == 0) || ((_buffer.offset() + fbe_struct_offset + 4 + 4) > _buffer.size()))
             return 0;
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset));
@@ -1129,15 +1132,14 @@ public:
     // Set the struct value (begin phase)
     size_t set_begin()
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
         uint32_t fbe_struct_size = (uint32_t)fbe_body();
         uint32_t fbe_struct_offset = (uint32_t)(_buffer.allocate(fbe_struct_size) - _buffer.offset());
+        assert(((fbe_struct_offset > 0) && ((_buffer.offset() + fbe_struct_offset + fbe_struct_size) <= _buffer.size())) && "Model is broken!");
 
-        assert(((_buffer.offset() + fbe_struct_offset + fbe_struct_size) <= _buffer.size()) && "Model is broken!");
-
-        *((uint32_t*)(_buffer.data() + _buffer.offset() + _offset)) = fbe_struct_offset;
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_struct_offset;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset)) = fbe_struct_size;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset + 4)) = (uint32_t)fbe_type();
 
@@ -1193,12 +1195,10 @@ class AccountModel : public FBE::Model<TBuffer>
 public:
     AccountModel() : model(this->buffer(), 4) {}
 
-    // Get the model type
-    size_t fbe_type() const noexcept { return model.fbe_type(); }
     // Get the model size
     size_t fbe_size() const noexcept { return model.fbe_size() + model.fbe_extra(); }
-
-    FieldModel<TBuffer, Account> model;
+    // Get the model type
+    size_t fbe_type() const noexcept { return model.fbe_type(); }
 
     // Check if the current struct value is valid
     bool verify()
@@ -1255,11 +1255,14 @@ public:
         return fbe_full_size;
     }
 
-    // Mode to the next struct value
+    // Move to the next struct value
     void next(size_t prev) noexcept
     {
         model.fbe_shift(prev);
     }
+
+public:
+    FieldModel<TBuffer, Account> model;
 };
 
 } // namespace FBE

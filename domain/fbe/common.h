@@ -355,22 +355,22 @@ public:
     // Get the field value
     void get(T& value, T default_value = (T)0) const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
         {
             value = default_value;
             return;
         }
 
-        value = (T)(*((const TBase*)(_buffer.data() + _buffer.offset() + _offset)));
+        value = (T)(*((const TBase*)(_buffer.data() + _buffer.offset() + fbe_offset())));
     }
 
     // Set the field value
     void set(T value) noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
-        *((TBase*)(_buffer.data() + _buffer.offset() + _offset)) = (TBase)value;
+        *((TBase*)(_buffer.data() + _buffer.offset() + fbe_offset())) = (TBase)value;
     }
 
 private:
@@ -424,10 +424,10 @@ public:
     // Get the field extra size
     size_t fbe_extra() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_bytes_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_bytes_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         if ((fbe_bytes_offset == 0) || ((_buffer.offset() + fbe_bytes_offset + 4) > _buffer.size()))
             return 0;
 
@@ -443,10 +443,10 @@ public:
     // Check if the bytes value is valid
     bool verify() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return true;
 
-        uint32_t fbe_bytes_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_bytes_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         if (fbe_bytes_offset == 0)
             return true;
 
@@ -466,10 +466,10 @@ public:
         assert((data != nullptr) && "Invalid buffer!");
         assert((size > 0) && "Invalid size!");
 
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_bytes_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_bytes_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         if (fbe_bytes_offset == 0)
             return 0;
 
@@ -506,10 +506,10 @@ public:
     {
         value.clear();
 
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
-        uint32_t fbe_bytes_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_bytes_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         if (fbe_bytes_offset == 0)
             return;
 
@@ -532,14 +532,14 @@ public:
         assert((data != nullptr) && "Invalid buffer!");
         assert((size > 0) && "Invalid size!");
 
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
         uint32_t fbe_bytes_size = (uint32_t)size;
         uint32_t fbe_bytes_offset = (uint32_t)(_buffer.allocate(4 + fbe_bytes_size) - _buffer.offset());
         assert(((fbe_bytes_offset > 0) && ((_buffer.offset() + fbe_bytes_offset + 4 + fbe_bytes_size) <= _buffer.size())) && "Model is broken!");
 
-        *((uint32_t*)(_buffer.data() + _buffer.offset() + _offset)) = fbe_bytes_offset;
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_bytes_offset;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_bytes_offset)) = fbe_bytes_size;
 
         memcpy((char*)(_buffer.data() + _buffer.offset() + fbe_bytes_offset + 4), data, fbe_bytes_size);
@@ -581,10 +581,10 @@ public:
     // Get the field extra size
     size_t fbe_extra() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_string_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_string_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         if ((fbe_string_offset == 0) || ((_buffer.offset() + fbe_string_offset + 4) > _buffer.size()))
             return 0;
 
@@ -600,10 +600,10 @@ public:
     // Check if the string value is valid
     bool verify() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return true;
 
-        uint32_t fbe_string_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_string_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         if (fbe_string_offset == 0)
             return true;
 
@@ -623,10 +623,10 @@ public:
         assert((data != nullptr) && "Invalid buffer!");
         assert((size > 0) && "Invalid size!");
 
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_string_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_string_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         if (fbe_string_offset == 0)
             return 0;
 
@@ -663,7 +663,7 @@ public:
     {
         value = default_value;
 
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
         uint32_t fbe_string_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
@@ -688,14 +688,14 @@ public:
         assert((data != nullptr) && "Invalid buffer!");
         assert((size > 0) && "Invalid size!");
 
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
         uint32_t fbe_string_size = (uint32_t)size;
         uint32_t fbe_string_offset = (uint32_t)(_buffer.allocate(4 + fbe_string_size) - _buffer.offset());
         assert(((fbe_string_offset > 0) && ((_buffer.offset() + fbe_string_offset + 4 + fbe_string_size) <= _buffer.size())) && "Model is broken!");
 
-        *((uint32_t*)(_buffer.data() + _buffer.offset() + _offset)) = fbe_string_offset;
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_string_offset;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_string_offset)) = fbe_string_size;
 
         memcpy((char*)(_buffer.data() + _buffer.offset() + fbe_string_offset + 4), data, fbe_string_size);
@@ -718,14 +718,14 @@ public:
     // Set the string value
     void set(const std::string& value)
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
         uint32_t fbe_string_size = (uint32_t)value.size();
         uint32_t fbe_string_offset = (uint32_t)(_buffer.allocate(4 + fbe_string_size) - _buffer.offset());
         assert(((fbe_string_offset > 0) && ((_buffer.offset() + fbe_string_offset + 4 + fbe_string_size) <= _buffer.size())) && "Model is broken!");
 
-        *((uint32_t*)(_buffer.data() + _buffer.offset() + _offset)) = fbe_string_offset;
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_string_offset;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_string_offset)) = fbe_string_size;
 
         memcpy((char*)(_buffer.data() + _buffer.offset() + fbe_string_offset + 4), value.data(), fbe_string_size);
@@ -753,7 +753,7 @@ public:
         if (!has_value())
             return 0;
 
-        uint32_t fbe_optional_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset + 1));
+        uint32_t fbe_optional_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 1));
         if ((fbe_optional_offset == 0) || ((_buffer.offset() + fbe_optional_offset + 4) > _buffer.size()))
             return 0;
 
@@ -774,24 +774,24 @@ public:
     // Checks whether the object contains a value
     bool has_value() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return false;
 
-        uint8_t fbe_has_value = *((const uint8_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint8_t fbe_has_value = *((const uint8_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         return (fbe_has_value != 0);
     }
 
     // Check if the optional value is valid
     bool verify() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return true;
 
-        uint8_t fbe_has_value = *((const uint8_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint8_t fbe_has_value = *((const uint8_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         if (fbe_has_value == 0)
             return true;
 
-        uint32_t fbe_optional_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset + 1));
+        uint32_t fbe_optional_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 1));
         if (fbe_optional_offset == 0)
             return false;
 
@@ -807,7 +807,7 @@ public:
         if (!has_value())
             return 0;
 
-        uint32_t fbe_optional_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset + 1));
+        uint32_t fbe_optional_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 1));
         assert((fbe_optional_offset > 0) && "Model is broken!");
 
         _buffer.shift(fbe_optional_offset);
@@ -839,11 +839,11 @@ public:
     // Set the optional value (begin phase)
     size_t set_begin(bool has_value)
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
         uint8_t fbe_has_value = has_value ? 1 : 0;
-        *((uint8_t*)(_buffer.data() + _buffer.offset() + _offset)) = fbe_has_value;
+        *((uint8_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_has_value;
         if (fbe_has_value == 0)
             return 0;
 
@@ -851,7 +851,7 @@ public:
         uint32_t fbe_optional_offset = (uint32_t)(_buffer.allocate(fbe_optional_size) - _buffer.offset());
         assert(((fbe_optional_offset > 0) && ((_buffer.offset() + fbe_optional_offset + fbe_optional_size) <= _buffer.size())) && "Model is broken!");
 
-        *((uint32_t*)(_buffer.data() + _buffer.offset() + _offset + 1)) = fbe_optional_offset;
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 1)) = fbe_optional_offset;
 
         _buffer.shift(fbe_optional_offset);
         return fbe_optional_offset;
@@ -897,10 +897,10 @@ public:
     // Get the field extra size
     size_t fbe_extra() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         if ((fbe_array_offset == 0) || ((_buffer.offset() + fbe_array_offset + 4) > _buffer.size()))
             return 0;
 
@@ -924,9 +924,9 @@ public:
     // Array value index operators
     FieldModel<TBuffer, T> operator[](size_t index) const noexcept
     {
-        assert(((_buffer.offset() + _offset + fbe_size()) <= _buffer.size()) && "Model is broken!");
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
 
-        uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         assert(((fbe_array_offset > 0) && ((_buffer.offset() + fbe_array_offset + 4) <= _buffer.size())) && "Model is broken!");
 
         MAYBE_UNUSED uint32_t fbe_array_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_array_offset));
@@ -941,20 +941,20 @@ public:
     // Get the array value offset
     size_t offset() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         return fbe_array_offset;
     }
 
     // Get the array value size
     size_t size() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         if ((fbe_array_offset == 0) || ((_buffer.offset() + fbe_array_offset + 4) > _buffer.size()))
             return 0;
 
@@ -965,13 +965,13 @@ public:
     // Resize the array and get its first model
     FieldModel<TBuffer, T> resize(size_t size)
     {
-        FieldModel<TBuffer, T> fbe_model(_buffer, _offset);
+        FieldModel<TBuffer, T> fbe_model(_buffer, fbe_offset());
 
         uint32_t fbe_array_size = (uint32_t)(size * fbe_model.fbe_size());
         uint32_t fbe_array_offset = (uint32_t)(_buffer.allocate(4 + fbe_array_size) - _buffer.offset());
         assert(((fbe_array_offset > 0) && ((_buffer.offset() + fbe_array_offset + 4) <= _buffer.size())) && "Model is broken!");
 
-        *((uint32_t*)(_buffer.data() + _buffer.offset() + _offset)) = fbe_array_offset;
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_array_offset;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_array_offset)) = (uint32_t)size;
 
         memset((char*)(_buffer.data() + _buffer.offset() + fbe_array_offset + 4), 0, fbe_array_size);
@@ -982,10 +982,10 @@ public:
     // Check if the array value is valid
     bool verify() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return true;
 
-        uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         if (fbe_array_offset == 0)
             return true;
 
@@ -1067,7 +1067,7 @@ public:
     // Set the array value as std::vector
     void set(const std::vector<T>& values) noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
         auto fbe_model = resize(values.size());
@@ -1081,7 +1081,7 @@ public:
     // Set the array value as std::list
     void set(const std::list<T>& values) noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
         auto fbe_model = resize(values.size());
@@ -1095,7 +1095,7 @@ public:
     // Set the array value as std::set
     void set(const std::set<T>& values) noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
         auto fbe_model = resize(values.size());
@@ -1125,10 +1125,10 @@ public:
     // Get the field extra size
     size_t fbe_extra() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_map_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_map_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         if ((fbe_map_offset == 0) || ((_buffer.offset() + fbe_map_offset + 4) > _buffer.size()))
             return 0;
 
@@ -1156,9 +1156,9 @@ public:
     // Map value index operators
     std::pair<FieldModel<TBuffer, TKey>, FieldModel<TBuffer, TValue>> operator[](size_t index) const noexcept
     {
-        assert(((_buffer.offset() + _offset + fbe_size()) <= _buffer.size()) && "Model is broken!");
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
 
-        uint32_t fbe_map_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_map_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         assert(((fbe_map_offset > 0) && ((_buffer.offset() + fbe_map_offset + 4) <= _buffer.size())) && "Model is broken!");
 
         MAYBE_UNUSED uint32_t fbe_map_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_map_offset));
@@ -1175,20 +1175,20 @@ public:
     // Get the map value offset
     size_t offset() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_map_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_map_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         return fbe_map_offset;
     }
 
     // Get the map value size
     size_t size() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_map_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_map_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         if ((fbe_map_offset == 0) || ((_buffer.offset() + fbe_map_offset + 4) > _buffer.size()))
             return 0;
 
@@ -1199,14 +1199,14 @@ public:
     // Resize the map and get its first model
     std::pair<FieldModel<TBuffer, TKey>, FieldModel<TBuffer, TValue>> resize(size_t size)
     {
-        FieldModel<TBuffer, TKey> fbe_model_key(_buffer, _offset);
-        FieldModel<TBuffer, TValue> fbe_model_value(_buffer, _offset + fbe_model_key.fbe_size());
+        FieldModel<TBuffer, TKey> fbe_model_key(_buffer, fbe_offset());
+        FieldModel<TBuffer, TValue> fbe_model_value(_buffer, fbe_offset() + fbe_model_key.fbe_size());
 
         uint32_t fbe_map_size = (uint32_t)(size * (fbe_model_key.fbe_size() + fbe_model_value.fbe_size()));
         uint32_t fbe_map_offset = (uint32_t)(_buffer.allocate(4 + fbe_map_size) - _buffer.offset());
         assert(((fbe_map_offset > 0) && ((_buffer.offset() + fbe_map_offset + 4 + fbe_map_size) <= _buffer.size())) && "Model is broken!");
 
-        *((uint32_t*)(_buffer.data() + _buffer.offset() + _offset)) = fbe_map_offset;
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_map_offset;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_map_offset)) = (uint32_t)size;
 
         memset((char*)(_buffer.data() + _buffer.offset() + fbe_map_offset + 4), 0, fbe_map_size);
@@ -1217,10 +1217,10 @@ public:
     // Check if the map value is valid
     bool verify() const noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return true;
 
-        uint32_t fbe_map_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        uint32_t fbe_map_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
         if (fbe_map_offset == 0)
             return true;
 
@@ -1292,7 +1292,7 @@ public:
     // Set the map value as std::map
     void set(const std::map<TKey, TValue>& values) noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
         auto fbe_model = resize(values.size());
@@ -1309,7 +1309,7 @@ public:
     // Set the map value as std::unordered_map
     void set(const std::unordered_map<TKey, TValue>& values) noexcept
     {
-        if ((_buffer.offset() + _offset + fbe_size()) > _buffer.size())
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
         auto fbe_model = resize(values.size());
