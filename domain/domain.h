@@ -89,7 +89,7 @@ struct Order
         Volume = reader.getVolume();
     }
 
-    // Fast Binary Encoding serialization
+    // FastBinaryEncoding serialization
 
     template <class TBuffer>
     void Serialize(FBE::FieldModel<TBuffer, domain::Order>& model)
@@ -219,7 +219,7 @@ struct Balance
         Amount = reader.getAmount();
     }
 
-    // Fast Binary Encoding serialization
+    // FastBinaryEncoding serialization
 
     template <class TBuffer>
     void Serialize(FBE::FieldModel<TBuffer, domain::Balance>& model)
@@ -335,7 +335,7 @@ struct Account
         }
     }
 
-    // Fast Binary Encoding serialization
+    // FastBinaryEncoding serialization
 
     template <class TBuffer>
     void Serialize(FBE::FieldModel<TBuffer, domain::Account>& model)
