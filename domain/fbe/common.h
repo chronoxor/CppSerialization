@@ -1258,11 +1258,11 @@ public:
         auto fbe_model = (*this)[0];
         for (size_t i = fbe_map_size; i-- > 0;)
         {
-            TKey fbe_key;
-            TValue fbe_value;
-            fbe_model.first.get(fbe_key);
-            fbe_model.second.get(fbe_value);
-            values.emplace(fbe_key, fbe_value);
+            TKey key;
+            TValue value;
+            fbe_model.first.get(key);
+            fbe_model.second.get(value);
+            values.emplace(key, value);
             fbe_model.first.fbe_shift(fbe_model.first.fbe_size() + fbe_model.second.fbe_size());
             fbe_model.second.fbe_shift(fbe_model.first.fbe_size() + fbe_model.second.fbe_size());
         }
@@ -1280,11 +1280,11 @@ public:
         auto fbe_model = (*this)[0];
         for (size_t i = fbe_map_size; i-- > 0;)
         {
-            TKey fbe_key;
-            TValue fbe_value;
-            fbe_model.first.get(fbe_key);
-            fbe_model.second.get(fbe_value);
-            values.emplace(fbe_key, fbe_value);
+            TKey key;
+            TValue value;
+            fbe_model.first.get(key);
+            fbe_model.second.get(value);
+            values.emplace(key, value);
             fbe_model.first.fbe_shift(fbe_model.first.fbe_size() + fbe_model.second.fbe_size());
             fbe_model.second.fbe_shift(fbe_model.first.fbe_size() + fbe_model.second.fbe_size());
         }
