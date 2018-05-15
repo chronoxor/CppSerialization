@@ -9,6 +9,7 @@
 #include <cstring>
 #include <list>
 #include <map>
+#include <memory>
 #include <set>
 #include <sstream>
 #include <stdexcept>
@@ -37,6 +38,8 @@
 #include <time.h>
 #elif defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
+#undef max
+#undef min
 #endif
 
 namespace FBE {
@@ -196,6 +199,22 @@ public:
         return offset;
     }
 
+    // Remove some memory of the given size from the current write buffer
+    void remove(size_t offset, size_t size)
+    {
+        assert(((offset + size) < _buffer.size()) && "Invalid offset & size!");
+
+        _buffer.erase(_buffer.begin() + offset, _buffer.begin() + offset + size);
+        if (_offset >= (offset + size))
+            _offset -= size;
+        else if (_offset >= offset)
+        {
+            _offset -= _offset - offset;
+            if (_offset > _buffer.size())
+                _offset = _buffer.size();
+        }
+    }
+
     // Reserve memory of the given capacity in the current write buffer
     void reserve(size_t capacity) { _buffer.reserve(capacity); }
 
@@ -267,15 +286,22 @@ public:
     // Allocate fake method
     size_t allocate(size_t size)
     {
-        assert(false && "Cannot allocate using read buffer!");
-        throw std::logic_error("Cannot allocate using read buffer!");
+        assert(false && "Cannot allocate using the read buffer!");
+        throw std::logic_error("Cannot allocate using the read buffer!");
+    }
+
+    // Remove fake method
+    void remove(size_t offset, size_t size)
+    {
+        assert(false && "Cannot remove from the read buffer!");
+        throw std::logic_error("Cannot remove from the read buffer!");
     }
 
     // Reserve fake method
     void reserve(size_t capacity)
     {
-        assert(false && "Cannot reserve using read buffer!");
-        throw std::logic_error("Cannot reserve using read buffer!");
+        assert(false && "Cannot reserve using the read buffer!");
+        throw std::logic_error("Cannot reserve using the read buffer!");
     }
 
     // Reset the current read buffer and its offset
@@ -297,41 +323,57 @@ private:
     size_t _offset;
 };
 
-// Fast Binary Encoding model base class
+// Fast Binary Encoding base model class
 template <class TBuffer>
 class Model
 {
 public:
-    Model() = default;
-    Model(const Model&) = delete;
+    Model() : Model(nullptr) {}
+    Model(const std::shared_ptr<TBuffer>& buffer) { attach((buffer) ? buffer : std::make_shared<TBuffer>()); }
+    Model(const Model&) = default;
     Model(Model&&) noexcept = default;
     ~Model() = default;
 
-    Model& operator=(const Model&) = delete;
+    Model& operator=(const Model&) = default;
     Model& operator=(Model&&) noexcept = default;
 
     // Get the model buffer
-    TBuffer& buffer() noexcept { return _buffer; }
-    const TBuffer& buffer() const noexcept { return _buffer; }
+    TBuffer& buffer() noexcept { return *_buffer; }
+    const TBuffer& buffer() const noexcept { return *_buffer; }
 
     // Attach the model buffer
-    void attach(const void* data, size_t size, size_t offset = 0) { _buffer.attach(data, size, offset); }
-    void attach(const std::vector<uint8_t>& buffer, size_t offset = 0) { _buffer.attach(buffer, offset); }
-    void attach(const ReadBuffer& buffer, size_t offset = 0) { _buffer.attach(buffer.data(), buffer.size(), offset); }
-    void attach(const WriteBuffer& buffer, size_t offset = 0) { _buffer.attach(buffer.data(), buffer.size(), offset); }
+    void attach(const void* data, size_t size, size_t offset = 0) { _buffer->attach(data, size, offset); }
+    void attach(const std::vector<uint8_t>& buffer, size_t offset = 0) { _buffer->attach(buffer, offset); }
+    void attach(const ReadBuffer& buffer, size_t offset = 0) { _buffer->attach(buffer.data(), buffer.size(), offset); }
+    void attach(const WriteBuffer& buffer, size_t offset = 0) { _buffer->attach(buffer.data(), buffer.size(), offset); }
+    void attach(const std::shared_ptr<TBuffer>& buffer)
+    {
+        assert(buffer && "Attached buffer should be valid!");
+        if (!buffer)
+            throw std::invalid_argument("Attached buffer should be valid!");
+
+        _buffer = buffer;
+    }
+    void attach(const std::shared_ptr<TBuffer>& buffer, size_t offset)
+    {
+        attach(buffer);
+        _buffer->unshift(_buffer->offset());
+        _buffer->shift(offset);
+    }
 
     // Model buffer operations
-    size_t allocate(size_t size) { return _buffer.allocate(size); }
-    void reserve(size_t capacity) { _buffer.reserve(capacity); }
-    void reset() { _buffer.reset(); }
-    void shift(size_t offset) { _buffer.shift(offset); }
-    void unshift(size_t offset) { _buffer.unshift(offset); }
+    size_t allocate(size_t size) { return _buffer->allocate(size); }
+    void remove(size_t offset, size_t size) { _buffer->remove(offset, size); }
+    void reserve(size_t capacity) { _buffer->reserve(capacity); }
+    void reset() { _buffer->reset(); }
+    void shift(size_t offset) { _buffer->shift(offset); }
+    void unshift(size_t offset) { _buffer->unshift(offset); }
 
 private:
-    TBuffer _buffer;
+    std::shared_ptr<TBuffer> _buffer;
 };
 
-// Fast Binary Encoding field model base class
+// Fast Binary Encoding base field model class
 template <class TBuffer, typename T, typename TBase = T>
 class FieldModelBase
 {
@@ -465,7 +507,8 @@ public:
     size_t get(void* data, size_t size) const noexcept
     {
         assert((data != nullptr) && "Invalid buffer!");
-        assert((size > 0) && "Invalid size!");
+        if (data == nullptr)
+            return 0;
 
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
@@ -531,7 +574,8 @@ public:
     void set(const void* data, size_t size)
     {
         assert((data != nullptr) && "Invalid buffer!");
-        assert((size > 0) && "Invalid size!");
+        if (data == nullptr)
+            return;
 
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
@@ -622,7 +666,8 @@ public:
     size_t get(char* data, size_t size) const noexcept
     {
         assert((data != nullptr) && "Invalid buffer!");
-        assert((size > 0) && "Invalid size!");
+        if (data == nullptr)
+            return 0;
 
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
@@ -687,7 +732,8 @@ public:
     void set(const char* data, size_t size)
     {
         assert((data != nullptr) && "Invalid buffer!");
-        assert((size > 0) && "Invalid size!");
+        if (data == nullptr)
+            return;
 
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
@@ -1327,6 +1373,335 @@ public:
 private:
     TBuffer& _buffer;
     size_t _offset;
+};
+
+// Fast Binary Encoding base sender class
+template <class TBuffer>
+class Sender
+{
+public:
+    Sender() : _logging(false) { _buffer = std::make_shared<TBuffer>(); }
+    Sender(const Sender&) = default;
+    Sender(Sender&&) noexcept = default;
+    virtual ~Sender() = default;
+
+    Sender& operator=(const Sender&) = default;
+    Sender& operator=(Sender&&) noexcept = default;
+
+    // Get the sender buffer
+    TBuffer& buffer() noexcept { return *_buffer; }
+    const TBuffer& buffer() const noexcept { return *_buffer; }
+
+    // Enable/Disable logging
+    void logging(bool enable) noexcept { _logging = enable; }
+
+    // Attach the sender buffer
+    virtual void attach(const std::shared_ptr<TBuffer>& buffer)
+    {
+        assert(buffer && "Attached buffer should be valid!");
+        if (!buffer)
+            throw std::invalid_argument("Attached buffer should be valid!");
+
+        _buffer = buffer;
+    }
+    void attach(const std::shared_ptr<TBuffer>& buffer, size_t offset)
+    {
+        attach(buffer);
+        _buffer->unshift(_buffer->offset());
+        _buffer->shift(offset);
+    }
+
+protected:
+    // Send message handler
+    virtual size_t onSend(const void* data, size_t size) = 0;
+    // Send logging handler
+    virtual void onSendLog(const std::string& message) const {}
+
+protected:
+    std::shared_ptr<TBuffer> _buffer;
+    bool _logging;
+};
+
+// Fast Binary Encoding base receiver class
+template <class TBuffer>
+class Receiver
+{
+public:
+    Receiver() { _buffer = std::make_shared<TBuffer>(); }
+    Receiver(const Receiver&) = default;
+    Receiver(Receiver&&) noexcept = default;
+    virtual ~Receiver() = default;
+
+    Receiver& operator=(const Receiver&) = default;
+    Receiver& operator=(Receiver&&) noexcept = default;
+
+    // Get the receiver buffer
+    TBuffer& buffer() noexcept { return *_buffer; }
+    const TBuffer& buffer() const noexcept { return *_buffer; }
+
+    // Enable/Disable logging
+    void logging(bool enable) noexcept { _logging = enable; }
+
+    // Attach the receiver buffer
+    virtual void attach(const std::shared_ptr<TBuffer>& buffer)
+    {
+        assert(buffer && "Attached buffer should be valid!");
+        if (!buffer)
+            throw std::invalid_argument("Attached buffer should be valid!");
+
+        _buffer = buffer;
+    }
+    void attach(const std::shared_ptr<TBuffer>& buffer, size_t offset)
+    {
+        attach(buffer);
+        _buffer->unshift(_buffer->offset());
+        _buffer->shift(offset);
+    }
+
+    // Receive data
+    void receive(const void* data, size_t size)
+    {
+        assert((data != nullptr) && "Invalid buffer!");
+        if (data == nullptr)
+            return;
+
+        if (size == 0)
+            return;
+
+        // Storage buffer
+        uint8_t* buffer1 = _buffer->data();
+        size_t offset0 = _buffer->offset();
+        size_t offset1 = _buffer->size();
+        size_t size1 = _buffer->size();
+
+        // Receive buffer
+        const uint8_t* buffer2 = (const uint8_t*)data;
+        size_t offset2 = 0;
+        size_t size2 = size;
+
+        // While receive buffer is available to handle...
+        while (offset2 < size2)
+        {
+            const uint8_t* message_buffer = nullptr;
+            size_t message_size = 0;
+
+            // Try to receive message size
+            bool message_size_copied = false;
+            bool message_size_found = false;
+            while (!message_size_found)
+            {
+                // Look into the storage buffer
+                if (offset0 < size1)
+                {
+                    size_t count = std::min(size1 - offset0, (size_t)4);
+                    if (count == 4)
+                    {
+                        message_size_copied = true;
+                        message_size_found = true;
+                        message_size = (size_t)(*((const uint32_t*)(buffer1 + offset0)));
+                        offset0 += 4;
+                        break;
+                    }
+                    else
+                    {
+                        // Fill remaining data from the receive buffer
+                        if (offset2 < size2)
+                        {
+                            count = std::min(size2 - offset2, 4 - count);
+
+                            // Allocate and refresh the storage buffer
+                            _buffer->allocate(count);
+                            buffer1 = _buffer->data();
+                            size1 += count;
+
+                            memcpy(buffer1 + offset1, buffer2 + offset2, count);
+                            offset1 += count;
+                            offset2 += count;
+                            continue;
+                        }
+                        else
+                            break;
+                    }
+                }
+
+                // Look into the receive buffer
+                if (offset2 < size2)
+                {
+                    size_t count = std::min(size2 - offset2, (size_t)4);
+                    if (count == 4)
+                    {
+                        message_size_found = true;
+                        message_size = (size_t)(*((const uint32_t*)(buffer2 + offset2)));
+                        offset2 += 4;
+                        break;
+                    }
+                    else
+                    {
+                        // Allocate and refresh the storage buffer
+                        _buffer->allocate(count);
+                        buffer1 = _buffer->data();
+                        size1 += count;
+
+                        memcpy(buffer1 + offset1, buffer2 + offset2, count);
+                        offset1 += count;
+                        offset2 += count;
+                        continue;
+                    }
+                }
+                else
+                    break;
+            }
+
+            if (!message_size_found)
+                return;
+
+            // Check the message full size
+            assert((message_size >= (4 + 4 + 4 + 4)) && "Invalid receive data!");
+            if (message_size < (4 + 4 + 4 + 4))
+                return;
+
+            // Try to receive message body
+            bool message_found = false;
+            while (!message_found)
+            {
+                // Look into the storage buffer
+                if (offset0 < size1)
+                {
+                    size_t count = std::min(size1 - offset0, message_size - 4);
+                    if (count == (message_size - 4))
+                    {
+                        message_found = true;
+                        message_buffer = buffer1 + offset0 - 4;
+                        offset0 += message_size - 4;
+                        break;
+                    }
+                    else
+                    {
+                        // Fill remaining data from the receive buffer
+                        if (offset2 < size2)
+                        {
+                            // Copy message size into the storage buffer
+                            if (!message_size_copied)
+                            {
+                                // Allocate and refresh the storage buffer
+                                _buffer->allocate(4);
+                                buffer1 = _buffer->data();
+                                size1 += 4;
+
+                                *((uint32_t*)(buffer1 + offset0)) = (uint32_t)message_size;
+                                offset0 += 4;
+                                offset1 += 4;
+
+                                message_size_copied = true;
+                            }
+
+                            count = std::min(size2 - offset2, message_size - 4 - count);
+
+                            // Allocate and refresh the storage buffer
+                            _buffer->allocate(count);
+                            buffer1 = _buffer->data();
+                            size1 += count;
+
+                            memcpy(buffer1 + offset1, buffer2 + offset2, count);
+                            offset1 += count;
+                            offset2 += count;
+                            continue;
+                        }
+                        else
+                            break;
+                    }
+                }
+
+                // Look into the receive buffer
+                if (offset2 < size2)
+                {
+                    size_t count = std::min(size2 - offset2, message_size - 4);
+                    if (!message_size_copied && (count == (message_size - 4)))
+                    {
+                        message_found = true;
+                        message_buffer = buffer2 + offset2 - 4;
+                        offset2 += message_size - 4;
+                        break;
+                    }
+                    else
+                    {
+                        // Copy message size into the storage buffer
+                        if (!message_size_copied)
+                        {
+                            // Allocate and refresh the storage buffer
+                            _buffer->allocate(4);
+                            buffer1 = _buffer->data();
+                            size1 += 4;
+
+                            *((uint32_t*)(buffer1 + offset0)) = (uint32_t)message_size;
+                            offset0 += 4;
+                            offset1 += 4;
+
+                            message_size_copied = true;
+                        }
+
+                        // Allocate and refresh the storage buffer
+                        _buffer->allocate(count);
+                        buffer1 = _buffer->data();
+                        size1 += count;
+
+                        memcpy(buffer1 + offset1, buffer2 + offset2, count);
+                        offset1 += count;
+                        offset2 += count;
+                        continue;
+                    }
+                }
+                else
+                    break;
+            }
+
+            if (!message_found)
+            {
+                // Copy message size into the storage buffer
+                if (!message_size_copied)
+                {
+                    // Allocate and refresh the storage buffer
+                    _buffer->allocate(4);
+                    buffer1 = _buffer->data();
+                    size1 += 4;
+
+                    *((uint32_t*)(buffer1 + offset0)) = (uint32_t)message_size;
+                    offset0 += 4;
+                    offset1 += 4;
+
+                    message_size_copied = true;
+                }
+                return;
+            }
+
+            // Read the message parameters
+            uint32_t fbe_struct_offset = *((const uint32_t*)(message_buffer + 4));
+            MAYBE_UNUSED uint32_t fbe_struct_size = *((const uint32_t*)(message_buffer + fbe_struct_offset));
+            (void)fbe_struct_size;
+            uint32_t fbe_struct_type = *((const uint32_t*)(message_buffer + fbe_struct_offset + 4));
+
+            // Handle the message
+            onReceive(fbe_struct_type, message_buffer, message_size);
+
+            // Reset the storage buffer
+            _buffer->reset();
+
+            // Refresh the storage buffer
+            buffer1 = _buffer->data();
+            offset1 = _buffer->offset();
+            size1 = _buffer->size();
+        }
+    }
+
+protected:
+    // Receive message handler
+    virtual bool onReceive(size_t type, const void* data, size_t size) = 0;
+    // Receive logging handler
+    virtual void onReceiveLog(const std::string& message) const {}
+
+protected:
+    std::shared_ptr<TBuffer> _buffer;
+    bool _logging;
 };
 
 } // namespace FBE

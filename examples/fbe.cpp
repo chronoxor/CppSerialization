@@ -19,7 +19,7 @@ int main(int argc, char** argv)
     account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
 
     // Serialize the account to the FBE stream
-    FBE::AccountModel<FBE::WriteBuffer> writer;
+    FBE::domain::AccountModel<FBE::WriteBuffer> writer;
     size_t model_begin = writer.create_begin();
     account.Serialize(writer.model);
     size_t serialized = writer.create_end(model_begin);
@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 
     // Deserialize the account from the FBE stream
     MyDomain::Account deserialized;
-    FBE::AccountModel<FBE::ReadBuffer> reader;
+    FBE::domain::AccountModel<FBE::ReadBuffer> reader;
     reader.attach(writer.buffer());
     assert(reader.verify() && "Model is broken!");
     deserialized.Deserialize(reader.model);

@@ -11,7 +11,7 @@ const uint64_t iterations = 1000000;
 class SerializationFixture
 {
 protected:
-    FBE::AccountModel<FBE::WriteBuffer> writer;
+    FBE::domain::AccountModel<FBE::WriteBuffer> writer;
     MyDomain::Account account;
 
     SerializationFixture() : account(1, "Test", "USD", 1000)

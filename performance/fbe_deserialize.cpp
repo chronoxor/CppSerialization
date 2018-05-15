@@ -11,8 +11,8 @@ const uint64_t iterations = 1000000;
 class DeserializationFixture
 {
 protected:
-    FBE::AccountModel<FBE::WriteBuffer> writer;
-    FBE::AccountModel<FBE::ReadBuffer> reader;
+    FBE::domain::AccountModel<FBE::WriteBuffer> writer;
+    FBE::domain::AccountModel<FBE::ReadBuffer> reader;
     MyDomain::Account deserialized;
 
     DeserializationFixture()

@@ -10,7 +10,7 @@ using namespace FBE;
 } // namespace domain
 
 namespace FBE {
-using namespace domain;
+using namespace ::domain;
 } // namespace FBE
 
 namespace domain {
@@ -33,10 +33,10 @@ inline std::ostream& operator<<(std::ostream& stream, OrderSide e)
 namespace FBE {
 
 template <class TBuffer>
-class FieldModel<TBuffer, OrderSide> : public FieldModelBase<TBuffer, OrderSide, uint8_t>
+class FieldModel<TBuffer, ::domain::OrderSide> : public FieldModelBase<TBuffer, ::domain::OrderSide, uint8_t>
 {
 public:
-    using FieldModelBase<TBuffer, OrderSide, uint8_t>::FieldModelBase;
+    using FieldModelBase<TBuffer, ::domain::OrderSide, uint8_t>::FieldModelBase;
 };
 
 } // namespace FBE
@@ -63,10 +63,10 @@ inline std::ostream& operator<<(std::ostream& stream, OrderType e)
 namespace FBE {
 
 template <class TBuffer>
-class FieldModel<TBuffer, OrderType> : public FieldModelBase<TBuffer, OrderType, uint8_t>
+class FieldModel<TBuffer, ::domain::OrderType> : public FieldModelBase<TBuffer, ::domain::OrderType, uint8_t>
 {
 public:
-    using FieldModelBase<TBuffer, OrderType, uint8_t>::FieldModelBase;
+    using FieldModelBase<TBuffer, ::domain::OrderType, uint8_t>::FieldModelBase;
 };
 
 } // namespace FBE
@@ -77,8 +77,8 @@ struct Order
 {
     int32_t id;
     std::string symbol;
-    OrderSide side;
-    OrderType type;
+    ::domain::OrderSide side;
+    ::domain::OrderType type;
     double price;
     double volume;
 
@@ -91,7 +91,7 @@ struct Order
         , volume((double)0.0)
     {}
 
-    Order(int32_t arg_id, const std::string& arg_symbol, const OrderSide& arg_side, const OrderType& arg_type, double arg_price, double arg_volume)
+    Order(int32_t arg_id, const std::string& arg_symbol, const ::domain::OrderSide& arg_side, const ::domain::OrderType& arg_type, double arg_price, double arg_volume)
         : id(arg_id)
         , symbol(arg_symbol)
         , side(arg_side)
@@ -163,7 +163,7 @@ inline std::ostream& operator<<(std::ostream& stream, const Order& s)
 namespace FBE {
 
 template <class TBuffer>
-class FieldModel<TBuffer, Order>
+class FieldModel<TBuffer, ::domain::Order>
 {
 public:
     FieldModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset)
@@ -320,7 +320,7 @@ public:
     }
 
     // Get the struct value
-    void get(Order& value) const noexcept
+    void get(::domain::Order& value) const noexcept
     {
         size_t fbe_begin = get_begin();
         if (fbe_begin == 0)
@@ -334,7 +334,7 @@ public:
     }
 
     // Get the struct fields values
-    void getFields(Order& value, size_t fbe_struct_size) const noexcept
+    void getFields(::domain::Order& value, size_t fbe_struct_size) const noexcept
     {
         size_t fbe_current_size = 4 + 4;
 
@@ -392,7 +392,7 @@ public:
     }
 
     // Set the struct value
-    void set(const Order& value) noexcept
+    void set(const ::domain::Order& value) noexcept
     {
         size_t fbe_begin = set_begin();
         if (fbe_begin == 0)
@@ -404,7 +404,7 @@ public:
     }
 
     // Set the struct fields values
-    void setFields(const Order& value) noexcept
+    void setFields(const ::domain::Order& value) noexcept
     {
         id.set(value.id);
         symbol.set(value.symbol);
@@ -421,8 +421,8 @@ private:
 public:
     FieldModel<TBuffer, int32_t> id;
     FieldModel<TBuffer, std::string> symbol;
-    FieldModel<TBuffer, OrderSide> side;
-    FieldModel<TBuffer, OrderType> type;
+    FieldModel<TBuffer, ::domain::OrderSide> side;
+    FieldModel<TBuffer, ::domain::OrderType> type;
     FieldModel<TBuffer, double> price;
     FieldModel<TBuffer, double> volume;
 };
@@ -430,12 +430,14 @@ public:
 } // namespace FBE
 
 namespace FBE {
+namespace domain {
 
 template <class TBuffer>
 class OrderModel : public FBE::Model<TBuffer>
 {
 public:
     OrderModel() : model(this->buffer(), 4) {}
+    OrderModel(const std::shared_ptr<TBuffer>& buffer) : FBE::Model<TBuffer>(buffer), model(this->buffer(), 4) {}
 
     // Get the model size
     size_t fbe_size() const noexcept { return model.fbe_size() + model.fbe_extra(); }
@@ -473,7 +475,7 @@ public:
     }
 
     // Serialize the struct value
-    size_t serialize(const Order& value)
+    size_t serialize(const ::domain::Order& value)
     {
         size_t fbe_begin = create_begin();
         model.set(value);
@@ -482,7 +484,7 @@ public:
     }
 
     // Deserialize the struct value
-    size_t deserialize(Order& value) const noexcept
+    size_t deserialize(::domain::Order& value) const noexcept
     {
         if ((this->buffer().offset() + model.fbe_offset() - 4) > this->buffer().size())
             return 0;
@@ -504,9 +506,10 @@ public:
     }
 
 public:
-    FieldModel<TBuffer, Order> model;
+    FieldModel<TBuffer, ::domain::Order> model;
 };
 
+} // namespace domain
 } // namespace FBE
 
 namespace domain {
@@ -581,7 +584,7 @@ inline std::ostream& operator<<(std::ostream& stream, const Balance& s)
 namespace FBE {
 
 template <class TBuffer>
-class FieldModel<TBuffer, Balance>
+class FieldModel<TBuffer, ::domain::Balance>
 {
 public:
     FieldModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset)
@@ -702,7 +705,7 @@ public:
     }
 
     // Get the struct value
-    void get(Balance& value) const noexcept
+    void get(::domain::Balance& value) const noexcept
     {
         size_t fbe_begin = get_begin();
         if (fbe_begin == 0)
@@ -716,7 +719,7 @@ public:
     }
 
     // Get the struct fields values
-    void getFields(Balance& value, size_t fbe_struct_size) const noexcept
+    void getFields(::domain::Balance& value, size_t fbe_struct_size) const noexcept
     {
         size_t fbe_current_size = 4 + 4;
 
@@ -756,7 +759,7 @@ public:
     }
 
     // Set the struct value
-    void set(const Balance& value) noexcept
+    void set(const ::domain::Balance& value) noexcept
     {
         size_t fbe_begin = set_begin();
         if (fbe_begin == 0)
@@ -768,7 +771,7 @@ public:
     }
 
     // Set the struct fields values
-    void setFields(const Balance& value) noexcept
+    void setFields(const ::domain::Balance& value) noexcept
     {
         currency.set(value.currency);
         amount.set(value.amount);
@@ -786,12 +789,14 @@ public:
 } // namespace FBE
 
 namespace FBE {
+namespace domain {
 
 template <class TBuffer>
 class BalanceModel : public FBE::Model<TBuffer>
 {
 public:
     BalanceModel() : model(this->buffer(), 4) {}
+    BalanceModel(const std::shared_ptr<TBuffer>& buffer) : FBE::Model<TBuffer>(buffer), model(this->buffer(), 4) {}
 
     // Get the model size
     size_t fbe_size() const noexcept { return model.fbe_size() + model.fbe_extra(); }
@@ -829,7 +834,7 @@ public:
     }
 
     // Serialize the struct value
-    size_t serialize(const Balance& value)
+    size_t serialize(const ::domain::Balance& value)
     {
         size_t fbe_begin = create_begin();
         model.set(value);
@@ -838,7 +843,7 @@ public:
     }
 
     // Deserialize the struct value
-    size_t deserialize(Balance& value) const noexcept
+    size_t deserialize(::domain::Balance& value) const noexcept
     {
         if ((this->buffer().offset() + model.fbe_offset() - 4) > this->buffer().size())
             return 0;
@@ -860,9 +865,10 @@ public:
     }
 
 public:
-    FieldModel<TBuffer, Balance> model;
+    FieldModel<TBuffer, ::domain::Balance> model;
 };
 
+} // namespace domain
 } // namespace FBE
 
 namespace domain {
@@ -871,8 +877,8 @@ struct Account
 {
     int32_t id;
     std::string name;
-    Balance wallet;
-    std::vector<Order> orders;
+    ::domain::Balance wallet;
+    std::vector<::domain::Order> orders;
 
     Account()
         : id()
@@ -881,7 +887,7 @@ struct Account
         , orders()
     {}
 
-    Account(int32_t arg_id, const std::string& arg_name, const Balance& arg_wallet, const std::vector<Order>& arg_orders)
+    Account(int32_t arg_id, const std::string& arg_name, const ::domain::Balance& arg_wallet, const std::vector<::domain::Order>& arg_orders)
         : id(arg_id)
         , name(arg_name)
         , wallet(arg_wallet)
@@ -956,7 +962,7 @@ inline std::ostream& operator<<(std::ostream& stream, const Account& s)
 namespace FBE {
 
 template <class TBuffer>
-class FieldModel<TBuffer, Account>
+class FieldModel<TBuffer, ::domain::Account>
 {
 public:
     FieldModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset)
@@ -1095,7 +1101,7 @@ public:
     }
 
     // Get the struct value
-    void get(Account& value) const noexcept
+    void get(::domain::Account& value) const noexcept
     {
         size_t fbe_begin = get_begin();
         if (fbe_begin == 0)
@@ -1109,7 +1115,7 @@ public:
     }
 
     // Get the struct fields values
-    void getFields(Account& value, size_t fbe_struct_size) const noexcept
+    void getFields(::domain::Account& value, size_t fbe_struct_size) const noexcept
     {
         size_t fbe_current_size = 4 + 4;
 
@@ -1155,7 +1161,7 @@ public:
     }
 
     // Set the struct value
-    void set(const Account& value) noexcept
+    void set(const ::domain::Account& value) noexcept
     {
         size_t fbe_begin = set_begin();
         if (fbe_begin == 0)
@@ -1167,7 +1173,7 @@ public:
     }
 
     // Set the struct fields values
-    void setFields(const Account& value) noexcept
+    void setFields(const ::domain::Account& value) noexcept
     {
         id.set(value.id);
         name.set(value.name);
@@ -1182,19 +1188,21 @@ private:
 public:
     FieldModel<TBuffer, int32_t> id;
     FieldModel<TBuffer, std::string> name;
-    FieldModel<TBuffer, Balance> wallet;
-    FieldModelArray<TBuffer, Order> orders;
+    FieldModel<TBuffer, ::domain::Balance> wallet;
+    FieldModelArray<TBuffer, ::domain::Order> orders;
 };
 
 } // namespace FBE
 
 namespace FBE {
+namespace domain {
 
 template <class TBuffer>
 class AccountModel : public FBE::Model<TBuffer>
 {
 public:
     AccountModel() : model(this->buffer(), 4) {}
+    AccountModel(const std::shared_ptr<TBuffer>& buffer) : FBE::Model<TBuffer>(buffer), model(this->buffer(), 4) {}
 
     // Get the model size
     size_t fbe_size() const noexcept { return model.fbe_size() + model.fbe_extra(); }
@@ -1232,7 +1240,7 @@ public:
     }
 
     // Serialize the struct value
-    size_t serialize(const Account& value)
+    size_t serialize(const ::domain::Account& value)
     {
         size_t fbe_begin = create_begin();
         model.set(value);
@@ -1241,7 +1249,7 @@ public:
     }
 
     // Deserialize the struct value
-    size_t deserialize(Account& value) const noexcept
+    size_t deserialize(::domain::Account& value) const noexcept
     {
         if ((this->buffer().offset() + model.fbe_offset() - 4) > this->buffer().size())
             return 0;
@@ -1263,7 +1271,218 @@ public:
     }
 
 public:
-    FieldModel<TBuffer, Account> model;
+    FieldModel<TBuffer, ::domain::Account> model;
 };
 
+} // namespace domain
+} // namespace FBE
+
+namespace FBE {
+namespace domain {
+
+template <class TBuffer>
+class Sender : public virtual FBE::Sender<TBuffer>
+{
+public:
+    Sender() {}
+    Sender(const Sender&) = default;
+    Sender(Sender&&) noexcept = default;
+    virtual ~Sender() = default;
+
+    Sender& operator=(const Sender&) = default;
+    Sender& operator=(Sender&&) noexcept = default;
+
+    // Attach the sender buffer
+    void attach(const std::shared_ptr<TBuffer>& buffer) override
+    {
+        FBE::Sender<TBuffer>::attach(buffer);
+    }
+
+    bool send(const ::domain::Order& value)
+    {
+        // Serialize the value into the FBE stream
+        FBE::domain::OrderModel<TBuffer> model(_buffer);
+        size_t serialized = model.serialize(value);
+        assert((serialized > 0) && "domain::Order serialization failed!");
+        assert(model.verify() && "domain::Order validation failed!");
+        model.next(serialized);
+
+        // Shift the send buffer
+        _buffer->shift(serialized);
+
+        // Log the value
+        if (_logging)
+        {
+            std::string message = value.string();
+            onSendLog(message);
+        }
+
+        // Send the value
+        size_t sent = onSend(_buffer->data(), _buffer->size());
+        _buffer->remove(0, sent);
+        return true;
+    }
+
+    bool send(const ::domain::Balance& value)
+    {
+        // Serialize the value into the FBE stream
+        FBE::domain::BalanceModel<TBuffer> model(_buffer);
+        size_t serialized = model.serialize(value);
+        assert((serialized > 0) && "domain::Balance serialization failed!");
+        assert(model.verify() && "domain::Balance validation failed!");
+        model.next(serialized);
+
+        // Shift the send buffer
+        _buffer->shift(serialized);
+
+        // Log the value
+        if (_logging)
+        {
+            std::string message = value.string();
+            onSendLog(message);
+        }
+
+        // Send the value
+        size_t sent = onSend(_buffer->data(), _buffer->size());
+        _buffer->remove(0, sent);
+        return true;
+    }
+
+    bool send(const ::domain::Account& value)
+    {
+        // Serialize the value into the FBE stream
+        FBE::domain::AccountModel<TBuffer> model(_buffer);
+        size_t serialized = model.serialize(value);
+        assert((serialized > 0) && "domain::Account serialization failed!");
+        assert(model.verify() && "domain::Account validation failed!");
+        model.next(serialized);
+
+        // Shift the send buffer
+        _buffer->shift(serialized);
+
+        // Log the value
+        if (_logging)
+        {
+            std::string message = value.string();
+            onSendLog(message);
+        }
+
+        // Send the value
+        size_t sent = onSend(_buffer->data(), _buffer->size());
+        _buffer->remove(0, sent);
+        return true;
+    }
+};
+
+} // namespace domain
+} // namespace FBE
+
+namespace FBE {
+namespace domain {
+
+template <class TBuffer>
+class Receiver : public virtual FBE::Receiver<TBuffer>
+{
+public:
+    Receiver() {}
+    Receiver(const Receiver&) = default;
+    Receiver(Receiver&&) noexcept = default;
+    virtual ~Receiver() = default;
+
+    Receiver& operator=(const Receiver&) = default;
+    Receiver& operator=(Receiver&&) noexcept = default;
+
+    // Attach the receiver buffer
+    void attach(const std::shared_ptr<TBuffer>& buffer) override
+    {
+        FBE::Receiver<TBuffer>::attach(buffer);
+    }
+
+protected:
+    // Receive handlers
+    virtual void onReceive(const ::domain::Order& value) {}
+    virtual void onReceive(const ::domain::Balance& value) {}
+    virtual void onReceive(const ::domain::Account& value) {}
+
+    // Receive message handler
+    bool onReceive(size_t type, const void* data, size_t size) override
+    {
+        switch (type)
+        {
+            case 1:
+            {
+                ::domain::Order value;
+
+                // Deserialize the value from the FBE stream
+                FBE::domain::OrderModel<FBE::ReadBuffer> model;
+                model.attach(data, size);
+                assert(model.verify() && "domain::Order validation failed!");
+                size_t deserialized = model.deserialize(value);
+                assert((deserialized > 0) && "domain::Order deserialization failed!");
+                model.next(deserialized);
+
+                // Log the value
+                if (_logging)
+                {
+                    std::string message = value.string();
+                    onReceiveLog(message);
+                }
+
+                // Call receive handler with deserialized value
+                onReceive(value);
+                return true;
+            }
+            case 2:
+            {
+                ::domain::Balance value;
+
+                // Deserialize the value from the FBE stream
+                FBE::domain::BalanceModel<FBE::ReadBuffer> model;
+                model.attach(data, size);
+                assert(model.verify() && "domain::Balance validation failed!");
+                size_t deserialized = model.deserialize(value);
+                assert((deserialized > 0) && "domain::Balance deserialization failed!");
+                model.next(deserialized);
+
+                // Log the value
+                if (_logging)
+                {
+                    std::string message = value.string();
+                    onReceiveLog(message);
+                }
+
+                // Call receive handler with deserialized value
+                onReceive(value);
+                return true;
+            }
+            case 3:
+            {
+                ::domain::Account value;
+
+                // Deserialize the value from the FBE stream
+                FBE::domain::AccountModel<FBE::ReadBuffer> model;
+                model.attach(data, size);
+                assert(model.verify() && "domain::Account validation failed!");
+                size_t deserialized = model.deserialize(value);
+                assert((deserialized > 0) && "domain::Account deserialization failed!");
+                model.next(deserialized);
+
+                // Log the value
+                if (_logging)
+                {
+                    std::string message = value.string();
+                    onReceiveLog(message);
+                }
+
+                // Call receive handler with deserialized value
+                onReceive(value);
+                return true;
+            }
+        }
+
+        return false;
+    }
+};
+
+} // namespace domain
 } // namespace FBE
