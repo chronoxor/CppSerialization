@@ -1308,7 +1308,7 @@ public:
         model.next(serialized);
 
         // Shift the send buffer
-        _buffer->shift(serialized);
+        this->_buffer->shift(serialized);
 
         // Log the value
         if (this->_logging)
@@ -1318,8 +1318,8 @@ public:
         }
 
         // Send the value
-        size_t sent = onSend(_buffer->data(), _buffer->size());
-        _buffer->remove(0, sent);
+        size_t sent = onSend(this->_buffer->data(), this->_buffer->size());
+        this->_buffer->remove(0, sent);
         return true;
     }
 
@@ -1333,7 +1333,7 @@ public:
         model.next(serialized);
 
         // Shift the send buffer
-        _buffer->shift(serialized);
+        this->_buffer->shift(serialized);
 
         // Log the value
         if (this->_logging)
@@ -1343,8 +1343,8 @@ public:
         }
 
         // Send the value
-        size_t sent = onSend(_buffer->data(), _buffer->size());
-        _buffer->remove(0, sent);
+        size_t sent = onSend(this->_buffer->data(), this->_buffer->size());
+        this->_buffer->remove(0, sent);
         return true;
     }
 
@@ -1358,7 +1358,7 @@ public:
         model.next(serialized);
 
         // Shift the send buffer
-        _buffer->shift(serialized);
+        this->_buffer->shift(serialized);
 
         // Log the value
         if (this->_logging)
@@ -1368,8 +1368,8 @@ public:
         }
 
         // Send the value
-        size_t sent = onSend(_buffer->data(), _buffer->size());
-        _buffer->remove(0, sent);
+        size_t sent = onSend(this->_buffer->data(), this->_buffer->size());
+        this->_buffer->remove(0, sent);
         return true;
     }
 };
