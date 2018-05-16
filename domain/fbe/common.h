@@ -532,14 +532,14 @@ public:
     }
 
     // Get the bytes value
-    template <std::size_t N>
+    template <size_t N>
     size_t get(uint8_t (&data)[N]) const noexcept
     {
         return get(data, N);
     }
 
     // Get the bytes value
-    template <std::size_t N>
+    template <size_t N>
     size_t get(std::array<uint8_t, N>& data) const noexcept
     {
         return get(data.data(), data.size());
@@ -591,14 +591,14 @@ public:
     }
 
     // Set the bytes value
-    template <std::size_t N>
+    template <size_t N>
     void set(const uint8_t (&data)[N])
     {
         return set(data, N);
     }
 
     // Set the bytes value
-    template <std::size_t N>
+    template <size_t N>
     void set(const std::array<uint8_t, N>& data)
     {
         return set(data.data(), data.size());
@@ -691,14 +691,14 @@ public:
     }
 
     // Get the string value
-    template <std::size_t N>
+    template <size_t N>
     size_t get(char (&data)[N]) const noexcept
     {
         return get(data, N);
     }
 
     // Get the string value
-    template <std::size_t N>
+    template <size_t N>
     size_t get(std::array<char, N>& data) const noexcept
     {
         return get(data.data(), data.size());
@@ -749,14 +749,14 @@ public:
     }
 
     // Set the string value
-    template <std::size_t N>
+    template <size_t N>
     void set(const char (&data)[N])
     {
         return set(data, N);
     }
 
     // Set the string value
-    template <std::size_t N>
+    template <size_t N>
     void set(const std::array<char, N>& data)
     {
         return set(data.data(), data.size());
