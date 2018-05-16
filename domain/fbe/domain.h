@@ -1301,7 +1301,7 @@ public:
     bool send(const ::domain::Order& value)
     {
         // Serialize the value into the FBE stream
-        FBE::domain::OrderModel<TBuffer> model(_buffer);
+        FBE::domain::OrderModel<TBuffer> model(this->_buffer);
         size_t serialized = model.serialize(value);
         assert((serialized > 0) && "domain::Order serialization failed!");
         assert(model.verify() && "domain::Order validation failed!");
@@ -1311,10 +1311,10 @@ public:
         _buffer->shift(serialized);
 
         // Log the value
-        if (_logging)
+        if (this->_logging)
         {
             std::string message = value.string();
-            onSendLog(message);
+            this->onSendLog(message);
         }
 
         // Send the value
@@ -1326,7 +1326,7 @@ public:
     bool send(const ::domain::Balance& value)
     {
         // Serialize the value into the FBE stream
-        FBE::domain::BalanceModel<TBuffer> model(_buffer);
+        FBE::domain::BalanceModel<TBuffer> model(this->_buffer);
         size_t serialized = model.serialize(value);
         assert((serialized > 0) && "domain::Balance serialization failed!");
         assert(model.verify() && "domain::Balance validation failed!");
@@ -1336,10 +1336,10 @@ public:
         _buffer->shift(serialized);
 
         // Log the value
-        if (_logging)
+        if (this->_logging)
         {
             std::string message = value.string();
-            onSendLog(message);
+            this->onSendLog(message);
         }
 
         // Send the value
@@ -1351,7 +1351,7 @@ public:
     bool send(const ::domain::Account& value)
     {
         // Serialize the value into the FBE stream
-        FBE::domain::AccountModel<TBuffer> model(_buffer);
+        FBE::domain::AccountModel<TBuffer> model(this->_buffer);
         size_t serialized = model.serialize(value);
         assert((serialized > 0) && "domain::Account serialization failed!");
         assert(model.verify() && "domain::Account validation failed!");
@@ -1361,10 +1361,10 @@ public:
         _buffer->shift(serialized);
 
         // Log the value
-        if (_logging)
+        if (this->_logging)
         {
             std::string message = value.string();
-            onSendLog(message);
+            this->onSendLog(message);
         }
 
         // Send the value
@@ -1422,10 +1422,10 @@ protected:
                 model.next(deserialized);
 
                 // Log the value
-                if (_logging)
+                if (this->_logging)
                 {
                     std::string message = value.string();
-                    onReceiveLog(message);
+                    this->onReceiveLog(message);
                 }
 
                 // Call receive handler with deserialized value
@@ -1445,10 +1445,10 @@ protected:
                 model.next(deserialized);
 
                 // Log the value
-                if (_logging)
+                if (this->_logging)
                 {
                     std::string message = value.string();
-                    onReceiveLog(message);
+                    this->onReceiveLog(message);
                 }
 
                 // Call receive handler with deserialized value
@@ -1468,10 +1468,10 @@ protected:
                 model.next(deserialized);
 
                 // Log the value
-                if (_logging)
+                if (this->_logging)
                 {
                     std::string message = value.string();
-                    onReceiveLog(message);
+                    this->onReceiveLog(message);
                 }
 
                 // Call receive handler with deserialized value
