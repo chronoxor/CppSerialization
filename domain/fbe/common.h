@@ -202,7 +202,7 @@ public:
     // Remove some memory of the given size from the current write buffer
     void remove(size_t offset, size_t size)
     {
-        assert(((offset + size) < _buffer.size()) && "Invalid offset & size!");
+        assert(((offset + size) <= _buffer.size()) && "Invalid offset & size!");
 
         _buffer.erase(_buffer.begin() + offset, _buffer.begin() + offset + size);
         if (_offset >= (offset + size))
@@ -931,11 +931,161 @@ public:
 };
 
 // Fast Binary Encoding field model array class
-template <class TBuffer, typename T>
+template <class TBuffer, typename T, size_t N>
 class FieldModelArray
 {
 public:
-    FieldModelArray(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset) {}
+    FieldModelArray(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset), _fbe_model(buffer, offset) {}
+
+    // Get the field offset
+    size_t fbe_offset() const noexcept { return _offset; }
+    // Get the field size
+    size_t fbe_size() const noexcept { return N * _fbe_model.fbe_size(); }
+    // Get the field extra size
+    size_t fbe_extra() const noexcept { return 0; }
+
+    // Shift the current field offset
+    void fbe_shift(size_t size) noexcept { _offset += size; }
+    // Unshift the current field offset
+    void fbe_unshift(size_t size) noexcept { _offset -= size; }
+
+    // Array value index operators
+    FieldModel<TBuffer, T> operator[](size_t index) const noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
+        assert((index < N) && "Index is out of bounds!");
+
+        FieldModel<TBuffer, T> fbe_model(_buffer, fbe_offset());
+        fbe_model.fbe_shift(index * fbe_model.fbe_size());
+        return fbe_model;
+    }
+
+    const uint8_t* data() const noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
+        return _buffer.data() + _buffer.offset() + fbe_offset();
+    }
+    uint8_t* data() noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
+        return _buffer.data() + _buffer.offset() + fbe_offset();
+    }
+    // Get the array value offset
+    size_t offset() const noexcept { return 0; }
+    // Get the array value size
+    size_t size() const noexcept { return N; }
+
+    // Check if the array value is valid
+    bool verify() const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return true;
+
+        FieldModel<TBuffer, T> fbe_model(_buffer, fbe_offset());
+        for (size_t i = N; i-- > 0;)
+        {
+            if (!fbe_model.verify())
+                return false;
+            fbe_model.fbe_shift(fbe_model.fbe_size());
+        }
+
+        return true;
+    }
+
+    // Get the array value as C-array
+    template <size_t S>
+    void get(T (&values)[S]) const noexcept
+    {
+        auto fbe_model = (*this)[0];
+        for (size_t i = 0; (i < S) && (i < N); ++i)
+        {
+            fbe_model.get(values[i]);
+            fbe_model.fbe_shift(fbe_model.fbe_size());
+        }
+    }
+
+    // Get the array value as std::array
+    template <size_t S>
+    void get(std::array<T, S>& values) const noexcept
+    {
+        auto fbe_model = (*this)[0];
+        for (size_t i = 0; (i < S) && (i < N); ++i)
+        {
+            fbe_model.get(values[i]);
+            fbe_model.fbe_shift(fbe_model.fbe_size());
+        }
+    }
+
+    // Get the array value as std::vector
+    void get(std::vector<T>& values) const noexcept
+    {
+        values.clear();
+        values.reserve(N);
+
+        auto fbe_model = (*this)[0];
+        for (size_t i = 0; i < N; ++i)
+        {
+            fbe_model.get(values[i]);
+            fbe_model.fbe_shift(fbe_model.fbe_size());
+        }
+    }
+
+    // Set the vector value as C-array
+    template <size_t S>
+    void set(const T (&values)[S]) noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return;
+
+        auto fbe_model = (*this)[0];
+        for (size_t i = 0; (i < S) && (i < N); ++i)
+        {
+            fbe_model.set(values[i]);
+            fbe_model.fbe_shift(fbe_model.fbe_size());
+        }
+    }
+
+    // Set the vector value as std::array
+    template <size_t S>
+    void set(const std::array<T, S>& values) noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return;
+
+        auto fbe_model = (*this)[0];
+        for (size_t i = 0; (i < S) && (i < N); ++i)
+        {
+            fbe_model.set(values[i]);
+            fbe_model.fbe_shift(fbe_model.fbe_size());
+        }
+    }
+
+    // Set the vector value as std::vector
+    void set(const std::vector<T>& values) noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return;
+
+        auto fbe_model = (*this)[0];
+        for (size_t i = 0; (i < values.size()) && (i < N); ++i)
+        {
+            fbe_model.set(values[i]);
+            fbe_model.fbe_shift(fbe_model.fbe_size());
+        }
+    }
+
+private:
+    TBuffer& _buffer;
+    size_t _offset;
+    FieldModel<TBuffer, T> _fbe_model;
+};
+
+// Fast Binary Encoding field model vector class
+template <class TBuffer, typename T>
+class FieldModelVector
+{
+public:
+    FieldModelVector(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset) {}
 
     // Get the field offset
     size_t fbe_offset() const noexcept { return _offset; }
@@ -947,15 +1097,15 @@ public:
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
-        if ((fbe_array_offset == 0) || ((_buffer.offset() + fbe_array_offset + 4) > _buffer.size()))
+        uint32_t fbe_vector_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if ((fbe_vector_offset == 0) || ((_buffer.offset() + fbe_vector_offset + 4) > _buffer.size()))
             return 0;
 
-        uint32_t fbe_array_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_array_offset));
+        uint32_t fbe_vector_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_vector_offset));
 
         size_t fbe_result = 4;
-        FieldModel<TBuffer, T> fbe_model(_buffer, fbe_array_offset + 4);
-        for (size_t i = fbe_array_size; i-- > 0;)
+        FieldModel<TBuffer, T> fbe_model(_buffer, fbe_vector_offset + 4);
+        for (size_t i = fbe_vector_size; i-- > 0;)
         {
             fbe_result += fbe_model.fbe_size() + fbe_model.fbe_extra();
             fbe_model.fbe_shift(fbe_model.fbe_size());
@@ -968,81 +1118,81 @@ public:
     // Unshift the current field offset
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
-    // Array value index operators
+    // Vector value index operators
     FieldModel<TBuffer, T> operator[](size_t index) const noexcept
     {
         assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
 
-        uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
-        assert(((fbe_array_offset > 0) && ((_buffer.offset() + fbe_array_offset + 4) <= _buffer.size())) && "Model is broken!");
+        uint32_t fbe_vector_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        assert(((fbe_vector_offset > 0) && ((_buffer.offset() + fbe_vector_offset + 4) <= _buffer.size())) && "Model is broken!");
 
-        MAYBE_UNUSED uint32_t fbe_array_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_array_offset));
-        assert((index < fbe_array_size) && "Index is out of bounds!");
-        (void)fbe_array_size;
+        MAYBE_UNUSED uint32_t fbe_vector_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_vector_offset));
+        assert((index < fbe_vector_size) && "Index is out of bounds!");
+        (void)fbe_vector_size;
 
-        FieldModel<TBuffer, T> fbe_model(_buffer, fbe_array_offset + 4);
+        FieldModel<TBuffer, T> fbe_model(_buffer, fbe_vector_offset + 4);
         fbe_model.fbe_shift(index * fbe_model.fbe_size());
         return fbe_model;
     }
 
-    // Get the array value offset
+    // Get the vector value offset
     size_t offset() const noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
-        return fbe_array_offset;
+        uint32_t fbe_vector_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        return fbe_vector_offset;
     }
 
-    // Get the array value size
+    // Get the vector value size
     size_t size() const noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
-        uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
-        if ((fbe_array_offset == 0) || ((_buffer.offset() + fbe_array_offset + 4) > _buffer.size()))
+        uint32_t fbe_vector_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if ((fbe_vector_offset == 0) || ((_buffer.offset() + fbe_vector_offset + 4) > _buffer.size()))
             return 0;
 
-        uint32_t fbe_array_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_array_offset));
-        return fbe_array_size;
+        uint32_t fbe_vector_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_vector_offset));
+        return fbe_vector_size;
     }
 
-    // Resize the array and get its first model
+    // Resize the vector and get its first model
     FieldModel<TBuffer, T> resize(size_t size)
     {
         FieldModel<TBuffer, T> fbe_model(_buffer, fbe_offset());
 
-        uint32_t fbe_array_size = (uint32_t)(size * fbe_model.fbe_size());
-        uint32_t fbe_array_offset = (uint32_t)(_buffer.allocate(4 + fbe_array_size) - _buffer.offset());
-        assert(((fbe_array_offset > 0) && ((_buffer.offset() + fbe_array_offset + 4) <= _buffer.size())) && "Model is broken!");
+        uint32_t fbe_vector_size = (uint32_t)(size * fbe_model.fbe_size());
+        uint32_t fbe_vector_offset = (uint32_t)(_buffer.allocate(4 + fbe_vector_size) - _buffer.offset());
+        assert(((fbe_vector_offset > 0) && ((_buffer.offset() + fbe_vector_offset + 4) <= _buffer.size())) && "Model is broken!");
 
-        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_array_offset;
-        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_array_offset)) = (uint32_t)size;
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_vector_offset;
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_vector_offset)) = (uint32_t)size;
 
-        memset((char*)(_buffer.data() + _buffer.offset() + fbe_array_offset + 4), 0, fbe_array_size);
+        memset((char*)(_buffer.data() + _buffer.offset() + fbe_vector_offset + 4), 0, fbe_vector_size);
 
-        return FieldModel<TBuffer, T>(_buffer, fbe_array_offset + 4);
+        return FieldModel<TBuffer, T>(_buffer, fbe_vector_offset + 4);
     }
 
-    // Check if the array value is valid
+    // Check if the vector value is valid
     bool verify() const noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return true;
 
-        uint32_t fbe_array_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
-        if (fbe_array_offset == 0)
+        uint32_t fbe_vector_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if (fbe_vector_offset == 0)
             return true;
 
-        if ((_buffer.offset() + fbe_array_offset + 4) > _buffer.size())
+        if ((_buffer.offset() + fbe_vector_offset + 4) > _buffer.size())
             return false;
 
-        uint32_t fbe_array_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_array_offset));
+        uint32_t fbe_vector_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_vector_offset));
 
-        FieldModel<TBuffer, T> fbe_model(_buffer, fbe_array_offset + 4);
-        for (size_t i = fbe_array_size; i-- > 0;)
+        FieldModel<TBuffer, T> fbe_model(_buffer, fbe_vector_offset + 4);
+        for (size_t i = fbe_vector_size; i-- > 0;)
         {
             if (!fbe_model.verify())
                 return false;
@@ -1052,19 +1202,19 @@ public:
         return true;
     }
 
-    // Get the array value as std::vector
+    // Get the vector value as std::vector
     void get(std::vector<T>& values) const noexcept
     {
         values.clear();
 
-        size_t fbe_array_size = size();
-        if (fbe_array_size == 0)
+        size_t fbe_vector_size = size();
+        if (fbe_vector_size == 0)
             return;
 
-        values.reserve(fbe_array_size);
+        values.reserve(fbe_vector_size);
 
         auto fbe_model = (*this)[0];
-        for (size_t i = fbe_array_size; i-- > 0;)
+        for (size_t i = fbe_vector_size; i-- > 0;)
         {
             T value;
             fbe_model.get(value);
@@ -1073,17 +1223,17 @@ public:
         }
     }
 
-    // Get the array value as std::list
+    // Get the vector value as std::list
     void get(std::list<T>& values) const noexcept
     {
         values.clear();
 
-        size_t fbe_array_size = size();
-        if (fbe_array_size == 0)
+        size_t fbe_vector_size = size();
+        if (fbe_vector_size == 0)
             return;
 
         auto fbe_model = (*this)[0];
-        for (size_t i = fbe_array_size; i-- > 0;)
+        for (size_t i = fbe_vector_size; i-- > 0;)
         {
             T value;
             fbe_model.get(value);
@@ -1092,17 +1242,17 @@ public:
         }
     }
 
-    // Get the array value as std::set
+    // Get the vector value as std::set
     void get(std::set<T>& values) const noexcept
     {
         values.clear();
 
-        size_t fbe_array_size = size();
-        if (fbe_array_size == 0)
+        size_t fbe_vector_size = size();
+        if (fbe_vector_size == 0)
             return;
 
         auto fbe_model = (*this)[0];
-        for (size_t i = fbe_array_size; i-- > 0;)
+        for (size_t i = fbe_vector_size; i-- > 0;)
         {
             T value;
             fbe_model.get(value);
@@ -1111,7 +1261,7 @@ public:
         }
     }
 
-    // Set the array value as std::vector
+    // Set the vector value as std::vector
     void set(const std::vector<T>& values) noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
@@ -1125,7 +1275,7 @@ public:
         }
     }
 
-    // Set the array value as std::list
+    // Set the vector value as std::list
     void set(const std::list<T>& values) noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
@@ -1139,7 +1289,7 @@ public:
         }
     }
 
-    // Set the array value as std::set
+    // Set the vector value as std::set
     void set(const std::set<T>& values) noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
@@ -1411,6 +1561,20 @@ public:
         _buffer->shift(offset);
     }
 
+    // Send serialized buffer. Direct call of the method requires knowledge about internals of FBE models serialization. Use it with care!
+    size_t send_serialized(size_t serialized)
+    {
+        assert((serialized > 0) && "Invalid size of the serialized buffer!");
+
+        // Shift the send buffer
+        this->_buffer->shift(serialized);
+
+        // Send the value
+        size_t sent = onSend(this->_buffer->data(), this->_buffer->size());
+        this->_buffer->remove(0, sent);
+        return sent;
+    }
+
 protected:
     // Send message handler
     virtual size_t onSend(const void* data, size_t size) = 0;
@@ -1427,7 +1591,7 @@ template <class TBuffer>
 class Receiver
 {
 public:
-    Receiver() { _buffer = std::make_shared<TBuffer>(); }
+    Receiver() : _logging(false) { _buffer = std::make_shared<TBuffer>(); }
     Receiver(const Receiver&) = default;
     Receiver(Receiver&&) noexcept = default;
     virtual ~Receiver() = default;

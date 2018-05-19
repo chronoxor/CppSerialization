@@ -244,13 +244,13 @@ public:
             return false;
 
         _buffer.shift(fbe_struct_offset);
-        bool fbe_result = verifyFields(fbe_struct_size);
+        bool fbe_result = verify_fields(fbe_struct_size);
         _buffer.unshift(fbe_struct_offset);
         return fbe_result;
     }
 
     // Check if the struct fields are valid
-    bool verifyFields(size_t fbe_struct_size) const noexcept
+    bool verify_fields(size_t fbe_struct_size) const noexcept
     {
         size_t fbe_current_size = 4 + 4;
 
@@ -328,13 +328,13 @@ public:
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset()));
 
-        getFields(value, fbe_struct_size);
+        get_fields(value, fbe_struct_size);
 
         get_end(fbe_begin);
     }
 
     // Get the struct fields values
-    void getFields(::domain::Order& value, size_t fbe_struct_size) const noexcept
+    void get_fields(::domain::Order& value, size_t fbe_struct_size) const noexcept
     {
         size_t fbe_current_size = 4 + 4;
 
@@ -398,13 +398,13 @@ public:
         if (fbe_begin == 0)
             return;
 
-        setFields(value);
+        set_fields(value);
 
         set_end(fbe_begin);
     }
 
     // Set the struct fields values
-    void setFields(const ::domain::Order& value) noexcept
+    void set_fields(const ::domain::Order& value) noexcept
     {
         id.set(value.id);
         symbol.set(value.symbol);
@@ -653,13 +653,13 @@ public:
             return false;
 
         _buffer.shift(fbe_struct_offset);
-        bool fbe_result = verifyFields(fbe_struct_size);
+        bool fbe_result = verify_fields(fbe_struct_size);
         _buffer.unshift(fbe_struct_offset);
         return fbe_result;
     }
 
     // Check if the struct fields are valid
-    bool verifyFields(size_t fbe_struct_size) const noexcept
+    bool verify_fields(size_t fbe_struct_size) const noexcept
     {
         size_t fbe_current_size = 4 + 4;
 
@@ -713,13 +713,13 @@ public:
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset()));
 
-        getFields(value, fbe_struct_size);
+        get_fields(value, fbe_struct_size);
 
         get_end(fbe_begin);
     }
 
     // Get the struct fields values
-    void getFields(::domain::Balance& value, size_t fbe_struct_size) const noexcept
+    void get_fields(::domain::Balance& value, size_t fbe_struct_size) const noexcept
     {
         size_t fbe_current_size = 4 + 4;
 
@@ -765,13 +765,13 @@ public:
         if (fbe_begin == 0)
             return;
 
-        setFields(value);
+        set_fields(value);
 
         set_end(fbe_begin);
     }
 
     // Set the struct fields values
-    void setFields(const ::domain::Balance& value) noexcept
+    void set_fields(const ::domain::Balance& value) noexcept
     {
         currency.set(value.currency);
         amount.set(value.amount);
@@ -1037,13 +1037,13 @@ public:
             return false;
 
         _buffer.shift(fbe_struct_offset);
-        bool fbe_result = verifyFields(fbe_struct_size);
+        bool fbe_result = verify_fields(fbe_struct_size);
         _buffer.unshift(fbe_struct_offset);
         return fbe_result;
     }
 
     // Check if the struct fields are valid
-    bool verifyFields(size_t fbe_struct_size) const noexcept
+    bool verify_fields(size_t fbe_struct_size) const noexcept
     {
         size_t fbe_current_size = 4 + 4;
 
@@ -1109,13 +1109,13 @@ public:
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset()));
 
-        getFields(value, fbe_struct_size);
+        get_fields(value, fbe_struct_size);
 
         get_end(fbe_begin);
     }
 
     // Get the struct fields values
-    void getFields(::domain::Account& value, size_t fbe_struct_size) const noexcept
+    void get_fields(::domain::Account& value, size_t fbe_struct_size) const noexcept
     {
         size_t fbe_current_size = 4 + 4;
 
@@ -1167,13 +1167,13 @@ public:
         if (fbe_begin == 0)
             return;
 
-        setFields(value);
+        set_fields(value);
 
         set_end(fbe_begin);
     }
 
     // Set the struct fields values
-    void setFields(const ::domain::Account& value) noexcept
+    void set_fields(const ::domain::Account& value) noexcept
     {
         id.set(value.id);
         name.set(value.name);
@@ -1189,7 +1189,7 @@ public:
     FieldModel<TBuffer, int32_t> id;
     FieldModel<TBuffer, std::string> name;
     FieldModel<TBuffer, ::domain::Balance> wallet;
-    FieldModelArray<TBuffer, ::domain::Order> orders;
+    FieldModelVector<TBuffer, ::domain::Order> orders;
 };
 
 } // namespace FBE
@@ -1282,9 +1282,14 @@ namespace domain {
 
 template <class TBuffer>
 class Sender : public virtual FBE::Sender<TBuffer>
+
 {
 public:
-    Sender() {}
+    Sender()
+        : OrderModel(this->_buffer)
+        , BalanceModel(this->_buffer)
+        , AccountModel(this->_buffer)
+    {}
     Sender(const Sender&) = default;
     Sender(Sender&&) noexcept = default;
     virtual ~Sender() = default;
@@ -1296,19 +1301,17 @@ public:
     void attach(const std::shared_ptr<TBuffer>& buffer) override
     {
         FBE::Sender<TBuffer>::attach(buffer);
+        OrderModel.attach(this->_buffer);
+        BalanceModel.attach(this->_buffer);
+        AccountModel.attach(this->_buffer);
     }
 
-    bool send(const ::domain::Order& value)
+    size_t send(const ::domain::Order& value)
     {
         // Serialize the value into the FBE stream
-        FBE::domain::OrderModel<TBuffer> model(this->_buffer);
-        size_t serialized = model.serialize(value);
+        size_t serialized = OrderModel.serialize(value);
         assert((serialized > 0) && "domain::Order serialization failed!");
-        assert(model.verify() && "domain::Order validation failed!");
-        model.next(serialized);
-
-        // Shift the send buffer
-        this->_buffer->shift(serialized);
+        assert(OrderModel.verify() && "domain::Order validation failed!");
 
         // Log the value
         if (this->_logging)
@@ -1317,23 +1320,16 @@ public:
             this->onSendLog(message);
         }
 
-        // Send the value
-        size_t sent = onSend(this->_buffer->data(), this->_buffer->size());
-        this->_buffer->remove(0, sent);
-        return true;
+        // Send the serialized value
+        return this->send_serialized(serialized);
     }
 
-    bool send(const ::domain::Balance& value)
+    size_t send(const ::domain::Balance& value)
     {
         // Serialize the value into the FBE stream
-        FBE::domain::BalanceModel<TBuffer> model(this->_buffer);
-        size_t serialized = model.serialize(value);
+        size_t serialized = BalanceModel.serialize(value);
         assert((serialized > 0) && "domain::Balance serialization failed!");
-        assert(model.verify() && "domain::Balance validation failed!");
-        model.next(serialized);
-
-        // Shift the send buffer
-        this->_buffer->shift(serialized);
+        assert(BalanceModel.verify() && "domain::Balance validation failed!");
 
         // Log the value
         if (this->_logging)
@@ -1342,23 +1338,16 @@ public:
             this->onSendLog(message);
         }
 
-        // Send the value
-        size_t sent = onSend(this->_buffer->data(), this->_buffer->size());
-        this->_buffer->remove(0, sent);
-        return true;
+        // Send the serialized value
+        return this->send_serialized(serialized);
     }
 
-    bool send(const ::domain::Account& value)
+    size_t send(const ::domain::Account& value)
     {
         // Serialize the value into the FBE stream
-        FBE::domain::AccountModel<TBuffer> model(this->_buffer);
-        size_t serialized = model.serialize(value);
+        size_t serialized = AccountModel.serialize(value);
         assert((serialized > 0) && "domain::Account serialization failed!");
-        assert(model.verify() && "domain::Account validation failed!");
-        model.next(serialized);
-
-        // Shift the send buffer
-        this->_buffer->shift(serialized);
+        assert(AccountModel.verify() && "domain::Account validation failed!");
 
         // Log the value
         if (this->_logging)
@@ -1367,11 +1356,14 @@ public:
             this->onSendLog(message);
         }
 
-        // Send the value
-        size_t sent = onSend(this->_buffer->data(), this->_buffer->size());
-        this->_buffer->remove(0, sent);
-        return true;
+        // Send the serialized value
+        return this->send_serialized(serialized);
     }
+
+public:
+    FBE::domain::OrderModel<TBuffer> OrderModel;
+    FBE::domain::BalanceModel<TBuffer> BalanceModel;
+    FBE::domain::AccountModel<TBuffer> AccountModel;
 };
 
 } // namespace domain
@@ -1382,9 +1374,10 @@ namespace domain {
 
 template <class TBuffer>
 class Receiver : public virtual FBE::Receiver<TBuffer>
+
 {
 public:
-    Receiver() {}
+    Receiver() = default;
     Receiver(const Receiver&) = default;
     Receiver(Receiver&&) noexcept = default;
     virtual ~Receiver() = default;
@@ -1411,77 +1404,76 @@ protected:
         {
             case 1:
             {
-                ::domain::Order value;
-
                 // Deserialize the value from the FBE stream
-                FBE::domain::OrderModel<FBE::ReadBuffer> model;
-                model.attach(data, size);
-                assert(model.verify() && "domain::Order validation failed!");
-                size_t deserialized = model.deserialize(value);
+                OrderModel.attach(data, size);
+                assert(OrderModel.verify() && "domain::Order validation failed!");
+                MAYBE_UNUSED size_t deserialized = OrderModel.deserialize(OrderValue);
                 assert((deserialized > 0) && "domain::Order deserialization failed!");
-                model.next(deserialized);
+                (void)deserialized;
 
                 // Log the value
                 if (this->_logging)
                 {
-                    std::string message = value.string();
+                    std::string message = OrderValue.string();
                     this->onReceiveLog(message);
                 }
 
                 // Call receive handler with deserialized value
-                onReceive(value);
+                onReceive(OrderValue);
                 return true;
             }
             case 2:
             {
-                ::domain::Balance value;
-
                 // Deserialize the value from the FBE stream
-                FBE::domain::BalanceModel<FBE::ReadBuffer> model;
-                model.attach(data, size);
-                assert(model.verify() && "domain::Balance validation failed!");
-                size_t deserialized = model.deserialize(value);
+                BalanceModel.attach(data, size);
+                assert(BalanceModel.verify() && "domain::Balance validation failed!");
+                MAYBE_UNUSED size_t deserialized = BalanceModel.deserialize(BalanceValue);
                 assert((deserialized > 0) && "domain::Balance deserialization failed!");
-                model.next(deserialized);
+                (void)deserialized;
 
                 // Log the value
                 if (this->_logging)
                 {
-                    std::string message = value.string();
+                    std::string message = BalanceValue.string();
                     this->onReceiveLog(message);
                 }
 
                 // Call receive handler with deserialized value
-                onReceive(value);
+                onReceive(BalanceValue);
                 return true;
             }
             case 3:
             {
-                ::domain::Account value;
-
                 // Deserialize the value from the FBE stream
-                FBE::domain::AccountModel<FBE::ReadBuffer> model;
-                model.attach(data, size);
-                assert(model.verify() && "domain::Account validation failed!");
-                size_t deserialized = model.deserialize(value);
+                AccountModel.attach(data, size);
+                assert(AccountModel.verify() && "domain::Account validation failed!");
+                MAYBE_UNUSED size_t deserialized = AccountModel.deserialize(AccountValue);
                 assert((deserialized > 0) && "domain::Account deserialization failed!");
-                model.next(deserialized);
+                (void)deserialized;
 
                 // Log the value
                 if (this->_logging)
                 {
-                    std::string message = value.string();
+                    std::string message = AccountValue.string();
                     this->onReceiveLog(message);
                 }
 
                 // Call receive handler with deserialized value
-                onReceive(value);
+                onReceive(AccountValue);
                 return true;
             }
         }
 
         return false;
     }
+
+private:
+    ::domain::Order OrderValue;
+    FBE::domain::OrderModel<ReadBuffer> OrderModel;
+    ::domain::Balance BalanceValue;
+    FBE::domain::BalanceModel<ReadBuffer> BalanceModel;
+    ::domain::Account AccountValue;
+    FBE::domain::AccountModel<ReadBuffer> AccountModel;
 };
 
 } // namespace domain
