@@ -1361,6 +1361,7 @@ public:
     }
 
 public:
+    // Sender models accessors
     FBE::domain::OrderModel<TBuffer> OrderModel;
     FBE::domain::BalanceModel<TBuffer> BalanceModel;
     FBE::domain::AccountModel<TBuffer> AccountModel;
@@ -1468,11 +1469,14 @@ protected:
     }
 
 private:
+    // Receiver values accessors
     ::domain::Order OrderValue;
-    FBE::domain::OrderModel<ReadBuffer> OrderModel;
     ::domain::Balance BalanceValue;
-    FBE::domain::BalanceModel<ReadBuffer> BalanceModel;
     ::domain::Account AccountValue;
+
+    // Receiver models accessors
+    FBE::domain::OrderModel<ReadBuffer> OrderModel;
+    FBE::domain::BalanceModel<ReadBuffer> BalanceModel;
     FBE::domain::AccountModel<ReadBuffer> AccountModel;
 };
 
