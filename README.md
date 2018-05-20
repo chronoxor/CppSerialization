@@ -15,7 +15,7 @@ Performance comparison based on the [Domain model](#domain-model):
 | Format             | Message size | Serialization time | Deserialization time |
 | ------------------ | ------------ | ------------------ | -------------------- |
 | Cap'n'Proto        | 208 bytes    | 678 ns             | 480 ns               |
-| FastBinaryEncoding | 234 bytes    | 115 ns             | 131 ns               |
+| FastBinaryEncoding | 234 bytes    | 116 ns             | 119 ns               |
 | FlatBuffers        | 280 bytes    | 1024 ns            | 385 ns               |
 | Protobuf           | 120 bytes    | 836 ns             | 1024 ns              |
 | JSON               | 297 bytes    | 845 ns             | 2560 ns              |
@@ -525,6 +525,339 @@ Custom values:
 ===============================================================================
 ```
 
+# FastBinaryEncoding serialization
+FastBinaryEncoding serialization is based on [FastBinaryEncoding library](https://github.com/chronoxor/FastBinaryEncoding).
+
+## FastBinaryEncoding schema
+FastBinaryEncoding serialization starts with describing a model schema. For our
+domain model the schema will be the following:
+
+```
+package domain
+
+enum OrderSide : byte
+{
+    buy;
+    sell;
+}
+
+enum OrderType : byte
+{
+    market;
+    limit;
+    stop;
+}
+
+struct Order
+{
+    [key] int32 id;
+    string symbol;
+    OrderSide side;
+    OrderType type;
+    double price = 0.0;
+    double volume = 0.0;
+}
+
+struct Balance
+{
+    [key] string currency;
+    double amount = 0.0;
+}
+
+struct Account
+{
+    [key] int32 id;
+    string name;
+    Balance wallet;
+    Order[] orders;
+}
+```
+
+## FastBinaryEncoding schema compilation
+The next step is a schema compilation using 'fbec' utility which will create
+a generated code for required programming language.
+
+The following command will create a C++ generated code:
+```
+fbec --c++ --input=domain.fbe --output=.
+```
+
+It is possible to use add_custom_command() in CMakeLists.txt to generate code
+using 'cmake' utility:
+```
+add_custom_command(TARGET example POST_BUILD COMMAND fbec --c++ --input=domain.fbe --output=.)
+```
+
+As the result 'common.h' and 'domain.h' files will be generated.
+
+## FastBinaryEncoding serialization methods
+Finally you should extend your domain model with a FastBinaryEncoding serialization
+methods:
+
+```C++
+#include "fbe/domain.h"
+
+#include <algorithm>
+
+namespace MyDomain {
+
+struct Order
+{
+    ...
+
+    // FastBinaryEncoding serialization
+
+    template <class TBuffer>
+    void Serialize(FBE::FieldModel<TBuffer, domain::Order>& model)
+    {
+        size_t model_begin = model.set_begin();
+        model.id.set(Id);
+        model.symbol.set(Symbol);
+        model.side.set((domain::OrderSide)Side);
+        model.type.set((domain::OrderType)Type);
+        model.price.set(Price);
+        model.volume.set(Volume);
+        model.set_end(model_begin);
+    }
+
+    template <class TBuffer>
+    void Deserialize(const FBE::FieldModel<TBuffer, domain::Order>& model)
+    {
+        size_t model_begin = model.get_begin();
+        model.id.get(Id);
+        model.symbol.get(Symbol);
+        domain::OrderSide side;
+        model.side.get(side);
+        Side = (OrderSide)side;
+        domain::OrderType type;
+        model.type.get(type);
+        Type = (OrderType)type;
+        model.price.get(Price);
+        model.volume.get(Volume);
+        model.get_end(model_begin);
+    }
+
+    ...
+};
+
+struct Balance
+{
+    ...
+
+    // FastBinaryEncoding serialization
+
+    template <class TBuffer>
+    void Serialize(FBE::FieldModel<TBuffer, domain::Balance>& model)
+    {
+        size_t model_begin = model.set_begin();
+        model.currency.set(Currency);
+        model.amount.set(Amount);
+        model.set_end(model_begin);
+    }
+
+    template <class TBuffer>
+    void Deserialize(const FBE::FieldModel<TBuffer, domain::Balance>& model)
+    {
+        size_t model_begin = model.get_begin();
+        model.currency.get(Currency);
+        model.amount.get(Amount);
+        model.get_end(model_begin);
+    }
+
+    ...
+};
+
+struct Account
+{
+    ...
+
+    // FastBinaryEncoding serialization
+
+    template <class TBuffer>
+    void Serialize(FBE::FieldModel<TBuffer, domain::Account>& model)
+    {
+        size_t model_begin = model.set_begin();
+        model.id.set(Id);
+        model.name.set(Name);
+        Wallet.Serialize(model.wallet);
+        auto order_model = model.orders.resize(Orders.size());
+        for (auto& order : Orders)
+        {
+            order.Serialize(order_model);
+            order_model.fbe_shift(order_model.fbe_size());
+        }
+        model.set_end(model_begin);
+    }
+
+    template <class TBuffer>
+    void Deserialize(const FBE::FieldModel<TBuffer, domain::Account>& model)
+    {
+        size_t model_begin = model.get_begin();
+        model.id.get(Id);
+        model.name.get(Name);
+        Wallet.Deserialize(model.wallet);
+        Orders.clear();
+        for (size_t i = 0; i < model.orders.size(); ++i)
+        {
+            Order order;
+            order.Deserialize(model.orders[i]);
+            Orders.emplace_back(order);
+        }
+        model.get_end(model_begin);
+    }
+
+    ...
+};
+
+} // namespace MyDomain
+```
+
+## FastBinaryEncoding example
+Here comes the usage example of FastBinaryEncoding serialize/deserialize functionality:
+
+```C++
+#include "../domain/domain.h"
+
+#include <iostream>
+
+int main(int argc, char** argv)
+{
+    // Create a new account with some orders
+    MyDomain::Account account(1, "Test", "USD", 1000);
+    account.Orders.emplace_back(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
+    account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
+    account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
+
+    // Serialize the account to the FBE stream
+    FBE::AccountModel<FBE::WriteBuffer> writer;
+    size_t model_begin = writer.create_begin();
+    account.Serialize(writer.model);
+    size_t serialized = writer.create_end(model_begin);
+    assert(writer.verify() && "Model is broken!");
+
+    // Show the serialized FBE size
+    std::cout << "FBE size: " << serialized << std::endl;
+
+    // Deserialize the account from the FBE stream
+    MyDomain::Account deserialized;
+    FBE::AccountModel<FBE::ReadBuffer> reader;
+    reader.attach(writer.buffer());
+    assert(reader.verify() && "Model is broken!");
+    deserialized.Deserialize(reader.model);
+
+    // Show account content
+    std::cout << std::endl;
+    std::cout << "Account.Id = " << deserialized.Id << std::endl;
+    std::cout << "Account.Name = " << deserialized.Name << std::endl;
+    std::cout << "Account.Wallet.Currency = " << deserialized.Wallet.Currency << std::endl;
+    std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
+    for (auto& order : deserialized.Orders)
+    {
+        std::cout << "Account.Order => Id: " << order.Id
+            << ", Symbol: " << order.Symbol
+            << ", Side: " << (int)order.Side
+            << ", Type: " << (int)order.Type
+            << ", Price: " << order.Price
+            << ", Volume: " << order.Volume
+            << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output of the example is the following:
+```
+FBE size: 234
+
+Account.Id = 1
+Account.Name = Test
+Account.Wallet.Currency = USD
+Account.Wallet.Amount = 1000
+Account.Order => Id: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
+Account.Order => Id: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
+Account.Order => Id: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
+```
+
+## FastBinaryEncoding performance
+FastBinaryEncoding serialization performance of the provided domain model is the
+following:
+```
+===============================================================================
+CppBenchmark report. Version 1.0.0.0
+===============================================================================
+CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+CPU logical cores: 8
+CPU physical cores: 4
+CPU clock speed: 3.998 GHz
+CPU Hyper-Threading: enabled
+RAM total: 31.962 GiB
+RAM free: 18.341 GiB
+===============================================================================
+OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS bits: 64-bit
+Process bits: 64-bit
+Process configuaraion: release
+Local timestamp: Wed May  9 02:34:50 2018
+UTC timestamp: Tue May  8 23:34:50 2018
+===============================================================================
+Benchmark: FastBinaryEncoding-Serialize
+Attempts: 5
+Iterations: 1000000
+-------------------------------------------------------------------------------
+Phase: FastBinaryEncoding-Serialize
+Average time: 116 ns / iteration
+Minimal time: 116 ns / iteration
+Maximal time: 118 ns / iteration
+Total time: 116.975 ms
+Total iterations: 1000000
+Total bytes: 223.163 MiB
+Iterations throughput: 8548766 / second
+Bytes throughput: 1.883 GiB / second
+Custom values:
+        Size: 234
+===============================================================================
+```
+
+FastBinaryEncoding deserialization performance of the provided domain model is the
+following:
+```
+===============================================================================
+CppBenchmark report. Version 1.0.0.0
+===============================================================================
+CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+CPU logical cores: 8
+CPU physical cores: 4
+CPU clock speed: 3.998 GHz
+CPU Hyper-Threading: enabled
+RAM total: 31.962 GiB
+RAM free: 18.339 GiB
+===============================================================================
+OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS bits: 64-bit
+Process bits: 64-bit
+Process configuaraion: release
+Local timestamp: Wed May  9 02:35:06 2018
+UTC timestamp: Tue May  8 23:35:06 2018
+===============================================================================
+Benchmark: FastBinaryEncoding-Deserialize
+Attempts: 5
+Iterations: 1000000
+-------------------------------------------------------------------------------
+Phase: FastBinaryEncoding-Deserialize
+Average time: 119 ns / iteration
+Minimal time: 119 ns / iteration
+Maximal time: 129 ns / iteration
+Total time: 119.236 ms
+Total iterations: 1000000
+Total bytes: 223.163 MiB
+Iterations throughput: 8386715 / second
+Bytes throughput: 1.847 GiB / second
+Custom values:
+        Size: 234
+===============================================================================
+```
+
 # FlatBuffers serialization
 FlatBuffers serialization is based on [FlatBuffers library](https://google.github.io/flatbuffers).
 
@@ -821,339 +1154,6 @@ Iterations throughput: 2591566 / second
 Bytes throughput: 692.023 MiB / second
 Custom values:
         Size: 280
-===============================================================================
-```
-
-# FastBinaryEncoding serialization
-FastBinaryEncoding serialization is based on [FastBinaryEncoding library](https://github.com/chronoxor/FastBinaryEncoding).
-
-## FastBinaryEncoding schema
-FastBinaryEncoding serialization starts with describing a model schema. For our
-domain model the schema will be the following:
-
-```
-package domain
-
-enum OrderSide : byte
-{
-    buy;
-    sell;
-}
-
-enum OrderType : byte
-{
-    market;
-    limit;
-    stop;
-}
-
-struct Order
-{
-    [key] int32 id;
-    string symbol;
-    OrderSide side;
-    OrderType type;
-    double price = 0.0;
-    double volume = 0.0;
-}
-
-struct Balance
-{
-    [key] string currency;
-    double amount = 0.0;
-}
-
-struct Account
-{
-    [key] int32 id;
-    string name;
-    Balance wallet;
-    Order[] orders;
-}
-```
-
-## FastBinaryEncoding schema compilation
-The next step is a schema compilation using 'fbec' utility which will create
-a generated code for required programming language.
-
-The following command will create a C++ generated code:
-```
-fbec --c++ --input=domain.fbe --output=.
-```
-
-It is possible to use add_custom_command() in CMakeLists.txt to generate code
-using 'cmake' utility:
-```
-add_custom_command(TARGET example POST_BUILD COMMAND fbec --c++ --input=domain.fbe --output=.)
-```
-
-As the result 'common.h' and 'domain.h' files will be generated.
-
-## FastBinaryEncoding serialization methods
-Finally you should extend your domain model with a FastBinaryEncoding serialization
-methods:
-
-```C++
-#include "fbe/domain.h"
-
-#include <algorithm>
-
-namespace MyDomain {
-
-struct Order
-{
-    ...
-
-    // FastBinaryEncoding serialization
-
-    template <class TBuffer>
-    void Serialize(FBE::FieldModel<TBuffer, domain::Order>& model)
-    {
-        size_t model_begin = model.set_begin();
-        model.id.set(Id);
-        model.symbol.set(Symbol);
-        model.side.set((domain::OrderSide)Side);
-        model.type.set((domain::OrderType)Type);
-        model.price.set(Price);
-        model.volume.set(Volume);
-        model.set_end(model_begin);
-    }
-
-    template <class TBuffer>
-    void Deserialize(const FBE::FieldModel<TBuffer, domain::Order>& model)
-    {
-        size_t model_begin = model.get_begin();
-        model.id.get(Id);
-        model.symbol.get(Symbol);
-        domain::OrderSide side;
-        model.side.get(side);
-        Side = (OrderSide)side;
-        domain::OrderType type;
-        model.type.get(type);
-        Type = (OrderType)type;
-        model.price.get(Price);
-        model.volume.get(Volume);
-        model.get_end(model_begin);
-    }
-
-    ...
-};
-
-struct Balance
-{
-    ...
-
-    // FastBinaryEncoding serialization
-
-    template <class TBuffer>
-    void Serialize(FBE::FieldModel<TBuffer, domain::Balance>& model)
-    {
-        size_t model_begin = model.set_begin();
-        model.currency.set(Currency);
-        model.amount.set(Amount);
-        model.set_end(model_begin);
-    }
-
-    template <class TBuffer>
-    void Deserialize(const FBE::FieldModel<TBuffer, domain::Balance>& model)
-    {
-        size_t model_begin = model.get_begin();
-        model.currency.get(Currency);
-        model.amount.get(Amount);
-        model.get_end(model_begin);
-    }
-
-    ...
-};
-
-struct Account
-{
-    ...
-
-    // FastBinaryEncoding serialization
-
-    template <class TBuffer>
-    void Serialize(FBE::FieldModel<TBuffer, domain::Account>& model)
-    {
-        size_t model_begin = model.set_begin();
-        model.id.set(Id);
-        model.name.set(Name);
-        Wallet.Serialize(model.wallet);
-        auto order_model = model.orders.resize(Orders.size());
-        for (auto& order : Orders)
-        {
-            order.Serialize(order_model);
-            order_model.fbe_shift(order_model.fbe_size());
-        }
-        model.set_end(model_begin);
-    }
-
-    template <class TBuffer>
-    void Deserialize(const FBE::FieldModel<TBuffer, domain::Account>& model)
-    {
-        size_t model_begin = model.get_begin();
-        model.id.get(Id);
-        model.name.get(Name);
-        Wallet.Deserialize(model.wallet);
-        Orders.clear();
-        for (size_t i = 0; i < model.orders.size(); ++i)
-        {
-            Order order;
-            order.Deserialize(model.orders[i]);
-            Orders.emplace_back(order);
-        }
-        model.get_end(model_begin);
-    }
-
-    ...
-};
-
-} // namespace MyDomain
-```
-
-## FastBinaryEncoding example
-Here comes the usage example of FastBinaryEncoding serialize/deserialize functionality:
-
-```C++
-#include "../domain/domain.h"
-
-#include <iostream>
-
-int main(int argc, char** argv)
-{
-    // Create a new account with some orders
-    MyDomain::Account account(1, "Test", "USD", 1000);
-    account.Orders.emplace_back(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
-    account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
-    account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
-
-    // Serialize the account to the FBE stream
-    FBE::AccountModel<FBE::WriteBuffer> writer;
-    size_t model_begin = writer.create_begin();
-    account.Serialize(writer.model);
-    size_t serialized = writer.create_end(model_begin);
-    assert(writer.verify() && "Model is broken!");
-
-    // Show the serialized FBE size
-    std::cout << "FBE size: " << serialized << std::endl;
-
-    // Deserialize the account from the FBE stream
-    MyDomain::Account deserialized;
-    FBE::AccountModel<FBE::ReadBuffer> reader;
-    reader.attach(writer.buffer());
-    assert(reader.verify() && "Model is broken!");
-    deserialized.Deserialize(reader.model);
-
-    // Show account content
-    std::cout << std::endl;
-    std::cout << "Account.Id = " << deserialized.Id << std::endl;
-    std::cout << "Account.Name = " << deserialized.Name << std::endl;
-    std::cout << "Account.Wallet.Currency = " << deserialized.Wallet.Currency << std::endl;
-    std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
-    for (auto& order : deserialized.Orders)
-    {
-        std::cout << "Account.Order => Id: " << order.Id
-            << ", Symbol: " << order.Symbol
-            << ", Side: " << (int)order.Side
-            << ", Type: " << (int)order.Type
-            << ", Price: " << order.Price
-            << ", Volume: " << order.Volume
-            << std::endl;
-    }
-
-    return 0;
-}
-```
-
-Output of the example is the following:
-```
-FBE size: 234
-
-Account.Id = 1
-Account.Name = Test
-Account.Wallet.Currency = USD
-Account.Wallet.Amount = 1000
-Account.Order => Id: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
-Account.Order => Id: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
-Account.Order => Id: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
-```
-
-## FastBinaryEncoding performance
-FastBinaryEncoding serialization performance of the provided domain model is the
-following:
-```
-===============================================================================
-CppBenchmark report. Version 1.0.0.0
-===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
-CPU logical cores: 8
-CPU physical cores: 4
-CPU clock speed: 3.998 GHz
-CPU Hyper-Threading: enabled
-RAM total: 31.962 GiB
-RAM free: 18.341 GiB
-===============================================================================
-OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
-OS bits: 64-bit
-Process bits: 64-bit
-Process configuaraion: release
-Local timestamp: Wed May  9 02:34:50 2018
-UTC timestamp: Tue May  8 23:34:50 2018
-===============================================================================
-Benchmark: FastBinaryEncoding-Serialize
-Attempts: 5
-Iterations: 1000000
--------------------------------------------------------------------------------
-Phase: FlatBuffers-Serialize
-Average time: 115 ns / iteration
-Minimal time: 115 ns / iteration
-Maximal time: 117 ns / iteration
-Total time: 115.765 ms
-Total iterations: 1000000
-Total bytes: 223.163 MiB
-Iterations throughput: 8638152 / second
-Bytes throughput: 1.903 GiB / second
-Custom values:
-        Size: 234
-===============================================================================
-```
-
-FastBinaryEncoding deserialization performance of the provided domain model is the
-following:
-```
-===============================================================================
-CppBenchmark report. Version 1.0.0.0
-===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
-CPU logical cores: 8
-CPU physical cores: 4
-CPU clock speed: 3.998 GHz
-CPU Hyper-Threading: enabled
-RAM total: 31.962 GiB
-RAM free: 18.339 GiB
-===============================================================================
-OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
-OS bits: 64-bit
-Process bits: 64-bit
-Process configuaraion: release
-Local timestamp: Wed May  9 02:35:06 2018
-UTC timestamp: Tue May  8 23:35:06 2018
-===============================================================================
-Benchmark: FBE-Deserialize
-Attempts: 5
-Iterations: 1000000
--------------------------------------------------------------------------------
-Phase: FBE-Deserialize
-Average time: 131 ns / iteration
-Minimal time: 131 ns / iteration
-Maximal time: 133 ns / iteration
-Total time: 131.797 ms
-Total iterations: 1000000
-Total bytes: 223.163 MiB
-Iterations throughput: 7587422 / second
-Bytes throughput: 1.669 GiB / second
-Custom values:
-        Size: 234
 ===============================================================================
 ```
 
