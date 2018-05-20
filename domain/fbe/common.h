@@ -917,7 +917,8 @@ public:
         if (fbe_begin == 0)
             return;
 
-        value.set(opt.value());
+        if (opt.has_value())
+            value.set(opt.value());
 
         set_end(fbe_begin);
     }
