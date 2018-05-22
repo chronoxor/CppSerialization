@@ -169,7 +169,9 @@ public:
     // Attach the given buffer with a given offset to the end of the current buffer
     void attach(const void* data, size_t size, size_t offset = 0)
     {
-        assert((offset < size) && "Invalid offset!");
+        assert((offset <= size) && "Invalid offset!");
+        if (offset > size)
+            throw std::invalid_argument("Invalid offset!");
 
         // Copy the given buffer starting from the given offset
         if (size > offset)
@@ -180,7 +182,9 @@ public:
     // Attach the given vector with a given offset to the end of the current buffer
     void attach(const std::vector<uint8_t>& buffer, size_t offset = 0)
     {
-        assert((offset < buffer.size()) && "Invalid offset!");
+        assert((offset <= buffer.size()) && "Invalid offset!");
+        if (offset <= buffer.size())
+            throw std::invalid_argument("Invalid offset!");
 
         // Reset the current buffer
         reset();
@@ -194,6 +198,10 @@ public:
     // Allocate memory in the current write buffer and return offset to the allocated memory block
     size_t allocate(size_t size)
     {
+        assert((size > 0) && "Invalid allocate size!");
+        if (size <= 0)
+            throw std::invalid_argument("Invalid allocate size!");
+
         size_t offset = _buffer.size();
         _buffer.resize(offset + size);
         return offset;
@@ -203,6 +211,8 @@ public:
     void remove(size_t offset, size_t size)
     {
         assert(((offset + size) <= _buffer.size()) && "Invalid offset & size!");
+        if ((offset + size) > _buffer.size())
+            throw std::invalid_argument("Invalid offset & size!");
 
         _buffer.erase(_buffer.begin() + offset, _buffer.begin() + offset + size);
         if (_offset >= (offset + size))
@@ -263,8 +273,14 @@ public:
     void attach(const void* data, size_t size, size_t offset = 0)
     {
         assert((data != nullptr) && "Invalid buffer!");
+        if (data == nullptr)
+            throw std::invalid_argument("Invalid buffer!");
         assert((size > 0) && "Invalid size!");
-        assert((offset < size) && "Invalid offset!");
+        if (size == 0)
+            throw std::invalid_argument("Invalid size!");
+        assert((offset <= size) && "Invalid offset!");
+        if (offset > size)
+            throw std::invalid_argument("Invalid offset!");
 
         _data = (const uint8_t*)data;
         _size = size;
@@ -275,8 +291,14 @@ public:
     void attach(const std::vector<uint8_t>& buffer, size_t offset = 0)
     {
         assert((buffer.data() != nullptr) && "Invalid buffer!");
+        if (buffer.data() == nullptr)
+            throw std::invalid_argument("Invalid buffer!");
         assert((buffer.size() > 0) && "Invalid size!");
-        assert((offset < buffer.size()) && "Invalid offset!");
+        if (buffer.size() == 0)
+            throw std::invalid_argument("Invalid size!");
+        assert((offset <= buffer.size()) && "Invalid offset!");
+        if (offset > buffer.size())
+            throw std::invalid_argument("Invalid offset!");
 
         _data = buffer.data();
         _size = buffer.size();
@@ -396,11 +418,11 @@ public:
     bool verify() const noexcept { return true; }
 
     // Get the field value
-    void get(T& value, T default_value = (T)0) const noexcept
+    void get(T& value, T defaults = (T)0) const noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
         {
-            value = default_value;
+            value = defaults;
             return;
         }
 
@@ -705,9 +727,9 @@ public:
     }
 
     // Get the string value
-    void get(std::string& value, const std::string& default_value = "") const noexcept
+    void get(std::string& value, const std::string& defaults = "") const noexcept
     {
-        value = default_value;
+        value = defaults;
 
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
@@ -868,9 +890,9 @@ public:
     }
 
     // Get the optional value
-    void get(stdoptional<T>& opt, const stdoptional<T>& default_value = stdnullopt) const noexcept
+    void get(stdoptional<T>& opt, const stdoptional<T>& defaults = stdnullopt) const noexcept
     {
-        opt = default_value;
+        opt = defaults;
 
         size_t fbe_begin = get_begin();
         if (fbe_begin == 0)
