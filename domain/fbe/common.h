@@ -972,7 +972,7 @@ public:
     // Unshift the current field offset
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
-    // Array value index operators
+    // Array value index operator
     FieldModel<TBuffer, T> operator[](size_t index) const noexcept
     {
         assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
@@ -1046,9 +1046,11 @@ public:
         values.reserve(N);
 
         auto fbe_model = (*this)[0];
-        for (size_t i = 0; i < N; ++i)
+        for (size_t i = N; i-- > 0;)
         {
-            fbe_model.get(values[i]);
+            T value;
+            fbe_model.get(value);
+            values.emplace_back(value);
             fbe_model.fbe_shift(fbe_model.fbe_size());
         }
     }
@@ -1141,7 +1143,7 @@ public:
     // Unshift the current field offset
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
-    // Vector value index operators
+    // Vector value index operator
     FieldModel<TBuffer, T> operator[](size_t index) const noexcept
     {
         assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
@@ -1373,7 +1375,7 @@ public:
     // Unshift the current field offset
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
-    // Map value index operators
+    // Map value index operator
     std::pair<FieldModel<TBuffer, TKey>, FieldModel<TBuffer, TValue>> operator[](size_t index) const noexcept
     {
         assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");

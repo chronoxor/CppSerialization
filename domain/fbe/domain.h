@@ -32,6 +32,7 @@ inline std::ostream& operator<<(std::ostream& stream, OrderSide e)
 
 namespace FBE {
 
+// Fast Binary Encoding ::domain::OrderSide field model class
 template <class TBuffer>
 class FieldModel<TBuffer, ::domain::OrderSide> : public FieldModelBase<TBuffer, ::domain::OrderSide, uint8_t>
 {
@@ -62,6 +63,7 @@ inline std::ostream& operator<<(std::ostream& stream, OrderType e)
 
 namespace FBE {
 
+// Fast Binary Encoding ::domain::OrderType field model class
 template <class TBuffer>
 class FieldModel<TBuffer, ::domain::OrderType> : public FieldModelBase<TBuffer, ::domain::OrderType, uint8_t>
 {
@@ -162,6 +164,7 @@ inline std::ostream& operator<<(std::ostream& stream, const Order& s)
 
 namespace FBE {
 
+// Fast Binary Encoding ::domain::Order field model class
 template <class TBuffer>
 class FieldModel<TBuffer, ::domain::Order>
 {
@@ -432,6 +435,7 @@ public:
 namespace FBE {
 namespace domain {
 
+// Fast Binary Encoding Order model class
 template <class TBuffer>
 class OrderModel : public FBE::Model<TBuffer>
 {
@@ -583,6 +587,7 @@ inline std::ostream& operator<<(std::ostream& stream, const Balance& s)
 
 namespace FBE {
 
+// Fast Binary Encoding ::domain::Balance field model class
 template <class TBuffer>
 class FieldModel<TBuffer, ::domain::Balance>
 {
@@ -791,6 +796,7 @@ public:
 namespace FBE {
 namespace domain {
 
+// Fast Binary Encoding Balance model class
 template <class TBuffer>
 class BalanceModel : public FBE::Model<TBuffer>
 {
@@ -961,6 +967,7 @@ inline std::ostream& operator<<(std::ostream& stream, const Account& s)
 
 namespace FBE {
 
+// Fast Binary Encoding ::domain::Account field model class
 template <class TBuffer>
 class FieldModel<TBuffer, ::domain::Account>
 {
@@ -1197,6 +1204,7 @@ public:
 namespace FBE {
 namespace domain {
 
+// Fast Binary Encoding Account model class
 template <class TBuffer>
 class AccountModel : public FBE::Model<TBuffer>
 {
@@ -1280,6 +1288,7 @@ public:
 namespace FBE {
 namespace domain {
 
+// Fast Binary Encoding domain sender class
 template <class TBuffer>
 class Sender : public virtual FBE::Sender<TBuffer>
 
@@ -1373,6 +1382,7 @@ public:
 namespace FBE {
 namespace domain {
 
+// Fast Binary Encoding domain receiver class
 template <class TBuffer>
 class Receiver : public virtual FBE::Receiver<TBuffer>
 
