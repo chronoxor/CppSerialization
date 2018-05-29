@@ -1306,15 +1306,6 @@ public:
     Sender& operator=(const Sender&) = default;
     Sender& operator=(Sender&&) noexcept = default;
 
-    // Attach the sender buffer
-    void attach(const std::shared_ptr<TBuffer>& buffer) override
-    {
-        FBE::Sender<TBuffer>::attach(buffer);
-        OrderModel.attach(this->_buffer);
-        BalanceModel.attach(this->_buffer);
-        AccountModel.attach(this->_buffer);
-    }
-
     size_t send(const ::domain::Order& value)
     {
         // Serialize the value into the FBE stream
@@ -1395,12 +1386,6 @@ public:
 
     Receiver& operator=(const Receiver&) = default;
     Receiver& operator=(Receiver&&) noexcept = default;
-
-    // Attach the receiver buffer
-    void attach(const std::shared_ptr<TBuffer>& buffer) override
-    {
-        FBE::Receiver<TBuffer>::attach(buffer);
-    }
 
 protected:
     // Receive handlers
