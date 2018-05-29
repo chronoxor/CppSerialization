@@ -351,7 +351,7 @@ class Model
 {
 public:
     Model() : Model(nullptr) {}
-    Model(const std::shared_ptr<TBuffer>& buffer) { attach((buffer) ? buffer : std::make_shared<TBuffer>()); }
+    Model(const std::shared_ptr<TBuffer>& buffer) { _buffer = buffer ? buffer : std::make_shared<TBuffer>(); }
     Model(const Model&) = default;
     Model(Model&&) noexcept = default;
     ~Model() = default;
@@ -368,20 +368,6 @@ public:
     void attach(const std::vector<uint8_t>& buffer, size_t offset = 0) { _buffer->attach(buffer, offset); }
     void attach(const ReadBuffer& buffer, size_t offset = 0) { _buffer->attach(buffer.data(), buffer.size(), offset); }
     void attach(const WriteBuffer& buffer, size_t offset = 0) { _buffer->attach(buffer.data(), buffer.size(), offset); }
-    void attach(const std::shared_ptr<TBuffer>& buffer)
-    {
-        assert(buffer && "Attached buffer should be valid!");
-        if (!buffer)
-            throw std::invalid_argument("Attached buffer should be valid!");
-
-        _buffer = buffer;
-    }
-    void attach(const std::shared_ptr<TBuffer>& buffer, size_t offset)
-    {
-        attach(buffer);
-        _buffer->unshift(_buffer->offset());
-        _buffer->shift(offset);
-    }
 
     // Model buffer operations
     size_t allocate(size_t size) { return _buffer->allocate(size); }
@@ -1555,7 +1541,8 @@ template <class TBuffer>
 class Sender
 {
 public:
-    Sender() : _logging(false) { _buffer = std::make_shared<TBuffer>(); }
+    Sender() : Sender(nullptr) {}
+    Sender(const std::shared_ptr<TBuffer>& buffer) : _logging(false) { _buffer = buffer ? buffer : std::make_shared<TBuffer>(); }
     Sender(const Sender&) = default;
     Sender(Sender&&) noexcept = default;
     virtual ~Sender() = default;
@@ -1569,22 +1556,6 @@ public:
 
     // Enable/Disable logging
     void logging(bool enable) noexcept { _logging = enable; }
-
-    // Attach the sender buffer
-    virtual void attach(const std::shared_ptr<TBuffer>& buffer)
-    {
-        assert(buffer && "Attached buffer should be valid!");
-        if (!buffer)
-            throw std::invalid_argument("Attached buffer should be valid!");
-
-        _buffer = buffer;
-    }
-    void attach(const std::shared_ptr<TBuffer>& buffer, size_t offset)
-    {
-        attach(buffer);
-        _buffer->unshift(_buffer->offset());
-        _buffer->shift(offset);
-    }
 
     // Send serialized buffer. Direct call of the method requires knowledge about internals of FBE models serialization. Use it with care!
     size_t send_serialized(size_t serialized)
@@ -1616,7 +1587,8 @@ template <class TBuffer>
 class Receiver
 {
 public:
-    Receiver() : _logging(false) { _buffer = std::make_shared<TBuffer>(); }
+    Receiver() : Receiver(nullptr) {}
+    Receiver(const std::shared_ptr<TBuffer>& buffer) : _logging(false) { _buffer = buffer ? buffer : std::make_shared<TBuffer>(); }
     Receiver(const Receiver&) = default;
     Receiver(Receiver&&) noexcept = default;
     virtual ~Receiver() = default;
@@ -1630,22 +1602,6 @@ public:
 
     // Enable/Disable logging
     void logging(bool enable) noexcept { _logging = enable; }
-
-    // Attach the receiver buffer
-    virtual void attach(const std::shared_ptr<TBuffer>& buffer)
-    {
-        assert(buffer && "Attached buffer should be valid!");
-        if (!buffer)
-            throw std::invalid_argument("Attached buffer should be valid!");
-
-        _buffer = buffer;
-    }
-    void attach(const std::shared_ptr<TBuffer>& buffer, size_t offset)
-    {
-        attach(buffer);
-        _buffer->unshift(_buffer->offset());
-        _buffer->shift(offset);
-    }
 
     // Receive data
     void receive(const void* data, size_t size)
