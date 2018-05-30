@@ -1403,9 +1403,8 @@ protected:
                 // Deserialize the value from the FBE stream
                 OrderModel.attach(data, size);
                 assert(OrderModel.verify() && "domain::Order validation failed!");
-                MAYBE_UNUSED size_t deserialized = OrderModel.deserialize(OrderValue);
+                [[maybe_unused]] size_t deserialized = OrderModel.deserialize(OrderValue);
                 assert((deserialized > 0) && "domain::Order deserialization failed!");
-                (void)deserialized;
 
                 // Log the value
                 if (this->_logging)
@@ -1423,9 +1422,8 @@ protected:
                 // Deserialize the value from the FBE stream
                 BalanceModel.attach(data, size);
                 assert(BalanceModel.verify() && "domain::Balance validation failed!");
-                MAYBE_UNUSED size_t deserialized = BalanceModel.deserialize(BalanceValue);
+                [[maybe_unused]] size_t deserialized = BalanceModel.deserialize(BalanceValue);
                 assert((deserialized > 0) && "domain::Balance deserialization failed!");
-                (void)deserialized;
 
                 // Log the value
                 if (this->_logging)
@@ -1443,9 +1441,8 @@ protected:
                 // Deserialize the value from the FBE stream
                 AccountModel.attach(data, size);
                 assert(AccountModel.verify() && "domain::Account validation failed!");
-                MAYBE_UNUSED size_t deserialized = AccountModel.deserialize(AccountValue);
+                [[maybe_unused]] size_t deserialized = AccountModel.deserialize(AccountValue);
                 assert((deserialized > 0) && "domain::Account deserialization failed!");
-                (void)deserialized;
 
                 // Log the value
                 if (this->_logging)
