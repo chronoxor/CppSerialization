@@ -172,9 +172,9 @@ struct hash<domain::Order>
 
     result_type operator () (const argument_type& value) const
     {
-        result_type hash = 17;
-        hash = hash * 31 + std::hash<decltype(value.id)>()(value.id);
-        return hash;
+        result_type result = 17;
+        result = result * 31 + std::hash<decltype(value.id)>()(value.id);
+        return result;
     }
 };
 
@@ -613,9 +613,9 @@ struct hash<domain::Balance>
 
     result_type operator () (const argument_type& value) const
     {
-        result_type hash = 17;
-        hash = hash * 31 + std::hash<decltype(value.currency)>()(value.currency);
-        return hash;
+        result_type result = 17;
+        result = result * 31 + std::hash<decltype(value.currency)>()(value.currency);
+        return result;
     }
 };
 
@@ -1011,9 +1011,9 @@ struct hash<domain::Account>
 
     result_type operator () (const argument_type& value) const
     {
-        result_type hash = 17;
-        hash = hash * 31 + std::hash<decltype(value.id)>()(value.id);
-        return hash;
+        result_type result = 17;
+        result = result * 31 + std::hash<decltype(value.id)>()(value.id);
+        return result;
     }
 };
 
