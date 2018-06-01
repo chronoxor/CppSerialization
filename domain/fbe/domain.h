@@ -21,10 +21,10 @@ enum class OrderSide : uint8_t
     sell,
 };
 
-inline std::ostream& operator<<(std::ostream& stream, OrderSide e)
+inline std::ostream& operator<<(std::ostream& stream, OrderSide value)
 {
-    if (e == OrderSide::buy) return stream << "buy";
-    if (e == OrderSide::sell) return stream << "sell";
+    if (value == OrderSide::buy) return stream << "buy";
+    if (value == OrderSide::sell) return stream << "sell";
     return stream << "<unknown>";
 }
 
@@ -51,11 +51,11 @@ enum class OrderType : uint8_t
     stop,
 };
 
-inline std::ostream& operator<<(std::ostream& stream, OrderType e)
+inline std::ostream& operator<<(std::ostream& stream, OrderType value)
 {
-    if (e == OrderType::market) return stream << "market";
-    if (e == OrderType::limit) return stream << "limit";
-    if (e == OrderType::stop) return stream << "stop";
+    if (value == OrderType::market) return stream << "market";
+    if (value == OrderType::limit) return stream << "limit";
+    if (value == OrderType::stop) return stream << "stop";
     return stream << "<unknown>";
 }
 
@@ -102,24 +102,24 @@ struct Order
         , volume(arg_volume)
     {}
 
-    bool operator==(const Order& s) const noexcept
+    bool operator==(const Order& other) const noexcept
     {
         return (
-            (id == s.id)
+            (id == other.id)
             );
     }
-    bool operator!=(const Order& s) const noexcept { return !operator==(s); }
-    bool operator<(const Order& s) const noexcept
+    bool operator!=(const Order& other) const noexcept { return !operator==(other); }
+    bool operator<(const Order& other) const noexcept
     {
-        if (id < s.id)
+        if (id < other.id)
             return true;
-        if (s.id < id)
+        if (other.id < id)
             return false;
         return false;
     }
-    bool operator<=(const Order& s) const noexcept { return operator<(s) || operator==(s); }
-    bool operator>(const Order& s) const noexcept { return !operator<=(s); }
-    bool operator>=(const Order& s) const noexcept { return !operator<(s); }
+    bool operator<=(const Order& other) const noexcept { return operator<(other) || operator==(other); }
+    bool operator>(const Order& other) const noexcept { return !operator<=(other); }
+    bool operator>=(const Order& other) const noexcept { return !operator<(other); }
 
     std::string string() const
     {
@@ -128,39 +128,57 @@ struct Order
         return ss.str();
     }
 
-    friend std::ostream& operator<<(std::ostream& stream, const Order& s);
+    friend std::ostream& operator<<(std::ostream& stream, const Order& other);
 
-    void swap(Order& s) noexcept
+    void swap(Order& other) noexcept
     {
         using std::swap;
-        swap(id, s.id);
-        swap(symbol, s.symbol);
-        swap(side, s.side);
-        swap(type, s.type);
-        swap(price, s.price);
-        swap(volume, s.volume);
+        swap(id, other.id);
+        swap(symbol, other.symbol);
+        swap(side, other.side);
+        swap(type, other.type);
+        swap(price, other.price);
+        swap(volume, other.volume);
     }
 
-    friend void swap(Order& s1, Order& s2) noexcept
+    friend void swap(Order& value1, Order& value2) noexcept
     {
-        s1.swap(s2);
+        value1.swap(value2);
     }
 };
 
-inline std::ostream& operator<<(std::ostream& stream, const Order& s)
+inline std::ostream& operator<<(std::ostream& stream, const Order& value)
 {
     stream << "Order(";
-    stream << "id="; stream << s.id;
-    stream << ",symbol="; stream << "\"" << s.symbol << "\"";
-    stream << ",side="; stream << s.side;
-    stream << ",type="; stream << s.type;
-    stream << ",price="; stream << s.price;
-    stream << ",volume="; stream << s.volume;
+    stream << "id="; stream << value.id;
+    stream << ",symbol="; stream << "\"" << value.symbol << "\"";
+    stream << ",side="; stream << value.side;
+    stream << ",type="; stream << value.type;
+    stream << ",price="; stream << value.price;
+    stream << ",volume="; stream << value.volume;
     stream << ")";
     return stream;
 }
 
 } // namespace domain
+
+namespace std {
+
+template<>
+struct hash<domain::Order>
+{
+    typedef domain::Order argument_type;
+    typedef size_t result_type;
+
+    result_type operator () (const argument_type& value) const
+    {
+        result_type hash = 17;
+        hash = hash * 31 + std::hash<decltype(value.id)>()(value.id);
+        return hash;
+    }
+};
+
+} // namespace std
 
 namespace FBE {
 
@@ -533,24 +551,24 @@ struct Balance
         , amount(arg_amount)
     {}
 
-    bool operator==(const Balance& s) const noexcept
+    bool operator==(const Balance& other) const noexcept
     {
         return (
-            (currency == s.currency)
+            (currency == other.currency)
             );
     }
-    bool operator!=(const Balance& s) const noexcept { return !operator==(s); }
-    bool operator<(const Balance& s) const noexcept
+    bool operator!=(const Balance& other) const noexcept { return !operator==(other); }
+    bool operator<(const Balance& other) const noexcept
     {
-        if (currency < s.currency)
+        if (currency < other.currency)
             return true;
-        if (s.currency < currency)
+        if (other.currency < currency)
             return false;
         return false;
     }
-    bool operator<=(const Balance& s) const noexcept { return operator<(s) || operator==(s); }
-    bool operator>(const Balance& s) const noexcept { return !operator<=(s); }
-    bool operator>=(const Balance& s) const noexcept { return !operator<(s); }
+    bool operator<=(const Balance& other) const noexcept { return operator<(other) || operator==(other); }
+    bool operator>(const Balance& other) const noexcept { return !operator<=(other); }
+    bool operator>=(const Balance& other) const noexcept { return !operator<(other); }
 
     std::string string() const
     {
@@ -559,31 +577,49 @@ struct Balance
         return ss.str();
     }
 
-    friend std::ostream& operator<<(std::ostream& stream, const Balance& s);
+    friend std::ostream& operator<<(std::ostream& stream, const Balance& other);
 
-    void swap(Balance& s) noexcept
+    void swap(Balance& other) noexcept
     {
         using std::swap;
-        swap(currency, s.currency);
-        swap(amount, s.amount);
+        swap(currency, other.currency);
+        swap(amount, other.amount);
     }
 
-    friend void swap(Balance& s1, Balance& s2) noexcept
+    friend void swap(Balance& value1, Balance& value2) noexcept
     {
-        s1.swap(s2);
+        value1.swap(value2);
     }
 };
 
-inline std::ostream& operator<<(std::ostream& stream, const Balance& s)
+inline std::ostream& operator<<(std::ostream& stream, const Balance& value)
 {
     stream << "Balance(";
-    stream << "currency="; stream << "\"" << s.currency << "\"";
-    stream << ",amount="; stream << s.amount;
+    stream << "currency="; stream << "\"" << value.currency << "\"";
+    stream << ",amount="; stream << value.amount;
     stream << ")";
     return stream;
 }
 
 } // namespace domain
+
+namespace std {
+
+template<>
+struct hash<domain::Balance>
+{
+    typedef domain::Balance argument_type;
+    typedef size_t result_type;
+
+    result_type operator () (const argument_type& value) const
+    {
+        result_type hash = 17;
+        hash = hash * 31 + std::hash<decltype(value.currency)>()(value.currency);
+        return hash;
+    }
+};
+
+} // namespace std
 
 namespace FBE {
 
@@ -900,24 +936,24 @@ struct Account
         , orders(arg_orders)
     {}
 
-    bool operator==(const Account& s) const noexcept
+    bool operator==(const Account& other) const noexcept
     {
         return (
-            (id == s.id)
+            (id == other.id)
             );
     }
-    bool operator!=(const Account& s) const noexcept { return !operator==(s); }
-    bool operator<(const Account& s) const noexcept
+    bool operator!=(const Account& other) const noexcept { return !operator==(other); }
+    bool operator<(const Account& other) const noexcept
     {
-        if (id < s.id)
+        if (id < other.id)
             return true;
-        if (s.id < id)
+        if (other.id < id)
             return false;
         return false;
     }
-    bool operator<=(const Account& s) const noexcept { return operator<(s) || operator==(s); }
-    bool operator>(const Account& s) const noexcept { return !operator<=(s); }
-    bool operator>=(const Account& s) const noexcept { return !operator<(s); }
+    bool operator<=(const Account& other) const noexcept { return operator<(other) || operator==(other); }
+    bool operator>(const Account& other) const noexcept { return !operator<=(other); }
+    bool operator>=(const Account& other) const noexcept { return !operator<(other); }
 
     std::string string() const
     {
@@ -926,33 +962,33 @@ struct Account
         return ss.str();
     }
 
-    friend std::ostream& operator<<(std::ostream& stream, const Account& s);
+    friend std::ostream& operator<<(std::ostream& stream, const Account& other);
 
-    void swap(Account& s) noexcept
+    void swap(Account& other) noexcept
     {
         using std::swap;
-        swap(id, s.id);
-        swap(name, s.name);
-        swap(wallet, s.wallet);
-        swap(orders, s.orders);
+        swap(id, other.id);
+        swap(name, other.name);
+        swap(wallet, other.wallet);
+        swap(orders, other.orders);
     }
 
-    friend void swap(Account& s1, Account& s2) noexcept
+    friend void swap(Account& value1, Account& value2) noexcept
     {
-        s1.swap(s2);
+        value1.swap(value2);
     }
 };
 
-inline std::ostream& operator<<(std::ostream& stream, const Account& s)
+inline std::ostream& operator<<(std::ostream& stream, const Account& value)
 {
     stream << "Account(";
-    stream << "id="; stream << s.id;
-    stream << ",name="; stream << "\"" << s.name << "\"";
-    stream << ",wallet="; stream << s.wallet;
+    stream << "id="; stream << value.id;
+    stream << ",name="; stream << "\"" << value.name << "\"";
+    stream << ",wallet="; stream << value.wallet;
     {
         bool first = true;
-        stream << ",orders=[" << s.orders.size() << "][";
-        for (auto const& it : s.orders)
+        stream << ",orders=[" << value.orders.size() << "][";
+        for (auto const& it : value.orders)
         {
             stream << std::string(first ? "" : ",") << it;
             first = false;
@@ -964,6 +1000,24 @@ inline std::ostream& operator<<(std::ostream& stream, const Account& s)
 }
 
 } // namespace domain
+
+namespace std {
+
+template<>
+struct hash<domain::Account>
+{
+    typedef domain::Account argument_type;
+    typedef size_t result_type;
+
+    result_type operator () (const argument_type& value) const
+    {
+        result_type hash = 17;
+        hash = hash * 31 + std::hash<decltype(value.id)>()(value.id);
+        return hash;
+    }
+};
+
+} // namespace std
 
 namespace FBE {
 
