@@ -162,6 +162,19 @@ inline std::ostream& operator<<(std::ostream& stream, const Order& s)
 
 } // namespace domain
 
+namespace std {
+
+template<>
+struct hash<domain::Order>
+{
+   typedef domain::Order argument_type;
+   typedef size_t result_type;
+
+   result_type operator () (const argument_type& x) const { return std::hash<argument_type>()(x); }
+};
+
+}
+
 namespace FBE {
 
 // Fast Binary Encoding ::domain::Order field model class
@@ -585,6 +598,19 @@ inline std::ostream& operator<<(std::ostream& stream, const Balance& s)
 
 } // namespace domain
 
+namespace std {
+
+template<>
+struct hash<domain::Balance>
+{
+   typedef domain::Balance argument_type;
+   typedef size_t result_type;
+
+   result_type operator () (const argument_type& x) const { return std::hash<argument_type>()(x); }
+};
+
+}
+
 namespace FBE {
 
 // Fast Binary Encoding ::domain::Balance field model class
@@ -964,6 +990,19 @@ inline std::ostream& operator<<(std::ostream& stream, const Account& s)
 }
 
 } // namespace domain
+
+namespace std {
+
+template<>
+struct hash<domain::Account>
+{
+   typedef domain::Account argument_type;
+   typedef size_t result_type;
+
+   result_type operator () (const argument_type& x) const { return std::hash<argument_type>()(x); }
+};
+
+}
 
 namespace FBE {
 
