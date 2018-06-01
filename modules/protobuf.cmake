@@ -20,7 +20,6 @@ if(NOT TARGET protobuf)
   set_target_properties(libprotobuf-lite PROPERTIES FOLDER modules/protobuf)
   set_target_properties(libprotoc PROPERTIES FOLDER modules/protobuf)
   set_target_properties(protoc PROPERTIES FOLDER modules/protobuf)
-  set_target_properties(js_embed PROPERTIES FOLDER modules/protobuf)
 
   # Module definition
   set(protobuf "${CMAKE_CURRENT_SOURCE_DIR}/protobuf/src" PARENT_SCOPE)
