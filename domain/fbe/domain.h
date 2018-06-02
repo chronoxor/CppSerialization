@@ -92,13 +92,13 @@ struct Order
         , price((double)0.0)
         , volume((double)0.0)
     {}
-    Order(int32_t id, const std::string& symbol, const ::domain::OrderSide& side, const ::domain::OrderType& type, double price, double volume)
-        : id(id)
-        , symbol(symbol)
-        , side(side)
-        , type(type)
-        , price(price)
-        , volume(volume)
+    Order(int32_t arg_id, const std::string& arg_symbol, const ::domain::OrderSide& arg_side, const ::domain::OrderType& arg_type, double arg_price, double arg_volume)
+        : id(arg_id)
+        , symbol(arg_symbol)
+        , side(arg_side)
+        , type(arg_type)
+        , price(arg_price)
+        , volume(arg_volume)
     {}
     Order(const Order& other) = default;
     Order(Order&& other) = default;
@@ -550,9 +550,9 @@ struct Balance
         : currency()
         , amount((double)0.0)
     {}
-    Balance(const std::string& currency, double amount)
-        : currency(currency)
-        , amount(amount)
+    Balance(const std::string& arg_currency, double arg_amount)
+        : currency(arg_currency)
+        , amount(arg_amount)
     {}
     Balance(const Balance& other) = default;
     Balance(Balance&& other) = default;
@@ -938,11 +938,11 @@ struct Account
         , wallet()
         , orders()
     {}
-    Account(int32_t id, const std::string& name, const ::domain::Balance& wallet, const std::vector<::domain::Order>& orders)
-        : id(id)
-        , name(name)
-        , wallet(wallet)
-        , orders(orders)
+    Account(int32_t arg_id, const std::string& arg_name, const ::domain::Balance& arg_wallet, const std::vector<::domain::Order>& arg_orders)
+        : id(arg_id)
+        , name(arg_name)
+        , wallet(arg_wallet)
+        , orders(arg_orders)
     {}
     Account(const Account& other) = default;
     Account(Account&& other) = default;
