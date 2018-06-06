@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common.h"
+#include "fbe.h"
 
 namespace domain {
 using namespace FBE;

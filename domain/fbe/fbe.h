@@ -177,7 +177,7 @@ public:
     void attach(const std::vector<uint8_t>& buffer, size_t offset = 0)
     {
         assert((offset <= buffer.size()) && "Invalid offset!");
-        if (offset <= buffer.size())
+        if (offset > buffer.size())
             throw std::invalid_argument("Invalid offset!");
 
         // Reset the current buffer
