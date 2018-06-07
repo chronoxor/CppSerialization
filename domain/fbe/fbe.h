@@ -930,6 +930,7 @@ private:
     size_t _offset;
 
 public:
+    // Base field model value
     FieldModel<TBuffer, T> value;
 };
 
@@ -938,12 +939,12 @@ template <class TBuffer, typename T, size_t N>
 class FieldModelArray
 {
 public:
-    FieldModelArray(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset), _fbe_model(buffer, offset) {}
+    FieldModelArray(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset), _model(buffer, offset) {}
 
     // Get the field offset
     size_t fbe_offset() const noexcept { return _offset; }
     // Get the field size
-    size_t fbe_size() const noexcept { return N * _fbe_model.fbe_size(); }
+    size_t fbe_size() const noexcept { return N * _model.fbe_size(); }
     // Get the field extra size
     size_t fbe_extra() const noexcept { return 0; }
 
@@ -952,7 +953,7 @@ public:
     // Unshift the current field offset
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
-    // Array value index operator
+    // Array index operator
     FieldModel<TBuffer, T> operator[](size_t index) const noexcept
     {
         assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
@@ -1082,7 +1083,7 @@ public:
 private:
     TBuffer& _buffer;
     size_t _offset;
-    FieldModel<TBuffer, T> _fbe_model;
+    FieldModel<TBuffer, T> _model;
 };
 
 // Fast Binary Encoding field model vector class
@@ -1123,7 +1124,7 @@ public:
     // Unshift the current field offset
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
-    // Vector value index operator
+    // Vector index operator
     FieldModel<TBuffer, T> operator[](size_t index) const noexcept
     {
         assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
@@ -1342,7 +1343,6 @@ public:
         {
             fbe_result += fbe_model_key.fbe_size() + fbe_model_key.fbe_extra();
             fbe_model_key.fbe_shift(fbe_model_key.fbe_size() + fbe_model_value.fbe_size());
-
             fbe_result += fbe_model_value.fbe_size() + fbe_model_value.fbe_extra();
             fbe_model_value.fbe_shift(fbe_model_key.fbe_size() + fbe_model_value.fbe_size());
         }
@@ -1354,7 +1354,7 @@ public:
     // Unshift the current field offset
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
-    // Map value index operator
+    // Map index operator
     std::pair<FieldModel<TBuffer, TKey>, FieldModel<TBuffer, TValue>> operator[](size_t index) const noexcept
     {
         assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
@@ -1436,7 +1436,6 @@ public:
             if (!fbe_model_key.verify())
                 return false;
             fbe_model_key.fbe_shift(fbe_model_key.fbe_size() + fbe_model_value.fbe_size());
-
             if (!fbe_model_value.verify())
                 return false;
             fbe_model_value.fbe_shift(fbe_model_key.fbe_size() + fbe_model_value.fbe_size());
@@ -1500,7 +1499,6 @@ public:
         {
             fbe_model.first.set(value.first);
             fbe_model.first.fbe_shift(fbe_model.first.fbe_size() + fbe_model.second.fbe_size());
-
             fbe_model.second.set(value.second);
             fbe_model.second.fbe_shift(fbe_model.first.fbe_size() + fbe_model.second.fbe_size());
         }
@@ -1517,7 +1515,6 @@ public:
         {
             fbe_model.first.set(value.first);
             fbe_model.first.fbe_shift(fbe_model.first.fbe_size() + fbe_model.second.fbe_size());
-
             fbe_model.second.set(value.second);
             fbe_model.second.fbe_shift(fbe_model.first.fbe_size() + fbe_model.second.fbe_size());
         }
@@ -1549,7 +1546,9 @@ public:
     // Enable/Disable logging
     void logging(bool enable) noexcept { _logging = enable; }
 
-    // Send serialized buffer. Direct call of the method requires knowledge about internals of FBE models serialization. Use it with care!
+    // Send serialized buffer.
+    // Direct call of the method requires knowledge about internals of FBE models serialization.
+    // Use it with care!
     size_t send_serialized(size_t serialized)
     {
         assert((serialized > 0) && "Invalid size of the serialized buffer!");
