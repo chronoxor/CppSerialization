@@ -470,17 +470,17 @@ UTC timestamp: Tue May  8 21:18:42 2018
 ===============================================================================
 Benchmark: Cap'n'Proto-Serialize
 Attempts: 5
-Iterations: 1000000
+Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: Cap'n'Proto-Serialize
-Average time: 678 ns / iteration
-Minimal time: 678 ns / iteration
-Maximal time: 704 ns / iteration
+Average time: 678 ns/op
+Minimal time: 678 ns/op
+Maximal time: 704 ns/op
 Total time: 678.918 ms
-Total iterations: 1000000
+Total operations: 1000000
 Total bytes: 198.373 MiB
-Iterations throughput: 1472930 / second
-Bytes throughput: 292.180 MiB / second
+Operations throughput: 1472930 ops/s
+Bytes throughput: 292.180 MiB/s
 Custom values:
         Size: 208
 ===============================================================================
@@ -509,17 +509,17 @@ UTC timestamp: Tue May  8 21:19:20 2018
 ===============================================================================
 Benchmark: Cap'n'Proto-Deserialize
 Attempts: 5
-Iterations: 1000000
+Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: Cap'n'Proto-Deserialize
-Average time: 480 ns / iteration
-Minimal time: 480 ns / iteration
-Maximal time: 519 ns / iteration
+Average time: 480 ns/op
+Minimal time: 480 ns/op
+Maximal time: 519 ns/op
 Total time: 480.625 ms
-Total iterations: 1000000
+Total operations: 1000000
 Total bytes: 198.373 MiB
-Iterations throughput: 2080620 / second
-Bytes throughput: 412.738 MiB / second
+Operations throughput: 2080620 ops/s
+Bytes throughput: 412.738 MiB/s
 Custom values:
         Size: 208
 ===============================================================================
@@ -803,17 +803,17 @@ UTC timestamp: Tue May  8 23:34:50 2018
 ===============================================================================
 Benchmark: FastBinaryEncoding-Serialize
 Attempts: 5
-Iterations: 1000000
+Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: FastBinaryEncoding-Serialize
-Average time: 116 ns / iteration
-Minimal time: 116 ns / iteration
-Maximal time: 118 ns / iteration
+Average time: 116 ns/op
+Minimal time: 116 ns/op
+Maximal time: 118 ns/op
 Total time: 116.975 ms
-Total iterations: 1000000
+Total operations: 1000000
 Total bytes: 223.163 MiB
-Iterations throughput: 8548766 / second
-Bytes throughput: 1.883 GiB / second
+Operations throughput: 8548766 ops/s
+Bytes throughput: 1.883 GiB/s
 Custom values:
         Size: 234
 ===============================================================================
@@ -842,17 +842,17 @@ UTC timestamp: Tue May  8 23:35:06 2018
 ===============================================================================
 Benchmark: FastBinaryEncoding-Deserialize
 Attempts: 5
-Iterations: 1000000
+Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: FastBinaryEncoding-Deserialize
-Average time: 119 ns / iteration
-Minimal time: 119 ns / iteration
-Maximal time: 129 ns / iteration
+Average time: 119 ns/op
+Minimal time: 119 ns/op
+Maximal time: 129 ns/op
 Total time: 119.236 ms
-Total iterations: 1000000
+Total operations: 1000000
 Total bytes: 223.163 MiB
-Iterations throughput: 8386715 / second
-Bytes throughput: 1.847 GiB / second
+Operations throughput: 8386715 ops/s
+Bytes throughput: 1.847 GiB/s
 Custom values:
         Size: 234
 ===============================================================================
@@ -1102,17 +1102,17 @@ UTC timestamp: Tue May  8 21:21:43 2018
 ===============================================================================
 Benchmark: FlatBuffers-Serialize
 Attempts: 5
-Iterations: 1000000
+Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: FlatBuffers-Serialize
-Average time: 1.024 mcs / iteration
-Minimal time: 1.024 mcs / iteration
-Maximal time: 1.094 mcs / iteration
+Average time: 1.024 mcs/op
+Minimal time: 1.024 mcs/op
+Maximal time: 1.094 mcs/op
 Total time: 1.024 s
-Total iterations: 1000000
+Total operations: 1000000
 Total bytes: 267.029 MiB
-Iterations throughput: 976463 / second
-Bytes throughput: 260.761 MiB / second
+Operations throughput: 976463 ops/s
+Bytes throughput: 260.761 MiB/s
 Custom values:
         Size: 280
 ===============================================================================
@@ -1141,17 +1141,17 @@ UTC timestamp: Tue May  8 21:21:58 2018
 ===============================================================================
 Benchmark: FlatBuffers-Deserialize
 Attempts: 5
-Iterations: 1000000
+Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: FlatBuffers-Deserialize
-Average time: 385 ns / iteration
-Minimal time: 385 ns / iteration
-Maximal time: 390 ns / iteration
+Average time: 385 ns/op
+Minimal time: 385 ns/op
+Maximal time: 390 ns/op
 Total time: 385.867 ms
-Total iterations: 1000000
+Total operations: 1000000
 Total bytes: 267.029 MiB
-Iterations throughput: 2591566 / second
-Bytes throughput: 692.023 MiB / second
+Operations throughput: 2591566 ops/s
+Bytes throughput: 692.023 MiB/s
 Custom values:
         Size: 280
 ===============================================================================
@@ -1415,17 +1415,17 @@ UTC timestamp: Tue May  8 21:23:37 2018
 ===============================================================================
 Benchmark: Protobuf-Serialize
 Attempts: 5
-Iterations: 1000000
+Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: Protobuf-Serialize
-Average time: 836 ns / iteration
-Minimal time: 836 ns / iteration
-Maximal time: 866 ns / iteration
+Average time: 836 ns/op
+Minimal time: 836 ns/op
+Maximal time: 866 ns/op
 Total time: 836.492 ms
-Total iterations: 1000000
+Total operations: 1000000
 Total bytes: 114.451 MiB
-Iterations throughput: 1195467 / second
-Bytes throughput: 136.829 MiB / second
+Operations throughput: 1195467 ops/s
+Bytes throughput: 136.829 MiB/s
 Custom values:
         Size: 120
 ===============================================================================
@@ -1454,17 +1454,17 @@ UTC timestamp: Tue May  8 21:24:13 2018
 ===============================================================================
 Benchmark: Protobuf-Deserialize
 Attempts: 5
-Iterations: 1000000
+Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: Protobuf-Deserialize
-Average time: 1.024 mcs / iteration
-Minimal time: 1.024 mcs / iteration
-Maximal time: 1.091 mcs / iteration
+Average time: 1.024 mcs/op
+Minimal time: 1.024 mcs/op
+Maximal time: 1.091 mcs/op
 Total time: 1.024 s
-Total iterations: 1000000
+Total operations: 1000000
 Total bytes: 114.451 MiB
-Iterations throughput: 976142 / second
-Bytes throughput: 111.727 MiB / second
+Operations throughput: 976142 ops/s
+Bytes throughput: 111.727 MiB/s
 Custom values:
         Size: 120
 ===============================================================================
@@ -1683,17 +1683,17 @@ UTC timestamp: Tue May  8 21:25:12 2018
 ===============================================================================
 Benchmark: JSON-Serialize
 Attempts: 5
-Iterations: 1000000
+Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: JSON-Serialize
-Average time: 845 ns / iteration
-Minimal time: 845 ns / iteration
-Maximal time: 871 ns / iteration
+Average time: 845 ns/op
+Minimal time: 845 ns/op
+Maximal time: 871 ns/op
 Total time: 845.313 ms
-Total iterations: 1000000
+Total operations: 1000000
 Total bytes: 283.247 MiB
-Iterations throughput: 1182993 / second
-Bytes throughput: 335.074 MiB / second
+Operations throughput: 1182993 ops/s
+Bytes throughput: 335.074 MiB/s
 Custom values:
         Size: 297
 ===============================================================================
@@ -1721,17 +1721,17 @@ UTC timestamp: Tue May  8 21:25:44 2018
 ===============================================================================
 Benchmark: JSON-Parse
 Attempts: 5
-Iterations: 1000000
+Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: JSON-Parse
-Average time: 2.560 mcs / iteration
-Minimal time: 2.560 mcs / iteration
-Maximal time: 2.600 mcs / iteration
+Average time: 2.560 mcs/op
+Minimal time: 2.560 mcs/op
+Maximal time: 2.600 mcs/op
 Total time: 2.560 s
-Total iterations: 1000000
+Total operations: 1000000
 Total bytes: 283.247 MiB
-Iterations throughput: 390564 / second
-Bytes throughput: 110.639 MiB / second
+Operations throughput: 390564 ops/s
+Bytes throughput: 110.639 MiB/s
 Custom values:
         Size: 297
 ===============================================================================
@@ -1759,17 +1759,17 @@ UTC timestamp: Tue May  8 21:26:05 2018
 ===============================================================================
 Benchmark: JSON-Deserialize
 Attempts: 5
-Iterations: 1000000
+Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: JSON-Deserialize
-Average time: 638 ns / iteration
-Minimal time: 638 ns / iteration
-Maximal time: 674 ns / iteration
+Average time: 638 ns/op
+Minimal time: 638 ns/op
+Maximal time: 674 ns/op
 Total time: 638.172 ms
-Total iterations: 1000000
+Total operations: 1000000
 Total bytes: 3.834 MiB
-Iterations throughput: 1566975 / second
-Bytes throughput: 5.1000 MiB / second
+Operations throughput: 1566975 ops/s
+Bytes throughput: 5.1000 MiB/s
 Custom values:
         Size: 297
 ===============================================================================

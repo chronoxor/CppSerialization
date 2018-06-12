@@ -6,7 +6,7 @@
 
 #include "../domain/domain.h"
 
-const uint64_t iterations = 1000000;
+const uint64_t operations = 1000000;
 
 class SerializationFixture
 {
@@ -23,7 +23,7 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(SerializationFixture, "FastBinaryEncoding-Serialize", iterations)
+BENCHMARK_FIXTURE(SerializationFixture, "FastBinaryEncoding-Serialize", operations)
 {
     // Serialize the account to the FBE stream
     writer.reset();

@@ -6,7 +6,7 @@
 
 #include "../domain/domain.h"
 
-const uint64_t iterations = 1000000;
+const uint64_t operations = 1000000;
 
 class DeserializationFixture
 {
@@ -35,7 +35,7 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(DeserializationFixture, "Protobuf-Deserialize", iterations)
+BENCHMARK_FIXTURE(DeserializationFixture, "Protobuf-Deserialize", operations)
 {
     context.metrics().AddBytes(buffer.size());
     context.metrics().SetCustom("Size", (unsigned)buffer.size());

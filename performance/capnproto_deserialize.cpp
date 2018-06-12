@@ -6,7 +6,7 @@
 
 #include "../domain/domain.h"
 
-const uint64_t iterations = 1000000;
+const uint64_t operations = 1000000;
 
 namespace local {
 
@@ -35,7 +35,7 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(DeserializationFixture, "Cap'n'Proto-Deserialize", iterations)
+BENCHMARK_FIXTURE(DeserializationFixture, "Cap'n'Proto-Deserialize", operations)
 {
     context.metrics().AddBytes(local::buffer.getArray().size());
     context.metrics().SetCustom("Size", (unsigned)local::buffer.getArray().size());

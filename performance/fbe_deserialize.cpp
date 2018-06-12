@@ -6,7 +6,7 @@
 
 #include "../domain/domain.h"
 
-const uint64_t iterations = 1000000;
+const uint64_t operations = 1000000;
 
 class DeserializationFixture
 {
@@ -33,7 +33,7 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(DeserializationFixture, "FastBinaryEncoding-Deserialize", iterations)
+BENCHMARK_FIXTURE(DeserializationFixture, "FastBinaryEncoding-Deserialize", operations)
 {
     context.metrics().AddBytes(reader.buffer().size());
     context.metrics().SetCustom("Size", (unsigned)reader.buffer().size());
