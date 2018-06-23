@@ -18,7 +18,7 @@
 #include <unordered_map>
 #include <vector>
 
-#if defined(__clang__) || defined(__CYGWIN__)
+#if defined(__clang__)
 #include <experimental/optional>
 #define stdoptional std::experimental::optional
 #define stdnullopt std::experimental::nullopt
