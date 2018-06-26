@@ -125,7 +125,7 @@ inline bool Deserializer::Find(const JSON& json, const char* key, char* value, s
 
     // Save the member value
     size_t length = std::min((size_t)member->value.GetStringLength(), size);
-    std::strncpy(value, member->value.GetString(), length);
+    std::memcpy(value, member->value.GetString(), length);
     // Write the end of string character if possible
     if (length < size)
         value[length] = '\0';
@@ -163,7 +163,7 @@ inline bool Deserializer::Find(const JSON& json, const char* key, char (&value)[
 
     // Save the member value
     size_t length = std::min((size_t)member->value.GetStringLength(), N);
-    std::strncpy(value, member->value.GetString(), length);
+    std::memcpy(value, member->value.GetString(), length);
     // Write the end of string character if possible
     if (length < N)
         value[length] = '\0';

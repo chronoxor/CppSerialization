@@ -59,7 +59,7 @@ struct Order
     Order(int id, const std::string& symbol, OrderSide side, OrderType type, double price, double volume)
     {
         Id = id;
-        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
+        std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = side;
         Type = type;
         Price = price;
@@ -82,7 +82,7 @@ struct Order
     {
         Id = reader.getId();
         std::string symbol = reader.getSymbol();
-        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
+        std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)reader.getSide();
         Type = (OrderType)reader.getType();
         Price = reader.getPrice();
@@ -132,7 +132,7 @@ struct Order
     {
         Id = value.id();
         std::string symbol = value.symbol()->str();
-        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
+        std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)value.side();
         Type = (OrderType)value.type();
         Price = value.price();
@@ -156,7 +156,7 @@ struct Order
     {
         Id = value.id();
         std::string symbol = value.symbol();
-        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
+        std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)value.side();
         Type = (OrderType)value.type();
         Price = value.price();
@@ -200,7 +200,7 @@ struct Balance
     Balance() : Balance("<\?\?\?>", 0.0) {}
     Balance(const std::string& currency, double amount)
     {
-        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
+        std::memcpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = amount;
     }
 
@@ -215,7 +215,7 @@ struct Balance
     void Deserialize(const capnproto::Balance::Reader& reader)
     {
         std::string currency = reader.getCurrency();
-        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
+        std::memcpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = reader.getAmount();
     }
 
@@ -249,7 +249,7 @@ struct Balance
     void Deserialize(const flatbuf::Balance& value)
     {
         std::string currency = value.currency()->str();
-        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
+        std::memcpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = value.amount();
     }
 
@@ -265,7 +265,7 @@ struct Balance
     void Deserialize(const protobuf::Balance& value)
     {
         std::string currency = value.currency();
-        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
+        std::memcpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = value.amount();
     }
 
