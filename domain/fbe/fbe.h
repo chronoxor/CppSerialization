@@ -6,7 +6,9 @@
 #include <array>
 #include <bitset>
 #include <cassert>
+#include <cctype>
 #include <cstring>
+#include <iomanip>
 #include <list>
 #include <map>
 #include <memory>
@@ -953,6 +955,23 @@ public:
     // Unshift the current field offset
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
+    // Get the array
+    const uint8_t* data() const noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
+        return _buffer.data() + _buffer.offset() + fbe_offset();
+    }
+    // Get the array
+    uint8_t* data() noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
+        return _buffer.data() + _buffer.offset() + fbe_offset();
+    }
+    // Get the array offset
+    size_t offset() const noexcept { return 0; }
+    // Get the array size
+    size_t size() const noexcept { return N; }
+
     // Array index operator
     FieldModel<TBuffer, T> operator[](size_t index) const noexcept
     {
@@ -964,22 +983,7 @@ public:
         return fbe_model;
     }
 
-    const uint8_t* data() const noexcept
-    {
-        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
-        return _buffer.data() + _buffer.offset() + fbe_offset();
-    }
-    uint8_t* data() noexcept
-    {
-        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
-        return _buffer.data() + _buffer.offset() + fbe_offset();
-    }
-    // Get the array value offset
-    size_t offset() const noexcept { return 0; }
-    // Get the array value size
-    size_t size() const noexcept { return N; }
-
-    // Check if the array value is valid
+    // Check if the array is valid
     bool verify() const noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
@@ -996,7 +1000,7 @@ public:
         return true;
     }
 
-    // Get the array value as C-array
+    // Get the array as C-array
     template <size_t S>
     void get(T (&values)[S]) const noexcept
     {
@@ -1008,7 +1012,7 @@ public:
         }
     }
 
-    // Get the array value as std::array
+    // Get the array as std::array
     template <size_t S>
     void get(std::array<T, S>& values) const noexcept
     {
@@ -1020,7 +1024,7 @@ public:
         }
     }
 
-    // Get the array value as std::vector
+    // Get the array as std::vector
     void get(std::vector<T>& values) const noexcept
     {
         values.clear();
@@ -1036,7 +1040,7 @@ public:
         }
     }
 
-    // Set the vector value as C-array
+    // Set the vector as C-array
     template <size_t S>
     void set(const T (&values)[S]) noexcept
     {
@@ -1051,7 +1055,7 @@ public:
         }
     }
 
-    // Set the vector value as std::array
+    // Set the vector as std::array
     template <size_t S>
     void set(const std::array<T, S>& values) noexcept
     {
@@ -1066,7 +1070,7 @@ public:
         }
     }
 
-    // Set the vector value as std::vector
+    // Set the vector as std::vector
     void set(const std::vector<T>& values) noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
@@ -1124,6 +1128,30 @@ public:
     // Unshift the current field offset
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
+    // Get the vector offset
+    size_t offset() const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return 0;
+
+        uint32_t fbe_vector_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        return fbe_vector_offset;
+    }
+
+    // Get the vector size
+    size_t size() const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return 0;
+
+        uint32_t fbe_vector_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if ((fbe_vector_offset == 0) || ((_buffer.offset() + fbe_vector_offset + 4) > _buffer.size()))
+            return 0;
+
+        uint32_t fbe_vector_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_vector_offset));
+        return fbe_vector_size;
+    }
+
     // Vector index operator
     FieldModel<TBuffer, T> operator[](size_t index) const noexcept
     {
@@ -1138,30 +1166,6 @@ public:
         FieldModel<TBuffer, T> fbe_model(_buffer, fbe_vector_offset + 4);
         fbe_model.fbe_shift(index * fbe_model.fbe_size());
         return fbe_model;
-    }
-
-    // Get the vector value offset
-    size_t offset() const noexcept
-    {
-        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
-            return 0;
-
-        uint32_t fbe_vector_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
-        return fbe_vector_offset;
-    }
-
-    // Get the vector value size
-    size_t size() const noexcept
-    {
-        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
-            return 0;
-
-        uint32_t fbe_vector_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
-        if ((fbe_vector_offset == 0) || ((_buffer.offset() + fbe_vector_offset + 4) > _buffer.size()))
-            return 0;
-
-        uint32_t fbe_vector_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_vector_offset));
-        return fbe_vector_size;
     }
 
     // Resize the vector and get its first model
@@ -1181,7 +1185,7 @@ public:
         return FieldModel<TBuffer, T>(_buffer, fbe_vector_offset + 4);
     }
 
-    // Check if the vector value is valid
+    // Check if the vector is valid
     bool verify() const noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
@@ -1207,7 +1211,7 @@ public:
         return true;
     }
 
-    // Get the vector value as std::vector
+    // Get the vector as std::vector
     void get(std::vector<T>& values) const noexcept
     {
         values.clear();
@@ -1228,7 +1232,7 @@ public:
         }
     }
 
-    // Get the vector value as std::list
+    // Get the vector as std::list
     void get(std::list<T>& values) const noexcept
     {
         values.clear();
@@ -1247,7 +1251,7 @@ public:
         }
     }
 
-    // Get the vector value as std::set
+    // Get the vector as std::set
     void get(std::set<T>& values) const noexcept
     {
         values.clear();
@@ -1266,7 +1270,7 @@ public:
         }
     }
 
-    // Set the vector value as std::vector
+    // Set the vector as std::vector
     void set(const std::vector<T>& values) noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
@@ -1280,7 +1284,7 @@ public:
         }
     }
 
-    // Set the vector value as std::list
+    // Set the vector as std::list
     void set(const std::list<T>& values) noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
@@ -1294,7 +1298,7 @@ public:
         }
     }
 
-    // Set the vector value as std::set
+    // Set the vector as std::set
     void set(const std::set<T>& values) noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
@@ -1354,6 +1358,30 @@ public:
     // Unshift the current field offset
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
+    // Get the map offset
+    size_t offset() const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return 0;
+
+        uint32_t fbe_map_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        return fbe_map_offset;
+    }
+
+    // Get the map size
+    size_t size() const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return 0;
+
+        uint32_t fbe_map_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if ((fbe_map_offset == 0) || ((_buffer.offset() + fbe_map_offset + 4) > _buffer.size()))
+            return 0;
+
+        uint32_t fbe_map_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_map_offset));
+        return fbe_map_size;
+    }
+
     // Map index operator
     std::pair<FieldModel<TBuffer, TKey>, FieldModel<TBuffer, TValue>> operator[](size_t index) const noexcept
     {
@@ -1370,30 +1398,6 @@ public:
         fbe_model_key.fbe_shift(index * (fbe_model_key.fbe_size() + fbe_model_value.fbe_size()));
         fbe_model_value.fbe_shift(index * (fbe_model_key.fbe_size() + fbe_model_value.fbe_size()));
         return std::make_pair(fbe_model_key, fbe_model_value);
-    }
-
-    // Get the map value offset
-    size_t offset() const noexcept
-    {
-        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
-            return 0;
-
-        uint32_t fbe_map_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
-        return fbe_map_offset;
-    }
-
-    // Get the map value size
-    size_t size() const noexcept
-    {
-        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
-            return 0;
-
-        uint32_t fbe_map_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
-        if ((fbe_map_offset == 0) || ((_buffer.offset() + fbe_map_offset + 4) > _buffer.size()))
-            return 0;
-
-        uint32_t fbe_map_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_map_offset));
-        return fbe_map_size;
     }
 
     // Resize the map and get its first model
@@ -1414,7 +1418,7 @@ public:
         return std::make_pair(FieldModel<TBuffer, TKey>(_buffer, fbe_map_offset + 4), FieldModel<TBuffer, TValue>(_buffer, fbe_map_offset + 4 + fbe_model_key.fbe_size()));
     }
 
-    // Check if the map value is valid
+    // Check if the map is valid
     bool verify() const noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
@@ -1444,7 +1448,7 @@ public:
         return true;
     }
 
-    // Get the map value as std::map
+    // Get the map as std::map
     void get(std::map<TKey, TValue>& values) const noexcept
     {
         values.clear();
@@ -1466,7 +1470,7 @@ public:
         }
     }
 
-    // Get the map value as std::unordered_map
+    // Get the map as std::unordered_map
     void get(std::unordered_map<TKey, TValue>& values) const noexcept
     {
         values.clear();
@@ -1488,7 +1492,7 @@ public:
         }
     }
 
-    // Set the map value as std::map
+    // Set the map as std::map
     void set(const std::map<TKey, TValue>& values) noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
@@ -1504,7 +1508,7 @@ public:
         }
     }
 
-    // Set the map value as std::unordered_map
+    // Set the map as std::unordered_map
     void set(const std::unordered_map<TKey, TValue>& values) noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
@@ -1565,7 +1569,7 @@ public:
 protected:
     // Send message handler
     virtual size_t onSend(const void* data, size_t size) = 0;
-    // Send logging handler
+    // Send log message handler
     virtual void onSendLog(const std::string& message) const {}
 
 protected:
@@ -1831,7 +1835,7 @@ public:
 protected:
     // Receive message handler
     virtual bool onReceive(size_t type, const void* data, size_t size) = 0;
-    // Receive logging handler
+    // Receive log message handler
     virtual void onReceiveLog(const std::string& message) const {}
 
 protected:
