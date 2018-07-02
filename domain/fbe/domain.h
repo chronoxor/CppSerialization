@@ -77,7 +77,7 @@ namespace domain {
 
 struct Order
 {
-    int32_t id;
+    int32_t uid;
     std::string symbol;
     ::domain::OrderSide side;
     ::domain::OrderType type;
@@ -85,15 +85,15 @@ struct Order
     double volume;
 
     Order()
-        : id()
+        : uid()
         , symbol()
         , side()
         , type()
         , price((double)0.0)
         , volume((double)0.0)
     {}
-    Order(int32_t arg_id, const std::string& arg_symbol, const ::domain::OrderSide& arg_side, const ::domain::OrderType& arg_type, double arg_price, double arg_volume)
-        : id(arg_id)
+    Order(int32_t arg_uid, const std::string& arg_symbol, const ::domain::OrderSide& arg_side, const ::domain::OrderType& arg_type, double arg_price, double arg_volume)
+        : uid(arg_uid)
         , symbol(arg_symbol)
         , side(arg_side)
         , type(arg_type)
@@ -110,15 +110,15 @@ struct Order
     bool operator==(const Order& other) const noexcept
     {
         return (
-            (id == other.id)
+            (uid == other.uid)
             );
     }
     bool operator!=(const Order& other) const noexcept { return !operator==(other); }
     bool operator<(const Order& other) const noexcept
     {
-        if (id < other.id)
+        if (uid < other.uid)
             return true;
-        if (other.id < id)
+        if (other.uid < uid)
             return false;
         return false;
     }
@@ -138,7 +138,7 @@ struct Order
     void swap(Order& other) noexcept
     {
         using std::swap;
-        swap(id, other.id);
+        swap(uid, other.uid);
         swap(symbol, other.symbol);
         swap(side, other.side);
         swap(type, other.type);
@@ -155,7 +155,7 @@ struct Order
 inline std::ostream& operator<<(std::ostream& stream, const Order& value)
 {
     stream << "Order(";
-    stream << "id="; stream << value.id;
+    stream << "uid="; stream << value.uid;
     stream << ",symbol="; stream << "\"" << value.symbol << "\"";
     stream << ",side="; stream << value.side;
     stream << ",type="; stream << value.type;
@@ -178,7 +178,7 @@ struct hash<domain::Order>
     result_type operator () (const argument_type& value) const
     {
         result_type result = 17;
-        result = result * 31 + std::hash<decltype(value.id)>()(value.id);
+        result = result * 31 + std::hash<decltype(value.uid)>()(value.uid);
         return result;
     }
 };
@@ -193,8 +193,8 @@ class FieldModel<TBuffer, ::domain::Order>
 {
 public:
     FieldModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset)
-        , id(buffer, 4 + 4)
-        , symbol(buffer, id.fbe_offset() + id.fbe_size())
+        , uid(buffer, 4 + 4)
+        , symbol(buffer, uid.fbe_offset() + uid.fbe_size())
         , side(buffer, symbol.fbe_offset() + symbol.fbe_size())
         , type(buffer, side.fbe_offset() + side.fbe_size())
         , price(buffer, type.fbe_offset() + type.fbe_size())
@@ -209,7 +209,7 @@ public:
     size_t fbe_body() const noexcept
     {
         size_t fbe_result = 4 + 4
-            + id.fbe_size()
+            + uid.fbe_size()
             + symbol.fbe_size()
             + side.fbe_size()
             + type.fbe_size()
@@ -231,7 +231,7 @@ public:
         _buffer.shift(fbe_struct_offset);
 
         size_t fbe_result = fbe_body()
-            + id.fbe_extra()
+            + uid.fbe_extra()
             + symbol.fbe_extra()
             + side.fbe_extra()
             + type.fbe_extra()
@@ -280,11 +280,11 @@ public:
     {
         size_t fbe_current_size = 4 + 4;
 
-        if ((fbe_current_size + id.fbe_size()) > fbe_struct_size)
+        if ((fbe_current_size + uid.fbe_size()) > fbe_struct_size)
             return true;
-        if (!id.verify())
+        if (!uid.verify())
             return false;
-        fbe_current_size += id.fbe_size();
+        fbe_current_size += uid.fbe_size();
 
         if ((fbe_current_size + symbol.fbe_size()) > fbe_struct_size)
             return true;
@@ -362,9 +362,9 @@ public:
     {
         size_t fbe_current_size = 4 + 4;
 
-        if ((fbe_current_size + id.fbe_size()) <= fbe_struct_size)
-            id.get(value.id);
-        fbe_current_size += id.fbe_size();
+        if ((fbe_current_size + uid.fbe_size()) <= fbe_struct_size)
+            uid.get(value.uid);
+        fbe_current_size += uid.fbe_size();
 
         if ((fbe_current_size + symbol.fbe_size()) <= fbe_struct_size)
             symbol.get(value.symbol);
@@ -429,7 +429,7 @@ public:
     // Set the struct fields values
     void set_fields(const ::domain::Order& value) noexcept
     {
-        id.set(value.id);
+        uid.set(value.uid);
         symbol.set(value.symbol);
         side.set(value.side);
         type.set(value.type);
@@ -442,7 +442,7 @@ private:
     size_t _offset;
 
 public:
-    FieldModel<TBuffer, int32_t> id;
+    FieldModel<TBuffer, int32_t> uid;
     FieldModel<TBuffer, std::string> symbol;
     FieldModel<TBuffer, ::domain::OrderSide> side;
     FieldModel<TBuffer, ::domain::OrderType> type;
@@ -917,19 +917,19 @@ namespace domain {
 
 struct Account
 {
-    int32_t id;
+    int32_t uid;
     std::string name;
     ::domain::Balance wallet;
     std::vector<::domain::Order> orders;
 
     Account()
-        : id()
+        : uid()
         , name()
         , wallet()
         , orders()
     {}
-    Account(int32_t arg_id, const std::string& arg_name, const ::domain::Balance& arg_wallet, const std::vector<::domain::Order>& arg_orders)
-        : id(arg_id)
+    Account(int32_t arg_uid, const std::string& arg_name, const ::domain::Balance& arg_wallet, const std::vector<::domain::Order>& arg_orders)
+        : uid(arg_uid)
         , name(arg_name)
         , wallet(arg_wallet)
         , orders(arg_orders)
@@ -944,15 +944,15 @@ struct Account
     bool operator==(const Account& other) const noexcept
     {
         return (
-            (id == other.id)
+            (uid == other.uid)
             );
     }
     bool operator!=(const Account& other) const noexcept { return !operator==(other); }
     bool operator<(const Account& other) const noexcept
     {
-        if (id < other.id)
+        if (uid < other.uid)
             return true;
-        if (other.id < id)
+        if (other.uid < uid)
             return false;
         return false;
     }
@@ -972,7 +972,7 @@ struct Account
     void swap(Account& other) noexcept
     {
         using std::swap;
-        swap(id, other.id);
+        swap(uid, other.uid);
         swap(name, other.name);
         swap(wallet, other.wallet);
         swap(orders, other.orders);
@@ -987,7 +987,7 @@ struct Account
 inline std::ostream& operator<<(std::ostream& stream, const Account& value)
 {
     stream << "Account(";
-    stream << "id="; stream << value.id;
+    stream << "uid="; stream << value.uid;
     stream << ",name="; stream << "\"" << value.name << "\"";
     stream << ",wallet="; stream << value.wallet;
     {
@@ -1017,7 +1017,7 @@ struct hash<domain::Account>
     result_type operator () (const argument_type& value) const
     {
         result_type result = 17;
-        result = result * 31 + std::hash<decltype(value.id)>()(value.id);
+        result = result * 31 + std::hash<decltype(value.uid)>()(value.uid);
         return result;
     }
 };
@@ -1032,8 +1032,8 @@ class FieldModel<TBuffer, ::domain::Account>
 {
 public:
     FieldModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset)
-        , id(buffer, 4 + 4)
-        , name(buffer, id.fbe_offset() + id.fbe_size())
+        , uid(buffer, 4 + 4)
+        , name(buffer, uid.fbe_offset() + uid.fbe_size())
         , wallet(buffer, name.fbe_offset() + name.fbe_size())
         , orders(buffer, wallet.fbe_offset() + wallet.fbe_size())
     {}
@@ -1046,7 +1046,7 @@ public:
     size_t fbe_body() const noexcept
     {
         size_t fbe_result = 4 + 4
-            + id.fbe_size()
+            + uid.fbe_size()
             + name.fbe_size()
             + wallet.fbe_size()
             + orders.fbe_size()
@@ -1066,7 +1066,7 @@ public:
         _buffer.shift(fbe_struct_offset);
 
         size_t fbe_result = fbe_body()
-            + id.fbe_extra()
+            + uid.fbe_extra()
             + name.fbe_extra()
             + wallet.fbe_extra()
             + orders.fbe_extra()
@@ -1113,11 +1113,11 @@ public:
     {
         size_t fbe_current_size = 4 + 4;
 
-        if ((fbe_current_size + id.fbe_size()) > fbe_struct_size)
+        if ((fbe_current_size + uid.fbe_size()) > fbe_struct_size)
             return true;
-        if (!id.verify())
+        if (!uid.verify())
             return false;
-        fbe_current_size += id.fbe_size();
+        fbe_current_size += uid.fbe_size();
 
         if ((fbe_current_size + name.fbe_size()) > fbe_struct_size)
             return true;
@@ -1183,9 +1183,9 @@ public:
     {
         size_t fbe_current_size = 4 + 4;
 
-        if ((fbe_current_size + id.fbe_size()) <= fbe_struct_size)
-            id.get(value.id);
-        fbe_current_size += id.fbe_size();
+        if ((fbe_current_size + uid.fbe_size()) <= fbe_struct_size)
+            uid.get(value.uid);
+        fbe_current_size += uid.fbe_size();
 
         if ((fbe_current_size + name.fbe_size()) <= fbe_struct_size)
             name.get(value.name);
@@ -1238,7 +1238,7 @@ public:
     // Set the struct fields values
     void set_fields(const ::domain::Account& value) noexcept
     {
-        id.set(value.id);
+        uid.set(value.uid);
         name.set(value.name);
         wallet.set(value.wallet);
         orders.set(value.orders);
@@ -1249,7 +1249,7 @@ private:
     size_t _offset;
 
 public:
-    FieldModel<TBuffer, int32_t> id;
+    FieldModel<TBuffer, int32_t> uid;
     FieldModel<TBuffer, std::string> name;
     FieldModel<TBuffer, ::domain::Balance> wallet;
     FieldModelVector<TBuffer, ::domain::Order> orders;

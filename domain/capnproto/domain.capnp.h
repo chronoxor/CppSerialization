@@ -104,7 +104,7 @@ public:
   }
 #endif  // !CAPNP_LITE
 
-  inline  ::int32_t getId() const;
+  inline  ::int32_t getUid() const;
 
   inline bool hasSymbol() const;
   inline  ::capnp::Text::Reader getSymbol() const;
@@ -145,8 +145,8 @@ public:
   inline ::kj::StringTree toString() const { return asReader().toString(); }
 #endif  // !CAPNP_LITE
 
-  inline  ::int32_t getId();
-  inline void setId( ::int32_t value);
+  inline  ::int32_t getUid();
+  inline void setUid( ::int32_t value);
 
   inline bool hasSymbol();
   inline  ::capnp::Text::Builder getSymbol();
@@ -296,7 +296,7 @@ public:
   }
 #endif  // !CAPNP_LITE
 
-  inline  ::int32_t getId() const;
+  inline  ::int32_t getUid() const;
 
   inline bool hasName() const;
   inline  ::capnp::Text::Reader getName() const;
@@ -335,8 +335,8 @@ public:
   inline ::kj::StringTree toString() const { return asReader().toString(); }
 #endif  // !CAPNP_LITE
 
-  inline  ::int32_t getId();
-  inline void setId( ::int32_t value);
+  inline  ::int32_t getUid();
+  inline void setUid( ::int32_t value);
 
   inline bool hasName();
   inline  ::capnp::Text::Builder getName();
@@ -388,16 +388,16 @@ private:
 
 // =======================================================================================
 
-inline  ::int32_t Order::Reader::getId() const {
+inline  ::int32_t Order::Reader::getUid() const {
   return _reader.getDataField< ::int32_t>(
       ::capnp::bounded<0>() * ::capnp::ELEMENTS);
 }
 
-inline  ::int32_t Order::Builder::getId() {
+inline  ::int32_t Order::Builder::getUid() {
   return _builder.getDataField< ::int32_t>(
       ::capnp::bounded<0>() * ::capnp::ELEMENTS);
 }
-inline void Order::Builder::setId( ::int32_t value) {
+inline void Order::Builder::setUid( ::int32_t value) {
   _builder.setDataField< ::int32_t>(
       ::capnp::bounded<0>() * ::capnp::ELEMENTS, value);
 }
@@ -540,16 +540,16 @@ inline void Balance::Builder::setAmount(double value) {
       ::capnp::bounded<0>() * ::capnp::ELEMENTS, value);
 }
 
-inline  ::int32_t Account::Reader::getId() const {
+inline  ::int32_t Account::Reader::getUid() const {
   return _reader.getDataField< ::int32_t>(
       ::capnp::bounded<0>() * ::capnp::ELEMENTS);
 }
 
-inline  ::int32_t Account::Builder::getId() {
+inline  ::int32_t Account::Builder::getUid() {
   return _builder.getDataField< ::int32_t>(
       ::capnp::bounded<0>() * ::capnp::ELEMENTS);
 }
-inline void Account::Builder::setId( ::int32_t value) {
+inline void Account::Builder::setUid( ::int32_t value) {
   _builder.setDataField< ::int32_t>(
       ::capnp::bounded<0>() * ::capnp::ELEMENTS, value);
 }

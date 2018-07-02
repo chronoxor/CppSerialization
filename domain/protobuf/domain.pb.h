@@ -215,11 +215,11 @@ class Order : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   ::std::string* release_symbol();
   void set_allocated_symbol(::std::string* symbol);
 
-  // int32 id = 1;
-  void clear_id();
-  static const int kIdFieldNumber = 1;
-  ::google::protobuf::int32 id() const;
-  void set_id(::google::protobuf::int32 value);
+  // int32 uid = 1;
+  void clear_uid();
+  static const int kUidFieldNumber = 1;
+  ::google::protobuf::int32 uid() const;
+  void set_uid(::google::protobuf::int32 value);
 
   // .MyDomain.protobuf.OrderSide side = 3;
   void clear_side();
@@ -250,7 +250,7 @@ class Order : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr symbol_;
-  ::google::protobuf::int32 id_;
+  ::google::protobuf::int32 uid_;
   int side_;
   double price_;
   double volume_;
@@ -503,11 +503,11 @@ class Account : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::MyDomain::protobuf::Balance* mutable_wallet();
   void set_allocated_wallet(::MyDomain::protobuf::Balance* wallet);
 
-  // int32 id = 1;
-  void clear_id();
-  static const int kIdFieldNumber = 1;
-  ::google::protobuf::int32 id() const;
-  void set_id(::google::protobuf::int32 value);
+  // int32 uid = 1;
+  void clear_uid();
+  static const int kUidFieldNumber = 1;
+  ::google::protobuf::int32 uid() const;
+  void set_uid(::google::protobuf::int32 value);
 
   // @@protoc_insertion_point(class_scope:MyDomain.protobuf.Account)
  private:
@@ -516,7 +516,7 @@ class Account : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::google::protobuf::RepeatedPtrField< ::MyDomain::protobuf::Order > orders_;
   ::google::protobuf::internal::ArenaStringPtr name_;
   ::MyDomain::protobuf::Balance* wallet_;
-  ::google::protobuf::int32 id_;
+  ::google::protobuf::int32 uid_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_domain_2eproto::TableStruct;
 };
@@ -531,18 +531,18 @@ class Account : public ::google::protobuf::Message /* @@protoc_insertion_point(c
 #endif  // __GNUC__
 // Order
 
-// int32 id = 1;
-inline void Order::clear_id() {
-  id_ = 0;
+// int32 uid = 1;
+inline void Order::clear_uid() {
+  uid_ = 0;
 }
-inline ::google::protobuf::int32 Order::id() const {
-  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Order.id)
-  return id_;
+inline ::google::protobuf::int32 Order::uid() const {
+  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Order.uid)
+  return uid_;
 }
-inline void Order::set_id(::google::protobuf::int32 value) {
+inline void Order::set_uid(::google::protobuf::int32 value) {
   
-  id_ = value;
-  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Order.id)
+  uid_ = value;
+  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Order.uid)
 }
 
 // string symbol = 2;
@@ -729,18 +729,18 @@ inline void Balance::set_amount(double value) {
 
 // Account
 
-// int32 id = 1;
-inline void Account::clear_id() {
-  id_ = 0;
+// int32 uid = 1;
+inline void Account::clear_uid() {
+  uid_ = 0;
 }
-inline ::google::protobuf::int32 Account::id() const {
-  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Account.id)
-  return id_;
+inline ::google::protobuf::int32 Account::uid() const {
+  // @@protoc_insertion_point(field_get:MyDomain.protobuf.Account.uid)
+  return uid_;
 }
-inline void Account::set_id(::google::protobuf::int32 value) {
+inline void Account::set_uid(::google::protobuf::int32 value) {
   
-  id_ = value;
-  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Account.id)
+  uid_ = value;
+  // @@protoc_insertion_point(field_set:MyDomain.protobuf.Account.uid)
 }
 
 // string name = 2;

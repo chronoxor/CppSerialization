@@ -15,7 +15,7 @@ enum OrderType : byte
 
 struct Order
 {
-    [key] int32 id;
+    [key] int32 uid;
     string symbol;
     OrderSide side;
     OrderType type;
@@ -31,7 +31,7 @@ struct Balance
 
 struct Account
 {
-    [key] int32 id;
+    [key] int32 uid;
     string name;
     Balance wallet;
     Order[] orders;

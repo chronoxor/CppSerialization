@@ -78,15 +78,15 @@ inline const char *EnumNameOrderType(OrderType e) {
 
 struct Order FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
-    VT_ID = 4,
+    VT_UID = 4,
     VT_SYMBOL = 6,
     VT_SIDE = 8,
     VT_TYPE = 10,
     VT_PRICE = 12,
     VT_VOLUME = 14
   };
-  int32_t id() const {
-    return GetField<int32_t>(VT_ID, 0);
+  int32_t uid() const {
+    return GetField<int32_t>(VT_UID, 0);
   }
   const flatbuffers::String *symbol() const {
     return GetPointer<const flatbuffers::String *>(VT_SYMBOL);
@@ -105,7 +105,7 @@ struct Order FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_ID) &&
+           VerifyField<int32_t>(verifier, VT_UID) &&
            VerifyOffset(verifier, VT_SYMBOL) &&
            verifier.Verify(symbol()) &&
            VerifyField<int8_t>(verifier, VT_SIDE) &&
@@ -119,8 +119,8 @@ struct Order FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 struct OrderBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_id(int32_t id) {
-    fbb_.AddElement<int32_t>(Order::VT_ID, id, 0);
+  void add_uid(int32_t uid) {
+    fbb_.AddElement<int32_t>(Order::VT_UID, uid, 0);
   }
   void add_symbol(flatbuffers::Offset<flatbuffers::String> symbol) {
     fbb_.AddOffset(Order::VT_SYMBOL, symbol);
@@ -151,7 +151,7 @@ struct OrderBuilder {
 
 inline flatbuffers::Offset<Order> CreateOrder(
     flatbuffers::FlatBufferBuilder &_fbb,
-    int32_t id = 0,
+    int32_t uid = 0,
     flatbuffers::Offset<flatbuffers::String> symbol = 0,
     OrderSide side = OrderSide::buy,
     OrderType type = OrderType::market,
@@ -161,7 +161,7 @@ inline flatbuffers::Offset<Order> CreateOrder(
   builder_.add_volume(volume);
   builder_.add_price(price);
   builder_.add_symbol(symbol);
-  builder_.add_id(id);
+  builder_.add_uid(uid);
   builder_.add_type(type);
   builder_.add_side(side);
   return builder_.Finish();
@@ -169,7 +169,7 @@ inline flatbuffers::Offset<Order> CreateOrder(
 
 inline flatbuffers::Offset<Order> CreateOrderDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
-    int32_t id = 0,
+    int32_t uid = 0,
     const char *symbol = nullptr,
     OrderSide side = OrderSide::buy,
     OrderType type = OrderType::market,
@@ -177,7 +177,7 @@ inline flatbuffers::Offset<Order> CreateOrderDirect(
     double volume = 0.0) {
   return MyDomain::flatbuf::CreateOrder(
       _fbb,
-      id,
+      uid,
       symbol ? _fbb.CreateString(symbol) : 0,
       side,
       type,
@@ -248,13 +248,13 @@ inline flatbuffers::Offset<Balance> CreateBalanceDirect(
 
 struct Account FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
-    VT_ID = 4,
+    VT_UID = 4,
     VT_NAME = 6,
     VT_WALLET = 8,
     VT_ORDERS = 10
   };
-  int32_t id() const {
-    return GetField<int32_t>(VT_ID, 0);
+  int32_t uid() const {
+    return GetField<int32_t>(VT_UID, 0);
   }
   const flatbuffers::String *name() const {
     return GetPointer<const flatbuffers::String *>(VT_NAME);
@@ -267,7 +267,7 @@ struct Account FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_ID) &&
+           VerifyField<int32_t>(verifier, VT_UID) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.Verify(name()) &&
            VerifyOffset(verifier, VT_WALLET) &&
@@ -282,8 +282,8 @@ struct Account FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 struct AccountBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_id(int32_t id) {
-    fbb_.AddElement<int32_t>(Account::VT_ID, id, 0);
+  void add_uid(int32_t uid) {
+    fbb_.AddElement<int32_t>(Account::VT_UID, uid, 0);
   }
   void add_name(flatbuffers::Offset<flatbuffers::String> name) {
     fbb_.AddOffset(Account::VT_NAME, name);
@@ -308,7 +308,7 @@ struct AccountBuilder {
 
 inline flatbuffers::Offset<Account> CreateAccount(
     flatbuffers::FlatBufferBuilder &_fbb,
-    int32_t id = 0,
+    int32_t uid = 0,
     flatbuffers::Offset<flatbuffers::String> name = 0,
     flatbuffers::Offset<Balance> wallet = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Order>>> orders = 0) {
@@ -316,19 +316,19 @@ inline flatbuffers::Offset<Account> CreateAccount(
   builder_.add_orders(orders);
   builder_.add_wallet(wallet);
   builder_.add_name(name);
-  builder_.add_id(id);
+  builder_.add_uid(uid);
   return builder_.Finish();
 }
 
 inline flatbuffers::Offset<Account> CreateAccountDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
-    int32_t id = 0,
+    int32_t uid = 0,
     const char *name = nullptr,
     flatbuffers::Offset<Balance> wallet = 0,
     const std::vector<flatbuffers::Offset<Order>> *orders = nullptr) {
   return MyDomain::flatbuf::CreateAccount(
       _fbb,
-      id,
+      uid,
       name ? _fbb.CreateString(name) : 0,
       wallet,
       orders ? _fbb.CreateVector<flatbuffers::Offset<Order>>(*orders) : 0);

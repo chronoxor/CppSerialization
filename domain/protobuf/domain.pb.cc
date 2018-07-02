@@ -102,7 +102,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::MyDomain::protobuf::Order, id_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::MyDomain::protobuf::Order, uid_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::MyDomain::protobuf::Order, symbol_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::MyDomain::protobuf::Order, side_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::MyDomain::protobuf::Order, type_),
@@ -120,7 +120,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::MyDomain::protobuf::Account, id_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::MyDomain::protobuf::Account, uid_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::MyDomain::protobuf::Account, name_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::MyDomain::protobuf::Account, wallet_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::MyDomain::protobuf::Account, orders_),
@@ -158,21 +158,21 @@ void protobuf_RegisterTypes(const ::std::string&) {
 static void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-      "\n\014domain.proto\022\021MyDomain.protobuf\"\232\001\n\005Or"
-      "der\022\n\n\002id\030\001 \001(\005\022\016\n\006symbol\030\002 \001(\t\022*\n\004side\030"
-      "\003 \001(\0162\034.MyDomain.protobuf.OrderSide\022*\n\004t"
-      "ype\030\004 \001(\0162\034.MyDomain.protobuf.OrderType\022"
-      "\r\n\005price\030\005 \001(\001\022\016\n\006volume\030\006 \001(\001\"+\n\007Balanc"
-      "e\022\020\n\010currency\030\001 \001(\t\022\016\n\006amount\030\002 \001(\001\"y\n\007A"
-      "ccount\022\n\n\002id\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022*\n\006wall"
-      "et\030\003 \001(\0132\032.MyDomain.protobuf.Balance\022(\n\006"
-      "orders\030\004 \003(\0132\030.MyDomain.protobuf.Order*\036"
-      "\n\tOrderSide\022\007\n\003buy\020\000\022\010\n\004sell\020\001*,\n\tOrderT"
-      "ype\022\n\n\006market\020\000\022\t\n\005limit\020\001\022\010\n\004stop\020\002b\006pr"
-      "oto3"
+      "\n\014domain.proto\022\021MyDomain.protobuf\"\233\001\n\005Or"
+      "der\022\013\n\003uid\030\001 \001(\005\022\016\n\006symbol\030\002 \001(\t\022*\n\004side"
+      "\030\003 \001(\0162\034.MyDomain.protobuf.OrderSide\022*\n\004"
+      "type\030\004 \001(\0162\034.MyDomain.protobuf.OrderType"
+      "\022\r\n\005price\030\005 \001(\001\022\016\n\006volume\030\006 \001(\001\"+\n\007Balan"
+      "ce\022\020\n\010currency\030\001 \001(\t\022\016\n\006amount\030\002 \001(\001\"z\n\007"
+      "Account\022\013\n\003uid\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022*\n\006wa"
+      "llet\030\003 \001(\0132\032.MyDomain.protobuf.Balance\022("
+      "\n\006orders\030\004 \003(\0132\030.MyDomain.protobuf.Order"
+      "*\036\n\tOrderSide\022\007\n\003buy\020\000\022\010\n\004sell\020\001*,\n\tOrde"
+      "rType\022\n\n\006market\020\000\022\t\n\005limit\020\001\022\010\n\004stop\020\002b\006"
+      "proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 444);
+      descriptor, 446);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "domain.proto", &protobuf_RegisterTypes);
 }
@@ -225,7 +225,7 @@ bool OrderType_IsValid(int value) {
 void Order::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int Order::kIdFieldNumber;
+const int Order::kUidFieldNumber;
 const int Order::kSymbolFieldNumber;
 const int Order::kSideFieldNumber;
 const int Order::kTypeFieldNumber;
@@ -248,17 +248,17 @@ Order::Order(const Order& from)
   if (from.symbol().size() > 0) {
     symbol_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.symbol_);
   }
-  ::memcpy(&id_, &from.id_,
+  ::memcpy(&uid_, &from.uid_,
     static_cast<size_t>(reinterpret_cast<char*>(&type_) -
-    reinterpret_cast<char*>(&id_)) + sizeof(type_));
+    reinterpret_cast<char*>(&uid_)) + sizeof(type_));
   // @@protoc_insertion_point(copy_constructor:MyDomain.protobuf.Order)
 }
 
 void Order::SharedCtor() {
   symbol_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  ::memset(&id_, 0, static_cast<size_t>(
+  ::memset(&uid_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&type_) -
-      reinterpret_cast<char*>(&id_)) + sizeof(type_));
+      reinterpret_cast<char*>(&uid_)) + sizeof(type_));
 }
 
 Order::~Order() {
@@ -291,9 +291,9 @@ void Order::Clear() {
   (void) cached_has_bits;
 
   symbol_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  ::memset(&id_, 0, static_cast<size_t>(
+  ::memset(&uid_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&type_) -
-      reinterpret_cast<char*>(&id_)) + sizeof(type_));
+      reinterpret_cast<char*>(&uid_)) + sizeof(type_));
   _internal_metadata_.Clear();
 }
 
@@ -307,14 +307,14 @@ bool Order::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // int32 id = 1;
+      // int32 uid = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &id_)));
+                 input, &uid_)));
         } else {
           goto handle_unusual;
         }
@@ -421,9 +421,9 @@ void Order::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 id = 1;
-  if (this->id() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->id(), output);
+  // int32 uid = 1;
+  if (this->uid() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->uid(), output);
   }
 
   // string symbol = 2;
@@ -472,9 +472,9 @@ void Order::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 id = 1;
-  if (this->id() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->id(), target);
+  // int32 uid = 1;
+  if (this->uid() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->uid(), target);
   }
 
   // string symbol = 2;
@@ -534,11 +534,11 @@ size_t Order::ByteSizeLong() const {
         this->symbol());
   }
 
-  // int32 id = 1;
-  if (this->id() != 0) {
+  // int32 uid = 1;
+  if (this->uid() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->id());
+        this->uid());
   }
 
   // .MyDomain.protobuf.OrderSide side = 3;
@@ -594,8 +594,8 @@ void Order::MergeFrom(const Order& from) {
 
     symbol_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.symbol_);
   }
-  if (from.id() != 0) {
-    set_id(from.id());
+  if (from.uid() != 0) {
+    set_uid(from.uid());
   }
   if (from.side() != 0) {
     set_side(from.side());
@@ -637,7 +637,7 @@ void Order::InternalSwap(Order* other) {
   using std::swap;
   symbol_.Swap(&other->symbol_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
-  swap(id_, other->id_);
+  swap(uid_, other->uid_);
   swap(side_, other->side_);
   swap(price_, other->price_);
   swap(volume_, other->volume_);
@@ -937,7 +937,7 @@ void Account::InitAsDefaultInstance() {
       ::MyDomain::protobuf::Balance::internal_default_instance());
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int Account::kIdFieldNumber;
+const int Account::kUidFieldNumber;
 const int Account::kNameFieldNumber;
 const int Account::kWalletFieldNumber;
 const int Account::kOrdersFieldNumber;
@@ -964,15 +964,15 @@ Account::Account(const Account& from)
   } else {
     wallet_ = NULL;
   }
-  id_ = from.id_;
+  uid_ = from.uid_;
   // @@protoc_insertion_point(copy_constructor:MyDomain.protobuf.Account)
 }
 
 void Account::SharedCtor() {
   name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(&wallet_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&id_) -
-      reinterpret_cast<char*>(&wallet_)) + sizeof(id_));
+      reinterpret_cast<char*>(&uid_) -
+      reinterpret_cast<char*>(&wallet_)) + sizeof(uid_));
 }
 
 Account::~Account() {
@@ -1011,7 +1011,7 @@ void Account::Clear() {
     delete wallet_;
   }
   wallet_ = NULL;
-  id_ = 0;
+  uid_ = 0;
   _internal_metadata_.Clear();
 }
 
@@ -1025,14 +1025,14 @@ bool Account::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // int32 id = 1;
+      // int32 uid = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &id_)));
+                 input, &uid_)));
         } else {
           goto handle_unusual;
         }
@@ -1105,9 +1105,9 @@ void Account::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 id = 1;
-  if (this->id() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->id(), output);
+  // int32 uid = 1;
+  if (this->uid() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->uid(), output);
   }
 
   // string name = 2;
@@ -1149,9 +1149,9 @@ void Account::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 id = 1;
-  if (this->id() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->id(), target);
+  // int32 uid = 1;
+  if (this->uid() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->uid(), target);
   }
 
   // string name = 2;
@@ -1222,11 +1222,11 @@ size_t Account::ByteSizeLong() const {
         *wallet_);
   }
 
-  // int32 id = 1;
-  if (this->id() != 0) {
+  // int32 uid = 1;
+  if (this->uid() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->id());
+        this->uid());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -1264,8 +1264,8 @@ void Account::MergeFrom(const Account& from) {
   if (from.has_wallet()) {
     mutable_wallet()->::MyDomain::protobuf::Balance::MergeFrom(from.wallet());
   }
-  if (from.id() != 0) {
-    set_id(from.id());
+  if (from.uid() != 0) {
+    set_uid(from.uid());
   }
 }
 
@@ -1297,7 +1297,7 @@ void Account::InternalSwap(Account* other) {
   name_.Swap(&other->name_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   swap(wallet_, other->wallet_);
-  swap(id_, other->id_);
+  swap(uid_, other->uid_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 

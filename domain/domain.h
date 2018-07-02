@@ -48,7 +48,7 @@ enum class OrderType : uint8_t
 
 struct Order
 {
-    int Id;
+    int Uid;
     char Symbol[10];
     OrderSide Side;
     OrderType Type;
@@ -56,9 +56,9 @@ struct Order
     double Volume;
 
     Order() : Order(0, "<\?\?\?>", OrderSide::BUY, OrderType::MARKET, 0.0, 0.0) {}
-    Order(int id, const std::string& symbol, OrderSide side, OrderType type, double price, double volume)
+    Order(int uid, const std::string& symbol, OrderSide side, OrderType type, double price, double volume)
     {
-        Id = id;
+        Uid = uid;
         std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = side;
         Type = type;
@@ -70,7 +70,7 @@ struct Order
 
     void Serialize(capnproto::Order::Builder& builder)
     {
-        builder.setId(Id);
+        builder.setUid(Uid);
         builder.setSymbol(Symbol);
         builder.setSide((capnproto::OrderSide)Side);
         builder.setType((capnproto::OrderType)Type);
@@ -80,7 +80,7 @@ struct Order
 
     void Deserialize(const capnproto::Order::Reader& reader)
     {
-        Id = reader.getId();
+        Uid = reader.getUid();
         std::string symbol = reader.getSymbol();
         std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)reader.getSide();
@@ -95,7 +95,7 @@ struct Order
     void Serialize(FBE::FieldModel<TBuffer, domain::Order>& model)
     {
         size_t model_begin = model.set_begin();
-        model.id.set(Id);
+        model.uid.set(Uid);
         model.symbol.set(Symbol);
         model.side.set((domain::OrderSide)Side);
         model.type.set((domain::OrderType)Type);
@@ -108,7 +108,7 @@ struct Order
     void Deserialize(const FBE::FieldModel<TBuffer, domain::Order>& model)
     {
         size_t model_begin = model.get_begin();
-        model.id.get(Id);
+        model.uid.get(Uid);
         model.symbol.get(Symbol);
         domain::OrderSide side;
         model.side.get(side);
@@ -125,12 +125,12 @@ struct Order
 
     flatbuffers::Offset<flatbuf::Order> Serialize(flatbuffers::FlatBufferBuilder& builder)
     {
-        return flatbuf::CreateOrderDirect(builder, Id, Symbol, (flatbuf::OrderSide)Side, (flatbuf::OrderType)Type, Price, Volume);
+        return flatbuf::CreateOrderDirect(builder, Uid, Symbol, (flatbuf::OrderSide)Side, (flatbuf::OrderType)Type, Price, Volume);
     }
 
     void Deserialize(const flatbuf::Order& value)
     {
-        Id = value.id();
+        Uid = value.uid();
         std::string symbol = value.symbol()->str();
         std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)value.side();
@@ -143,7 +143,7 @@ struct Order
 
     protobuf::Order& Serialize(protobuf::Order& value)
     {
-        value.set_id(Id);
+        value.set_uid(Uid);
         value.set_symbol(Symbol);
         value.set_side((protobuf::OrderSide)Side);
         value.set_type((protobuf::OrderType)Type);
@@ -154,7 +154,7 @@ struct Order
 
     void Deserialize(const protobuf::Order& value)
     {
-        Id = value.id();
+        Uid = value.uid();
         std::string symbol = value.symbol();
         std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)value.side();
@@ -169,7 +169,7 @@ struct Order
     void Serialize(CppSerialization::JSON::Serializer<OutputStream>& serializer)
     {
         serializer.StartObject();
-        serializer.Pair("id", Id);
+        serializer.Pair("uid", Uid);
         serializer.Pair("symbol", Symbol);
         serializer.Pair("side", (int)Side);
         serializer.Pair("type", (int)Type);
@@ -183,7 +183,7 @@ struct Order
     {
         using namespace CppSerialization::JSON;
 
-        Deserializer::Find(json, "id", Id);
+        Deserializer::Find(json, "uid", Uid);
         Deserializer::Find(json, "symbol", Symbol);
         int side = 0; Deserializer::Find(json, "side", side); Side = (OrderSide)side;
         int type = 0; Deserializer::Find(json, "type", type); Type = (OrderType)type;
@@ -292,15 +292,15 @@ struct Balance
 
 struct Account
 {
-    int Id;
+    int Uid;
     std::string Name;
     Balance Wallet;
     std::vector<Order> Orders;
 
     Account() : Account(0, "<<\?\?\?>>", "<<\?\?\?>>", 0.0) {}
-    Account(int id, const char* name, const char* currency, double amount) : Wallet(currency, amount)
+    Account(int uid, const char* name, const char* currency, double amount) : Wallet(currency, amount)
     {
-        Id = id;
+        Uid = uid;
         Name = name;
     }
 
@@ -308,7 +308,7 @@ struct Account
 
     void Serialize(capnproto::Account::Builder& builder)
     {
-        builder.setId(Id);
+        builder.setUid(Uid);
         builder.setName(Name);
         auto wallet = builder.initWallet();
         Wallet.Serialize(wallet);
@@ -323,7 +323,7 @@ struct Account
 
     void Deserialize(const capnproto::Account::Reader& reader)
     {
-        Id = reader.getId();
+        Uid = reader.getUid();
         Name = reader.getName().cStr();
         Wallet.Deserialize(reader.getWallet());
         Orders.clear();
@@ -341,7 +341,7 @@ struct Account
     void Serialize(FBE::FieldModel<TBuffer, domain::Account>& model)
     {
         size_t model_begin = model.set_begin();
-        model.id.set(Id);
+        model.uid.set(Uid);
         model.name.set(Name);
         Wallet.Serialize(model.wallet);
         auto order_model = model.orders.resize(Orders.size());
@@ -357,7 +357,7 @@ struct Account
     void Deserialize(const FBE::FieldModel<TBuffer, domain::Account>& model)
     {
         size_t model_begin = model.get_begin();
-        model.id.get(Id);
+        model.uid.get(Uid);
         model.name.get(Name);
         Wallet.Deserialize(model.wallet);
         Orders.clear();
@@ -378,12 +378,12 @@ struct Account
         std::vector<flatbuffers::Offset<flatbuf::Order>> orders;
         for (auto& order : Orders)
             orders.emplace_back(order.Serialize(builder));
-        return flatbuf::CreateAccountDirect(builder, Id, Name.c_str(), wallet, &orders);
+        return flatbuf::CreateAccountDirect(builder, Uid, Name.c_str(), wallet, &orders);
     }
 
     void Deserialize(const flatbuf::Account& value)
     {
-        Id = value.id();
+        Uid = value.uid();
         Name = value.name()->str();
         Wallet.Deserialize(*value.wallet());
         Orders.clear();
@@ -399,7 +399,7 @@ struct Account
 
     protobuf::Account& Serialize(protobuf::Account& value)
     {
-        value.set_id(Id);
+        value.set_uid(Uid);
         value.set_name(Name);
         value.set_allocated_wallet(&Wallet.Serialize(*value.wallet().New(value.GetArena())));
         for (auto& order : Orders)
@@ -409,7 +409,7 @@ struct Account
 
     void Deserialize(const protobuf::Account& value)
     {
-        Id = value.id();
+        Uid = value.uid();
         Name = value.name();
         Wallet.Deserialize(value.wallet());
         Orders.clear();
@@ -427,7 +427,7 @@ struct Account
     void Serialize(CppSerialization::JSON::Serializer<OutputStream>& serializer)
     {
         serializer.StartObject();
-        serializer.Pair("id", Id);
+        serializer.Pair("uid", Uid);
         serializer.Pair("name", Name);
         serializer.Key("wallet");
         Wallet.Serialize(serializer);
@@ -444,7 +444,7 @@ struct Account
     {
         using namespace CppSerialization::JSON;
 
-        Deserializer::Find(json, "id", Id);
+        Deserializer::Find(json, "uid", Uid);
         Deserializer::Find(json, "name", Name);
         Deserializer::FindObject(json, "wallet", [this](const Value::ConstObject& object)
         {
