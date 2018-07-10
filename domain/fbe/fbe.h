@@ -870,7 +870,7 @@ public:
 
         uint32_t fbe_optional_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 1));
         assert((fbe_optional_offset > 0) && "Model is broken!");
-        if ((fbe_optional_offset == 0))
+        if (fbe_optional_offset == 0)
             return 0;
 
         _buffer.shift(fbe_optional_offset);
