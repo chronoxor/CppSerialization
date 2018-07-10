@@ -85,7 +85,7 @@ struct Order
     double volume;
 
     Order()
-        : uid()
+        : uid((int32_t)0ll)
         , symbol()
         , side()
         , type()
@@ -252,7 +252,7 @@ public:
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
     // Check if the struct value is valid
-    bool verify(bool verify_type = true) const noexcept
+    bool verify(bool fbe_verify_type = true) const noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return true;
@@ -266,7 +266,7 @@ public:
             return false;
 
         uint32_t fbe_struct_type = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset + 4));
-        if (verify_type && (fbe_struct_type != fbe_type()))
+        if (fbe_verify_type && (fbe_struct_type != fbe_type()))
             return false;
 
         _buffer.shift(fbe_struct_offset);
@@ -346,60 +346,71 @@ public:
     }
 
     // Get the struct value
-    void get(::domain::Order& value) const noexcept
+    void get(::domain::Order& fbe_value) const noexcept
     {
         size_t fbe_begin = get_begin();
         if (fbe_begin == 0)
             return;
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset()));
-        get_fields(value, fbe_struct_size);
+        get_fields(fbe_value, fbe_struct_size);
         get_end(fbe_begin);
     }
 
     // Get the struct fields values
-    void get_fields(::domain::Order& value, size_t fbe_struct_size) const noexcept
+    void get_fields(::domain::Order& fbe_value, size_t fbe_struct_size) const noexcept
     {
         size_t fbe_current_size = 4 + 4;
 
         if ((fbe_current_size + uid.fbe_size()) <= fbe_struct_size)
-            uid.get(value.uid);
+            uid.get(fbe_value.uid);
+        else
+            fbe_value.uid = (int32_t)0ll;
         fbe_current_size += uid.fbe_size();
 
         if ((fbe_current_size + symbol.fbe_size()) <= fbe_struct_size)
-            symbol.get(value.symbol);
+            symbol.get(fbe_value.symbol);
+        else
+            fbe_value.symbol = "";
         fbe_current_size += symbol.fbe_size();
 
         if ((fbe_current_size + side.fbe_size()) <= fbe_struct_size)
-            side.get(value.side);
+            side.get(fbe_value.side);
+        else
+            fbe_value.side = ::domain::OrderSide();
         fbe_current_size += side.fbe_size();
 
         if ((fbe_current_size + type.fbe_size()) <= fbe_struct_size)
-            type.get(value.type);
+            type.get(fbe_value.type);
+        else
+            fbe_value.type = ::domain::OrderType();
         fbe_current_size += type.fbe_size();
 
         if ((fbe_current_size + price.fbe_size()) <= fbe_struct_size)
-            price.get(value.price, (double)0.0);
+            price.get(fbe_value.price, (double)0.0);
         else
-            value.price = (double)0.0;
+            fbe_value.price = (double)0.0;
         fbe_current_size += price.fbe_size();
 
         if ((fbe_current_size + volume.fbe_size()) <= fbe_struct_size)
-            volume.get(value.volume, (double)0.0);
+            volume.get(fbe_value.volume, (double)0.0);
         else
-            value.volume = (double)0.0;
+            fbe_value.volume = (double)0.0;
         fbe_current_size += volume.fbe_size();
     }
 
     // Set the struct value (begin phase)
     size_t set_begin()
     {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
         uint32_t fbe_struct_size = (uint32_t)fbe_body();
         uint32_t fbe_struct_offset = (uint32_t)(_buffer.allocate(fbe_struct_size) - _buffer.offset());
         assert(((fbe_struct_offset > 0) && ((_buffer.offset() + fbe_struct_offset + fbe_struct_size) <= _buffer.size())) && "Model is broken!");
+        if ((fbe_struct_offset == 0) || ((_buffer.offset() + fbe_struct_offset + fbe_struct_size) > _buffer.size()))
+            return 0;
 
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_struct_offset;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset)) = fbe_struct_size;
@@ -416,25 +427,25 @@ public:
     }
 
     // Set the struct value
-    void set(const ::domain::Order& value) noexcept
+    void set(const ::domain::Order& fbe_value) noexcept
     {
         size_t fbe_begin = set_begin();
         if (fbe_begin == 0)
             return;
 
-        set_fields(value);
+        set_fields(fbe_value);
         set_end(fbe_begin);
     }
 
     // Set the struct fields values
-    void set_fields(const ::domain::Order& value) noexcept
+    void set_fields(const ::domain::Order& fbe_value) noexcept
     {
-        uid.set(value.uid);
-        symbol.set(value.symbol);
-        side.set(value.side);
-        type.set(value.type);
-        price.set(value.price);
-        volume.set(value.volume);
+        uid.set(fbe_value.uid);
+        symbol.set(fbe_value.symbol);
+        side.set(fbe_value.side);
+        type.set(fbe_value.type);
+        price.set(fbe_value.price);
+        volume.set(fbe_value.volume);
     }
 
 private:
@@ -468,7 +479,7 @@ public:
     // Get the model type
     size_t fbe_type() const noexcept { return model.fbe_type(); }
 
-    // Check if the current struct value is valid
+    // Check if the struct value is valid
     bool verify()
     {
         if ((this->buffer().offset() + model.fbe_offset() - 4) > this->buffer().size())
@@ -681,7 +692,7 @@ public:
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
     // Check if the struct value is valid
-    bool verify(bool verify_type = true) const noexcept
+    bool verify(bool fbe_verify_type = true) const noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return true;
@@ -695,7 +706,7 @@ public:
             return false;
 
         uint32_t fbe_struct_type = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset + 4));
-        if (verify_type && (fbe_struct_type != fbe_type()))
+        if (fbe_verify_type && (fbe_struct_type != fbe_type()))
             return false;
 
         _buffer.shift(fbe_struct_offset);
@@ -751,42 +762,47 @@ public:
     }
 
     // Get the struct value
-    void get(::domain::Balance& value) const noexcept
+    void get(::domain::Balance& fbe_value) const noexcept
     {
         size_t fbe_begin = get_begin();
         if (fbe_begin == 0)
             return;
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset()));
-        get_fields(value, fbe_struct_size);
+        get_fields(fbe_value, fbe_struct_size);
         get_end(fbe_begin);
     }
 
     // Get the struct fields values
-    void get_fields(::domain::Balance& value, size_t fbe_struct_size) const noexcept
+    void get_fields(::domain::Balance& fbe_value, size_t fbe_struct_size) const noexcept
     {
         size_t fbe_current_size = 4 + 4;
 
         if ((fbe_current_size + currency.fbe_size()) <= fbe_struct_size)
-            currency.get(value.currency);
+            currency.get(fbe_value.currency);
+        else
+            fbe_value.currency = "";
         fbe_current_size += currency.fbe_size();
 
         if ((fbe_current_size + amount.fbe_size()) <= fbe_struct_size)
-            amount.get(value.amount, (double)0.0);
+            amount.get(fbe_value.amount, (double)0.0);
         else
-            value.amount = (double)0.0;
+            fbe_value.amount = (double)0.0;
         fbe_current_size += amount.fbe_size();
     }
 
     // Set the struct value (begin phase)
     size_t set_begin()
     {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
         uint32_t fbe_struct_size = (uint32_t)fbe_body();
         uint32_t fbe_struct_offset = (uint32_t)(_buffer.allocate(fbe_struct_size) - _buffer.offset());
         assert(((fbe_struct_offset > 0) && ((_buffer.offset() + fbe_struct_offset + fbe_struct_size) <= _buffer.size())) && "Model is broken!");
+        if ((fbe_struct_offset == 0) || ((_buffer.offset() + fbe_struct_offset + fbe_struct_size) > _buffer.size()))
+            return 0;
 
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_struct_offset;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset)) = fbe_struct_size;
@@ -803,21 +819,21 @@ public:
     }
 
     // Set the struct value
-    void set(const ::domain::Balance& value) noexcept
+    void set(const ::domain::Balance& fbe_value) noexcept
     {
         size_t fbe_begin = set_begin();
         if (fbe_begin == 0)
             return;
 
-        set_fields(value);
+        set_fields(fbe_value);
         set_end(fbe_begin);
     }
 
     // Set the struct fields values
-    void set_fields(const ::domain::Balance& value) noexcept
+    void set_fields(const ::domain::Balance& fbe_value) noexcept
     {
-        currency.set(value.currency);
-        amount.set(value.amount);
+        currency.set(fbe_value.currency);
+        amount.set(fbe_value.amount);
     }
 
 private:
@@ -847,7 +863,7 @@ public:
     // Get the model type
     size_t fbe_type() const noexcept { return model.fbe_type(); }
 
-    // Check if the current struct value is valid
+    // Check if the struct value is valid
     bool verify()
     {
         if ((this->buffer().offset() + model.fbe_offset() - 4) > this->buffer().size())
@@ -923,7 +939,7 @@ struct Account
     std::vector<::domain::Order> orders;
 
     Account()
-        : uid()
+        : uid((int32_t)0ll)
         , name()
         , wallet()
         , orders()
@@ -1085,7 +1101,7 @@ public:
     void fbe_unshift(size_t size) noexcept { _offset -= size; }
 
     // Check if the struct value is valid
-    bool verify(bool verify_type = true) const noexcept
+    bool verify(bool fbe_verify_type = true) const noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return true;
@@ -1099,7 +1115,7 @@ public:
             return false;
 
         uint32_t fbe_struct_type = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset + 4));
-        if (verify_type && (fbe_struct_type != fbe_type()))
+        if (fbe_verify_type && (fbe_struct_type != fbe_type()))
             return false;
 
         _buffer.shift(fbe_struct_offset);
@@ -1167,48 +1183,59 @@ public:
     }
 
     // Get the struct value
-    void get(::domain::Account& value) const noexcept
+    void get(::domain::Account& fbe_value) const noexcept
     {
         size_t fbe_begin = get_begin();
         if (fbe_begin == 0)
             return;
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset()));
-        get_fields(value, fbe_struct_size);
+        get_fields(fbe_value, fbe_struct_size);
         get_end(fbe_begin);
     }
 
     // Get the struct fields values
-    void get_fields(::domain::Account& value, size_t fbe_struct_size) const noexcept
+    void get_fields(::domain::Account& fbe_value, size_t fbe_struct_size) const noexcept
     {
         size_t fbe_current_size = 4 + 4;
 
         if ((fbe_current_size + uid.fbe_size()) <= fbe_struct_size)
-            uid.get(value.uid);
+            uid.get(fbe_value.uid);
+        else
+            fbe_value.uid = (int32_t)0ll;
         fbe_current_size += uid.fbe_size();
 
         if ((fbe_current_size + name.fbe_size()) <= fbe_struct_size)
-            name.get(value.name);
+            name.get(fbe_value.name);
+        else
+            fbe_value.name = "";
         fbe_current_size += name.fbe_size();
 
         if ((fbe_current_size + wallet.fbe_size()) <= fbe_struct_size)
-            wallet.get(value.wallet);
+            wallet.get(fbe_value.wallet);
+        else
+            fbe_value.wallet = ::domain::Balance();
         fbe_current_size += wallet.fbe_size();
 
         if ((fbe_current_size + orders.fbe_size()) <= fbe_struct_size)
-            orders.get(value.orders);
+            orders.get(fbe_value.orders);
+        else
+            fbe_value.orders.clear();
         fbe_current_size += orders.fbe_size();
     }
 
     // Set the struct value (begin phase)
     size_t set_begin()
     {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
         uint32_t fbe_struct_size = (uint32_t)fbe_body();
         uint32_t fbe_struct_offset = (uint32_t)(_buffer.allocate(fbe_struct_size) - _buffer.offset());
         assert(((fbe_struct_offset > 0) && ((_buffer.offset() + fbe_struct_offset + fbe_struct_size) <= _buffer.size())) && "Model is broken!");
+        if ((fbe_struct_offset == 0) || ((_buffer.offset() + fbe_struct_offset + fbe_struct_size) > _buffer.size()))
+            return 0;
 
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_struct_offset;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset)) = fbe_struct_size;
@@ -1225,23 +1252,23 @@ public:
     }
 
     // Set the struct value
-    void set(const ::domain::Account& value) noexcept
+    void set(const ::domain::Account& fbe_value) noexcept
     {
         size_t fbe_begin = set_begin();
         if (fbe_begin == 0)
             return;
 
-        set_fields(value);
+        set_fields(fbe_value);
         set_end(fbe_begin);
     }
 
     // Set the struct fields values
-    void set_fields(const ::domain::Account& value) noexcept
+    void set_fields(const ::domain::Account& fbe_value) noexcept
     {
-        uid.set(value.uid);
-        name.set(value.name);
-        wallet.set(value.wallet);
-        orders.set(value.orders);
+        uid.set(fbe_value.uid);
+        name.set(fbe_value.name);
+        wallet.set(fbe_value.wallet);
+        orders.set(fbe_value.orders);
     }
 
 private:
@@ -1273,7 +1300,7 @@ public:
     // Get the model type
     size_t fbe_type() const noexcept { return model.fbe_type(); }
 
-    // Check if the current struct value is valid
+    // Check if the struct value is valid
     bool verify()
     {
         if ((this->buffer().offset() + model.fbe_offset() - 4) > this->buffer().size())
@@ -1345,7 +1372,6 @@ namespace domain {
 // Fast Binary Encoding domain sender class
 template <class TBuffer>
 class Sender : public virtual FBE::Sender<TBuffer>
-
 {
 public:
     Sender()
@@ -1430,10 +1456,9 @@ namespace domain {
 // Fast Binary Encoding domain receiver class
 template <class TBuffer>
 class Receiver : public virtual FBE::Receiver<TBuffer>
-
 {
 public:
-    Receiver() = default;
+    Receiver() {}
     Receiver(const Receiver&) = default;
     Receiver(Receiver&&) noexcept = default;
     virtual ~Receiver() = default;

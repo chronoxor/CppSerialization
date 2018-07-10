@@ -414,6 +414,7 @@ public:
     // Set the field value
     void set(T value) noexcept
     {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
@@ -526,7 +527,7 @@ public:
             return 0;
 
         uint32_t fbe_bytes_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_bytes_offset));
-        assert(((_buffer.offset() + fbe_bytes_offset + fbe_bytes_size) <= _buffer.size()) && "Model is broken!");
+        assert(((_buffer.offset() + fbe_bytes_offset + 4 + fbe_bytes_size) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_bytes_offset + 4 + fbe_bytes_size) > _buffer.size())
             return 0;
 
@@ -537,17 +538,11 @@ public:
 
     // Get the bytes value
     template <size_t N>
-    size_t get(uint8_t (&data)[N]) const noexcept
-    {
-        return get(data, N);
-    }
+    size_t get(uint8_t (&data)[N]) const noexcept { return get(data, N); }
 
     // Get the bytes value
     template <size_t N>
-    size_t get(std::array<uint8_t, N>& data) const noexcept
-    {
-        return get(data.data(), data.size());
-    }
+    size_t get(std::array<uint8_t, N>& data) const noexcept { return get(data.data(), data.size()); }
 
     // Get the bytes value
     void get(std::vector<uint8_t>& value) const noexcept
@@ -566,7 +561,7 @@ public:
             return;
 
         uint32_t fbe_bytes_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_bytes_offset));
-        assert(((_buffer.offset() + fbe_bytes_offset + fbe_bytes_size) <= _buffer.size()) && "Model is broken!");
+        assert(((_buffer.offset() + fbe_bytes_offset + 4 + fbe_bytes_size) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_bytes_offset + 4 + fbe_bytes_size) > _buffer.size())
             return;
 
@@ -581,12 +576,15 @@ public:
         if (data == nullptr)
             return;
 
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
         uint32_t fbe_bytes_size = (uint32_t)size;
         uint32_t fbe_bytes_offset = (uint32_t)(_buffer.allocate(4 + fbe_bytes_size) - _buffer.offset());
         assert(((fbe_bytes_offset > 0) && ((_buffer.offset() + fbe_bytes_offset + 4 + fbe_bytes_size) <= _buffer.size())) && "Model is broken!");
+        if ((fbe_bytes_offset == 0) || ((_buffer.offset() + fbe_bytes_offset + 4 + fbe_bytes_size) > _buffer.size()))
+            return;
 
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_bytes_offset;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_bytes_offset)) = fbe_bytes_size;
@@ -596,17 +594,11 @@ public:
 
     // Set the bytes value
     template <size_t N>
-    void set(const uint8_t (&data)[N])
-    {
-        return set(data, N);
-    }
+    void set(const uint8_t (&data)[N]) { set(data, N); }
 
     // Set the bytes value
     template <size_t N>
-    void set(const std::array<uint8_t, N>& data)
-    {
-        return set(data.data(), data.size());
-    }
+    void set(const std::array<uint8_t, N>& data) { set(data.data(), data.size()); }
 
     // Set the bytes value
     void set(const std::vector<uint8_t>& value) { set(value.data(), value.size()); }
@@ -685,7 +677,7 @@ public:
             return 0;
 
         uint32_t fbe_string_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_string_offset));
-        assert(((_buffer.offset() + fbe_string_offset + fbe_string_size) <= _buffer.size()) && "Model is broken!");
+        assert(((_buffer.offset() + fbe_string_offset + 4 + fbe_string_size) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_string_offset + 4 + fbe_string_size) > _buffer.size())
             return 0;
 
@@ -696,20 +688,38 @@ public:
 
     // Get the string value
     template <size_t N>
-    size_t get(char (&data)[N]) const noexcept
-    {
-        return get(data, N);
-    }
+    size_t get(char (&data)[N]) const noexcept { return get(data, N); }
 
     // Get the string value
     template <size_t N>
-    size_t get(std::array<char, N>& data) const noexcept
+    size_t get(std::array<char, N>& data) const noexcept { return get(data.data(), data.size()); }
+
+    // Get the string value
+    void get(std::string& value) const noexcept
     {
-        return get(data.data(), data.size());
+        value.clear();
+
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return;
+
+        uint32_t fbe_string_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + _offset));
+        if (fbe_string_offset == 0)
+            return;
+
+        assert(((_buffer.offset() + fbe_string_offset + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_string_offset + 4) > _buffer.size())
+            return;
+
+        uint32_t fbe_string_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_string_offset));
+        assert(((_buffer.offset() + fbe_string_offset + 4 + fbe_string_size) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_string_offset + 4 + fbe_string_size) > _buffer.size())
+            return;
+
+        value.assign((const char*)(_buffer.data() + _buffer.offset() + fbe_string_offset + 4), fbe_string_size);
     }
 
     // Get the string value
-    void get(std::string& value, const std::string& defaults = "") const noexcept
+    void get(std::string& value, const std::string& defaults) const noexcept
     {
         value = defaults;
 
@@ -725,7 +735,7 @@ public:
             return;
 
         uint32_t fbe_string_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_string_offset));
-        assert(((_buffer.offset() + fbe_string_offset + fbe_string_size) <= _buffer.size()) && "Model is broken!");
+        assert(((_buffer.offset() + fbe_string_offset + 4 + fbe_string_size) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_string_offset + 4 + fbe_string_size) > _buffer.size())
             return;
 
@@ -739,12 +749,15 @@ public:
         if (data == nullptr)
             return;
 
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
         uint32_t fbe_string_size = (uint32_t)size;
         uint32_t fbe_string_offset = (uint32_t)(_buffer.allocate(4 + fbe_string_size) - _buffer.offset());
         assert(((fbe_string_offset > 0) && ((_buffer.offset() + fbe_string_offset + 4 + fbe_string_size) <= _buffer.size())) && "Model is broken!");
+        if ((fbe_string_offset == 0) || ((_buffer.offset() + fbe_string_offset + 4 + fbe_string_size) > _buffer.size()))
+            return;
 
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_string_offset;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_string_offset)) = fbe_string_size;
@@ -754,27 +767,24 @@ public:
 
     // Set the string value
     template <size_t N>
-    void set(const char (&data)[N])
-    {
-        return set(data, N);
-    }
+    void set(const char (&data)[N]) { set(data, N); }
 
     // Set the string value
     template <size_t N>
-    void set(const std::array<char, N>& data)
-    {
-        return set(data.data(), data.size());
-    }
+    void set(const std::array<char, N>& data) { set(data.data(), data.size()); }
 
     // Set the string value
     void set(const std::string& value)
     {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
         uint32_t fbe_string_size = (uint32_t)value.size();
         uint32_t fbe_string_offset = (uint32_t)(_buffer.allocate(4 + fbe_string_size) - _buffer.offset());
         assert(((fbe_string_offset > 0) && ((_buffer.offset() + fbe_string_offset + 4 + fbe_string_size) <= _buffer.size())) && "Model is broken!");
+        if ((fbe_string_offset == 0) || ((_buffer.offset() + fbe_string_offset + 4 + fbe_string_size) > _buffer.size()))
+            return;
 
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_string_offset;
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_string_offset)) = fbe_string_size;
@@ -860,6 +870,8 @@ public:
 
         uint32_t fbe_optional_offset = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 1));
         assert((fbe_optional_offset > 0) && "Model is broken!");
+        if ((fbe_optional_offset == 0))
+            return 0;
 
         _buffer.shift(fbe_optional_offset);
         return fbe_optional_offset;
@@ -890,6 +902,7 @@ public:
     // Set the optional value (begin phase)
     size_t set_begin(bool has_value)
     {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return 0;
 
@@ -901,6 +914,8 @@ public:
         uint32_t fbe_optional_size = (uint32_t)value.fbe_size();
         uint32_t fbe_optional_offset = (uint32_t)(_buffer.allocate(fbe_optional_size) - _buffer.offset());
         assert(((fbe_optional_offset > 0) && ((_buffer.offset() + fbe_optional_offset + fbe_optional_size) <= _buffer.size())) && "Model is broken!");
+        if ((fbe_optional_offset == 0) || ((_buffer.offset() + fbe_optional_offset + fbe_optional_size) > _buffer.size()))
+            return 0;
 
         *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 1)) = fbe_optional_offset;
 
@@ -1044,6 +1059,7 @@ public:
     template <size_t S>
     void set(const T (&values)[S]) noexcept
     {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
@@ -1059,6 +1075,7 @@ public:
     template <size_t S>
     void set(const std::array<T, S>& values) noexcept
     {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
@@ -1073,6 +1090,7 @@ public:
     // Set the vector as std::vector
     void set(const std::vector<T>& values) noexcept
     {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
@@ -1273,6 +1291,7 @@ public:
     // Set the vector as std::vector
     void set(const std::vector<T>& values) noexcept
     {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
@@ -1287,6 +1306,7 @@ public:
     // Set the vector as std::list
     void set(const std::list<T>& values) noexcept
     {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
@@ -1301,6 +1321,7 @@ public:
     // Set the vector as std::set
     void set(const std::set<T>& values) noexcept
     {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
@@ -1495,6 +1516,7 @@ public:
     // Set the map as std::map
     void set(const std::map<TKey, TValue>& values) noexcept
     {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
@@ -1511,6 +1533,7 @@ public:
     // Set the map as std::unordered_map
     void set(const std::unordered_map<TKey, TValue>& values) noexcept
     {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
@@ -1556,6 +1579,8 @@ public:
     size_t send_serialized(size_t serialized)
     {
         assert((serialized > 0) && "Invalid size of the serialized buffer!");
+        if (serialized == 0)
+            return 0;
 
         // Shift the send buffer
         this->_buffer->shift(serialized);
@@ -1583,7 +1608,7 @@ class Receiver
 {
 public:
     Receiver() : Receiver(nullptr) {}
-    Receiver(const std::shared_ptr<TBuffer>& buffer) : _logging(false) { _buffer = buffer ? buffer : std::make_shared<TBuffer>(); }
+    Receiver(const std::shared_ptr<TBuffer>& buffer) : _logging(false), _fast(false) { _buffer = buffer ? buffer : std::make_shared<TBuffer>(); }
     Receiver(const Receiver&) = default;
     Receiver(Receiver&&) noexcept = default;
     virtual ~Receiver() = default;
@@ -1814,10 +1839,21 @@ public:
                 return;
             }
 
+            [[maybe_unused]] uint32_t fbe_struct_size;
+            uint32_t fbe_struct_type;
+
             // Read the message parameters
-            uint32_t fbe_struct_offset = *((const uint32_t*)(message_buffer + 4));
-            [[maybe_unused]] uint32_t fbe_struct_size = *((const uint32_t*)(message_buffer + fbe_struct_offset));
-            uint32_t fbe_struct_type = *((const uint32_t*)(message_buffer + fbe_struct_offset + 4));
+            if (_fast)
+            {
+                fbe_struct_size = *((const uint32_t*)(message_buffer));
+                fbe_struct_type = *((const uint32_t*)(message_buffer + 4));
+            }
+            else
+            {
+                uint32_t fbe_struct_offset = *((const uint32_t*)(message_buffer + 4));
+                fbe_struct_size = *((const uint32_t*)(message_buffer + fbe_struct_offset));
+                fbe_struct_type = *((const uint32_t*)(message_buffer + fbe_struct_offset + 4));
+            }
 
             // Handle the message
             onReceive(fbe_struct_type, message_buffer, message_size);
@@ -1841,6 +1877,10 @@ protected:
 protected:
     std::shared_ptr<TBuffer> _buffer;
     bool _logging;
+    bool _fast;
+
+    // Enable/Disable fast protocol
+    void fast(bool enable) noexcept { _fast = enable; }
 };
 
 } // namespace FBE
