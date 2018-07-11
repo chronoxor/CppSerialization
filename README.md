@@ -14,11 +14,11 @@ Performance comparison based on the [Domain model](#domain-model):
 
 | Format             | Message size | Serialization time | Deserialization time |
 | ------------------ | ------------ | ------------------ | -------------------- |
-| Cap'n'Proto        | 208 bytes    | 678 ns             | 480 ns               |
-| FastBinaryEncoding | 234 bytes    | 116 ns             | 119 ns               |
-| FlatBuffers        | 280 bytes    | 1024 ns            | 385 ns               |
-| Protobuf           | 120 bytes    | 836 ns             | 1024 ns              |
-| JSON               | 297 bytes    | 845 ns             | 2560 ns              |
+| Cap'n'Proto        | 208 bytes    |  678 ns            |  480 ns              |
+| FastBinaryEncoding | 234 bytes    |   86 ns            |   99 ns              |
+| FlatBuffers        | 280 bytes    | 1024 ns            |  385 ns              |
+| Protobuf           | 120 bytes    |  836 ns            | 1024 ns              |
+| JSON               | 297 bytes    |  845 ns            | 2560 ns              |
 
 [CppSerialization API reference](https://chronoxor.github.io/CppSerialization/index.html)
 
@@ -792,28 +792,28 @@ CPU physical cores: 4
 CPU clock speed: 3.998 GHz
 CPU Hyper-Threading: enabled
 RAM total: 31.962 GiB
-RAM free: 18.341 GiB
+RAM free: 21.1019 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Wed May  9 02:34:50 2018
-UTC timestamp: Tue May  8 23:34:50 2018
+Local timestamp: Thu Jul 12 00:23:41 2018
+UTC timestamp: Wed Jul 11 21:23:41 2018
 ===============================================================================
 Benchmark: FastBinaryEncoding-Serialize
 Attempts: 5
-Operations: 1000000
+Operations: 10000000
 -------------------------------------------------------------------------------
 Phase: FastBinaryEncoding-Serialize
-Average time: 116 ns/op
-Minimal time: 116 ns/op
-Maximal time: 118 ns/op
-Total time: 116.975 ms
-Total operations: 1000000
-Total bytes: 223.163 MiB
-Operations throughput: 8548766 ops/s
-Bytes throughput: 1.883 GiB/s
+Average time: 86 ns/op
+Minimal time: 86 ns/op
+Maximal time: 87 ns/op
+Total time: 867.265 ms
+Total operations: 10000000
+Total bytes: 2.183 GiB
+Operations throughput: 11530489 ops/s
+Bytes throughput: 2.525 GiB/s
 Custom values:
         Size: 234
 ===============================================================================
@@ -831,28 +831,28 @@ CPU physical cores: 4
 CPU clock speed: 3.998 GHz
 CPU Hyper-Threading: enabled
 RAM total: 31.962 GiB
-RAM free: 18.339 GiB
+RAM free: 21.1014 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Wed May  9 02:35:06 2018
-UTC timestamp: Tue May  8 23:35:06 2018
+Local timestamp: Thu Jul 12 00:25:22 2018
+UTC timestamp: Wed Jul 11 21:25:22 2018
 ===============================================================================
 Benchmark: FastBinaryEncoding-Deserialize
 Attempts: 5
-Operations: 1000000
+Operations: 10000000
 -------------------------------------------------------------------------------
 Phase: FastBinaryEncoding-Deserialize
-Average time: 119 ns/op
-Minimal time: 119 ns/op
-Maximal time: 129 ns/op
-Total time: 119.236 ms
-Total operations: 1000000
-Total bytes: 223.163 MiB
-Operations throughput: 8386715 ops/s
-Bytes throughput: 1.847 GiB/s
+Average time: 99 ns/op
+Minimal time: 99 ns/op
+Maximal time: 104 ns/op
+Total time: 991.984 ms
+Total operations: 10000000
+Total bytes: 2.183 GiB
+Operations throughput: 10080806 ops/s
+Bytes throughput: 2.201 GiB/s
 Custom values:
         Size: 234
 ===============================================================================
