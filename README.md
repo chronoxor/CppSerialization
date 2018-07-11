@@ -7,12 +7,12 @@
 [![Windows build status](https://img.shields.io/appveyor/ci/chronoxor/CppSerialization/master.svg?label=Windows)](https://ci.appveyor.com/project/chronoxor/CppSerialization)
 
 C++ Serialization Library provides functionality to serialize/deserialize
-objects in/from different formats such as Cap'n'Proto, FastBinaryEncoding,
+objects in/from different protocols such as Cap'n'Proto, FastBinaryEncoding,
 Flatbuffers, Protobuf, JSON.
 
 Performance comparison based on the [Domain model](#domain-model):
 
-| Format             | Message size | Serialization time | Deserialization time |
+| Protocol           | Message size | Serialization time | Deserialization time |
 | :----------------: | -----------: | -----------------: | -------------------: |
 | Cap'n'Proto        |    208 bytes |             678 ns |               480 ns |
 | FastBinaryEncoding |    234 bytes |              86 ns |                99 ns |
