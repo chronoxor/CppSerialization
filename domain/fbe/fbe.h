@@ -195,10 +195,6 @@ public:
     // Allocate memory in the current write buffer and return offset to the allocated memory block
     size_t allocate(size_t size)
     {
-        assert((size >= 0) && "Invalid allocate size!");
-        if (size < 0)
-            throw std::invalid_argument("Invalid allocate size!");
-
         size_t offset = _size;
 
         // Calculate a new buffer size
@@ -241,10 +237,6 @@ public:
     // Reserve memory of the given capacity in the current write buffer
     void reserve(size_t capacity)
     {
-        assert((capacity >= 0) && "Invalid reserve capacity!");
-        if (capacity < 0)
-            throw std::invalid_argument("Invalid reserve capacity!");
-
         if (capacity > _capacity)
         {
             _capacity = std::max(capacity, 2 * _capacity);

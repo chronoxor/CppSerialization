@@ -13,7 +13,7 @@ Flatbuffers, Protobuf, JSON.
 Performance comparison based on the [Domain model](#domain-model):
 
 | Format             | Message size | Serialization time | Deserialization time |
-| ------------------ | ------------ | ------------------ | -------------------- |
+| :----------------- | :----------: | :----------------: | :------------------: |
 | Cap'n'Proto        | 208 bytes    |  678 ns            |  480 ns              |
 | FastBinaryEncoding | 234 bytes    |   86 ns            |   99 ns              |
 | FlatBuffers        | 280 bytes    | 1024 ns            |  385 ns              |
