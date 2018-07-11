@@ -6,7 +6,7 @@
 
 #include "../domain/domain.h"
 
-const uint64_t operations = 1000000;
+const uint64_t operations = 10000000;
 
 class DeserializationFixture
 {

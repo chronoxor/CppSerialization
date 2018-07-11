@@ -142,13 +142,13 @@ inline uint64_t utc()
 #endif
 }
 
-// Fast Binary Encoding write buffer based on the dynamic byte vector
+// Fast Binary Encoding write buffer based on the dynamic byte buffer
 class WriteBuffer
 {
 public:
-    WriteBuffer() : _offset(0) {}
+    WriteBuffer() : _data(nullptr), _capacity(0), _size(0), _offset(0) {}
     // Initialize the write buffer with the given capacity
-    explicit WriteBuffer(size_t capacity) : _offset(0) { reserve(capacity); }
+    explicit WriteBuffer(size_t capacity) : WriteBuffer() { reserve(capacity); }
     WriteBuffer(const WriteBuffer&) = default;
     WriteBuffer(WriteBuffer&&) noexcept = default;
     ~WriteBuffer() = default;
@@ -156,10 +156,10 @@ public:
     WriteBuffer& operator=(const WriteBuffer&) = default;
     WriteBuffer& operator=(WriteBuffer&&) noexcept = default;
 
-    const uint8_t* data() const noexcept { return _buffer.data(); }
-    uint8_t* data() noexcept { return _buffer.data(); }
-    size_t capacity() const noexcept { return _buffer.capacity(); }
-    size_t size() const noexcept { return _buffer.size(); }
+    const uint8_t* data() const noexcept { return _data; }
+    uint8_t* data() noexcept { return _data; }
+    size_t capacity() const noexcept { return _capacity; }
+    size_t size() const noexcept { return _size; }
     size_t offset() const noexcept { return _offset; }
 
     // Attach the given buffer with a given offset to the end of the current buffer
@@ -169,10 +169,11 @@ public:
         if (offset > size)
             throw std::invalid_argument("Invalid offset!");
 
-        // Copy the given buffer starting from the given offset
-        if (size > offset)
-            _buffer.insert(_buffer.begin(), (const uint8_t*)data + offset, (const uint8_t*)data + size - offset);
-        _offset = _buffer.size();
+        reserve(size);
+        std::memcpy(_data, data, size);
+        _capacity = size;
+        _size = size;
+        _offset = offset;
     }
 
     // Attach the given vector with a given offset to the end of the current buffer
@@ -182,52 +183,82 @@ public:
         if (offset > buffer.size())
             throw std::invalid_argument("Invalid offset!");
 
-        // Reset the current buffer
-        reset();
+        size_t size = buffer.size();
 
-        // Copy the given buffer starting from the given offset
-        if (buffer.size() > offset)
-            _buffer.insert(_buffer.begin(), buffer.begin() + offset, buffer.end() - offset);
-        _offset = _buffer.size();
+        reserve(size);
+        std::memcpy(_data, buffer.data(), size);
+        _capacity = size;
+        _size = size;
+        _offset = offset;
     }
 
     // Allocate memory in the current write buffer and return offset to the allocated memory block
     size_t allocate(size_t size)
     {
-        assert((size > 0) && "Invalid allocate size!");
-        if (size <= 0)
+        assert((size >= 0) && "Invalid allocate size!");
+        if (size < 0)
             throw std::invalid_argument("Invalid allocate size!");
 
-        size_t offset = _buffer.size();
-        _buffer.resize(offset + size);
+        size_t offset = _size;
+
+        // Calculate a new buffer size
+        size_t total = _size + size;
+
+        if (total <= _capacity)
+        {
+            _size = total;
+            return offset;
+        }
+
+        _capacity = std::max(total, 2 * _capacity);
+        uint8_t* data = new uint8_t[_capacity];
+        std::memcpy(data, _data, _size);
+        delete[] _data;
+        _data = data;
+        _size = total;
         return offset;
     }
 
     // Remove some memory of the given size from the current write buffer
     void remove(size_t offset, size_t size)
     {
-        assert(((offset + size) <= _buffer.size()) && "Invalid offset & size!");
-        if ((offset + size) > _buffer.size())
+        assert(((offset + size) <= _size) && "Invalid offset & size!");
+        if ((offset + size) > _size)
             throw std::invalid_argument("Invalid offset & size!");
 
-        _buffer.erase(_buffer.begin() + offset, _buffer.begin() + offset + size);
+        std::memcpy(_data + offset, _data + offset + size, _size - size - offset);
+        _size -= size;
         if (_offset >= (offset + size))
             _offset -= size;
         else if (_offset >= offset)
         {
             _offset -= _offset - offset;
-            if (_offset > _buffer.size())
-                _offset = _buffer.size();
+            if (_offset > _size)
+                _offset = _size;
         }
     }
 
     // Reserve memory of the given capacity in the current write buffer
-    void reserve(size_t capacity) { _buffer.reserve(capacity); }
+    void reserve(size_t capacity)
+    {
+        assert((capacity >= 0) && "Invalid reserve capacity!");
+        if (capacity < 0)
+            throw std::invalid_argument("Invalid reserve capacity!");
+
+        if (capacity > _capacity)
+        {
+            _capacity = std::max(capacity, 2 * _capacity);
+            uint8_t* data = new uint8_t[_capacity];
+            std::memcpy(data, _data, _size);
+            delete [] _data;
+            _data = data;
+        }
+    }
 
     // Reset the current write buffer and its offset
     void reset()
     {
-        _buffer.clear();
+        _size = 0;
         _offset = 0;
     }
 
@@ -237,7 +268,9 @@ public:
     void unshift(size_t offset) { _offset -= offset; }
 
 private:
-    std::vector<uint8_t> _buffer;
+    uint8_t* _data;
+    size_t _capacity;
+    size_t _size;
     size_t _offset;
 };
 
