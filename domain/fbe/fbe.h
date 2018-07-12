@@ -151,7 +151,7 @@ public:
     explicit WriteBuffer(size_t capacity) : WriteBuffer() { reserve(capacity); }
     WriteBuffer(const WriteBuffer&) = default;
     WriteBuffer(WriteBuffer&&) noexcept = default;
-    ~WriteBuffer() = default;
+    ~WriteBuffer() { std::free(_data); }
 
     WriteBuffer& operator=(const WriteBuffer&) = default;
     WriteBuffer& operator=(WriteBuffer&&) noexcept = default;
@@ -195,10 +195,6 @@ public:
     // Allocate memory in the current write buffer and return offset to the allocated memory block
     size_t allocate(size_t size)
     {
-        assert((size >= 0) && "Invalid allocate size!");
-        if (size < 0)
-            throw std::invalid_argument("Invalid allocate size!");
-
         size_t offset = _size;
 
         // Calculate a new buffer size
@@ -211,9 +207,9 @@ public:
         }
 
         _capacity = std::max(total, 2 * _capacity);
-        uint8_t* data = new uint8_t[_capacity];
+        uint8_t* data = (uint8_t*)std::malloc(_capacity);
         std::memcpy(data, _data, _size);
-        delete[] _data;
+        std::free(_data);
         _data = data;
         _size = total;
         return offset;
@@ -241,16 +237,12 @@ public:
     // Reserve memory of the given capacity in the current write buffer
     void reserve(size_t capacity)
     {
-        assert((capacity >= 0) && "Invalid reserve capacity!");
-        if (capacity < 0)
-            throw std::invalid_argument("Invalid reserve capacity!");
-
         if (capacity > _capacity)
         {
             _capacity = std::max(capacity, 2 * _capacity);
-            uint8_t* data = new uint8_t[_capacity];
+            uint8_t* data = (uint8_t*)std::malloc(_capacity);
             std::memcpy(data, _data, _size);
-            delete [] _data;
+            std::free(_data);
             _data = data;
         }
     }
