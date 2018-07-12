@@ -6,20 +6,20 @@
     \copyright MIT License
 */
 
-#include "../domain/domain.h"
+#include "../proto/trade.h"
 
 #include <iostream>
 
 int main(int argc, char** argv)
 {
     // Create a new account with some orders
-    MyDomain::Account account(1, "Test", "USD", 1000);
-    account.Orders.emplace_back(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
-    account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
-    account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
+    TradeProto::Account account(1, "Test", "USD", 1000);
+    account.Orders.emplace_back(TradeProto::Order(1, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::MARKET, 1.23456, 1000));
+    account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
+    account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
     // Serialize the account to the FBE stream
-    FBE::domain::AccountModel<FBE::WriteBuffer> writer;
+    FBE::trade::AccountModel<FBE::WriteBuffer> writer;
     size_t model_begin = writer.create_begin();
     account.Serialize(writer.model);
     size_t serialized = writer.create_end(model_begin);
@@ -29,8 +29,8 @@ int main(int argc, char** argv)
     std::cout << "FBE size: " << serialized << std::endl;
 
     // Deserialize the account from the FBE stream
-    MyDomain::Account deserialized;
-    FBE::domain::AccountModel<FBE::ReadBuffer> reader;
+    TradeProto::Account deserialized;
+    FBE::trade::AccountModel<FBE::ReadBuffer> reader;
     reader.attach(writer.buffer());
     assert(reader.verify() && "Model is broken!");
     deserialized.Deserialize(reader.model);

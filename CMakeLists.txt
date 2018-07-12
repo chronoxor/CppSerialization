@@ -50,13 +50,13 @@ list(APPEND LINKLIBS cppserialization)
 # Additional module components: benchmarks, examples, plugins, tests, tools and install
 if(NOT CPPSERIALIZATION_MODULE)
 
-  # Domain Flatbuffers models
-  file(GLOB FLATBUFFERS_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/domain" "domain/*.fbs")
+  # Proto Flatbuffers models
+  file(GLOB FLATBUFFERS_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/proto" "proto/*.fbs")
   foreach(FLATBUFFERS_FILE ${FLATBUFFERS_FILES})
     string(REGEX REPLACE "(.*)\\.fbs" "\\1_generated.h" FLATBUFFERS_HEADER ${FLATBUFFERS_FILE})
-    set(FLATBUFFERS_INPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/domain")
+    set(FLATBUFFERS_INPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/proto")
     set(FLATBUFFERS_INPUT_FILE "${FLATBUFFERS_INPUT_DIR}/${FLATBUFFERS_FILE}")
-    set(FLATBUFFERS_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/domain/flatbuffers")
+    set(FLATBUFFERS_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/proto/flatbuffers")
     set(FLATBUFFERS_OUTPUT_FILE "${FLATBUFFERS_OUTPUT_DIR}/${FLATBUFFERS_HEADER}")
     set(FLATBUFFERS_TARGET "${FLATBUFFERS_FILE}_TARGET")
     add_custom_command(
@@ -64,18 +64,18 @@ if(NOT CPPSERIALIZATION_MODULE)
         COMMAND $<TARGET_FILE:flatc> --cpp --scoped-enums -o ${FLATBUFFERS_OUTPUT_DIR} ${FLATBUFFERS_INPUT_FILE} COMMENT "Generating ${FLATBUFFERS_OUTPUT_FILE}..." VERBATIM
     )
     add_custom_target(${FLATBUFFERS_TARGET} DEPENDS ${FLATBUFFERS_OUTPUT_FILE})
-    set_target_properties(${FLATBUFFERS_TARGET} PROPERTIES FOLDER domain)
-    list(APPEND DOMAIN_DEPENDENCIES ${FLATBUFFERS_TARGET})
-    list(APPEND DOMAIN_FILES ${FLATBUFFERS_OUTPUT_FILE})
+    set_target_properties(${FLATBUFFERS_TARGET} PROPERTIES FOLDER proto)
+    list(APPEND PROTO_DEPENDENCIES ${FLATBUFFERS_TARGET})
+    list(APPEND PROTO_FILES ${FLATBUFFERS_OUTPUT_FILE})
   endforeach()
 
-  # Domain Protobuf models
-  file(GLOB PROTOBUF_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/domain" "domain/*.proto")
+  # Proto Protobuf models
+  file(GLOB PROTOBUF_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/proto" "proto/*.proto")
   foreach(PROTOBUF_FILE ${PROTOBUF_FILES})
     string(REGEX REPLACE "(.*)\\.proto" "\\1.pb.cc" PROTOBUF_SOURCE ${PROTOBUF_FILE})
-    set(PROTOBUF_INPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/domain")
+    set(PROTOBUF_INPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/proto")
     set(PROTOBUF_INPUT_FILE "${PROTOBUF_INPUT_DIR}/${PROTOBUF_FILE}")
-    set(PROTOBUF_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/domain/protobuf")
+    set(PROTOBUF_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/proto/protobuf")
     set(PROTOBUF_OUTPUT_FILE "${PROTOBUF_OUTPUT_DIR}/${PROTOBUF_SOURCE}")
     set(PROTOBUF_TARGET "${PROTOBUF_FILE}_TARGET")
     add_custom_command(
@@ -83,38 +83,38 @@ if(NOT CPPSERIALIZATION_MODULE)
         COMMAND $<TARGET_FILE:protoc> --proto_path=${PROTOBUF_INPUT_DIR} --cpp_out=${PROTOBUF_OUTPUT_DIR} ${PROTOBUF_INPUT_FILE} COMMENT "Generating ${PROTOBUF_OUTPUT_FILE}..." VERBATIM
     )
     add_custom_target(${PROTOBUF_TARGET} DEPENDS ${PROTOBUF_OUTPUT_FILE})
-    set_target_properties(${PROTOBUF_TARGET} PROPERTIES FOLDER domain)
-    list(APPEND DOMAIN_DEPENDENCIES ${PROTOBUF_TARGET})
-    list(APPEND DOMAIN_FILES ${PROTOBUF_OUTPUT_FILE})
+    set_target_properties(${PROTOBUF_TARGET} PROPERTIES FOLDER proto)
+    list(APPEND PROTO_DEPENDENCIES ${PROTOBUF_TARGET})
+    list(APPEND PROTO_FILES ${PROTOBUF_OUTPUT_FILE})
   endforeach()
 
-  # Domain Cap'n'Proto models
-  file(GLOB CAPNP_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/domain" "domain/*.capnp")
+  # Proto Cap'n'Proto models
+  file(GLOB CAPNP_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/proto" "proto/*.capnp")
   foreach(CAPNP_FILE ${CAPNP_FILES})
     string(REGEX REPLACE "(.*)\\.capnp" "\\1.capnp.c++" CAPNP_SOURCE ${CAPNP_FILE})
-    set(CAPNP_INPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/domain")
+    set(CAPNP_INPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/proto")
     set(CAPNP_INPUT_FILE "${CAPNP_INPUT_DIR}/${CAPNP_FILE}")
     set(CAPNPC_SRC_PREFIX "${CAPNP_INPUT_DIR}")
     set(CAPNPC_OUTPUT_DIR "${CAPNP_INPUT_DIR}/capnproto")
     capnp_generate_cpp(CAPNP_HEADERS CAPNP_SOURCES ${CAPNP_INPUT_FILE})
-    list(APPEND DOMAIN_FILES ${CAPNP_HEADERS} ${CAPNP_SOURCES})
+    list(APPEND PROTO_FILES ${CAPNP_HEADERS} ${CAPNP_SOURCES})
   endforeach()
 
-  # Domain
+  # Proto
   if(NOT MSVC)
-    set_source_files_properties(${DOMAIN_FILES} PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS}")
+    set_source_files_properties(${PROTO_FILES} PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS}")
   else()
     # C4125: decimal digit terminates octal escape sequence
     # C4244: conversion' conversion from 'type1' to 'type2', possible loss of data
     # C4245: conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
     # C4267: var' : conversion from 'size_t' to 'type', possible loss of data
-    set_source_files_properties(${DOMAIN_FILES} PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} /wd4125 /wd4244 /wd4245 /wd4267")
+    set_source_files_properties(${PROTO_FILES} PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} /wd4125 /wd4244 /wd4245 /wd4267")
   endif()
-  add_library(domain ${DOMAIN_FILES})
-  target_link_libraries(domain ${LINKLIBS})
-  add_dependencies(domain ${DOMAIN_DEPENDENCIES})
-  set_target_properties(domain PROPERTIES FOLDER domain)
-  list(APPEND LINKLIBS domain)
+  add_library(proto ${PROTO_FILES})
+  target_link_libraries(proto ${LINKLIBS})
+  add_dependencies(proto ${PROTO_DEPENDENCIES})
+  set_target_properties(proto PROPERTIES FOLDER proto)
+  list(APPEND LINKLIBS proto)
 
   # Examples
   file(GLOB EXAMPLE_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/examples" "examples/*.cpp")

@@ -2,7 +2,7 @@
 @0xd4b6e00623bed170;
 
 using Cxx = import "/capnp/c++.capnp";
-$Cxx.namespace("MyDomain::capnproto");
+$Cxx.namespace("Trade::capnproto");
 
 enum OrderSide
 {

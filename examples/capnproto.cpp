@@ -6,21 +6,21 @@
     \copyright MIT License
 */
 
-#include "../domain/domain.h"
+#include "../proto/trade.h"
 
 #include <iostream>
 
 int main(int argc, char** argv)
 {
     // Create a new account with some orders
-    MyDomain::Account account(1, "Test", "USD", 1000);
-    account.Orders.emplace_back(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
-    account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
-    account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
+    TradeProto::Account account(1, "Test", "USD", 1000);
+    account.Orders.emplace_back(TradeProto::Order(1, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::MARKET, 1.23456, 1000));
+    account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
+    account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
     // Serialize the account to the Cap'n'Proto stream
     capnp::MallocMessageBuilder output;
-    MyDomain::capnproto::Account::Builder builder = output.initRoot<MyDomain::capnproto::Account>();
+    Trade::capnproto::Account::Builder builder = output.initRoot<Trade::capnproto::Account>();
     account.Serialize(builder);
     kj::VectorOutputStream buffer;
     writeMessage(buffer, output);
@@ -31,8 +31,8 @@ int main(int argc, char** argv)
     // Deserialize the account from the Cap'n'Proto stream
     kj::ArrayInputStream array(buffer.getArray());
     capnp::InputStreamMessageReader input(array);
-    MyDomain::Account deserialized;
-    deserialized.Deserialize(input.getRoot<MyDomain::capnproto::Account>());
+    TradeProto::Account deserialized;
+    deserialized.Deserialize(input.getRoot<Trade::capnproto::Account>());
 
     // Show account content
     std::cout << std::endl;

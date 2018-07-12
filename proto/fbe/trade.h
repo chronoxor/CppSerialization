@@ -5,15 +5,15 @@
 
 #include "fbe.h"
 
-namespace domain {
+namespace trade {
 using namespace FBE;
-} // namespace domain
+} // namespace trade
 
 namespace FBE {
-using namespace ::domain;
+using namespace ::trade;
 } // namespace FBE
 
-namespace domain {
+namespace trade {
 
 enum class OrderSide : uint8_t
 {
@@ -28,21 +28,21 @@ inline std::ostream& operator<<(std::ostream& stream, OrderSide value)
     return stream << "<unknown>";
 }
 
-} // namespace domain
+} // namespace trade
 
 namespace FBE {
 
-// Fast Binary Encoding ::domain::OrderSide field model class
+// Fast Binary Encoding ::trade::OrderSide field model class
 template <class TBuffer>
-class FieldModel<TBuffer, ::domain::OrderSide> : public FieldModelBase<TBuffer, ::domain::OrderSide, uint8_t>
+class FieldModel<TBuffer, ::trade::OrderSide> : public FieldModelBase<TBuffer, ::trade::OrderSide, uint8_t>
 {
 public:
-    using FieldModelBase<TBuffer, ::domain::OrderSide, uint8_t>::FieldModelBase;
+    using FieldModelBase<TBuffer, ::trade::OrderSide, uint8_t>::FieldModelBase;
 };
 
 } // namespace FBE
 
-namespace domain {
+namespace trade {
 
 enum class OrderType : uint8_t
 {
@@ -59,28 +59,28 @@ inline std::ostream& operator<<(std::ostream& stream, OrderType value)
     return stream << "<unknown>";
 }
 
-} // namespace domain
+} // namespace trade
 
 namespace FBE {
 
-// Fast Binary Encoding ::domain::OrderType field model class
+// Fast Binary Encoding ::trade::OrderType field model class
 template <class TBuffer>
-class FieldModel<TBuffer, ::domain::OrderType> : public FieldModelBase<TBuffer, ::domain::OrderType, uint8_t>
+class FieldModel<TBuffer, ::trade::OrderType> : public FieldModelBase<TBuffer, ::trade::OrderType, uint8_t>
 {
 public:
-    using FieldModelBase<TBuffer, ::domain::OrderType, uint8_t>::FieldModelBase;
+    using FieldModelBase<TBuffer, ::trade::OrderType, uint8_t>::FieldModelBase;
 };
 
 } // namespace FBE
 
-namespace domain {
+namespace trade {
 
 struct Order
 {
     int32_t uid;
     std::string symbol;
-    ::domain::OrderSide side;
-    ::domain::OrderType type;
+    ::trade::OrderSide side;
+    ::trade::OrderType type;
     double price;
     double volume;
 
@@ -92,7 +92,7 @@ struct Order
         , price((double)0.0)
         , volume((double)0.0)
     {}
-    Order(int32_t arg_uid, const std::string& arg_symbol, const ::domain::OrderSide& arg_side, const ::domain::OrderType& arg_type, double arg_price, double arg_volume)
+    Order(int32_t arg_uid, const std::string& arg_symbol, const ::trade::OrderSide& arg_side, const ::trade::OrderType& arg_type, double arg_price, double arg_volume)
         : uid(arg_uid)
         , symbol(arg_symbol)
         , side(arg_side)
@@ -165,14 +165,14 @@ inline std::ostream& operator<<(std::ostream& stream, const Order& value)
     return stream;
 }
 
-} // namespace domain
+} // namespace trade
 
 namespace std {
 
 template<>
-struct hash<domain::Order>
+struct hash<trade::Order>
 {
-    typedef domain::Order argument_type;
+    typedef trade::Order argument_type;
     typedef size_t result_type;
 
     result_type operator () (const argument_type& value) const
@@ -187,9 +187,9 @@ struct hash<domain::Order>
 
 namespace FBE {
 
-// Fast Binary Encoding ::domain::Order field model class
+// Fast Binary Encoding ::trade::Order field model class
 template <class TBuffer>
-class FieldModel<TBuffer, ::domain::Order>
+class FieldModel<TBuffer, ::trade::Order>
 {
 public:
     FieldModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset)
@@ -346,7 +346,7 @@ public:
     }
 
     // Get the struct value
-    void get(::domain::Order& fbe_value) const noexcept
+    void get(::trade::Order& fbe_value) const noexcept
     {
         size_t fbe_begin = get_begin();
         if (fbe_begin == 0)
@@ -358,7 +358,7 @@ public:
     }
 
     // Get the struct fields values
-    void get_fields(::domain::Order& fbe_value, size_t fbe_struct_size) const noexcept
+    void get_fields(::trade::Order& fbe_value, size_t fbe_struct_size) const noexcept
     {
         size_t fbe_current_size = 4 + 4;
 
@@ -377,13 +377,13 @@ public:
         if ((fbe_current_size + side.fbe_size()) <= fbe_struct_size)
             side.get(fbe_value.side);
         else
-            fbe_value.side = ::domain::OrderSide();
+            fbe_value.side = ::trade::OrderSide();
         fbe_current_size += side.fbe_size();
 
         if ((fbe_current_size + type.fbe_size()) <= fbe_struct_size)
             type.get(fbe_value.type);
         else
-            fbe_value.type = ::domain::OrderType();
+            fbe_value.type = ::trade::OrderType();
         fbe_current_size += type.fbe_size();
 
         if ((fbe_current_size + price.fbe_size()) <= fbe_struct_size)
@@ -427,7 +427,7 @@ public:
     }
 
     // Set the struct value
-    void set(const ::domain::Order& fbe_value) noexcept
+    void set(const ::trade::Order& fbe_value) noexcept
     {
         size_t fbe_begin = set_begin();
         if (fbe_begin == 0)
@@ -438,7 +438,7 @@ public:
     }
 
     // Set the struct fields values
-    void set_fields(const ::domain::Order& fbe_value) noexcept
+    void set_fields(const ::trade::Order& fbe_value) noexcept
     {
         uid.set(fbe_value.uid);
         symbol.set(fbe_value.symbol);
@@ -455,8 +455,8 @@ private:
 public:
     FieldModel<TBuffer, int32_t> uid;
     FieldModel<TBuffer, std::string> symbol;
-    FieldModel<TBuffer, ::domain::OrderSide> side;
-    FieldModel<TBuffer, ::domain::OrderType> type;
+    FieldModel<TBuffer, ::trade::OrderSide> side;
+    FieldModel<TBuffer, ::trade::OrderType> type;
     FieldModel<TBuffer, double> price;
     FieldModel<TBuffer, double> volume;
 };
@@ -464,7 +464,7 @@ public:
 } // namespace FBE
 
 namespace FBE {
-namespace domain {
+namespace trade {
 
 // Fast Binary Encoding Order model class
 template <class TBuffer>
@@ -509,7 +509,7 @@ public:
     }
 
     // Serialize the struct value
-    size_t serialize(const ::domain::Order& value)
+    size_t serialize(const ::trade::Order& value)
     {
         size_t fbe_begin = create_begin();
         model.set(value);
@@ -518,7 +518,7 @@ public:
     }
 
     // Deserialize the struct value
-    size_t deserialize(::domain::Order& value) const noexcept
+    size_t deserialize(::trade::Order& value) const noexcept
     {
         if ((this->buffer().offset() + model.fbe_offset() - 4) > this->buffer().size())
             return 0;
@@ -539,13 +539,13 @@ public:
     }
 
 public:
-    FieldModel<TBuffer, ::domain::Order> model;
+    FieldModel<TBuffer, ::trade::Order> model;
 };
 
-} // namespace domain
+} // namespace trade
 } // namespace FBE
 
-namespace domain {
+namespace trade {
 
 struct Balance
 {
@@ -617,14 +617,14 @@ inline std::ostream& operator<<(std::ostream& stream, const Balance& value)
     return stream;
 }
 
-} // namespace domain
+} // namespace trade
 
 namespace std {
 
 template<>
-struct hash<domain::Balance>
+struct hash<trade::Balance>
 {
-    typedef domain::Balance argument_type;
+    typedef trade::Balance argument_type;
     typedef size_t result_type;
 
     result_type operator () (const argument_type& value) const
@@ -639,9 +639,9 @@ struct hash<domain::Balance>
 
 namespace FBE {
 
-// Fast Binary Encoding ::domain::Balance field model class
+// Fast Binary Encoding ::trade::Balance field model class
 template <class TBuffer>
-class FieldModel<TBuffer, ::domain::Balance>
+class FieldModel<TBuffer, ::trade::Balance>
 {
 public:
     FieldModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset)
@@ -762,7 +762,7 @@ public:
     }
 
     // Get the struct value
-    void get(::domain::Balance& fbe_value) const noexcept
+    void get(::trade::Balance& fbe_value) const noexcept
     {
         size_t fbe_begin = get_begin();
         if (fbe_begin == 0)
@@ -774,7 +774,7 @@ public:
     }
 
     // Get the struct fields values
-    void get_fields(::domain::Balance& fbe_value, size_t fbe_struct_size) const noexcept
+    void get_fields(::trade::Balance& fbe_value, size_t fbe_struct_size) const noexcept
     {
         size_t fbe_current_size = 4 + 4;
 
@@ -819,7 +819,7 @@ public:
     }
 
     // Set the struct value
-    void set(const ::domain::Balance& fbe_value) noexcept
+    void set(const ::trade::Balance& fbe_value) noexcept
     {
         size_t fbe_begin = set_begin();
         if (fbe_begin == 0)
@@ -830,7 +830,7 @@ public:
     }
 
     // Set the struct fields values
-    void set_fields(const ::domain::Balance& fbe_value) noexcept
+    void set_fields(const ::trade::Balance& fbe_value) noexcept
     {
         currency.set(fbe_value.currency);
         amount.set(fbe_value.amount);
@@ -848,7 +848,7 @@ public:
 } // namespace FBE
 
 namespace FBE {
-namespace domain {
+namespace trade {
 
 // Fast Binary Encoding Balance model class
 template <class TBuffer>
@@ -893,7 +893,7 @@ public:
     }
 
     // Serialize the struct value
-    size_t serialize(const ::domain::Balance& value)
+    size_t serialize(const ::trade::Balance& value)
     {
         size_t fbe_begin = create_begin();
         model.set(value);
@@ -902,7 +902,7 @@ public:
     }
 
     // Deserialize the struct value
-    size_t deserialize(::domain::Balance& value) const noexcept
+    size_t deserialize(::trade::Balance& value) const noexcept
     {
         if ((this->buffer().offset() + model.fbe_offset() - 4) > this->buffer().size())
             return 0;
@@ -923,20 +923,20 @@ public:
     }
 
 public:
-    FieldModel<TBuffer, ::domain::Balance> model;
+    FieldModel<TBuffer, ::trade::Balance> model;
 };
 
-} // namespace domain
+} // namespace trade
 } // namespace FBE
 
-namespace domain {
+namespace trade {
 
 struct Account
 {
     int32_t uid;
     std::string name;
-    ::domain::Balance wallet;
-    std::vector<::domain::Order> orders;
+    ::trade::Balance wallet;
+    std::vector<::trade::Order> orders;
 
     Account()
         : uid((int32_t)0ll)
@@ -944,7 +944,7 @@ struct Account
         , wallet()
         , orders()
     {}
-    Account(int32_t arg_uid, const std::string& arg_name, const ::domain::Balance& arg_wallet, const std::vector<::domain::Order>& arg_orders)
+    Account(int32_t arg_uid, const std::string& arg_name, const ::trade::Balance& arg_wallet, const std::vector<::trade::Order>& arg_orders)
         : uid(arg_uid)
         , name(arg_name)
         , wallet(arg_wallet)
@@ -1020,14 +1020,14 @@ inline std::ostream& operator<<(std::ostream& stream, const Account& value)
     return stream;
 }
 
-} // namespace domain
+} // namespace trade
 
 namespace std {
 
 template<>
-struct hash<domain::Account>
+struct hash<trade::Account>
 {
-    typedef domain::Account argument_type;
+    typedef trade::Account argument_type;
     typedef size_t result_type;
 
     result_type operator () (const argument_type& value) const
@@ -1042,9 +1042,9 @@ struct hash<domain::Account>
 
 namespace FBE {
 
-// Fast Binary Encoding ::domain::Account field model class
+// Fast Binary Encoding ::trade::Account field model class
 template <class TBuffer>
-class FieldModel<TBuffer, ::domain::Account>
+class FieldModel<TBuffer, ::trade::Account>
 {
 public:
     FieldModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset)
@@ -1183,7 +1183,7 @@ public:
     }
 
     // Get the struct value
-    void get(::domain::Account& fbe_value) const noexcept
+    void get(::trade::Account& fbe_value) const noexcept
     {
         size_t fbe_begin = get_begin();
         if (fbe_begin == 0)
@@ -1195,7 +1195,7 @@ public:
     }
 
     // Get the struct fields values
-    void get_fields(::domain::Account& fbe_value, size_t fbe_struct_size) const noexcept
+    void get_fields(::trade::Account& fbe_value, size_t fbe_struct_size) const noexcept
     {
         size_t fbe_current_size = 4 + 4;
 
@@ -1214,7 +1214,7 @@ public:
         if ((fbe_current_size + wallet.fbe_size()) <= fbe_struct_size)
             wallet.get(fbe_value.wallet);
         else
-            fbe_value.wallet = ::domain::Balance();
+            fbe_value.wallet = ::trade::Balance();
         fbe_current_size += wallet.fbe_size();
 
         if ((fbe_current_size + orders.fbe_size()) <= fbe_struct_size)
@@ -1252,7 +1252,7 @@ public:
     }
 
     // Set the struct value
-    void set(const ::domain::Account& fbe_value) noexcept
+    void set(const ::trade::Account& fbe_value) noexcept
     {
         size_t fbe_begin = set_begin();
         if (fbe_begin == 0)
@@ -1263,7 +1263,7 @@ public:
     }
 
     // Set the struct fields values
-    void set_fields(const ::domain::Account& fbe_value) noexcept
+    void set_fields(const ::trade::Account& fbe_value) noexcept
     {
         uid.set(fbe_value.uid);
         name.set(fbe_value.name);
@@ -1278,14 +1278,14 @@ private:
 public:
     FieldModel<TBuffer, int32_t> uid;
     FieldModel<TBuffer, std::string> name;
-    FieldModel<TBuffer, ::domain::Balance> wallet;
-    FieldModelVector<TBuffer, ::domain::Order> orders;
+    FieldModel<TBuffer, ::trade::Balance> wallet;
+    FieldModelVector<TBuffer, ::trade::Order> orders;
 };
 
 } // namespace FBE
 
 namespace FBE {
-namespace domain {
+namespace trade {
 
 // Fast Binary Encoding Account model class
 template <class TBuffer>
@@ -1330,7 +1330,7 @@ public:
     }
 
     // Serialize the struct value
-    size_t serialize(const ::domain::Account& value)
+    size_t serialize(const ::trade::Account& value)
     {
         size_t fbe_begin = create_begin();
         model.set(value);
@@ -1339,7 +1339,7 @@ public:
     }
 
     // Deserialize the struct value
-    size_t deserialize(::domain::Account& value) const noexcept
+    size_t deserialize(::trade::Account& value) const noexcept
     {
         if ((this->buffer().offset() + model.fbe_offset() - 4) > this->buffer().size())
             return 0;
@@ -1360,16 +1360,16 @@ public:
     }
 
 public:
-    FieldModel<TBuffer, ::domain::Account> model;
+    FieldModel<TBuffer, ::trade::Account> model;
 };
 
-} // namespace domain
+} // namespace trade
 } // namespace FBE
 
 namespace FBE {
-namespace domain {
+namespace trade {
 
-// Fast Binary Encoding domain sender class
+// Fast Binary Encoding trade sender class
 template <class TBuffer>
 class Sender : public virtual FBE::Sender<TBuffer>
 {
@@ -1386,12 +1386,12 @@ public:
     Sender& operator=(const Sender&) = default;
     Sender& operator=(Sender&&) noexcept = default;
 
-    size_t send(const ::domain::Order& value)
+    size_t send(const ::trade::Order& value)
     {
         // Serialize the value into the FBE stream
         size_t serialized = OrderModel.serialize(value);
-        assert((serialized > 0) && "domain::Order serialization failed!");
-        assert(OrderModel.verify() && "domain::Order validation failed!");
+        assert((serialized > 0) && "trade::Order serialization failed!");
+        assert(OrderModel.verify() && "trade::Order validation failed!");
 
         // Log the value
         if (this->_logging)
@@ -1404,12 +1404,12 @@ public:
         return this->send_serialized(serialized);
     }
 
-    size_t send(const ::domain::Balance& value)
+    size_t send(const ::trade::Balance& value)
     {
         // Serialize the value into the FBE stream
         size_t serialized = BalanceModel.serialize(value);
-        assert((serialized > 0) && "domain::Balance serialization failed!");
-        assert(BalanceModel.verify() && "domain::Balance validation failed!");
+        assert((serialized > 0) && "trade::Balance serialization failed!");
+        assert(BalanceModel.verify() && "trade::Balance validation failed!");
 
         // Log the value
         if (this->_logging)
@@ -1422,12 +1422,12 @@ public:
         return this->send_serialized(serialized);
     }
 
-    size_t send(const ::domain::Account& value)
+    size_t send(const ::trade::Account& value)
     {
         // Serialize the value into the FBE stream
         size_t serialized = AccountModel.serialize(value);
-        assert((serialized > 0) && "domain::Account serialization failed!");
-        assert(AccountModel.verify() && "domain::Account validation failed!");
+        assert((serialized > 0) && "trade::Account serialization failed!");
+        assert(AccountModel.verify() && "trade::Account validation failed!");
 
         // Log the value
         if (this->_logging)
@@ -1442,18 +1442,18 @@ public:
 
 public:
     // Sender models accessors
-    FBE::domain::OrderModel<TBuffer> OrderModel;
-    FBE::domain::BalanceModel<TBuffer> BalanceModel;
-    FBE::domain::AccountModel<TBuffer> AccountModel;
+    FBE::trade::OrderModel<TBuffer> OrderModel;
+    FBE::trade::BalanceModel<TBuffer> BalanceModel;
+    FBE::trade::AccountModel<TBuffer> AccountModel;
 };
 
-} // namespace domain
+} // namespace trade
 } // namespace FBE
 
 namespace FBE {
-namespace domain {
+namespace trade {
 
-// Fast Binary Encoding domain receiver class
+// Fast Binary Encoding trade receiver class
 template <class TBuffer>
 class Receiver : public virtual FBE::Receiver<TBuffer>
 {
@@ -1468,9 +1468,9 @@ public:
 
 protected:
     // Receive handlers
-    virtual void onReceive(const ::domain::Order& value) {}
-    virtual void onReceive(const ::domain::Balance& value) {}
-    virtual void onReceive(const ::domain::Account& value) {}
+    virtual void onReceive(const ::trade::Order& value) {}
+    virtual void onReceive(const ::trade::Balance& value) {}
+    virtual void onReceive(const ::trade::Account& value) {}
 
     // Receive message handler
     bool onReceive(size_t type, const void* data, size_t size) override
@@ -1481,9 +1481,9 @@ protected:
             {
                 // Deserialize the value from the FBE stream
                 OrderModel.attach(data, size);
-                assert(OrderModel.verify() && "domain::Order validation failed!");
+                assert(OrderModel.verify() && "trade::Order validation failed!");
                 [[maybe_unused]] size_t deserialized = OrderModel.deserialize(OrderValue);
-                assert((deserialized > 0) && "domain::Order deserialization failed!");
+                assert((deserialized > 0) && "trade::Order deserialization failed!");
 
                 // Log the value
                 if (this->_logging)
@@ -1500,9 +1500,9 @@ protected:
             {
                 // Deserialize the value from the FBE stream
                 BalanceModel.attach(data, size);
-                assert(BalanceModel.verify() && "domain::Balance validation failed!");
+                assert(BalanceModel.verify() && "trade::Balance validation failed!");
                 [[maybe_unused]] size_t deserialized = BalanceModel.deserialize(BalanceValue);
-                assert((deserialized > 0) && "domain::Balance deserialization failed!");
+                assert((deserialized > 0) && "trade::Balance deserialization failed!");
 
                 // Log the value
                 if (this->_logging)
@@ -1519,9 +1519,9 @@ protected:
             {
                 // Deserialize the value from the FBE stream
                 AccountModel.attach(data, size);
-                assert(AccountModel.verify() && "domain::Account validation failed!");
+                assert(AccountModel.verify() && "trade::Account validation failed!");
                 [[maybe_unused]] size_t deserialized = AccountModel.deserialize(AccountValue);
-                assert((deserialized > 0) && "domain::Account deserialization failed!");
+                assert((deserialized > 0) && "trade::Account deserialization failed!");
 
                 // Log the value
                 if (this->_logging)
@@ -1541,15 +1541,15 @@ protected:
 
 private:
     // Receiver values accessors
-    ::domain::Order OrderValue;
-    ::domain::Balance BalanceValue;
-    ::domain::Account AccountValue;
+    ::trade::Order OrderValue;
+    ::trade::Balance BalanceValue;
+    ::trade::Account AccountValue;
 
     // Receiver models accessors
-    FBE::domain::OrderModel<ReadBuffer> OrderModel;
-    FBE::domain::BalanceModel<ReadBuffer> BalanceModel;
-    FBE::domain::AccountModel<ReadBuffer> AccountModel;
+    FBE::trade::OrderModel<ReadBuffer> OrderModel;
+    FBE::trade::BalanceModel<ReadBuffer> BalanceModel;
+    FBE::trade::AccountModel<ReadBuffer> AccountModel;
 };
 
-} // namespace domain
+} // namespace trade
 } // namespace FBE

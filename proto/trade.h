@@ -1,13 +1,13 @@
 /*!
-    \file domain.h
-    \brief Domain model example
+    \file trade.h
+    \brief Trade proto
     \author Ivan Shynkarenka
     \date 24.02.2017
     \copyright MIT License
 */
 
-#ifndef CPPSERIALIZATION_DOMAIN_DOMAIN_H
-#define CPPSERIALIZATION_DOMAIN_DOMAIN_H
+#ifndef CPPSERIALIZATION_PROTO_TRADE_H
+#define CPPSERIALIZATION_PROTO_TRADE_H
 
 #if defined(_MSC_VER)
 #pragma warning(push)
@@ -16,13 +16,13 @@
 #pragma warning(disable: 4267) // C4267: var' : conversion from 'size_t' to 'type', possible loss of data
 #endif
 #include "capnp/serialize.h"
-#include "capnproto/domain.capnp.h"
+#include "capnproto/trade.capnp.h"
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
-#include "fbe/domain.h"
-#include "flatbuffers/domain_generated.h"
-#include "protobuf/domain.pb.h"
+#include "fbe/trade.h"
+#include "flatbuffers/trade_generated.h"
+#include "protobuf/trade.pb.h"
 
 #include "serialization/json/serializer.h"
 #include "serialization/json/deserializer.h"
@@ -31,7 +31,7 @@
 #include <string>
 #include <vector>
 
-namespace MyDomain {
+namespace TradeProto {
 
 enum class OrderSide : uint8_t
 {
@@ -68,17 +68,17 @@ struct Order
 
     // Cap'n'Proto serialization
 
-    void Serialize(capnproto::Order::Builder& builder)
+    void Serialize(Trade::capnproto::Order::Builder& builder)
     {
         builder.setUid(Uid);
         builder.setSymbol(Symbol);
-        builder.setSide((capnproto::OrderSide)Side);
-        builder.setType((capnproto::OrderType)Type);
+        builder.setSide((Trade::capnproto::OrderSide)Side);
+        builder.setType((Trade::capnproto::OrderType)Type);
         builder.setPrice(Price);
         builder.setVolume(Volume);
     }
 
-    void Deserialize(const capnproto::Order::Reader& reader)
+    void Deserialize(const Trade::capnproto::Order::Reader& reader)
     {
         Uid = reader.getUid();
         std::string symbol = reader.getSymbol();
@@ -92,28 +92,28 @@ struct Order
     // FastBinaryEncoding serialization
 
     template <class TBuffer>
-    void Serialize(FBE::FieldModel<TBuffer, domain::Order>& model)
+    void Serialize(FBE::FieldModel<TBuffer, trade::Order>& model)
     {
         size_t model_begin = model.set_begin();
         model.uid.set(Uid);
         model.symbol.set(Symbol);
-        model.side.set((domain::OrderSide)Side);
-        model.type.set((domain::OrderType)Type);
+        model.side.set((trade::OrderSide)Side);
+        model.type.set((trade::OrderType)Type);
         model.price.set(Price);
         model.volume.set(Volume);
         model.set_end(model_begin);
     }
 
     template <class TBuffer>
-    void Deserialize(const FBE::FieldModel<TBuffer, domain::Order>& model)
+    void Deserialize(const FBE::FieldModel<TBuffer, trade::Order>& model)
     {
         size_t model_begin = model.get_begin();
         model.uid.get(Uid);
         model.symbol.get(Symbol);
-        domain::OrderSide side;
+        trade::OrderSide side;
         model.side.get(side);
         Side = (OrderSide)side;
-        domain::OrderType type;
+        trade::OrderType type;
         model.type.get(type);
         Type = (OrderType)type;
         model.price.get(Price);
@@ -123,12 +123,12 @@ struct Order
 
     // FlatBuffers serialization
 
-    flatbuffers::Offset<flatbuf::Order> Serialize(flatbuffers::FlatBufferBuilder& builder)
+    flatbuffers::Offset<Trade::flatbuf::Order> Serialize(flatbuffers::FlatBufferBuilder& builder)
     {
-        return flatbuf::CreateOrderDirect(builder, Uid, Symbol, (flatbuf::OrderSide)Side, (flatbuf::OrderType)Type, Price, Volume);
+        return Trade::flatbuf::CreateOrderDirect(builder, Uid, Symbol, (Trade::flatbuf::OrderSide)Side, (Trade::flatbuf::OrderType)Type, Price, Volume);
     }
 
-    void Deserialize(const flatbuf::Order& value)
+    void Deserialize(const Trade::flatbuf::Order& value)
     {
         Uid = value.uid();
         std::string symbol = value.symbol()->str();
@@ -141,18 +141,18 @@ struct Order
 
     // Protobuf serialization
 
-    protobuf::Order& Serialize(protobuf::Order& value)
+    Trade::protobuf::Order& Serialize(Trade::protobuf::Order& value)
     {
         value.set_uid(Uid);
         value.set_symbol(Symbol);
-        value.set_side((protobuf::OrderSide)Side);
-        value.set_type((protobuf::OrderType)Type);
+        value.set_side((Trade::protobuf::OrderSide)Side);
+        value.set_type((Trade::protobuf::OrderType)Type);
         value.set_price(Price);
         value.set_volume(Volume);
         return value;
     }
 
-    void Deserialize(const protobuf::Order& value)
+    void Deserialize(const Trade::protobuf::Order& value)
     {
         Uid = value.uid();
         std::string symbol = value.symbol();
@@ -206,13 +206,13 @@ struct Balance
 
     // Cap'n'Proto serialization
 
-    void Serialize(capnproto::Balance::Builder& builder)
+    void Serialize(Trade::capnproto::Balance::Builder& builder)
     {
         builder.setCurrency(Currency);
         builder.setAmount(Amount);
     }
 
-    void Deserialize(const capnproto::Balance::Reader& reader)
+    void Deserialize(const Trade::capnproto::Balance::Reader& reader)
     {
         std::string currency = reader.getCurrency();
         std::memcpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
@@ -222,7 +222,7 @@ struct Balance
     // FastBinaryEncoding serialization
 
     template <class TBuffer>
-    void Serialize(FBE::FieldModel<TBuffer, domain::Balance>& model)
+    void Serialize(FBE::FieldModel<TBuffer, trade::Balance>& model)
     {
         size_t model_begin = model.set_begin();
         model.currency.set(Currency);
@@ -231,7 +231,7 @@ struct Balance
     }
 
     template <class TBuffer>
-    void Deserialize(const FBE::FieldModel<TBuffer, domain::Balance>& model)
+    void Deserialize(const FBE::FieldModel<TBuffer, trade::Balance>& model)
     {
         size_t model_begin = model.get_begin();
         model.currency.get(Currency);
@@ -241,12 +241,12 @@ struct Balance
 
     // FlatBuffers serialization
 
-    flatbuffers::Offset<flatbuf::Balance> Serialize(flatbuffers::FlatBufferBuilder& builder)
+    flatbuffers::Offset<Trade::flatbuf::Balance> Serialize(flatbuffers::FlatBufferBuilder& builder)
     {
-        return flatbuf::CreateBalanceDirect(builder, Currency, Amount);
+        return Trade::flatbuf::CreateBalanceDirect(builder, Currency, Amount);
     }
 
-    void Deserialize(const flatbuf::Balance& value)
+    void Deserialize(const Trade::flatbuf::Balance& value)
     {
         std::string currency = value.currency()->str();
         std::memcpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
@@ -255,14 +255,14 @@ struct Balance
 
     // Protobuf serialization
 
-    protobuf::Balance& Serialize(protobuf::Balance& value)
+    Trade::protobuf::Balance& Serialize(Trade::protobuf::Balance& value)
     {
         value.set_currency(Currency);
         value.set_amount(Amount);
         return value;
     }
 
-    void Deserialize(const protobuf::Balance& value)
+    void Deserialize(const Trade::protobuf::Balance& value)
     {
         std::string currency = value.currency();
         std::memcpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
@@ -306,7 +306,7 @@ struct Account
 
     // Cap'n'Proto serialization
 
-    void Serialize(capnproto::Account::Builder& builder)
+    void Serialize(Trade::capnproto::Account::Builder& builder)
     {
         builder.setUid(Uid);
         builder.setName(Name);
@@ -321,7 +321,7 @@ struct Account
         }
     }
 
-    void Deserialize(const capnproto::Account::Reader& reader)
+    void Deserialize(const Trade::capnproto::Account::Reader& reader)
     {
         Uid = reader.getUid();
         Name = reader.getName().cStr();
@@ -338,7 +338,7 @@ struct Account
     // FastBinaryEncoding serialization
 
     template <class TBuffer>
-    void Serialize(FBE::FieldModel<TBuffer, domain::Account>& model)
+    void Serialize(FBE::FieldModel<TBuffer, trade::Account>& model)
     {
         size_t model_begin = model.set_begin();
         model.uid.set(Uid);
@@ -354,7 +354,7 @@ struct Account
     }
 
     template <class TBuffer>
-    void Deserialize(const FBE::FieldModel<TBuffer, domain::Account>& model)
+    void Deserialize(const FBE::FieldModel<TBuffer, trade::Account>& model)
     {
         size_t model_begin = model.get_begin();
         model.uid.get(Uid);
@@ -372,16 +372,16 @@ struct Account
 
     // FlatBuffers serialization
 
-    flatbuffers::Offset<flatbuf::Account> Serialize(flatbuffers::FlatBufferBuilder& builder)
+    flatbuffers::Offset<Trade::flatbuf::Account> Serialize(flatbuffers::FlatBufferBuilder& builder)
     {
         auto wallet = Wallet.Serialize(builder);
-        std::vector<flatbuffers::Offset<flatbuf::Order>> orders;
+        std::vector<flatbuffers::Offset<Trade::flatbuf::Order>> orders;
         for (auto& order : Orders)
             orders.emplace_back(order.Serialize(builder));
-        return flatbuf::CreateAccountDirect(builder, Uid, Name.c_str(), wallet, &orders);
+        return Trade::flatbuf::CreateAccountDirect(builder, Uid, Name.c_str(), wallet, &orders);
     }
 
-    void Deserialize(const flatbuf::Account& value)
+    void Deserialize(const Trade::flatbuf::Account& value)
     {
         Uid = value.uid();
         Name = value.name()->str();
@@ -397,7 +397,7 @@ struct Account
 
     // Protobuf serialization
 
-    protobuf::Account& Serialize(protobuf::Account& value)
+    Trade::protobuf::Account& Serialize(Trade::protobuf::Account& value)
     {
         value.set_uid(Uid);
         value.set_name(Name);
@@ -407,7 +407,7 @@ struct Account
         return value;
     }
 
-    void Deserialize(const protobuf::Account& value)
+    void Deserialize(const Trade::protobuf::Account& value)
     {
         Uid = value.uid();
         Name = value.name();
@@ -460,6 +460,6 @@ struct Account
     }
 };
 
-} // namespace MyDomain
+} // namespace Trade
 
-#endif // CPPSERIALIZATION_DOMAIN_DOMAIN_H
+#endif // CPPSERIALIZATION_PROTO_TRADE_H
