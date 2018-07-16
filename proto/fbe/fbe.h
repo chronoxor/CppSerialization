@@ -247,6 +247,15 @@ public:
         }
     }
 
+    // Resize the current write buffer
+    void resize(size_t size)
+    {
+        reserve(size);
+        _size = size;
+        if (_offset > _size)
+            _offset = _size;
+    }
+
     // Reset the current write buffer and its offset
     void reset()
     {
@@ -347,6 +356,13 @@ public:
         throw std::logic_error("Cannot reserve using the read buffer!");
     }
 
+    // Resize fake method
+    void resize(size_t size)
+    {
+        assert(false && "Cannot resize the read buffer!");
+        throw std::logic_error("Cannot resize the read buffer!");
+    }
+
     // Reset the current read buffer and its offset
     void reset()
     {
@@ -394,6 +410,7 @@ public:
     size_t allocate(size_t size) { return _buffer->allocate(size); }
     void remove(size_t offset, size_t size) { _buffer->remove(offset, size); }
     void reserve(size_t capacity) { _buffer->reserve(capacity); }
+    void resize(size_t size) { _buffer->resize(size); }
     void reset() { _buffer->reset(); }
     void shift(size_t offset) { _buffer->shift(offset); }
     void unshift(size_t offset) { _buffer->unshift(offset); }
@@ -1027,7 +1044,7 @@ public:
     bool verify() const noexcept
     {
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
-            return true;
+            return false;
 
         FieldModel<TBuffer, T> fbe_model(_buffer, fbe_offset());
         for (size_t i = N; i-- > 0;)
@@ -1583,7 +1600,7 @@ class Sender
 {
 public:
     Sender() : Sender(nullptr) {}
-    Sender(const std::shared_ptr<TBuffer>& buffer) : _logging(false) { _buffer = buffer ? buffer : std::make_shared<TBuffer>(); }
+    Sender(const std::shared_ptr<TBuffer>& buffer) : _logging(false), _final(false) { _buffer = buffer ? buffer : std::make_shared<TBuffer>(); }
     Sender(const Sender&) = default;
     Sender(Sender&&) noexcept = default;
     virtual ~Sender() = default;
@@ -1595,8 +1612,13 @@ public:
     TBuffer& buffer() noexcept { return *_buffer; }
     const TBuffer& buffer() const noexcept { return *_buffer; }
 
+    // Get the logging flag
+    bool logging() const noexcept { return _logging; }
     // Enable/Disable logging
     void logging(bool enable) noexcept { _logging = enable; }
+
+    // Get the final protocol flag
+    bool final() const noexcept { return _final; }
 
     // Send serialized buffer.
     // Direct call of the method requires knowledge about internals of FBE models serialization.
@@ -1625,6 +1647,10 @@ protected:
 protected:
     std::shared_ptr<TBuffer> _buffer;
     bool _logging;
+    bool _final;
+
+    // Enable/Disable final protocol
+    void final(bool enable) noexcept { _final = enable; }
 };
 
 // Fast Binary Encoding base receiver class
@@ -1633,7 +1659,7 @@ class Receiver
 {
 public:
     Receiver() : Receiver(nullptr) {}
-    Receiver(const std::shared_ptr<TBuffer>& buffer) : _logging(false), _fast(false) { _buffer = buffer ? buffer : std::make_shared<TBuffer>(); }
+    Receiver(const std::shared_ptr<TBuffer>& buffer) : _logging(false), _final(false) { _buffer = buffer ? buffer : std::make_shared<TBuffer>(); }
     Receiver(const Receiver&) = default;
     Receiver(Receiver&&) noexcept = default;
     virtual ~Receiver() = default;
@@ -1645,8 +1671,13 @@ public:
     TBuffer& buffer() noexcept { return *_buffer; }
     const TBuffer& buffer() const noexcept { return *_buffer; }
 
+    // Get the logging flag
+    bool logging() const noexcept { return _logging; }
     // Enable/Disable logging
     void logging(bool enable) noexcept { _logging = enable; }
+
+    // Get the final protocol flag
+    bool final() const noexcept { return _final; }
 
     // Receive data
     void receive(const void* data, size_t size)
@@ -1868,7 +1899,7 @@ public:
             uint32_t fbe_struct_type;
 
             // Read the message parameters
-            if (_fast)
+            if (_final)
             {
                 fbe_struct_size = *((const uint32_t*)(message_buffer));
                 fbe_struct_type = *((const uint32_t*)(message_buffer + 4));
@@ -1902,10 +1933,10 @@ protected:
 protected:
     std::shared_ptr<TBuffer> _buffer;
     bool _logging;
-    bool _fast;
+    bool _final;
 
-    // Enable/Disable fast protocol
-    void fast(bool enable) noexcept { _fast = enable; }
+    // Enable/Disable final protocol
+    void final(bool enable) noexcept { _final = enable; }
 };
 
 } // namespace FBE

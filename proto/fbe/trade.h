@@ -495,7 +495,7 @@ public:
     // Create a new model (begin phase)
     size_t create_begin()
     {
-        size_t fbe_begin = this->allocate(4 + model.fbe_size());
+        size_t fbe_begin = this->buffer().allocate(4 + model.fbe_size());
         return fbe_begin;
     }
 
@@ -879,7 +879,7 @@ public:
     // Create a new model (begin phase)
     size_t create_begin()
     {
-        size_t fbe_begin = this->allocate(4 + model.fbe_size());
+        size_t fbe_begin = this->buffer().allocate(4 + model.fbe_size());
         return fbe_begin;
     }
 
@@ -1316,7 +1316,7 @@ public:
     // Create a new model (begin phase)
     size_t create_begin()
     {
-        size_t fbe_begin = this->allocate(4 + model.fbe_size());
+        size_t fbe_begin = this->buffer().allocate(4 + model.fbe_size());
         return fbe_begin;
     }
 

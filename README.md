@@ -14,11 +14,11 @@ Performance comparison based on the [Domain model](#domain-model):
 
 | Protocol           | Message size | Serialization time | Deserialization time |
 | :----------------: | -----------: | -----------------: | -------------------: |
-| Cap'n'Proto        |    208 bytes |             678 ns |               480 ns |
-| FastBinaryEncoding |    234 bytes |              86 ns |                99 ns |
-| FlatBuffers        |    280 bytes |            1024 ns |               385 ns |
-| Protobuf           |    120 bytes |             836 ns |              1024 ns |
-| JSON               |    297 bytes |             845 ns |              2560 ns |
+| Cap'n'Proto        |    208 bytes |             662 ns |               428 ns |
+| FastBinaryEncoding |    234 bytes |              78 ns |                97 ns |
+| FlatBuffers        |    280 bytes |            1010 ns |               349 ns |
+| Protobuf           |    120 bytes |             753 ns |               883 ns |
+| JSON               |    301 bytes |             893 ns |               600 ns |
 
 [CppSerialization API reference](https://chronoxor.github.io/CppSerialization/index.html)
 
@@ -453,34 +453,34 @@ following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 3.998 GHz
+CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.962 GiB
-RAM free: 18.485 GiB
+RAM total: 31.903 GiB
+RAM free: 23.140 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Wed May  9 00:18:42 2018
-UTC timestamp: Tue May  8 21:18:42 2018
+Local timestamp: Mon Jul 16 13:08:42 2018
+UTC timestamp: Mon Jul 16 10:08:42 2018
 ===============================================================================
 Benchmark: Cap'n'Proto-Serialize
 Attempts: 5
 Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: Cap'n'Proto-Serialize
-Average time: 678 ns/op
-Minimal time: 678 ns/op
-Maximal time: 704 ns/op
-Total time: 678.918 ms
+Average time: 662 ns/op
+Minimal time: 662 ns/op
+Maximal time: 665 ns/op
+Total time: 662.079 ms
 Total operations: 1000000
 Total bytes: 198.373 MiB
-Operations throughput: 1472930 ops/s
-Bytes throughput: 292.180 MiB/s
+Operations throughput: 1510392 ops/s
+Bytes throughput: 299.622 MiB/s
 Custom values:
         Size: 208
 ===============================================================================
@@ -492,34 +492,34 @@ following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 3.998 GHz
+CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.962 GiB
-RAM free: 18.483 GiB
+RAM total: 31.903 GiB
+RAM free: 23.508 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Wed May  9 00:19:20 2018
-UTC timestamp: Tue May  8 21:19:20 2018
+Local timestamp: Mon Jul 16 13:09:14 2018
+UTC timestamp: Mon Jul 16 10:09:14 2018
 ===============================================================================
 Benchmark: Cap'n'Proto-Deserialize
 Attempts: 5
 Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: Cap'n'Proto-Deserialize
-Average time: 480 ns/op
-Minimal time: 480 ns/op
-Maximal time: 519 ns/op
-Total time: 480.625 ms
+Average time: 428 ns/op
+Minimal time: 428 ns/op
+Maximal time: 430 ns/op
+Total time: 428.574 ms
 Total operations: 1000000
 Total bytes: 198.373 MiB
-Operations throughput: 2080620 ops/s
-Bytes throughput: 412.738 MiB/s
+Operations throughput: 2333314 ops/s
+Bytes throughput: 462.866 MiB/s
 Custom values:
         Size: 208
 ===============================================================================
@@ -786,34 +786,34 @@ following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 3.998 GHz
+CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.962 GiB
-RAM free: 21.1019 GiB
+RAM total: 31.903 GiB
+RAM free: 23.612 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Thu Jul 12 00:23:41 2018
-UTC timestamp: Wed Jul 11 21:23:41 2018
+Local timestamp: Mon Jul 16 13:09:45 2018
+UTC timestamp: Mon Jul 16 10:09:45 2018
 ===============================================================================
 Benchmark: FastBinaryEncoding-Serialize
 Attempts: 5
 Operations: 10000000
 -------------------------------------------------------------------------------
 Phase: FastBinaryEncoding-Serialize
-Average time: 86 ns/op
-Minimal time: 86 ns/op
-Maximal time: 87 ns/op
-Total time: 867.265 ms
+Average time: 78 ns/op
+Minimal time: 78 ns/op
+Maximal time: 78 ns/op
+Total time: 787.874 ms
 Total operations: 10000000
 Total bytes: 2.183 GiB
-Operations throughput: 11530489 ops/s
-Bytes throughput: 2.525 GiB/s
+Operations throughput: 12692383 ops/s
+Bytes throughput: 2.784 GiB/s
 Custom values:
         Size: 234
 ===============================================================================
@@ -825,34 +825,34 @@ following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 3.998 GHz
+CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.962 GiB
-RAM free: 21.1014 GiB
+RAM total: 31.903 GiB
+RAM free: 23.619 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Thu Jul 12 00:25:22 2018
-UTC timestamp: Wed Jul 11 21:25:22 2018
+Local timestamp: Mon Jul 16 13:11:17 2018
+UTC timestamp: Mon Jul 16 10:11:17 2018
 ===============================================================================
 Benchmark: FastBinaryEncoding-Deserialize
 Attempts: 5
 Operations: 10000000
 -------------------------------------------------------------------------------
 Phase: FastBinaryEncoding-Deserialize
-Average time: 99 ns/op
-Minimal time: 99 ns/op
-Maximal time: 104 ns/op
-Total time: 991.984 ms
+Average time: 97 ns/op
+Minimal time: 97 ns/op
+Maximal time: 97 ns/op
+Total time: 971.249 ms
 Total operations: 10000000
 Total bytes: 2.183 GiB
-Operations throughput: 10080806 ops/s
-Bytes throughput: 2.201 GiB/s
+Operations throughput: 10296017 ops/s
+Bytes throughput: 2.249 GiB/s
 Custom values:
         Size: 234
 ===============================================================================
@@ -1085,34 +1085,34 @@ following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 3.998 GHz
+CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.962 GiB
-RAM free: 18.493 GiB
+RAM total: 31.903 GiB
+RAM free: 23.620 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Wed May  9 00:21:43 2018
-UTC timestamp: Tue May  8 21:21:43 2018
+Local timestamp: Mon Jul 16 13:12:19 2018
+UTC timestamp: Mon Jul 16 10:12:19 2018
 ===============================================================================
 Benchmark: FlatBuffers-Serialize
 Attempts: 5
 Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: FlatBuffers-Serialize
-Average time: 1.024 mcs/op
-Minimal time: 1.024 mcs/op
-Maximal time: 1.094 mcs/op
-Total time: 1.024 s
+Average time: 1.010 mcs/op
+Minimal time: 1.010 mcs/op
+Maximal time: 1.014 mcs/op
+Total time: 1.010 s
 Total operations: 1000000
 Total bytes: 267.029 MiB
-Operations throughput: 976463 ops/s
-Bytes throughput: 260.761 MiB/s
+Operations throughput: 989294 ops/s
+Bytes throughput: 264.174 MiB/s
 Custom values:
         Size: 280
 ===============================================================================
@@ -1124,34 +1124,34 @@ following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 3.998 GHz
+CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.962 GiB
-RAM free: 18.495 GiB
+RAM total: 31.903 GiB
+RAM free: 23.617 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Wed May  9 00:21:58 2018
-UTC timestamp: Tue May  8 21:21:58 2018
+Local timestamp: Mon Jul 16 13:12:42 2018
+UTC timestamp: Mon Jul 16 10:12:42 2018
 ===============================================================================
 Benchmark: FlatBuffers-Deserialize
 Attempts: 5
 Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: FlatBuffers-Deserialize
-Average time: 385 ns/op
-Minimal time: 385 ns/op
-Maximal time: 390 ns/op
-Total time: 385.867 ms
+Average time: 349 ns/op
+Minimal time: 349 ns/op
+Maximal time: 352 ns/op
+Total time: 349.750 ms
 Total operations: 1000000
 Total bytes: 267.029 MiB
-Operations throughput: 2591566 ops/s
-Bytes throughput: 692.023 MiB/s
+Operations throughput: 2859181 ops/s
+Bytes throughput: 763.495 MiB/s
 Custom values:
         Size: 280
 ===============================================================================
@@ -1398,34 +1398,34 @@ following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 3.998 GHz
+CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.962 GiB
-RAM free: 18.488 GiB
+RAM total: 31.903 GiB
+RAM free: 23.697 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Wed May  9 00:23:37 2018
-UTC timestamp: Tue May  8 21:23:37 2018
+Local timestamp: Mon Jul 16 13:13:44 2018
+UTC timestamp: Mon Jul 16 10:13:44 2018
 ===============================================================================
 Benchmark: Protobuf-Serialize
 Attempts: 5
 Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: Protobuf-Serialize
-Average time: 836 ns/op
-Minimal time: 836 ns/op
-Maximal time: 866 ns/op
-Total time: 836.492 ms
+Average time: 753 ns/op
+Minimal time: 753 ns/op
+Maximal time: 757 ns/op
+Total time: 753.218 ms
 Total operations: 1000000
 Total bytes: 114.451 MiB
-Operations throughput: 1195467 ops/s
-Bytes throughput: 136.829 MiB/s
+Operations throughput: 1327636 ops/s
+Bytes throughput: 151.958 MiB/s
 Custom values:
         Size: 120
 ===============================================================================
@@ -1437,34 +1437,34 @@ following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 3.998 GHz
+CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.962 GiB
-RAM free: 18.482 GiB
+RAM total: 31.903 GiB
+RAM free: 23.699 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Wed May  9 00:24:13 2018
-UTC timestamp: Tue May  8 21:24:13 2018
+Local timestamp: Mon Jul 16 13:14:10 2018
+UTC timestamp: Mon Jul 16 10:14:10 2018
 ===============================================================================
 Benchmark: Protobuf-Deserialize
 Attempts: 5
 Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: Protobuf-Deserialize
-Average time: 1.024 mcs/op
-Minimal time: 1.024 mcs/op
-Maximal time: 1.091 mcs/op
-Total time: 1.024 s
+Average time: 889 ns/op
+Minimal time: 889 ns/op
+Maximal time: 893 ns/op
+Total time: 889.619 ms
 Total operations: 1000000
 Total bytes: 114.451 MiB
-Operations throughput: 976142 ops/s
-Bytes throughput: 111.727 MiB/s
+Operations throughput: 1124076 ops/s
+Bytes throughput: 128.655 MiB/s
 Custom values:
         Size: 120
 ===============================================================================
@@ -1666,36 +1666,36 @@ JSON serialization performance of the provided domain model is the following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 3.998 GHz
+CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.962 GiB
-RAM free: 18.475 GiB
+RAM total: 31.903 GiB
+RAM free: 23.704 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Wed May  9 00:25:12 2018
-UTC timestamp: Tue May  8 21:25:12 2018
+Local timestamp: Mon Jul 16 13:15:11 2018
+UTC timestamp: Mon Jul 16 10:15:11 2018
 ===============================================================================
 Benchmark: JSON-Serialize
 Attempts: 5
 Operations: 1000000
 -------------------------------------------------------------------------------
 Phase: JSON-Serialize
-Average time: 845 ns/op
-Minimal time: 845 ns/op
-Maximal time: 871 ns/op
-Total time: 845.313 ms
+Average time: 893 ns/op
+Minimal time: 893 ns/op
+Maximal time: 895 ns/op
+Total time: 893.028 ms
 Total operations: 1000000
-Total bytes: 283.247 MiB
-Operations throughput: 1182993 ops/s
-Bytes throughput: 335.074 MiB/s
+Total bytes: 287.057 MiB
+Operations throughput: 1119785 ops/s
+Bytes throughput: 321.451 MiB/s
 Custom values:
-        Size: 297
+        Size: 301
 ===============================================================================
 ```
 
@@ -1704,36 +1704,36 @@ JSON document parsing performance of the provided domain model is the following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 3.998 GHz
+CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.962 GiB
-RAM free: 18.484 GiB
+RAM total: 31.903 GiB
+RAM free: 23.701 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Wed May  9 00:25:44 2018
-UTC timestamp: Tue May  8 21:25:44 2018
+Local timestamp: Mon Jul 16 13:16:30 2018
+UTC timestamp: Mon Jul 16 10:16:30 2018
 ===============================================================================
-Benchmark: JSON-Parse
+Benchmark: JSON-Deserialize
 Attempts: 5
 Operations: 1000000
 -------------------------------------------------------------------------------
-Phase: JSON-Parse
-Average time: 2.560 mcs/op
-Minimal time: 2.560 mcs/op
-Maximal time: 2.600 mcs/op
-Total time: 2.560 s
+Phase: JSON-Deserialize
+Average time: 600 ns/op
+Minimal time: 600 ns/op
+Maximal time: 603 ns/op
+Total time: 600.956 ms
 Total operations: 1000000
-Total bytes: 283.247 MiB
-Operations throughput: 390564 ops/s
-Bytes throughput: 110.639 MiB/s
+Total bytes: 3.834 MiB
+Operations throughput: 1664013 ops/s
+Bytes throughput: 6.356 MiB/s
 Custom values:
-        Size: 297
+        Size: 301
 ===============================================================================
 ```
 
