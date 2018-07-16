@@ -137,7 +137,7 @@ of some abstract trading platform:
 #include <string>
 #include <vector>
 
-namespace MyDomain {
+namespace TradeProto {
 
 enum class OrderSide : uint8_t
 {
@@ -154,7 +154,7 @@ enum class OrderType : uint8_t
 
 struct Order
 {
-    int Id;
+    int Uid;
     char Symbol[10];
     OrderSide Side;
     OrderType Type;
@@ -162,10 +162,10 @@ struct Order
     double Volume;
 
     Order() : Order(0, "<\?\?\?>", OrderSide::BUY, OrderType::MARKET, 0.0, 0.0) {}
-    Order(int id, const std::string& symbol, OrderSide side, OrderType type, double price, double volume)
+    Order(int uid, const std::string& symbol, OrderSide side, OrderType type, double price, double volume)
     {
-        Id = id;
-        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
+        Uid = uid;
+        std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = side;
         Type = type;
         Price = price;
@@ -181,27 +181,27 @@ struct Balance
     Balance() : Balance("<\?\?\?>", 0.0) {}
     Balance(const std::string& currency, double amount)
     {
-        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
+        std::memcpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = amount;
     }
 };
 
 struct Account
 {
-    int Id;
+    int Uid;
     std::string Name;
     Balance Wallet;
     std::vector<Order> Orders;
 
     Account() : Account(0, "<\?\?\?>", "<\?\?\?>", 0.0) {}
-    Account(int id, const char* name, const char* currency, double amount) : Wallet(currency, amount)
+    Account(int uid, const char* name, const char* currency, double amount) : Wallet(currency, amount)
     {
-        Id = id;
+        Uid = uid;
         Name = name;
     }
 };
 
-} // namespace MyDomain
+} // namespace TradeProto
 ```
 
 The next step you should provide serialization methods for the domain model.
@@ -218,7 +218,7 @@ model the schema will be the following:
 @0xd4b6e00623bed170;
 
 using Cxx = import "/capnp/c++.capnp";
-$Cxx.namespace("MyDomain::capnproto");
+$Cxx.namespace("Trade::capnproto");
 
 enum OrderSide
 {
@@ -235,7 +235,7 @@ enum OrderType
 
 struct Order
 {
-    id @0 : Int32;
+    uid @0 : Int32;
     symbol @1 : Text;
     side @2 : OrderSide;
     type @3 : OrderType;
@@ -251,7 +251,7 @@ struct Balance
 
 struct Account
 {
-    id @0 : Int32;
+    uid @0 : Int32;
     name @1 : Text;
     wallet @2 : Balance;
     orders @3 : List(Order);
@@ -264,16 +264,16 @@ a generated code for required programming language.
 
 The following command will create a C++ generated code:
 ```shell
-capnp compile -I capnproto/c++/src -oc++ domain.capnp
+capnp compile -I capnproto/c++/src -oc++ trade.capnp
 ```
 
 It is possible to use capnp_generate_cpp() in CMakeLists.txt to generate code
 using 'cmake' utility:
 ```cmake
-capnp_generate_cpp(CAPNP_HEADERS CAPNP_SOURCES domain.capnp)
+capnp_generate_cpp(CAPNP_HEADERS CAPNP_SOURCES trade.capnp)
 ```
 
-As the result 'domain.capnp.h' and 'domain.capnp.c++' files will be generated.
+As the result 'trade.capnp.h' and 'trade.capnp.c++' files will be generated.
 
 ## Cap'n'Proto serialization methods
 Finally you should extend your domain model with a Cap'n'Proto serialization
@@ -281,11 +281,11 @@ methods:
 
 ```c++
 #include "capnp/serialize.h"
-#include "capnproto/domain.capnp.h"
+#include "capnproto/trade.capnp.h"
 
 #include <algorithm>
 
-namespace MyDomain {
+namespace TradeProto {
 
 struct Order
 {
@@ -293,21 +293,21 @@ struct Order
 
     // Cap'n'Proto serialization
 
-    void Serialize(capnproto::Order::Builder& builder)
+    void Serialize(Trade::capnproto::Order::Builder& builder)
     {
-        builder.setId(Id);
+        builder.setUid(Uid);
         builder.setSymbol(Symbol);
-        builder.setSide((capnproto::OrderSide)Side);
-        builder.setType((capnproto::OrderType)Type);
+        builder.setSide((Trade::capnproto::OrderSide)Side);
+        builder.setType((Trade::capnproto::OrderType)Type);
         builder.setPrice(Price);
         builder.setVolume(Volume);
     }
 
-    void Deserialize(const capnproto::Order::Reader& reader)
+    void Deserialize(const Trade::capnproto::Order::Reader& reader)
     {
-        Id = reader.getId();
+        Uid = reader.getUid();
         std::string symbol = reader.getSymbol();
-        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
+        std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)reader.getSide();
         Type = (OrderType)reader.getType();
         Price = reader.getPrice();
@@ -323,16 +323,16 @@ struct Balance
 
     // Cap'n'Proto serialization
 
-    void Serialize(capnproto::Balance::Builder& builder)
+    void Serialize(Trade::capnproto::Balance::Builder& builder)
     {
         builder.setCurrency(Currency);
         builder.setAmount(Amount);
     }
 
-    void Deserialize(const capnproto::Balance::Reader& reader)
+    void Deserialize(const Trade::capnproto::Balance::Reader& reader)
     {
         std::string currency = reader.getCurrency();
-        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
+        std::memcpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = reader.getAmount();
     }
 
@@ -345,9 +345,9 @@ struct Account
 
     // Cap'n'Proto serialization
 
-    void Serialize(capnproto::Account::Builder& builder)
+    void Serialize(Trade::capnproto::Account::Builder& builder)
     {
-        builder.setId(Id);
+        builder.setUid(Uid);
         builder.setName(Name);
         auto wallet = builder.initWallet();
         Wallet.Serialize(wallet);
@@ -360,9 +360,9 @@ struct Account
         }
     }
 
-    void Deserialize(const capnproto::Account::Reader& reader)
+    void Deserialize(const Trade::capnproto::Account::Reader& reader)
     {
-        Id = reader.getId();
+        Uid = reader.getUid();
         Name = reader.getName().cStr();
         Wallet.Deserialize(reader.getWallet());
         Orders.clear();
@@ -377,28 +377,28 @@ struct Account
     ...
 };
 
-} // namespace MyDomain
+} // namespace TradeProto
 ```
 
 ## Cap'n'Proto example
 Here comes the usage example of FlatBuffers serialize/deserialize functionality:
 
 ```c++
-#include "../domain/domain.h"
+#include "../proto/trade.h"
 
 #include <iostream>
 
 int main(int argc, char** argv)
 {
     // Create a new account with some orders
-    MyDomain::Account account(1, "Test", "USD", 1000);
-    account.Orders.emplace_back(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
-    account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
-    account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
+    TradeProto::Account account(1, "Test", "USD", 1000);
+    account.Orders.emplace_back(TradeProto::Order(1, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::MARKET, 1.23456, 1000));
+    account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
+    account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
     // Serialize the account to the Cap'n'Proto stream
     capnp::MallocMessageBuilder output;
-    MyDomain::capnproto::Account::Builder builder = output.initRoot<MyDomain::capnproto::Account>();
+    Trade::capnproto::Account::Builder builder = output.initRoot<Trade::capnproto::Account>();
     account.Serialize(builder);
     kj::VectorOutputStream buffer;
     writeMessage(buffer, output);
@@ -409,18 +409,18 @@ int main(int argc, char** argv)
     // Deserialize the account from the Cap'n'Proto stream
     kj::ArrayInputStream array(buffer.getArray());
     capnp::InputStreamMessageReader input(array);
-    MyDomain::Account deserialized;
-    deserialized.Deserialize(input.getRoot<MyDomain::capnproto::Account>());
+    TradeProto::Account deserialized;
+    deserialized.Deserialize(input.getRoot<Trade::capnproto::Account>());
 
     // Show account content
     std::cout << std::endl;
-    std::cout << "Account.Id = " << deserialized.Id << std::endl;
+    std::cout << "Account.Uid = " << deserialized.Uid << std::endl;
     std::cout << "Account.Name = " << deserialized.Name << std::endl;
     std::cout << "Account.Wallet.Currency = " << deserialized.Wallet.Currency << std::endl;
     std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
     for (auto& order : deserialized.Orders)
     {
-        std::cout << "Account.Order => Id: " << order.Id
+        std::cout << "Account.Order => Uid: " << order.Uid
             << ", Symbol: " << order.Symbol
             << ", Side: " << (int)order.Side
             << ", Type: " << (int)order.Type
@@ -437,13 +437,13 @@ Output of the example is the following:
 ```
 Protobuf size: 208
 
-Account.Id = 1
+Account.Uid = 1
 Account.Name = Test
 Account.Wallet.Currency = USD
 Account.Wallet.Amount = 1000
-Account.Order => Id: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
-Account.Order => Id: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
-Account.Order => Id: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
+Account.Order => Uid: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
+Account.Order => Uid: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
+Account.Order => Uid: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
 ```
 
 ## Cap'n'Proto performance
@@ -533,7 +533,7 @@ FastBinaryEncoding serialization starts with describing a model schema. For our
 domain model the schema will be the following:
 
 ```proto
-package domain
+package trade
 
 enum OrderSide : byte
 {
@@ -550,7 +550,7 @@ enum OrderType : byte
 
 struct Order
 {
-    [key] int32 id;
+    [key] int32 uid;
     string symbol;
     OrderSide side;
     OrderType type;
@@ -566,7 +566,7 @@ struct Balance
 
 struct Account
 {
-    [key] int32 id;
+    [key] int32 uid;
     string name;
     Balance wallet;
     Order[] orders;
@@ -579,27 +579,27 @@ a generated code for required programming language.
 
 The following command will create a C++ generated code:
 ```shell
-fbec --c++ --input=domain.fbe --output=.
+fbec --c++ --input=trade.fbe --output=.
 ```
 
 It is possible to use add_custom_command() in CMakeLists.txt to generate code
 using 'cmake' utility:
 ```cmake
-add_custom_command(TARGET example POST_BUILD COMMAND fbec --c++ --input=domain.fbe --output=.)
+add_custom_command(TARGET example POST_BUILD COMMAND fbec --c++ --input=trade.fbe --output=.)
 ```
 
-As the result 'common.h' and 'domain.h' files will be generated.
+As the result 'fbe.h' and 'trade.h' files will be generated.
 
 ## FastBinaryEncoding serialization methods
 Finally you should extend your domain model with a FastBinaryEncoding serialization
 methods:
 
 ```c++
-#include "fbe/domain.h"
+#include "fbe/trade.h"
 
 #include <algorithm>
 
-namespace MyDomain {
+namespace TradeProto {
 
 struct Order
 {
@@ -608,28 +608,28 @@ struct Order
     // FastBinaryEncoding serialization
 
     template <class TBuffer>
-    void Serialize(FBE::FieldModel<TBuffer, domain::Order>& model)
+    void Serialize(FBE::FieldModel<TBuffer, trade::Order>& model)
     {
         size_t model_begin = model.set_begin();
-        model.id.set(Id);
+        model.uid.set(Uid);
         model.symbol.set(Symbol);
-        model.side.set((domain::OrderSide)Side);
-        model.type.set((domain::OrderType)Type);
+        model.side.set((trade::OrderSide)Side);
+        model.type.set((trade::OrderType)Type);
         model.price.set(Price);
         model.volume.set(Volume);
         model.set_end(model_begin);
     }
 
     template <class TBuffer>
-    void Deserialize(const FBE::FieldModel<TBuffer, domain::Order>& model)
+    void Deserialize(const FBE::FieldModel<TBuffer, trade::Order>& model)
     {
         size_t model_begin = model.get_begin();
-        model.id.get(Id);
+        model.uid.get(Uid);
         model.symbol.get(Symbol);
-        domain::OrderSide side;
+        trade::OrderSide side;
         model.side.get(side);
         Side = (OrderSide)side;
-        domain::OrderType type;
+        trade::OrderType type;
         model.type.get(type);
         Type = (OrderType)type;
         model.price.get(Price);
@@ -647,7 +647,7 @@ struct Balance
     // FastBinaryEncoding serialization
 
     template <class TBuffer>
-    void Serialize(FBE::FieldModel<TBuffer, domain::Balance>& model)
+    void Serialize(FBE::FieldModel<TBuffer, trade::Balance>& model)
     {
         size_t model_begin = model.set_begin();
         model.currency.set(Currency);
@@ -656,7 +656,7 @@ struct Balance
     }
 
     template <class TBuffer>
-    void Deserialize(const FBE::FieldModel<TBuffer, domain::Balance>& model)
+    void Deserialize(const FBE::FieldModel<TBuffer, trade::Balance>& model)
     {
         size_t model_begin = model.get_begin();
         model.currency.get(Currency);
@@ -674,10 +674,10 @@ struct Account
     // FastBinaryEncoding serialization
 
     template <class TBuffer>
-    void Serialize(FBE::FieldModel<TBuffer, domain::Account>& model)
+    void Serialize(FBE::FieldModel<TBuffer, trade::Account>& model)
     {
         size_t model_begin = model.set_begin();
-        model.id.set(Id);
+        model.uid.set(Uid);
         model.name.set(Name);
         Wallet.Serialize(model.wallet);
         auto order_model = model.orders.resize(Orders.size());
@@ -690,10 +690,10 @@ struct Account
     }
 
     template <class TBuffer>
-    void Deserialize(const FBE::FieldModel<TBuffer, domain::Account>& model)
+    void Deserialize(const FBE::FieldModel<TBuffer, trade::Account>& model)
     {
         size_t model_begin = model.get_begin();
-        model.id.get(Id);
+        model.uid.get(Uid);
         model.name.get(Name);
         Wallet.Deserialize(model.wallet);
         Orders.clear();
@@ -709,27 +709,27 @@ struct Account
     ...
 };
 
-} // namespace MyDomain
+} // namespace TradeProto
 ```
 
 ## FastBinaryEncoding example
 Here comes the usage example of FastBinaryEncoding serialize/deserialize functionality:
 
 ```c++
-#include "../domain/domain.h"
+#include "../proto/trade.h"
 
 #include <iostream>
 
 int main(int argc, char** argv)
 {
     // Create a new account with some orders
-    MyDomain::Account account(1, "Test", "USD", 1000);
-    account.Orders.emplace_back(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
-    account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
-    account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
+    TradeProto::Account account(1, "Test", "USD", 1000);
+    account.Orders.emplace_back(TradeProto::Order(1, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::MARKET, 1.23456, 1000));
+    account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
+    account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
     // Serialize the account to the FBE stream
-    FBE::AccountModel<FBE::WriteBuffer> writer;
+    FBE::trade::AccountModel<FBE::WriteBuffer> writer;
     size_t model_begin = writer.create_begin();
     account.Serialize(writer.model);
     size_t serialized = writer.create_end(model_begin);
@@ -739,21 +739,21 @@ int main(int argc, char** argv)
     std::cout << "FBE size: " << serialized << std::endl;
 
     // Deserialize the account from the FBE stream
-    MyDomain::Account deserialized;
-    FBE::AccountModel<FBE::ReadBuffer> reader;
+    TradeProto::Account deserialized;
+    FBE::trade::AccountModel<FBE::ReadBuffer> reader;
     reader.attach(writer.buffer());
     assert(reader.verify() && "Model is broken!");
     deserialized.Deserialize(reader.model);
 
     // Show account content
     std::cout << std::endl;
-    std::cout << "Account.Id = " << deserialized.Id << std::endl;
+    std::cout << "Account.Uid = " << deserialized.Uid << std::endl;
     std::cout << "Account.Name = " << deserialized.Name << std::endl;
     std::cout << "Account.Wallet.Currency = " << deserialized.Wallet.Currency << std::endl;
     std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
     for (auto& order : deserialized.Orders)
     {
-        std::cout << "Account.Order => Id: " << order.Id
+        std::cout << "Account.Order => Uid: " << order.Uid
             << ", Symbol: " << order.Symbol
             << ", Side: " << (int)order.Side
             << ", Type: " << (int)order.Type
@@ -770,13 +770,13 @@ Output of the example is the following:
 ```
 FBE size: 234
 
-Account.Id = 1
+Account.Uid = 1
 Account.Name = Test
 Account.Wallet.Currency = USD
 Account.Wallet.Amount = 1000
-Account.Order => Id: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
-Account.Order => Id: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
-Account.Order => Id: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
+Account.Order => Uid: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
+Account.Order => Uid: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
+Account.Order => Uid: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
 ```
 
 ## FastBinaryEncoding performance
@@ -866,7 +866,7 @@ FlatBuffers serialization starts with describing a model schema. For our domain
 model the schema will be the following:
 
 ```proto
-namespace MyDomain.flatbuf;
+namespace Trade.flatbuf;
 
 enum OrderSide : byte
 {
@@ -883,7 +883,7 @@ enum OrderType : byte
 
 table Order
 {
-    id : int;
+    uid : int;
     symbol : string;
     side : OrderSide;
     type : OrderType;
@@ -899,7 +899,7 @@ table Balance
 
 table Account
 {
-    id : int;
+    uid : int;
     name : string;
     wallet : Balance;
     orders : [Order];
@@ -914,13 +914,13 @@ a generated code for required programming language.
 
 The following command will create a C++ generated code:
 ```shell
-flatc --cpp --scoped-enums -o . domain.fbs
+flatc --cpp --scoped-enums -o . trade.fbs
 ```
 
 It is possible to use add_custom_command() in CMakeLists.txt to generate code
 using 'cmake' utility:
 ```cmake
-add_custom_command(TARGET example POST_BUILD COMMAND flatc --cpp --scoped-enums -o . domain.fbs)
+add_custom_command(TARGET example POST_BUILD COMMAND flatc --cpp --scoped-enums -o . trade.fbs)
 ```
 
 As the result 'domain_generated.h' file will be generated.
@@ -930,11 +930,11 @@ Finally you should extend your domain model with a FlatBuffers serialization
 methods:
 
 ```c++
-#include "flatbuffers/domain_generated.h"
+#include "flatbuffers/trade_generated.h"
 
 #include <algorithm>
 
-namespace MyDomain {
+namespace TradeProto {
 
 struct Order
 {
@@ -942,16 +942,16 @@ struct Order
 
     // FlatBuffers serialization
 
-    flatbuffers::Offset<flatbuf::Order> Serialize(flatbuffers::FlatBufferBuilder& builder)
+    flatbuffers::Offset<Trade::flatbuf::Order> Serialize(flatbuffers::FlatBufferBuilder& builder)
     {
-        return flatbuf::CreateOrderDirect(builder, Id, Symbol, (flatbuf::OrderSide)Side, (flatbuf::OrderType)Type, Price, Volume);
+        return Trade::flatbuf::CreateOrderDirect(builder, Uid, Symbol, (Trade::flatbuf::OrderSide)Side, (Trade::flatbuf::OrderType)Type, Price, Volume);
     }
 
-    void Deserialize(const flatbuf::Order& value)
+    void Deserialize(const Trade::flatbuf::Order& value)
     {
-        Id = value.id();
+        Uid = value.uid();
         std::string symbol = value.symbol()->str();
-        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
+        std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)value.side();
         Type = (OrderType)value.type();
         Price = value.price();
@@ -967,15 +967,15 @@ struct Balance
 
     // FlatBuffers serialization
 
-    flatbuffers::Offset<flatbuf::Balance> Serialize(flatbuffers::FlatBufferBuilder& builder)
+    flatbuffers::Offset<Trade::flatbuf::Balance> Serialize(flatbuffers::FlatBufferBuilder& builder)
     {
-        return flatbuf::CreateBalanceDirect(builder, Currency, Amount);
+        return Trade::flatbuf::CreateBalanceDirect(builder, Currency, Amount);
     }
 
-    void Deserialize(const flatbuf::Balance& value)
+    void Deserialize(const Trade::flatbuf::Balance& value)
     {
         std::string currency = value.currency()->str();
-        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
+        std::memcpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = value.amount();
     }
 
@@ -988,18 +988,18 @@ struct Account
 
     // FlatBuffers serialization
 
-    flatbuffers::Offset<flatbuf::Account> Serialize(flatbuffers::FlatBufferBuilder& builder)
+    flatbuffers::Offset<Trade::flatbuf::Account> Serialize(flatbuffers::FlatBufferBuilder& builder)
     {
         auto wallet = Wallet.Serialize(builder);
-        std::vector<flatbuffers::Offset<flatbuf::Order>> orders;
+        std::vector<flatbuffers::Offset<Trade::flatbuf::Order>> orders;
         for (auto& order : Orders)
             orders.emplace_back(order.Serialize(builder));
-        return flatbuf::CreateAccountDirect(builder, Id, Name.c_str(), wallet, &orders);
+        return Trade::flatbuf::CreateAccountDirect(builder, Uid, Name.c_str(), wallet, &orders);
     }
 
-    void Deserialize(const flatbuf::Account& value)
+    void Deserialize(const Trade::flatbuf::Account& value)
     {
-        Id = value.id();
+        Uid = value.uid();
         Name = value.name()->str();
         Wallet.Deserialize(*value.wallet());
         Orders.clear();
@@ -1014,24 +1014,24 @@ struct Account
     ...
 };
 
-} // namespace MyDomain
+} // namespace TradeProto
 ```
 
 ## FlatBuffers example
 Here comes the usage example of FlatBuffers serialize/deserialize functionality:
 
 ```c++
-#include "../domain/domain.h"
+#include "../proto/trade.h"
 
 #include <iostream>
 
 int main(int argc, char** argv)
 {
     // Create a new account with some orders
-    MyDomain::Account account(1, "Test", "USD", 1000);
-    account.Orders.emplace_back(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
-    account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
-    account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
+    TradeProto::Account account(1, "Test", "USD", 1000);
+    account.Orders.emplace_back(TradeProto::Order(1, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::MARKET, 1.23456, 1000));
+    account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
+    account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
     // Serialize the account to the FlatBuffer stream
     flatbuffers::FlatBufferBuilder builder;
@@ -1041,18 +1041,18 @@ int main(int argc, char** argv)
     std::cout << "FlatBuffer size: " << builder.GetSize() << std::endl;
 
     // Deserialize the account from the FlatBuffer stream
-    MyDomain::Account deserialized;
-    deserialized.Deserialize(*MyDomain::flatbuf::GetAccount(builder.GetBufferPointer()));
+    TradeProto::Account deserialized;
+    deserialized.Deserialize(*Trade::flatbuf::GetAccount(builder.GetBufferPointer()));
 
     // Show account content
     std::cout << std::endl;
-    std::cout << "Account.Id = " << deserialized.Id << std::endl;
+    std::cout << "Account.Uid = " << deserialized.Uid << std::endl;
     std::cout << "Account.Name = " << deserialized.Name << std::endl;
     std::cout << "Account.Wallet.Currency = " << deserialized.Wallet.Currency << std::endl;
     std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
     for (auto& order : deserialized.Orders)
     {
-        std::cout << "Account.Order => Id: " << order.Id
+        std::cout << "Account.Order => Uid: " << order.Uid
             << ", Symbol: " << order.Symbol
             << ", Side: " << (int)order.Side
             << ", Type: " << (int)order.Type
@@ -1069,13 +1069,13 @@ Output of the example is the following:
 ```
 FlatBuffer size: 280
 
-Account.Id = 1
+Account.Uid = 1
 Account.Name = Test
 Account.Wallet.Currency = USD
 Account.Wallet.Amount = 1000
-Account.Order => Id: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
-Account.Order => Id: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
-Account.Order => Id: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
+Account.Order => Uid: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
+Account.Order => Uid: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
+Account.Order => Uid: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
 ```
 
 ## FlatBuffers performance
@@ -1166,7 +1166,7 @@ model the schema will be the following:
 
 ```proto
 syntax = "proto3";
-package MyDomain.protobuf;
+package Trade.protobuf;
 
 enum OrderSide
 {
@@ -1183,7 +1183,7 @@ enum OrderType
 
 message Order
 {
-    int32 id = 1;
+    int32 uid = 1;
     string symbol = 2;
     OrderSide side = 3;
     OrderType type = 4;
@@ -1199,7 +1199,7 @@ message Balance
 
 message Account
 {
-    int32 id = 1;
+    int32 uid = 1;
     string name = 2;
     Balance wallet = 3;
     repeated Order orders = 4;
@@ -1212,27 +1212,27 @@ a generated code for required programming language.
 
 The following command will create a C++ generated code:
 ```shell
-protoc --proto_path=. --cpp_out=. domain.proto
+protoc --proto_path=. --cpp_out=. trade.proto
 ```
 
 It is possible to use add_custom_command() in CMakeLists.txt to generate code
 using 'cmake' utility:
 ```cmake
-add_custom_command(TARGET example POST_BUILD COMMAND protoc --proto_path=. --cpp_out=. domain.proto)
+add_custom_command(TARGET example POST_BUILD COMMAND protoc --proto_path=. --cpp_out=. trade.proto)
 ```
 
-As the result 'domain.pb.h' and 'domain.pb.cc' files will be generated.
+As the result 'trade.pb.h' and 'trade.pb.cc' files will be generated.
 
 ## Protobuf serialization methods
 Finally you should extend your domain model with a FlatBuffers serialization
 methods:
 
 ```c++
-#include "protobuf/domain.pb.h"
+#include "protobuf/trade.pb.h"
 
 #include <algorithm>
 
-namespace MyDomain {
+namespace TradeProto {
 
 struct Order
 {
@@ -1240,22 +1240,22 @@ struct Order
 
     // Protobuf serialization
 
-    protobuf::Order& Serialize(protobuf::Order& value)
+    Trade::protobuf::Order& Serialize(Trade::protobuf::Order& value)
     {
-        value.set_id(Id);
+        value.set_uid(Uid);
         value.set_symbol(Symbol);
-        value.set_side((MyDomain::protobuf::OrderSide)Side);
-        value.set_type((MyDomain::protobuf::OrderType)Type);
+        value.set_side((Trade::protobuf::OrderSide)Side);
+        value.set_type((Trade::protobuf::OrderType)Type);
         value.set_price(Price);
         value.set_volume(Volume);
         return value;
     }
 
-    void Deserialize(const protobuf::Order& value)
+    void Deserialize(const Trade::protobuf::Order& value)
     {
-        Id = value.id();
+        Uid = value.uid();
         std::string symbol = value.symbol();
-        std::strncpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
+        std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)value.side();
         Type = (OrderType)value.type();
         Price = value.price();
@@ -1271,17 +1271,17 @@ struct Balance
 
     // Protobuf serialization
 
-    protobuf::Balance& Serialize(protobuf::Balance& value)
+    Trade::protobuf::Balance& Serialize(Trade::protobuf::Balance& value)
     {
         value.set_currency(Currency);
         value.set_amount(Amount);
         return value;
     }
 
-    void Deserialize(const protobuf::Balance& value)
+    void Deserialize(const Trade::protobuf::Balance& value)
     {
         std::string currency = value.currency();
-        std::strncpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
+        std::memcpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = value.amount();
     }
 
@@ -1294,9 +1294,9 @@ struct Account
 
     // Protobuf serialization
 
-    protobuf::Account& Serialize(protobuf::Account& value)
+    Trade::protobuf::Account& Serialize(Trade::protobuf::Account& value)
     {
-        value.set_id(Id);
+        value.set_uid(Uid);
         value.set_name(Name);
         value.set_allocated_wallet(&Wallet.Serialize(*value.wallet().New(value.GetArena())));
         for (auto& order : Orders)
@@ -1304,9 +1304,9 @@ struct Account
         return value;
     }
 
-    void Deserialize(const protobuf::Account& value)
+    void Deserialize(const Trade::protobuf::Account& value)
     {
-        Id = value.id();
+        Uid = value.uid();
         Name = value.name();
         Wallet.Deserialize(value.wallet());
         Orders.clear();
@@ -1321,48 +1321,48 @@ struct Account
     ...
 };
 
-} // namespace MyDomain
+} // namespace TradeProto
 ```
 
 ## Protobuf example
 Here comes the usage example of Protobuf serialize/deserialize functionality:
 
 ```c++
-#include "../domain/domain.h"
+#include "../proto/trade.h"
 
 #include <iostream>
 
 int main(int argc, char** argv)
 {
     // Create a new account with some orders
-    MyDomain::Account account(1, "Test", "USD", 1000);
-    account.Orders.emplace_back(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
-    account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
-    account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
+    TradeProto::Account account(1, "Test", "USD", 1000);
+    account.Orders.emplace_back(TradeProto::Order(1, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::MARKET, 1.23456, 1000));
+    account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
+    account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
     // Serialize the account to the Protobuf stream
-    MyDomain::protobuf::Account ouput;
-    account.Serialize(ouput);
-    auto buffer = ouput.SerializeAsString();
+    Trade::protobuf::Account output;
+    account.Serialize(output);
+    auto buffer = output.SerializeAsString();
 
     // Show the serialized Protobuf size
     std::cout << "Protobuf size: " << buffer.size() << std::endl;
 
     // Deserialize the account from the Protobuf stream
-    MyDomain::protobuf::Account input;
+    Trade::protobuf::Account input;
     input.ParseFromString(buffer);
-    MyDomain::Account deserialized;
+    TradeProto::Account deserialized;
     deserialized.Deserialize(input);
 
     // Show account content
     std::cout << std::endl;
-    std::cout << "Account.Id = " << deserialized.Id << std::endl;
+    std::cout << "Account.Uid = " << deserialized.Uid << std::endl;
     std::cout << "Account.Name = " << deserialized.Name << std::endl;
     std::cout << "Account.Wallet.Currency = " << deserialized.Wallet.Currency << std::endl;
     std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
     for (auto& order : deserialized.Orders)
     {
-        std::cout << "Account.Order => Id: " << order.Id
+        std::cout << "Account.Order => Uid: " << order.Uid
             << ", Symbol: " << order.Symbol
             << ", Side: " << (int)order.Side
             << ", Type: " << (int)order.Type
@@ -1382,13 +1382,13 @@ Output of the example is the following:
 ```
 Protobuf size: 120
 
-Account.Id = 1
+Account.Uid = 1
 Account.Name = Test
 Account.Wallet.Currency = USD
 Account.Wallet.Amount = 1000
-Account.Order => Id: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
-Account.Order => Id: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
-Account.Order => Id: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
+Account.Order => Uid: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
+Account.Order => Uid: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
+Account.Order => Uid: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
 ```
 
 ## Protobuf performance
@@ -1481,7 +1481,7 @@ methods:
 #include "serialization/json/serializer.h"
 #include "serialization/json/deserializer.h"
 
-namespace MyDomain {
+namespace TradeProto {
 
 struct Order
 {
@@ -1493,7 +1493,7 @@ struct Order
     void Serialize(CppSerialization::JSON::Serializer<OutputStream>& serializer)
     {
         serializer.StartObject();
-        serializer.Pair("id", Id);
+        serializer.Pair("uid", Uid);
         serializer.Pair("symbol", Symbol);
         serializer.Pair("side", (int)Side);
         serializer.Pair("type", (int)Type);
@@ -1507,7 +1507,7 @@ struct Order
     {
         using namespace CppSerialization::JSON;
 
-        Deserializer::Find(json, "id", Id);
+        Deserializer::Find(json, "uid", Uid);
         Deserializer::Find(json, "symbol", Symbol);
         int side = 0; Deserializer::Find(json, "side", side); Side = (OrderSide)side;
         int type = 0; Deserializer::Find(json, "type", type); Type = (OrderType)type;
@@ -1555,7 +1555,7 @@ struct Account
     void Serialize(CppSerialization::JSON::Serializer<OutputStream>& serializer)
     {
         serializer.StartObject();
-        serializer.Pair("id", Id);
+        serializer.Pair("uid", Uid);
         serializer.Pair("name", Name);
         serializer.Key("wallet");
         Wallet.Serialize(serializer);
@@ -1572,12 +1572,13 @@ struct Account
     {
         using namespace CppSerialization::JSON;
 
-        Deserializer::Find(json, "id", Id);
+        Deserializer::Find(json, "uid", Uid);
         Deserializer::Find(json, "name", Name);
         Deserializer::FindObject(json, "wallet", [this](const Value::ConstObject& object)
         {
             Wallet.Deserialize(object);
         });
+        Orders.clear();
         Deserializer::FindArray(json, "orders", [this](const Value& item)
         {
             Order order;
@@ -1589,14 +1590,14 @@ struct Account
     ...
 };
 
-} // namespace MyDomain
+} // namespace TradeProto
 ```
 
 ## JSON example
 Here comes the usage example of JSON serialize/deserialize functionality:
 
 ```c++
-#include "../domain/domain.h"
+#include "../proto/trade.h"
 
 #include "serialization/json/parser.h"
 
@@ -1605,35 +1606,37 @@ Here comes the usage example of JSON serialize/deserialize functionality:
 int main(int argc, char** argv)
 {
     // Create a new account with some orders
-    MyDomain::Account account(1, "Test", "USD", 1000);
-    account.Orders.emplace_back(MyDomain::Order(1, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::MARKET, 1.23456, 1000));
-    account.Orders.emplace_back(MyDomain::Order(2, "EURUSD", MyDomain::OrderSide::SELL, MyDomain::OrderType::LIMIT, 1.0, 100));
-    account.Orders.emplace_back(MyDomain::Order(3, "EURUSD", MyDomain::OrderSide::BUY, MyDomain::OrderType::STOP, 1.5, 10));
+    TradeProto::Account account(1, "Test", "USD", 1000);
+    account.Orders.emplace_back(TradeProto::Order(1, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::MARKET, 1.23456, 1000));
+    account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
+    account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
     // Serialize the account to the JSON stream
     CppSerialization::JSON::StringBuffer buffer;
     CppSerialization::JSON::Serializer<CppSerialization::JSON::StringBuffer> serializer(buffer);
     account.Serialize(serializer);
 
-    // Show the serialized JSON
-    std::cout << "JSON: " << buffer.GetString() << std::endl;
+    // Show the serialized JSON content
+    std::cout << "JSON content: " << buffer.GetString() << std::endl;
+    // Show the serialized JSON size
+    std::cout << "JSON size: " << buffer.GetSize() << std::endl;
 
     // Parse JSON string
     CppSerialization::JSON::Document json = CppSerialization::JSON::Parser::Parse(buffer.GetString());
 
     // Deserialize the account from the JSON stream
-    MyDomain::Account deserialized;
+    TradeProto::Account deserialized;
     deserialized.Deserialize(json);
 
     // Show account content
     std::cout << std::endl;
-    std::cout << "Account.Id = " << deserialized.Id << std::endl;
+    std::cout << "Account.Uid = " << deserialized.Uid << std::endl;
     std::cout << "Account.Name = " << deserialized.Name << std::endl;
     std::cout << "Account.Wallet.Currency = " << deserialized.Wallet.Currency << std::endl;
     std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
     for (auto& order : deserialized.Orders)
     {
-        std::cout << "Account.Order => Id: " << order.Id
+        std::cout << "Account.Order => Uid: " << order.Uid
             << ", Symbol: " << order.Symbol
             << ", Side: " << (int)order.Side
             << ", Type: " << (int)order.Type
@@ -1648,16 +1651,16 @@ int main(int argc, char** argv)
 
 Output of the example is the following:
 ```
-JSON content: {"id":1,"name":"Test","wallet":{"currency":"USD","amount":1000.0},"orders":[{"id":1,"symbol":"EURUSD","side":0,"type":0,"price":1.23456,"volume":1000.0},{"id":2,"symbol":"EURUSD","side":1,"type":1,"price":1.0,"volume":100.0},{"id":3,"symbol":"EURUSD","side":0,"type":2,"price":1.5,"volume":10.0}]}
-JSON size: 297
+JSON content: {"uid":1,"name":"Test","wallet":{"currency":"USD","amount":1000.0},"orders":[{"uid":1,"symbol":"EURUSD","side":0,"type":0,"price":1.23456,"volume":1000.0},{"uid":2,"symbol":"EURUSD","side":1,"type":1,"price":1.0,"volume":100.0},{"uid":3,"symbol":"EURUSD","side":0,"type":2,"price":1.5,"volume":10.0}]}
+JSON size: 301
 
-Account.Id = 1
+Account.Uid = 1
 Account.Name = Test
 Account.Wallet.Currency = USD
 Account.Wallet.Amount = 1000
-Account.Order => Id: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
-Account.Order => Id: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
-Account.Order => Id: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
+Account.Order => Uid: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
+Account.Order => Uid: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
+Account.Order => Uid: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
 ```
 
 ## JSON performance
