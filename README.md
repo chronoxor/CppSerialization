@@ -15,7 +15,7 @@ Performance comparison based on the [Domain model](#domain-model):
 | Protocol           | Message size | Serialization time | Deserialization time |
 | :----------------: | -----------: | -----------------: | -------------------: |
 | Cap'n'Proto        |    208 bytes |             662 ns |               428 ns |
-| FastBinaryEncoding |    234 bytes |              78 ns |                97 ns |
+| MyBin              |    234 bytes |              78 ns |                97 ns |
 | FlatBuffers        |    280 bytes |            1010 ns |               349 ns |
 | Protobuf           |    120 bytes |             753 ns |               883 ns |
 | JSON               |    301 bytes |             893 ns |               600 ns |
@@ -1777,3 +1777,4 @@ Custom values:
         Size: 297
 ===============================================================================
 ```
+..
