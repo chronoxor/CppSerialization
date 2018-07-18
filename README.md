@@ -459,28 +459,28 @@ CPU physical cores: 4
 CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
 RAM total: 31.903 GiB
-RAM free: 23.140 GiB
+RAM free: 20.431 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Mon Jul 16 13:08:42 2018
-UTC timestamp: Mon Jul 16 10:08:42 2018
+Local timestamp: Wed Jul 18 13:21:25 2018
+UTC timestamp: Wed Jul 18 10:21:25 2018
 ===============================================================================
 Benchmark: Cap'n'Proto-Serialize
 Attempts: 5
-Operations: 1000000
+Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: Cap'n'Proto-Serialize
-Average time: 662 ns/op
-Minimal time: 662 ns/op
-Maximal time: 665 ns/op
-Total time: 662.079 ms
-Total operations: 1000000
-Total bytes: 198.373 MiB
-Operations throughput: 1510392 ops/s
-Bytes throughput: 299.622 MiB/s
+Average time: 558 ns/op
+Minimal time: 558 ns/op
+Maximal time: 568 ns/op
+Total time: 4.783 s
+Total operations: 8562741
+Total bytes: 1.674 GiB
+Operations throughput: 1789911 ops/s
+Bytes throughput: 355.055 MiB/s
 Custom values:
         Size: 208
 ===============================================================================
@@ -498,28 +498,28 @@ CPU physical cores: 4
 CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
 RAM total: 31.903 GiB
-RAM free: 23.508 GiB
+RAM free: 20.631 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Mon Jul 16 13:09:14 2018
-UTC timestamp: Mon Jul 16 10:09:14 2018
+Local timestamp: Wed Jul 18 13:22:27 2018
+UTC timestamp: Wed Jul 18 10:22:27 2018
 ===============================================================================
 Benchmark: Cap'n'Proto-Deserialize
 Attempts: 5
-Operations: 1000000
+Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: Cap'n'Proto-Deserialize
-Average time: 428 ns/op
-Minimal time: 428 ns/op
-Maximal time: 430 ns/op
-Total time: 428.574 ms
-Total operations: 1000000
-Total bytes: 198.373 MiB
-Operations throughput: 2333314 ops/s
-Bytes throughput: 462.866 MiB/s
+Average time: 359 ns/op
+Minimal time: 359 ns/op
+Maximal time: 361 ns/op
+Total time: 4.828 s
+Total operations: 13440063
+Total bytes: 2.618 GiB
+Operations throughput: 2783738 ops/s
+Bytes throughput: 552.198 MiB/s
 Custom values:
         Size: 208
 ===============================================================================
@@ -792,28 +792,28 @@ CPU physical cores: 4
 CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
 RAM total: 31.903 GiB
-RAM free: 23.612 GiB
+RAM free: 20.644 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Mon Jul 16 13:09:45 2018
-UTC timestamp: Mon Jul 16 10:09:45 2018
+Local timestamp: Wed Jul 18 13:23:18 2018
+UTC timestamp: Wed Jul 18 10:23:18 2018
 ===============================================================================
 Benchmark: FastBinaryEncoding-Serialize
 Attempts: 5
-Operations: 10000000
+Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: FastBinaryEncoding-Serialize
-Average time: 78 ns/op
-Minimal time: 78 ns/op
-Maximal time: 78 ns/op
-Total time: 787.874 ms
-Total operations: 10000000
-Total bytes: 2.183 GiB
-Operations throughput: 12692383 ops/s
-Bytes throughput: 2.784 GiB/s
+Average time: 66 ns/op
+Minimal time: 66 ns/op
+Maximal time: 67 ns/op
+Total time: 3.598 s
+Total operations: 54301046
+Total bytes: 11.853 GiB
+Operations throughput: 15090301 ops/s
+Bytes throughput: 3.295 GiB/s
 Custom values:
         Size: 234
 ===============================================================================
@@ -831,28 +831,28 @@ CPU physical cores: 4
 CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
 RAM total: 31.903 GiB
-RAM free: 23.619 GiB
+RAM free: 20.520 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Mon Jul 16 13:11:17 2018
-UTC timestamp: Mon Jul 16 10:11:17 2018
+Local timestamp: Wed Jul 18 13:24:03 2018
+UTC timestamp: Wed Jul 18 10:24:03 2018
 ===============================================================================
 Benchmark: FastBinaryEncoding-Deserialize
 Attempts: 5
-Operations: 10000000
+Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: FastBinaryEncoding-Deserialize
-Average time: 97 ns/op
-Minimal time: 97 ns/op
-Maximal time: 97 ns/op
-Total time: 971.249 ms
-Total operations: 10000000
-Total bytes: 2.183 GiB
-Operations throughput: 10296017 ops/s
-Bytes throughput: 2.249 GiB/s
+Average time: 82 ns/op
+Minimal time: 82 ns/op
+Maximal time: 85 ns/op
+Total time: 3.302 s
+Total operations: 40260567
+Total bytes: 8.792 GiB
+Operations throughput: 12190362 ops/s
+Bytes throughput: 2.672 GiB/s
 Custom values:
         Size: 234
 ===============================================================================
@@ -1091,28 +1091,28 @@ CPU physical cores: 4
 CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
 RAM total: 31.903 GiB
-RAM free: 23.620 GiB
+RAM free: 20.624 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Mon Jul 16 13:12:19 2018
-UTC timestamp: Mon Jul 16 10:12:19 2018
+Local timestamp: Wed Jul 18 13:24:57 2018
+UTC timestamp: Wed Jul 18 10:24:57 2018
 ===============================================================================
 Benchmark: FlatBuffers-Serialize
 Attempts: 5
-Operations: 1000000
+Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: FlatBuffers-Serialize
-Average time: 1.010 mcs/op
-Minimal time: 1.010 mcs/op
-Maximal time: 1.014 mcs/op
-Total time: 1.010 s
-Total operations: 1000000
-Total bytes: 267.029 MiB
-Operations throughput: 989294 ops/s
-Bytes throughput: 264.174 MiB/s
+Average time: 830 ns/op
+Minimal time: 830 ns/op
+Maximal time: 840 ns/op
+Total time: 4.830 s
+Total operations: 5816587
+Total bytes: 1.529 GiB
+Operations throughput: 1204142 ops/s
+Bytes throughput: 321.553 MiB/s
 Custom values:
         Size: 280
 ===============================================================================
@@ -1130,28 +1130,28 @@ CPU physical cores: 4
 CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
 RAM total: 31.903 GiB
-RAM free: 23.617 GiB
+RAM free: 20.631 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Mon Jul 16 13:12:42 2018
-UTC timestamp: Mon Jul 16 10:12:42 2018
+Local timestamp: Wed Jul 18 13:25:45 2018
+UTC timestamp: Wed Jul 18 10:25:45 2018
 ===============================================================================
 Benchmark: FlatBuffers-Deserialize
 Attempts: 5
-Operations: 1000000
+Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: FlatBuffers-Deserialize
-Average time: 349 ns/op
-Minimal time: 349 ns/op
-Maximal time: 352 ns/op
-Total time: 349.750 ms
-Total operations: 1000000
-Total bytes: 267.029 MiB
-Operations throughput: 2859181 ops/s
-Bytes throughput: 763.495 MiB/s
+Average time: 290 ns/op
+Minimal time: 290 ns/op
+Maximal time: 293 ns/op
+Total time: 4.690 s
+Total operations: 16143136
+Total bytes: 4.214 GiB
+Operations throughput: 3441995 ops/s
+Bytes throughput: 919.114 MiB/s
 Custom values:
         Size: 280
 ===============================================================================
@@ -1404,28 +1404,28 @@ CPU physical cores: 4
 CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
 RAM total: 31.903 GiB
-RAM free: 23.697 GiB
+RAM free: 20.676 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Mon Jul 16 13:13:44 2018
-UTC timestamp: Mon Jul 16 10:13:44 2018
+Local timestamp: Wed Jul 18 13:26:34 2018
+UTC timestamp: Wed Jul 18 10:26:34 2018
 ===============================================================================
 Benchmark: Protobuf-Serialize
 Attempts: 5
-Operations: 1000000
+Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: Protobuf-Serialize
-Average time: 753 ns/op
-Minimal time: 753 ns/op
-Maximal time: 757 ns/op
-Total time: 753.218 ms
-Total operations: 1000000
-Total bytes: 114.451 MiB
-Operations throughput: 1327636 ops/s
-Bytes throughput: 151.958 MiB/s
+Average time: 628 ns/op
+Minimal time: 628 ns/op
+Maximal time: 658 ns/op
+Total time: 4.552 s
+Total operations: 7240754
+Total bytes: 828.653 MiB
+Operations throughput: 1590357 ops/s
+Bytes throughput: 182.002 MiB/s
 Custom values:
         Size: 120
 ===============================================================================
@@ -1443,28 +1443,28 @@ CPU physical cores: 4
 CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
 RAM total: 31.903 GiB
-RAM free: 23.699 GiB
+RAM free: 20.676 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Mon Jul 16 13:14:10 2018
-UTC timestamp: Mon Jul 16 10:14:10 2018
+Local timestamp: Wed Jul 18 13:27:18 2018
+UTC timestamp: Wed Jul 18 10:27:18 2018
 ===============================================================================
 Benchmark: Protobuf-Deserialize
 Attempts: 5
-Operations: 1000000
+Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: Protobuf-Deserialize
-Average time: 889 ns/op
-Minimal time: 889 ns/op
-Maximal time: 893 ns/op
-Total time: 889.619 ms
-Total operations: 1000000
-Total bytes: 114.451 MiB
-Operations throughput: 1124076 ops/s
-Bytes throughput: 128.655 MiB/s
+Average time: 759 ns/op
+Minimal time: 759 ns/op
+Maximal time: 776 ns/op
+Total time: 4.757 s
+Total operations: 6267474
+Total bytes: 717.261 MiB
+Operations throughput: 1317322 ops/s
+Bytes throughput: 150.773 MiB/s
 Custom values:
         Size: 120
 ===============================================================================
@@ -1675,28 +1675,28 @@ CPU physical cores: 4
 CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
 RAM total: 31.903 GiB
-RAM free: 23.704 GiB
+RAM free: 20.683 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Mon Jul 16 13:15:11 2018
-UTC timestamp: Mon Jul 16 10:15:11 2018
+Local timestamp: Wed Jul 18 13:28:06 2018
+UTC timestamp: Wed Jul 18 10:28:06 2018
 ===============================================================================
 Benchmark: JSON-Serialize
 Attempts: 5
-Operations: 1000000
+Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: JSON-Serialize
-Average time: 893 ns/op
-Minimal time: 893 ns/op
-Maximal time: 895 ns/op
-Total time: 893.028 ms
-Total operations: 1000000
-Total bytes: 287.057 MiB
-Operations throughput: 1119785 ops/s
-Bytes throughput: 321.451 MiB/s
+Average time: 740 ns/op
+Minimal time: 740 ns/op
+Maximal time: 746 ns/op
+Total time: 4.851 s
+Total operations: 6552815
+Total bytes: 1.857 GiB
+Operations throughput: 1350543 ops/s
+Bytes throughput: 387.697 MiB/s
 Custom values:
         Size: 301
 ===============================================================================
@@ -1713,28 +1713,28 @@ CPU physical cores: 4
 CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
 RAM total: 31.903 GiB
-RAM free: 23.701 GiB
+RAM free: 20.698 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Mon Jul 16 13:16:30 2018
-UTC timestamp: Mon Jul 16 10:16:30 2018
+Local timestamp: Wed Jul 18 13:29:53 2018
+UTC timestamp: Wed Jul 18 10:29:53 2018
 ===============================================================================
-Benchmark: JSON-Deserialize
+Benchmark: JSON-Parse
 Attempts: 5
-Operations: 1000000
+Duration: 5 seconds
 -------------------------------------------------------------------------------
-Phase: JSON-Deserialize
-Average time: 600 ns/op
-Minimal time: 600 ns/op
-Maximal time: 603 ns/op
-Total time: 600.956 ms
-Total operations: 1000000
-Total bytes: 3.834 MiB
-Operations throughput: 1664013 ops/s
-Bytes throughput: 6.356 MiB/s
+Phase: JSON-Parse
+Average time: 2.063 mcs/op
+Minimal time: 2.063 mcs/op
+Maximal time: 2.090 mcs/op
+Total time: 4.928 s
+Total operations: 2388728
+Total bytes: 685.715 MiB
+Operations throughput: 484713 ops/s
+Bytes throughput: 139.143 MiB/s
 Custom values:
         Size: 301
 ===============================================================================
@@ -1745,36 +1745,35 @@ JSON deserialization performance of the provided domain model is the following:
 ===============================================================================
 CppBenchmark report. Version 1.0.0.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
 CPU logical cores: 8
 CPU physical cores: 4
-CPU clock speed: 3.998 GHz
+CPU clock speed: 4.008 GHz
 CPU Hyper-Threading: enabled
-RAM total: 31.962 GiB
-RAM free: 18.489 GiB
+RAM total: 31.903 GiB
+RAM free: 20.706 GiB
 ===============================================================================
 OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
 OS bits: 64-bit
 Process bits: 64-bit
 Process configuaraion: release
-Local timestamp: Wed May  9 00:26:05 2018
-UTC timestamp: Tue May  8 21:26:05 2018
+Local timestamp: Wed Jul 18 13:30:43 2018
+UTC timestamp: Wed Jul 18 10:30:43 2018
 ===============================================================================
 Benchmark: JSON-Deserialize
 Attempts: 5
-Operations: 1000000
+Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: JSON-Deserialize
-Average time: 638 ns/op
-Minimal time: 638 ns/op
-Maximal time: 674 ns/op
-Total time: 638.172 ms
-Total operations: 1000000
-Total bytes: 3.834 MiB
-Operations throughput: 1566975 ops/s
-Bytes throughput: 5.1000 MiB/s
+Average time: 500 ns/op
+Minimal time: 500 ns/op
+Maximal time: 510 ns/op
+Total time: 4.749 s
+Total operations: 9487106
+Total bytes: 36.195 MiB
+Operations throughput: 1997556 ops/s
+Bytes throughput: 7.634 MiB/s
 Custom values:
-        Size: 297
+        Size: 301
 ===============================================================================
 ```
-..
