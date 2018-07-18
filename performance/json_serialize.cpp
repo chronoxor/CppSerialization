@@ -8,8 +8,6 @@
 
 using namespace CppSerialization::JSON;
 
-const uint64_t operations = 1000000;
-
 class SerializationFixture
 {
 protected:
@@ -25,7 +23,7 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(SerializationFixture, "JSON-Serialize", operations)
+BENCHMARK_FIXTURE(SerializationFixture, "JSON-Serialize")
 {
     // Serialize the account to the JSON stream
     buffer.Clear();

@@ -10,8 +10,6 @@
 
 using namespace CppSerialization::JSON;
 
-const uint64_t operations = 1000000;
-
 class ParserFixture
 {
 protected:
@@ -31,7 +29,7 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(ParserFixture, "JSON-Parse", operations)
+BENCHMARK_FIXTURE(ParserFixture, "JSON-Parse")
 {
     context.metrics().AddBytes(buffer.GetSize());
     context.metrics().SetCustom("Size", (unsigned)buffer.GetSize());

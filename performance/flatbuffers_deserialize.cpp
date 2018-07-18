@@ -6,8 +6,6 @@
 
 #include "../proto/trade.h"
 
-const uint64_t operations = 1000000;
-
 class DeserializationFixture
 {
 protected:
@@ -28,7 +26,7 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(DeserializationFixture, "FlatBuffers-Deserialize", operations)
+BENCHMARK_FIXTURE(DeserializationFixture, "FlatBuffers-Deserialize")
 {
     context.metrics().AddBytes(builder.GetSize());
     context.metrics().SetCustom("Size", builder.GetSize());

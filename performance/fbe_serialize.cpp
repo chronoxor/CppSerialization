@@ -6,8 +6,6 @@
 
 #include "../proto/trade.h"
 
-const uint64_t operations = 10000000;
-
 class SerializationFixture
 {
 protected:
@@ -23,7 +21,7 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(SerializationFixture, "FastBinaryEncoding-Serialize", operations)
+BENCHMARK_FIXTURE(SerializationFixture, "FastBinaryEncoding-Serialize")
 {
     // Serialize the account to the FBE stream
     writer.reset();

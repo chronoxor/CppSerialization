@@ -6,8 +6,6 @@
 
 #include "../proto/trade.h"
 
-const uint64_t operations = 1000000;
-
 namespace local {
 
 capnp::MallocMessageBuilder output;
@@ -35,7 +33,7 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(DeserializationFixture, "Cap'n'Proto-Deserialize", operations)
+BENCHMARK_FIXTURE(DeserializationFixture, "Cap'n'Proto-Deserialize")
 {
     context.metrics().AddBytes(local::buffer.getArray().size());
     context.metrics().SetCustom("Size", (unsigned)local::buffer.getArray().size());

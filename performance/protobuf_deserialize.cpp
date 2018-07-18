@@ -6,8 +6,6 @@
 
 #include "../proto/trade.h"
 
-const uint64_t operations = 1000000;
-
 class DeserializationFixture
 {
 protected:
@@ -35,7 +33,7 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(DeserializationFixture, "Protobuf-Deserialize", operations)
+BENCHMARK_FIXTURE(DeserializationFixture, "Protobuf-Deserialize")
 {
     context.metrics().AddBytes(buffer.size());
     context.metrics().SetCustom("Size", (unsigned)buffer.size());

@@ -6,8 +6,6 @@
 
 #include "../proto/trade.h"
 
-const uint64_t operations = 1000000;
-
 class SerializationFixture
 {
 protected:
@@ -29,7 +27,7 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(SerializationFixture, "Protobuf-Serialize", operations)
+BENCHMARK_FIXTURE(SerializationFixture, "Protobuf-Serialize")
 {
     // Serialize the account to the Protobuf stream
     Trade::protobuf::Account output;

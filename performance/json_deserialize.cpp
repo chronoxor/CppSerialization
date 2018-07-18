@@ -10,8 +10,6 @@
 
 using namespace CppSerialization::JSON;
 
-const uint64_t operations = 1000000;
-
 class DeserializationFixture
 {
 protected:
@@ -38,7 +36,7 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(DeserializationFixture, "JSON-Deserialize", operations)
+BENCHMARK_FIXTURE(DeserializationFixture, "JSON-Deserialize")
 {
     context.metrics().AddBytes(json.Size());
     context.metrics().SetCustom("Size", (unsigned)size);

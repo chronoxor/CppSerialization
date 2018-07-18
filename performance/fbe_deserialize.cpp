@@ -6,8 +6,6 @@
 
 #include "../proto/trade.h"
 
-const uint64_t operations = 10000000;
-
 class DeserializationFixture
 {
 protected:
@@ -33,7 +31,7 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(DeserializationFixture, "FastBinaryEncoding-Deserialize", operations)
+BENCHMARK_FIXTURE(DeserializationFixture, "FastBinaryEncoding-Deserialize")
 {
     context.metrics().AddBytes(reader.buffer().size());
     context.metrics().SetCustom("Size", (unsigned)reader.buffer().size());
