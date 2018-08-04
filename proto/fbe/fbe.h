@@ -92,8 +92,6 @@ public:
     decimal_t& operator*=(const T& value) noexcept { return *this = *this * decimal_t(value); }
     template <typename T>
     decimal_t& operator/=(const T& value) { return *this = *this / decimal_t(value); }
-    template <typename T>
-    decimal_t& operator%=(const T& value) { return *this = *this % decimal_t(value); }
 
     template <typename T>
     friend T& operator+=(T& value1, const decimal_t& value2) noexcept { return value1 = (T)(decimal_t(value1) + value2); }
@@ -103,8 +101,6 @@ public:
     friend T& operator*=(T& value1, const decimal_t& value2) noexcept { return value1 = (T)(decimal_t(value1) * value2); }
     template <typename T>
     friend T& operator/=(T& value1, const decimal_t& value2) { return value1 = (T)(decimal_t(value1) / value2); }
-    template <typename T>
-    friend T& operator%=(T& value1, const decimal_t& value2) { return value1 = (T)(decimal_t(value1) % value2); }
 
     template <typename T>
     friend decimal_t operator+(const T& value1, const decimal_t& value2) noexcept { return decimal_t(value1) + value2; }
