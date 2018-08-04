@@ -21,11 +21,13 @@ enum class OrderSide : uint8_t
     sell,
 };
 
-inline std::ostream& operator<<(std::ostream& stream, OrderSide value)
+template <class TOutputStream>
+inline TOutputStream& operator<<(TOutputStream& stream, OrderSide value)
 {
-    if (value == OrderSide::buy) return stream << "buy";
-    if (value == OrderSide::sell) return stream << "sell";
-    return stream << "<unknown>";
+    if (value == OrderSide::buy) { stream << "buy"; return stream; }
+    if (value == OrderSide::sell) { stream << "sell"; return stream; }
+    stream << "<unknown>";
+    return stream;
 }
 
 } // namespace trade
@@ -51,12 +53,14 @@ enum class OrderType : uint8_t
     stop,
 };
 
-inline std::ostream& operator<<(std::ostream& stream, OrderType value)
+template <class TOutputStream>
+inline TOutputStream& operator<<(TOutputStream& stream, OrderType value)
 {
-    if (value == OrderType::market) return stream << "market";
-    if (value == OrderType::limit) return stream << "limit";
-    if (value == OrderType::stop) return stream << "stop";
-    return stream << "<unknown>";
+    if (value == OrderType::market) { stream << "market"; return stream; }
+    if (value == OrderType::limit) { stream << "limit"; return stream; }
+    if (value == OrderType::stop) { stream << "stop"; return stream; }
+    stream << "<unknown>";
+    return stream;
 }
 
 } // namespace trade
@@ -133,7 +137,8 @@ struct Order
         return ss.str();
     }
 
-    friend std::ostream& operator<<(std::ostream& stream, const Order& other);
+    template <class TOutputStream>
+    friend TOutputStream& operator<<(TOutputStream& stream, const Order& other);
 
     void swap(Order& other) noexcept
     {
@@ -152,7 +157,8 @@ struct Order
     }
 };
 
-inline std::ostream& operator<<(std::ostream& stream, const Order& value)
+template <class TOutputStream>
+inline TOutputStream& operator<<(TOutputStream& stream, const Order& value)
 {
     stream << "Order(";
     stream << "uid="; stream << value.uid;
@@ -593,7 +599,8 @@ struct Balance
         return ss.str();
     }
 
-    friend std::ostream& operator<<(std::ostream& stream, const Balance& other);
+    template <class TOutputStream>
+    friend TOutputStream& operator<<(TOutputStream& stream, const Balance& other);
 
     void swap(Balance& other) noexcept
     {
@@ -608,7 +615,8 @@ struct Balance
     }
 };
 
-inline std::ostream& operator<<(std::ostream& stream, const Balance& value)
+template <class TOutputStream>
+inline TOutputStream& operator<<(TOutputStream& stream, const Balance& value)
 {
     stream << "Balance(";
     stream << "currency="; stream << "\"" << value.currency << "\"";
@@ -983,7 +991,8 @@ struct Account
         return ss.str();
     }
 
-    friend std::ostream& operator<<(std::ostream& stream, const Account& other);
+    template <class TOutputStream>
+    friend TOutputStream& operator<<(TOutputStream& stream, const Account& other);
 
     void swap(Account& other) noexcept
     {
@@ -1000,7 +1009,8 @@ struct Account
     }
 };
 
-inline std::ostream& operator<<(std::ostream& stream, const Account& value)
+template <class TOutputStream>
+inline TOutputStream& operator<<(TOutputStream& stream, const Account& value)
 {
     stream << "Account(";
     stream << "uid="; stream << value.uid;

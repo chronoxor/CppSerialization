@@ -41,6 +41,175 @@
 
 namespace FBE {
 
+//! Decimal type
+/*!
+    Represents decimal type using double and provides basic arithmetic operations.
+*/
+class decimal_t
+{
+public:
+    decimal_t() noexcept { _value = 0.0; }
+    decimal_t(int8_t value) noexcept { _value = (double)value; }
+    decimal_t(uint8_t value) noexcept { _value = (double)value; }
+    decimal_t(int16_t value) noexcept { _value = (double)value; }
+    decimal_t(uint16_t value) noexcept { _value = (double)value; }
+    decimal_t(int32_t value) noexcept { _value = (double)value; }
+    decimal_t(uint32_t value) noexcept { _value = (double)value; }
+    decimal_t(int64_t value) noexcept { _value = (double)value; }
+    decimal_t(uint64_t value) noexcept { _value = (double)value; }
+    decimal_t(float value) noexcept { _value = (double)value; }
+    decimal_t(double value) noexcept { _value = value; }
+    template <typename T>
+    explicit decimal_t(const T& value) noexcept { _value = (double)value; }
+    decimal_t(const decimal_t& value) noexcept = default;
+    decimal_t(decimal_t&& value) noexcept = default;
+    ~decimal_t() noexcept = default;
+
+    template <typename T>
+    decimal_t& operator=(const T& value) noexcept { _value = (double)value; return *this; }
+    decimal_t& operator=(const decimal_t& value) noexcept = default;
+    decimal_t& operator=(decimal_t&& value) noexcept = default;
+
+    // Arithmetic operators
+    decimal_t operator+() const noexcept { return decimal_t(_value); }
+    decimal_t operator-() const noexcept { return decimal_t(-_value); }
+
+    decimal_t& operator++() noexcept { return *this += 1; }
+    decimal_t operator++(int) noexcept { decimal_t temp(*this); ++*this; return temp; }
+    decimal_t& operator--() noexcept { return *this -= 1; }
+    decimal_t operator--(int) noexcept { decimal_t temp(*this); --*this; return temp; }
+
+    decimal_t& operator+=(const decimal_t& value) noexcept { return *this = *this + value; }
+    decimal_t& operator-=(const decimal_t& value) noexcept { return *this = *this - value; }
+    decimal_t& operator*=(const decimal_t& value) noexcept { return *this = *this * value; }
+    decimal_t& operator/=(const decimal_t& value) { return *this = *this / value; }
+
+    template <typename T>
+    decimal_t& operator+=(const T& value) noexcept { return *this = *this + decimal_t(value); }
+    template <typename T>
+    decimal_t& operator-=(const T& value) noexcept { return *this = *this - decimal_t(value); }
+    template <typename T>
+    decimal_t& operator*=(const T& value) noexcept { return *this = *this * decimal_t(value); }
+    template <typename T>
+    decimal_t& operator/=(const T& value) { return *this = *this / decimal_t(value); }
+    template <typename T>
+    decimal_t& operator%=(const T& value) { return *this = *this % decimal_t(value); }
+
+    template <typename T>
+    friend T& operator+=(T& value1, const decimal_t& value2) noexcept { return value1 = (T)(decimal_t(value1) + value2); }
+    template <typename T>
+    friend T& operator-=(T& value1, const decimal_t& value2) noexcept { return value1 = (T)(decimal_t(value1) - value2); }
+    template <typename T>
+    friend T& operator*=(T& value1, const decimal_t& value2) noexcept { return value1 = (T)(decimal_t(value1) * value2); }
+    template <typename T>
+    friend T& operator/=(T& value1, const decimal_t& value2) { return value1 = (T)(decimal_t(value1) / value2); }
+    template <typename T>
+    friend T& operator%=(T& value1, const decimal_t& value2) { return value1 = (T)(decimal_t(value1) % value2); }
+
+    template <typename T>
+    friend decimal_t operator+(const T& value1, const decimal_t& value2) noexcept { return decimal_t(value1) + value2; }
+    template <typename T>
+    friend decimal_t operator+(const decimal_t& value1, const T& value2) noexcept { return value1 + decimal_t(value2); }
+    friend decimal_t operator+(const decimal_t& value1, const decimal_t& value2) noexcept { return decimal_t(value1._value + value2._value); }
+
+    template <typename T>
+    friend decimal_t operator-(const T& value1, const decimal_t& value2) noexcept { return decimal_t(value1) - value2; }
+    template <typename T>
+    friend decimal_t operator-(const decimal_t& value1, const T& value2) noexcept { return value1 - decimal_t(value2); }
+    friend decimal_t operator-(const decimal_t& value1, const decimal_t& value2) noexcept { return decimal_t(value1._value - value2._value); }
+
+    template <typename T>
+    friend decimal_t operator*(const T& value1, const decimal_t& value2) noexcept { return decimal_t(value1) * value2; }
+    template <typename T>
+    friend decimal_t operator*(const decimal_t& value1, const T& value2) noexcept { return value1 * decimal_t(value2); }
+    friend decimal_t operator*(const decimal_t& value1, const decimal_t& value2) noexcept { return decimal_t(value1._value * value2._value); }
+
+    template <typename T>
+    friend decimal_t operator/(const T& value1, const decimal_t& value2) { return decimal_t(value1) / value2; }
+    template <typename T>
+    friend decimal_t operator/(const decimal_t& value1, const T& value2) { return value1 / decimal_t(value2); }
+    friend decimal_t operator/(const decimal_t& value1, const decimal_t& value2) { return decimal_t(value1._value / value2._value); }
+
+    // Comparison operators
+    template <typename T>
+    friend bool operator==(const T& value1, const decimal_t& value2) noexcept { return decimal_t(value1) == value2; }
+    template <typename T>
+    friend bool operator==(const decimal_t& value1, const T& value2) noexcept { return value1 == decimal_t(value2); }
+    friend bool operator==(const decimal_t& value1, const decimal_t& value2) noexcept { return value1._value == value2._value; }
+
+    template <typename T>
+    friend bool operator!=(const T& value1, const decimal_t& value2) noexcept { return decimal_t(value1) != value2; }
+    template <typename T>
+    friend bool operator!=(const decimal_t& value1, const T& value2) noexcept { return value1 != decimal_t(value2); }
+    friend bool operator!=(const decimal_t& value1, const decimal_t& value2) noexcept { return value1._value != value2._value; }
+
+    template <typename T>
+    friend bool operator<(const T& value1, const decimal_t& value2) noexcept { return decimal_t(value1) < value2; }
+    template <typename T>
+    friend bool operator<(const decimal_t& value1, const T& value2) noexcept { return value1 < decimal_t(value2); }
+    friend bool operator<(const decimal_t& value1, const decimal_t& value2) noexcept { return value1._value < value2._value; }
+
+    template <typename T>
+    friend bool operator>(const T& value1, const decimal_t& value2) noexcept { return decimal_t(value1) > value2; }
+    template <typename T>
+    friend bool operator>(const decimal_t& value1, const T& value2) noexcept { return value1 > decimal_t(value2); }
+    friend bool operator>(const decimal_t& value1, const decimal_t& value2) noexcept { return value1._value > value2._value; }
+
+    template <typename T>
+    friend bool operator<=(const T& value1, const decimal_t& value2) noexcept { return decimal_t(value1) <= value2; }
+    template <typename T>
+    friend bool operator<=(const decimal_t& value1, const T& value2) noexcept { return value1 <= decimal_t(value2); }
+    friend bool operator<=(const decimal_t& value1, const decimal_t& value2) noexcept { return value1._value <= value2._value; }
+
+    template <typename T>
+    friend bool operator>=(const T& value1, const decimal_t& value2) noexcept { return decimal_t(value1) >= value2; }
+    template <typename T>
+    friend bool operator>=(const decimal_t& value1, const T& value2) noexcept { return value1 >= decimal_t(value2); }
+    friend bool operator>=(const decimal_t& value1, const decimal_t& value2) noexcept { return value1._value >= value2._value; }
+
+    // Type cast
+    operator bool() const noexcept { return (_value != 0.0); }
+    operator uint8_t() const noexcept { return (uint8_t)_value; }
+    operator uint16_t() const noexcept { return (uint16_t)_value; }
+    operator uint32_t() const noexcept { return (uint32_t)_value; }
+    operator uint64_t() const noexcept { return (uint64_t)_value; }
+    operator float() const noexcept { return (float)_value; }
+    operator double() const noexcept { return (double)_value; }
+
+    //! Get string from the current decimal value
+    /*!
+        \return Result string
+    */
+    std::string string() const { return std::to_string(_value); }
+    //! Get wide string from the current decimal value
+    /*!
+        \return Result wide string
+    */
+    std::wstring wstring() const { return std::to_wstring(_value); }
+
+    //! Input instance from the given input stream
+    friend std::istream& operator>>(std::istream& is, decimal_t& value)
+    { is >> value._value; return is; }
+    //! Input instance from the given wide input stream
+    friend std::wistream& operator>>(std::wistream& is, decimal_t& value)
+    { is >> value._value; return is; }
+    //! Output instance into the given output stream
+    friend std::ostream& operator<<(std::ostream& os, const decimal_t& value)
+    { os << value.string(); return os; }
+    //! Output instance into the given wide output stream
+    friend std::wostream& operator<<(std::wostream& os, const decimal_t& value)
+    { os << value.wstring(); return os; }
+
+    //! Swap two instances
+    void swap(decimal_t& value) noexcept
+    { using std::swap; swap(_value, value._value); }
+    friend void swap(decimal_t& value1, decimal_t& value2) noexcept
+    { value1.swap(value2); }
+
+private:
+    double _value;
+};
+
 // Register a new enum-based flags macro
 #define ENUM_FLAGS(type)\
 inline FBE::Flags<type> operator|(type f1, type f2) noexcept { return FBE::Flags<type>(f1) | FBE::Flags<type>(f2); }\
@@ -124,6 +293,8 @@ inline void swap(Flags<TEnum>& flags1, Flags<TEnum>& flags2) noexcept
 {
     flags1.swap(flags2);
 }
+
+inline uint64_t epoch() { return 0ull; }
 
 inline uint64_t utc()
 {
@@ -499,6 +670,55 @@ class FieldModel<TBuffer, wchar_t> : public FieldModelBase<TBuffer, wchar_t, uin
 {
 public:
     using FieldModelBase<TBuffer, wchar_t, uint32_t>::FieldModelBase;
+};
+
+// Fast Binary Encoding field model class decimal specialization
+template <class TBuffer>
+class FieldModel<TBuffer, decimal_t>
+{
+public:
+    FieldModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset) {}
+
+    // Get the field offset
+    size_t fbe_offset() const noexcept { return _offset; }
+    // Get the field size
+    size_t fbe_size() const noexcept { return 16; }
+    // Get the field extra size
+    size_t fbe_extra() const noexcept { return 0; }
+
+    // Shift the current field offset
+    void fbe_shift(size_t size) noexcept { _offset += size; }
+    // Unshift the current field offset
+    void fbe_unshift(size_t size) noexcept { _offset -= size; }
+
+    // Check if the value is valid
+    bool verify() const noexcept { return true; }
+
+    // Get the field value
+    void get(decimal_t& value, decimal_t defaults = decimal_t()) const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+        {
+            value = defaults;
+            return;
+        }
+
+        value = *((const double*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+    }
+
+    // Set the field value
+    void set(decimal_t value) noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return;
+
+        *((double*)(_buffer.data() + _buffer.offset() + fbe_offset())) = value;
+    }
+
+private:
+    TBuffer& _buffer;
+    size_t _offset;
 };
 
 // Fast Binary Encoding field model class bytes specialization
