@@ -33,6 +33,7 @@
 
 #if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__)
 #include <time.h>
+#include <uuid/uuid.h>
 #elif defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #undef max
@@ -177,24 +178,13 @@ public:
         \return Result string
     */
     std::string string() const { return std::to_string(_value); }
-    //! Get wide string from the current decimal value
-    /*!
-        \return Result wide string
-    */
-    std::wstring wstring() const { return std::to_wstring(_value); }
 
     //! Input instance from the given input stream
     friend std::istream& operator>>(std::istream& is, decimal_t& value)
     { is >> value._value; return is; }
-    //! Input instance from the given wide input stream
-    friend std::wistream& operator>>(std::wistream& is, decimal_t& value)
-    { is >> value._value; return is; }
     //! Output instance into the given output stream
     friend std::ostream& operator<<(std::ostream& os, const decimal_t& value)
     { os << value.string(); return os; }
-    //! Output instance into the given wide output stream
-    friend std::wostream& operator<<(std::wostream& os, const decimal_t& value)
-    { os << value.wstring(); return os; }
 
     //! Swap two instances
     void swap(decimal_t& value) noexcept
@@ -309,6 +299,250 @@ inline uint64_t utc()
     return (result.QuadPart - 116444736000000000ull) * 100;
 #endif
 }
+
+//! Universally unique identifier (UUID)
+/*!
+    A universally unique identifier (UUID) is an identifier standard used
+    in software construction. This implementation generates the following
+    UUID types:
+    - Nil UUID0 (all bits set to zero)
+    - Sequential UUID1 (time based version)
+    - Random UUID4 (randomly or pseudo-randomly generated version)
+
+    A UUID is simply a 128-bit value: "123e4567-e89b-12d3-a456-426655440000"
+
+    https://en.wikipedia.org/wiki/Universally_unique_identifier
+    https://www.ietf.org/rfc/rfc4122.txt
+*/
+class uuid_t
+{
+public:
+    //! Default constructor
+    uuid_t() : _data() { _data.fill(0); }
+    //! Initialize UUID with a given string
+    /*!
+        \param uuid - UUID string
+    */
+    explicit uuid_t(const std::string& uuid)
+    {
+        char v1 = 0;
+        char v2 = 0;
+        bool pack = false;
+        size_t index = 0;
+
+        // Parse UUID string
+        for (auto ch : uuid)
+        {
+            if ((ch == '-') || (ch == '{') || (ch == '}'))
+                continue;
+
+            if (pack)
+            {
+                v2 = ch;
+                pack = false;
+                uint8_t ui1 = unhex(v1);
+                uint8_t ui2 = unhex(v2);
+                if ((ui1 > 15) || (ui2 > 15))
+                    throw std::invalid_argument("Invalid UUID string: " + uuid);
+                _data[index++] = ui1 * 16 + ui2;
+                if (index >= 16)
+                    break;
+            }
+            else
+            {
+                v1 = ch;
+                pack = true;
+            }
+        }
+
+        // Fill remaining data with zeros
+        for (; index < 16; ++index)
+            _data[index++] = 0;
+    }
+    //! Initialize UUID with a given 16 bytes data buffer
+    /*!
+        \param data - UUID 16 bytes data buffer
+    */
+    explicit uuid_t(const std::array<uint8_t, 16>& data) : _data(data) {}
+    uuid_t(const uuid_t&) = default;
+    uuid_t(uuid_t&&) noexcept = default;
+    ~uuid_t() = default;
+
+    uuid_t& operator=(const std::string& uuid)
+    { _data = uuid_t(uuid).data(); return *this; }
+    uuid_t& operator=(const std::array<uint8_t, 16>& data)
+    { _data = data; return *this; }
+    uuid_t& operator=(const uuid_t&) = default;
+    uuid_t& operator=(uuid_t&&) noexcept = default;
+
+    // UUID comparison
+    friend bool operator==(const uuid_t& uuid1, const uuid_t& uuid2)
+    { return uuid1._data == uuid2._data; }
+    friend bool operator!=(const uuid_t& uuid1, const uuid_t& uuid2)
+    { return uuid1._data != uuid2._data; }
+    friend bool operator<(const uuid_t& uuid1, const uuid_t& uuid2)
+    { return uuid1._data < uuid2._data; }
+    friend bool operator>(const uuid_t& uuid1, const uuid_t& uuid2)
+    { return uuid1._data > uuid2._data; }
+    friend bool operator<=(const uuid_t& uuid1, const uuid_t& uuid2)
+    { return uuid1._data <= uuid2._data; }
+    friend bool operator>=(const uuid_t& uuid1, const uuid_t& uuid2)
+    { return uuid1._data >= uuid2._data; }
+
+    //! Get the UUID data buffer
+    std::array<uint8_t, 16>& data() noexcept { return _data; }
+    //! Get the UUID data buffer
+    const std::array<uint8_t, 16>& data() const noexcept { return _data; }
+
+    //! Get string from the current UUID in format "00000000-0000-0000-0000-000000000000"
+    std::string string() const
+    {
+        std::string result(36, '0');
+
+        const char* digits = "0123456789abcdef";
+
+        int index = 0;
+        for (auto value : _data)
+        {
+            result[index++] = digits[(value >> 4) & 0x0F];
+            result[index++] = digits[(value >> 0) & 0x0F];
+            if ((index == 8) || (index == 13) || (index == 18) || (index == 23))
+                result[index++] = '-';
+        }
+
+        return result;
+    }
+
+    //! Generate nil UUID0 (all bits set to zero)
+    static uuid_t nil() { return uuid_t(); }
+
+    //! Generate sequential UUID1 (time based version)
+    static uuid_t sequential()
+    {
+        uuid_t result;
+#if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__)
+        ::uuid_t uuid;
+        uuid_generate_time(uuid);
+        result._data[0] = uuid[0];
+        result._data[1] = uuid[1];
+        result._data[2] = uuid[2];
+        result._data[3] = uuid[3];
+        result._data[4] = uuid[4];
+        result._data[5] = uuid[5];
+        result._data[6] = uuid[6];
+        result._data[7] = uuid[7];
+        result._data[8] = uuid[8];
+        result._data[9] = uuid[9];
+        result._data[10] = uuid[10];
+        result._data[11] = uuid[11];
+        result._data[12] = uuid[12];
+        result._data[13] = uuid[13];
+        result._data[14] = uuid[14];
+        result._data[15] = uuid[15];
+#elif defined(_WIN32) || defined(_WIN64)
+        ::UUID uuid;
+        if (UuidCreateSequential(&uuid) != RPC_S_OK)
+            throw std::runtime_error("Cannot generate sequential UUID!");
+
+        result._data[0] = (uuid.Data1 >> 24) & 0xFF;
+        result._data[1] = (uuid.Data1 >> 16) & 0xFF;
+        result._data[2] = (uuid.Data1 >>  8) & 0xFF;
+        result._data[3] = (uuid.Data1 >>  0) & 0xFF;
+        result._data[4] = (uuid.Data2 >>  8) & 0xFF;
+        result._data[5] = (uuid.Data2 >>  0) & 0xFF;
+
+        result._data[6] = (uuid.Data3 >>  8) & 0xFF;
+        result._data[7] = (uuid.Data3 >>  0) & 0xFF;
+
+        result._data[8] = uuid.Data4[0];
+        result._data[9] = uuid.Data4[1];
+
+        result._data[10] = uuid.Data4[2];
+        result._data[11] = uuid.Data4[3];
+        result._data[12] = uuid.Data4[4];
+        result._data[13] = uuid.Data4[5];
+        result._data[14] = uuid.Data4[6];
+        result._data[15] = uuid.Data4[7];
+#endif
+        return result;
+    }
+
+    //! Generate random UUID4 (randomly or pseudo-randomly generated version)
+    static uuid_t random()
+    {
+        uuid_t result;
+#if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__)
+        ::uuid_t uuid;
+        uuid_generate_random(uuid);
+        result._data[0] = uuid[0];
+        result._data[1] = uuid[1];
+        result._data[2] = uuid[2];
+        result._data[3] = uuid[3];
+        result._data[4] = uuid[4];
+        result._data[5] = uuid[5];
+        result._data[6] = uuid[6];
+        result._data[7] = uuid[7];
+        result._data[8] = uuid[8];
+        result._data[9] = uuid[9];
+        result._data[10] = uuid[10];
+        result._data[11] = uuid[11];
+        result._data[12] = uuid[12];
+        result._data[13] = uuid[13];
+        result._data[14] = uuid[14];
+        result._data[15] = uuid[15];
+#elif defined(_WIN32) || defined(_WIN64)
+        ::UUID uuid;
+        if (UuidCreate(&uuid) != RPC_S_OK)
+            throw std::runtime_error("Cannot generate random UUID!");
+
+        result._data[0] = (uuid.Data1 >> 24) & 0xFF;
+        result._data[1] = (uuid.Data1 >> 16) & 0xFF;
+        result._data[2] = (uuid.Data1 >>  8) & 0xFF;
+        result._data[3] = (uuid.Data1 >>  0) & 0xFF;
+        result._data[4] = (uuid.Data2 >>  8) & 0xFF;
+        result._data[5] = (uuid.Data2 >>  0) & 0xFF;
+
+        result._data[6] = (uuid.Data3 >>  8) & 0xFF;
+        result._data[7] = (uuid.Data3 >>  0) & 0xFF;
+
+        result._data[8] = uuid.Data4[0];
+        result._data[9] = uuid.Data4[1];
+
+        result._data[10] = uuid.Data4[2];
+        result._data[11] = uuid.Data4[3];
+        result._data[12] = uuid.Data4[4];
+        result._data[13] = uuid.Data4[5];
+        result._data[14] = uuid.Data4[6];
+        result._data[15] = uuid.Data4[7];
+#endif
+        return result;
+    }
+
+    //! Output instance into the given output stream
+    friend std::ostream& operator<<(std::ostream& os, const uuid_t& uuid)
+    { os << uuid.string(); return os; }
+
+    //! Swap two instances
+    void swap(uuid_t& uuid) noexcept
+    { using std::swap; swap(_data, uuid._data); }
+    friend void swap(uuid_t& uuid1, uuid_t& uuid2) noexcept
+    { uuid1.swap(uuid2); }
+
+private:
+    std::array<uint8_t, 16> _data;
+
+    static uint8_t unhex(char ch)
+    {
+        if ((ch >= '0') && (ch <= '9'))
+            return ch - '0';
+        else if ((ch >= 'a') && (ch <= 'f'))
+            return 10 + ch - 'a';
+        else if ((ch >= 'A') && (ch <= 'F'))
+            return 10 + ch - 'A';
+        else
+            return 255;
+    }
+};
 
 // Fast Binary Encoding write buffer based on the dynamic byte buffer
 class WriteBuffer
@@ -699,7 +933,20 @@ public:
             return;
         }
 
-        value = *((const double*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        // Value taken via reverse engineering the double that corresponds to 2^64
+        const double ds2to64 = 1.8446744073709552e+019;
+
+        // Read decimal parts
+        uint64_t low = *((const uint64_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        uint32_t high = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 8));
+        uint32_t flags = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 12));
+
+        // Calculate decimal value
+        double dValue = ((double)low + (double)high * ds2to64) / pow(10.0, (uint8_t)(flags >> 16));
+        if (flags & 0x80000000)
+            dValue = -dValue;
+
+        value = dValue;
     }
 
     // Set the field value
@@ -709,7 +956,250 @@ public:
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
             return;
 
-        *((double*)(_buffer.data() + _buffer.offset() + fbe_offset())) = value;
+        // The most we can scale by is 10^28, which is just slightly more
+        // than 2^93.  So a float with an exponent of -94 could just
+        // barely reach 0.5, but smaller exponents will always round to zero.
+        const uint32_t DBLBIAS = 1022;
+
+        // Get exponent value
+        double dValue = (double)value;
+        int32_t iExp = (int32_t)(((uint32_t)((*(uint64_t*)&dValue) >> 52) & 0x7FFu) - DBLBIAS);
+        if ((iExp < -94) || (iExp > 96))
+        {
+            // Value too big for .NET Decimal (exponent is limited to [-94, 96])
+            memset((uint8_t*)(_buffer.data() + _buffer.offset() + fbe_offset()), 0, 16);
+            return;
+        }
+
+        uint32_t flags = 0;
+        if (dValue < 0)
+        {
+            dValue = -dValue;
+            flags = 0x80000000;
+        }
+
+        // Round the input to a 15-digit integer.  The R8 format has
+        // only 15 digits of precision, and we want to keep garbage digits
+        // out of the Decimal were making.
+
+        // Calculate max power of 10 input value could have by multiplying
+        // the exponent by log10(2).  Using scaled integer multiplcation,
+        // log10(2) * 2 ^ 16 = .30103 * 65536 = 19728.3.
+        int32_t iPower = 14 - ((iExp * 19728) >> 16);
+
+        // iPower is between -14 and 43
+        if (iPower >= 0)
+        {
+            // We have less than 15 digits, scale input up.
+            if (iPower > 28)
+                iPower = 28;
+
+            dValue *= pow(10.0, iPower);
+        }
+        else
+        {
+            if ((iPower != -1) || (dValue >= 1E15))
+                dValue /= pow(10.0, -iPower);
+            else
+                iPower = 0; // didn't scale it
+        }
+
+        assert(dValue < 1E15);
+        if ((dValue < 1E14) && (iPower < 28))
+        {
+            dValue *= 10;
+            iPower++;
+            assert(dValue >= 1E14);
+        }
+
+        // Round to int64
+        uint64_t ulMant;
+        ulMant = (uint64_t)(int64_t)dValue;
+        dValue -= (int64_t)ulMant; // difference between input & integer
+        if ((dValue > 0.5) || (dValue == 0.5) && ((ulMant & 1) != 0))
+            ulMant++;
+
+        if (ulMant == 0)
+        {
+            // Mantissa is 0
+            memset((uint8_t*)(_buffer.data() + _buffer.offset() + fbe_offset()), 0, 16);
+            return;
+        }
+
+        if (iPower < 0)
+        {
+            // Add -iPower factors of 10, -iPower <= (29 - 15) = 14
+            iPower = -iPower;
+            if (iPower < 10)
+            {
+                double pow10 = (double)powl(10.0, iPower);
+                uint64_t low64 = uint32x32((uint32_t)ulMant, (uint32_t)pow10);
+                uint64_t high64 = uint32x32((uint32_t)(ulMant >> 32), (uint32_t)pow10);
+                *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = (uint32_t)low64;
+                high64 += low64 >> 32;
+                *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 4)) = (uint32_t)high64;
+                high64 >>= 32;
+                *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 8)) = (uint32_t)high64;
+            }
+            else
+            {
+                // Have a big power of 10.
+                assert(iPower <= 14);
+                uint64_t low64;
+                uint32_t high32;
+                uint64x64(ulMant, (uint64_t)pow(10.0, iPower), low64, high32);
+                *((uint64_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = low64;
+                *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 8)) = high32;
+            }
+        }
+        else
+        {
+            // Factor out powers of 10 to reduce the scale, if possible.
+            // The maximum number we could factor out would be 14.  This
+            // comes from the fact we have a 15-digit number, and the
+            // MSD must be non-zero -- but the lower 14 digits could be
+            // zero.  Note also the scale factor is never negative, so
+            // we can't scale by any more than the power we used to
+            // get the integer.
+            int lmax = iPower;
+            if (lmax > 14)
+                lmax = 14;
+
+            if ((((uint8_t)ulMant) == 0) && (lmax >= 8))
+            {
+                const uint32_t den = 100000000;
+                uint64_t div = ulMant / den;
+                if ((uint32_t)ulMant == (uint32_t)(div * den))
+                {
+                    ulMant = div;
+                    iPower -= 8;
+                    lmax -= 8;
+                }
+            }
+
+            if ((((uint32_t)ulMant & 0xF) == 0) && (lmax >= 4))
+            {
+                const uint32_t den = 10000;
+                uint64_t div = ulMant / den;
+                if ((uint32_t)ulMant == (uint32_t)(div * den))
+                {
+                    ulMant = div;
+                    iPower -= 4;
+                    lmax -= 4;
+                }
+            }
+
+            if ((((uint32_t)ulMant & 3) == 0) && (lmax >= 2))
+            {
+                const uint32_t den = 100;
+                uint64_t div = ulMant / den;
+                if ((uint32_t)ulMant == (uint32_t)(div * den))
+                {
+                    ulMant = div;
+                    iPower -= 2;
+                    lmax -= 2;
+                }
+            }
+
+            if ((((uint32_t)ulMant & 1) == 0) && (lmax >= 1))
+            {
+                const uint32_t den = 10;
+                uint64_t div = ulMant / den;
+                if ((uint32_t)ulMant == (uint32_t)(div * den))
+                {
+                    ulMant = div;
+                    iPower--;
+                }
+            }
+
+            flags |= (uint32_t)iPower << 16;
+
+            *((uint64_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = ulMant;
+            *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 8)) = 0;
+        }
+
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 12)) = flags;
+    }
+
+private:
+    TBuffer& _buffer;
+    size_t _offset;
+
+    static uint64_t uint32x32(uint32_t a, uint32_t b) noexcept
+    {
+        return (uint64_t)a * (uint64_t)b;
+    }
+
+    static void uint64x64(uint64_t a, uint64_t b, uint64_t& low64, uint32_t& high32) noexcept
+    {
+        uint64_t low = uint32x32((uint32_t)a, (uint32_t)b);
+        uint64_t mid = uint32x32((uint32_t)a, (uint32_t)(b >> 32));
+        uint64_t high = uint32x32((uint32_t)(a >> 32), (uint32_t)(b >> 32));
+        high += (mid >> 32);
+        low += (mid <<= 32);
+        // Test for carry
+        if (low < mid)
+            high++;
+
+        mid = uint32x32((uint32_t)(a >> 32), (uint32_t)b);
+        high += (mid >> 32);
+        low += (mid <<= 32);
+        // Test for carry
+        if (low < mid)
+            high++;
+
+        if (high > 0xFFFFFFFFu)
+        {
+            low64 = 0;
+            high32 = 0;
+        }
+        low64 = low;
+        high32 = (uint32_t)high;
+    }
+};
+
+// Fast Binary Encoding field model class UUID specialization
+template <class TBuffer>
+class FieldModel<TBuffer, uuid_t>
+{
+public:
+    FieldModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset) {}
+
+    // Get the field offset
+    size_t fbe_offset() const noexcept { return _offset; }
+    // Get the field size
+    size_t fbe_size() const noexcept { return 16; }
+    // Get the field extra size
+    size_t fbe_extra() const noexcept { return 0; }
+
+    // Shift the current field offset
+    void fbe_shift(size_t size) noexcept { _offset += size; }
+    // Unshift the current field offset
+    void fbe_unshift(size_t size) noexcept { _offset -= size; }
+
+    // Check if the value is valid
+    bool verify() const noexcept { return true; }
+
+    // Get the field value
+    void get(uuid_t& value, uuid_t defaults = uuid_t::nil()) const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+        {
+            value = defaults;
+            return;
+        }
+
+        std::memcpy(value.data().data(), (const uint8_t*)(_buffer.data() + _buffer.offset() + fbe_offset()), fbe_size());
+    }
+
+    // Set the field value
+    void set(uuid_t value) noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return;
+
+        std::memcpy((uint8_t*)(_buffer.data() + _buffer.offset() + fbe_offset()), value.data().data(), fbe_size());
     }
 
 private:
