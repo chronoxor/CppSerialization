@@ -3,6 +3,14 @@
 
 #pragma once
 
+#if defined(__clang__)
+#pragma clang system_header
+#elif defined(__GNUC__)
+#pragma GCC system_header
+#elif defined(_MSC_VER)
+#pragma system_header
+#endif
+
 #include <array>
 #include <bitset>
 #include <cassert>
@@ -14,6 +22,7 @@
 #include <list>
 #include <map>
 #include <memory>
+#include <optional>
 #include <set>
 #include <sstream>
 #include <stdexcept>
@@ -21,16 +30,6 @@
 #include <type_traits>
 #include <unordered_map>
 #include <vector>
-
-#if defined(__clang__)
-#include <experimental/optional>
-#define stdoptional std::experimental::optional
-#define stdnullopt std::experimental::nullopt
-#else
-#include <optional>
-#define stdoptional std::optional
-#define stdnullopt std::nullopt
-#endif
 
 #if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__)
 #include <time.h>
@@ -1549,7 +1548,7 @@ private:
 
 // Fast Binary Encoding field model class optional specialization
 template <class TBuffer, typename T>
-class FieldModel<TBuffer, stdoptional<T>>
+class FieldModel<TBuffer, std::optional<T>>
 {
 public:
     FieldModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset), value(buffer, 0) {}
@@ -1634,7 +1633,7 @@ public:
     }
 
     // Get the optional value
-    void get(stdoptional<T>& opt, const stdoptional<T>& defaults = stdnullopt) const noexcept
+    void get(std::optional<T>& opt, const std::optional<T>& defaults = std::nullopt) const noexcept
     {
         opt = defaults;
 
@@ -1642,7 +1641,7 @@ public:
         if (fbe_begin == 0)
             return;
 
-        T temp;
+        T temp = T();
         value.get(temp);
         opt.emplace(temp);
 
@@ -1680,7 +1679,7 @@ public:
     }
 
     // Set the optional value
-    void set(const stdoptional<T>& opt)
+    void set(const std::optional<T>& opt)
     {
         size_t fbe_begin = set_begin(opt.has_value());
         if (fbe_begin == 0)
@@ -1798,7 +1797,7 @@ public:
         auto fbe_model = (*this)[0];
         for (size_t i = N; i-- > 0;)
         {
-            T value;
+            T value = T();
             fbe_model.get(value);
             values.emplace_back(value);
             fbe_model.fbe_shift(fbe_model.fbe_size());
@@ -1993,7 +1992,7 @@ public:
         auto fbe_model = (*this)[0];
         for (size_t i = fbe_vector_size; i-- > 0;)
         {
-            T value;
+            T value = T();
             fbe_model.get(value);
             values.emplace_back(value);
             fbe_model.fbe_shift(fbe_model.fbe_size());
@@ -2012,7 +2011,7 @@ public:
         auto fbe_model = (*this)[0];
         for (size_t i = fbe_vector_size; i-- > 0;)
         {
-            T value;
+            T value = T();
             fbe_model.get(value);
             values.emplace_back(value);
             fbe_model.fbe_shift(fbe_model.fbe_size());
@@ -2031,7 +2030,7 @@ public:
         auto fbe_model = (*this)[0];
         for (size_t i = fbe_vector_size; i-- > 0;)
         {
-            T value;
+            T value = T();
             fbe_model.get(value);
             values.emplace(value);
             fbe_model.fbe_shift(fbe_model.fbe_size());
@@ -2369,11 +2368,11 @@ public:
     Receiver() : Receiver(nullptr) {}
     Receiver(const std::shared_ptr<TBuffer>& buffer) : _logging(false), _final(false) { _buffer = buffer ? buffer : std::make_shared<TBuffer>(); }
     Receiver(const Receiver&) = default;
-    Receiver(Receiver&&) noexcept = default;
+    Receiver(Receiver&&) = default;
     virtual ~Receiver() = default;
 
     Receiver& operator=(const Receiver&) = default;
-    Receiver& operator=(Receiver&&) noexcept = default;
+    Receiver& operator=(Receiver&&) = default;
 
     // Get the receiver buffer
     TBuffer& buffer() noexcept { return *_buffer; }

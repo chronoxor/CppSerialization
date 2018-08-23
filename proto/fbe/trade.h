@@ -3,6 +3,14 @@
 
 #pragma once
 
+#if defined(__clang__)
+#pragma clang system_header
+#elif defined(__GNUC__)
+#pragma GCC system_header
+#elif defined(_MSC_VER)
+#pragma system_header
+#endif
+
 #include "fbe.h"
 
 namespace trade {
@@ -1470,11 +1478,11 @@ class Receiver : public virtual FBE::Receiver<TBuffer>
 public:
     Receiver() {}
     Receiver(const Receiver&) = default;
-    Receiver(Receiver&&) noexcept = default;
+    Receiver(Receiver&&) = default;
     virtual ~Receiver() = default;
 
     Receiver& operator=(const Receiver&) = default;
-    Receiver& operator=(Receiver&&) noexcept = default;
+    Receiver& operator=(Receiver&&) = default;
 
 protected:
     // Receive handlers
