@@ -130,8 +130,8 @@ The first step you should perform to use CppSerialization library is to provide
 a domain model (aka business objects). Domain model is a set of structures or
 classes that related to each other and might be aggregated in some hierarchy.
 
-There is an example domain model which describes Account-Wallet-Orders relation
-of some abstract trading platform:
+There is an example domain model which describes Account-Balance-Orders
+relation of some abstract trading platform:
 
 ```c++
 #include <string>
