@@ -26,13 +26,6 @@ Performance comparison based on the [Domain model](#domain-model):
   * [Features](#features)
   * [Requirements](#requirements)
   * [How to build?](#how-to-build)
-    * [Clone repository with submodules](#clone-repository-with-submodules)
-    * [Linux](#linux)
-    * [OSX](#osx)
-    * [Windows (Cygwin)](#windows-cygwin)
-    * [Windows (MinGW)](#windows-mingw)
-    * [Windows (MinGW with MSYS)](#windows-mingw-with-msys)
-    * [Windows (Visual Studio)](#windows-visual-studio)
   * [Domain model](#domain-model)
   * [Cap'n'Proto serialization](#capnproto-serialization)
     * [Cap'n'Proto schema](#capnproto-schema)
@@ -88,38 +81,38 @@ Optional:
 
 # How to build?
 
-## Clone repository with submodules
+### Clone repository with submodules
 ```shell
 git clone https://github.com/chronoxor/CppSerialization.git
 cd CppSerialization
 git submodule update --init --recursive --remote
 ```
 
-## Linux
+### Linux
 ```shell
 cd build
 ./unix.sh
 ```
 
-## OSX
+### OSX
 ```shell
 cd build
 ./unix.sh
 ```
 
-## Windows (Cygwin)
+### Windows (Cygwin)
 ```shell
 cd build
 cygwin.bat
 ```
 
-## Windows (MinGW)
+### Windows (MinGW)
 ```shell
 cd build
 mingw.bat
 ```
 
-## Windows (Visual Studio)
+### Windows (Visual Studio)
 ```shell
 cd build
 vs.bat
