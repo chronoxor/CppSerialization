@@ -258,7 +258,7 @@ public:
         return fbe_result;
     }
     // Get the field type
-    size_t fbe_type() const noexcept { return 1; }
+    static constexpr size_t fbe_type() noexcept { return 1; }
 
     // Shift the current field offset
     void fbe_shift(size_t size) noexcept { _offset += size; }
@@ -491,7 +491,7 @@ public:
     // Get the model size
     size_t fbe_size() const noexcept { return model.fbe_size() + model.fbe_extra(); }
     // Get the model type
-    size_t fbe_type() const noexcept { return model.fbe_type(); }
+    static constexpr size_t fbe_type() noexcept { return FieldModel<TBuffer, ::trade::Order>::fbe_type(); }
 
     // Check if the struct value is valid
     bool verify()
@@ -700,7 +700,7 @@ public:
         return fbe_result;
     }
     // Get the field type
-    size_t fbe_type() const noexcept { return 2; }
+    static constexpr size_t fbe_type() noexcept { return 2; }
 
     // Shift the current field offset
     void fbe_shift(size_t size) noexcept { _offset += size; }
@@ -877,7 +877,7 @@ public:
     // Get the model size
     size_t fbe_size() const noexcept { return model.fbe_size() + model.fbe_extra(); }
     // Get the model type
-    size_t fbe_type() const noexcept { return model.fbe_type(); }
+    static constexpr size_t fbe_type() noexcept { return FieldModel<TBuffer, ::trade::Balance>::fbe_type(); }
 
     // Check if the struct value is valid
     bool verify()
@@ -1111,7 +1111,7 @@ public:
         return fbe_result;
     }
     // Get the field type
-    size_t fbe_type() const noexcept { return 3; }
+    static constexpr size_t fbe_type() noexcept { return 3; }
 
     // Shift the current field offset
     void fbe_shift(size_t size) noexcept { _offset += size; }
@@ -1316,7 +1316,7 @@ public:
     // Get the model size
     size_t fbe_size() const noexcept { return model.fbe_size() + model.fbe_extra(); }
     // Get the model type
-    size_t fbe_type() const noexcept { return model.fbe_type(); }
+    static constexpr size_t fbe_type() noexcept { return FieldModel<TBuffer, ::trade::Account>::fbe_type(); }
 
     // Check if the struct value is valid
     bool verify()
@@ -1495,7 +1495,7 @@ protected:
     {
         switch (type)
         {
-            case 1:
+            case FBE::trade::OrderModel<ReadBuffer>::fbe_type():
             {
                 // Deserialize the value from the FBE stream
                 OrderModel.attach(data, size);
@@ -1514,7 +1514,7 @@ protected:
                 onReceive(OrderValue);
                 return true;
             }
-            case 2:
+            case FBE::trade::BalanceModel<ReadBuffer>::fbe_type():
             {
                 // Deserialize the value from the FBE stream
                 BalanceModel.attach(data, size);
@@ -1533,7 +1533,7 @@ protected:
                 onReceive(BalanceValue);
                 return true;
             }
-            case 3:
+            case FBE::trade::AccountModel<ReadBuffer>::fbe_type():
             {
                 // Deserialize the value from the FBE stream
                 AccountModel.attach(data, size);
