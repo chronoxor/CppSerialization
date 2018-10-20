@@ -276,7 +276,7 @@ public:
             return false;
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset));
-        if (fbe_struct_size < 4 + 4)
+        if (fbe_struct_size < (4 + 4))
             return false;
 
         uint32_t fbe_struct_type = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset + 4));
@@ -345,8 +345,8 @@ public:
             return 0;
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset));
-        assert((fbe_struct_size >= 4 + 4) && "Model is broken!");
-        if (fbe_struct_size < 4 + 4)
+        assert((fbe_struct_size >= (4 + 4)) && "Model is broken!");
+        if (fbe_struct_size < (4 + 4))
             return 0;
 
         _buffer.shift(fbe_struct_offset);
@@ -718,7 +718,7 @@ public:
             return false;
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset));
-        if (fbe_struct_size < 4 + 4)
+        if (fbe_struct_size < (4 + 4))
             return false;
 
         uint32_t fbe_struct_type = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset + 4));
@@ -763,8 +763,8 @@ public:
             return 0;
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset));
-        assert((fbe_struct_size >= 4 + 4) && "Model is broken!");
-        if (fbe_struct_size < 4 + 4)
+        assert((fbe_struct_size >= (4 + 4)) && "Model is broken!");
+        if (fbe_struct_size < (4 + 4))
             return 0;
 
         _buffer.shift(fbe_struct_offset);
@@ -1129,7 +1129,7 @@ public:
             return false;
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset));
-        if (fbe_struct_size < 4 + 4)
+        if (fbe_struct_size < (4 + 4))
             return false;
 
         uint32_t fbe_struct_type = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset + 4));
@@ -1186,8 +1186,8 @@ public:
             return 0;
 
         uint32_t fbe_struct_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_struct_offset));
-        assert((fbe_struct_size >= 4 + 4) && "Model is broken!");
-        if (fbe_struct_size < 4 + 4)
+        assert((fbe_struct_size >= (4 + 4)) && "Model is broken!");
+        if (fbe_struct_size < (4 + 4))
             return 0;
 
         _buffer.shift(fbe_struct_offset);
@@ -1379,194 +1379,6 @@ public:
 
 public:
     FieldModel<TBuffer, ::trade::Account> model;
-};
-
-} // namespace trade
-} // namespace FBE
-
-namespace FBE {
-namespace trade {
-
-// Fast Binary Encoding trade sender class
-template <class TBuffer>
-class Sender : public virtual FBE::Sender<TBuffer>
-{
-public:
-    Sender()
-        : OrderModel(this->_buffer)
-        , BalanceModel(this->_buffer)
-        , AccountModel(this->_buffer)
-    {}
-    Sender(const Sender&) = default;
-    Sender(Sender&&) noexcept = default;
-    virtual ~Sender() = default;
-
-    Sender& operator=(const Sender&) = default;
-    Sender& operator=(Sender&&) noexcept = default;
-
-    size_t send(const ::trade::Order& value)
-    {
-        // Serialize the value into the FBE stream
-        size_t serialized = OrderModel.serialize(value);
-        assert((serialized > 0) && "trade::Order serialization failed!");
-        assert(OrderModel.verify() && "trade::Order validation failed!");
-
-        // Log the value
-        if (this->_logging)
-        {
-            std::string message = value.string();
-            this->onSendLog(message);
-        }
-
-        // Send the serialized value
-        return this->send_serialized(serialized);
-    }
-
-    size_t send(const ::trade::Balance& value)
-    {
-        // Serialize the value into the FBE stream
-        size_t serialized = BalanceModel.serialize(value);
-        assert((serialized > 0) && "trade::Balance serialization failed!");
-        assert(BalanceModel.verify() && "trade::Balance validation failed!");
-
-        // Log the value
-        if (this->_logging)
-        {
-            std::string message = value.string();
-            this->onSendLog(message);
-        }
-
-        // Send the serialized value
-        return this->send_serialized(serialized);
-    }
-
-    size_t send(const ::trade::Account& value)
-    {
-        // Serialize the value into the FBE stream
-        size_t serialized = AccountModel.serialize(value);
-        assert((serialized > 0) && "trade::Account serialization failed!");
-        assert(AccountModel.verify() && "trade::Account validation failed!");
-
-        // Log the value
-        if (this->_logging)
-        {
-            std::string message = value.string();
-            this->onSendLog(message);
-        }
-
-        // Send the serialized value
-        return this->send_serialized(serialized);
-    }
-
-public:
-    // Sender models accessors
-    FBE::trade::OrderModel<TBuffer> OrderModel;
-    FBE::trade::BalanceModel<TBuffer> BalanceModel;
-    FBE::trade::AccountModel<TBuffer> AccountModel;
-};
-
-} // namespace trade
-} // namespace FBE
-
-namespace FBE {
-namespace trade {
-
-// Fast Binary Encoding trade receiver class
-template <class TBuffer>
-class Receiver : public virtual FBE::Receiver<TBuffer>
-{
-public:
-    Receiver() {}
-    Receiver(const Receiver&) = default;
-    Receiver(Receiver&&) = default;
-    virtual ~Receiver() = default;
-
-    Receiver& operator=(const Receiver&) = default;
-    Receiver& operator=(Receiver&&) = default;
-
-protected:
-    // Receive handlers
-    virtual void onReceive(const ::trade::Order& value) {}
-    virtual void onReceive(const ::trade::Balance& value) {}
-    virtual void onReceive(const ::trade::Account& value) {}
-
-    // Receive message handler
-    bool onReceive(size_t type, const void* data, size_t size) override
-    {
-        switch (type)
-        {
-            case FBE::trade::OrderModel<ReadBuffer>::fbe_type():
-            {
-                // Deserialize the value from the FBE stream
-                OrderModel.attach(data, size);
-                assert(OrderModel.verify() && "trade::Order validation failed!");
-                [[maybe_unused]] size_t deserialized = OrderModel.deserialize(OrderValue);
-                assert((deserialized > 0) && "trade::Order deserialization failed!");
-
-                // Log the value
-                if (this->_logging)
-                {
-                    std::string message = OrderValue.string();
-                    this->onReceiveLog(message);
-                }
-
-                // Call receive handler with deserialized value
-                onReceive(OrderValue);
-                return true;
-            }
-            case FBE::trade::BalanceModel<ReadBuffer>::fbe_type():
-            {
-                // Deserialize the value from the FBE stream
-                BalanceModel.attach(data, size);
-                assert(BalanceModel.verify() && "trade::Balance validation failed!");
-                [[maybe_unused]] size_t deserialized = BalanceModel.deserialize(BalanceValue);
-                assert((deserialized > 0) && "trade::Balance deserialization failed!");
-
-                // Log the value
-                if (this->_logging)
-                {
-                    std::string message = BalanceValue.string();
-                    this->onReceiveLog(message);
-                }
-
-                // Call receive handler with deserialized value
-                onReceive(BalanceValue);
-                return true;
-            }
-            case FBE::trade::AccountModel<ReadBuffer>::fbe_type():
-            {
-                // Deserialize the value from the FBE stream
-                AccountModel.attach(data, size);
-                assert(AccountModel.verify() && "trade::Account validation failed!");
-                [[maybe_unused]] size_t deserialized = AccountModel.deserialize(AccountValue);
-                assert((deserialized > 0) && "trade::Account deserialization failed!");
-
-                // Log the value
-                if (this->_logging)
-                {
-                    std::string message = AccountValue.string();
-                    this->onReceiveLog(message);
-                }
-
-                // Call receive handler with deserialized value
-                onReceive(AccountValue);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-private:
-    // Receiver values accessors
-    ::trade::Order OrderValue;
-    ::trade::Balance BalanceValue;
-    ::trade::Account AccountValue;
-
-    // Receiver models accessors
-    FBE::trade::OrderModel<ReadBuffer> OrderModel;
-    FBE::trade::BalanceModel<ReadBuffer> BalanceModel;
-    FBE::trade::AccountModel<ReadBuffer> AccountModel;
 };
 
 } // namespace trade
