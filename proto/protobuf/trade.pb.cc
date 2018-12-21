@@ -135,8 +135,7 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
   file_level_metadata_trade_2eproto, 3, file_level_enum_descriptors_trade_2eproto, file_level_service_descriptors_trade_2eproto,
 };
 
-::google::protobuf::internal::DescriptorTable descriptor_table_trade_2eproto = {
-  false, InitDefaults_trade_2eproto, 
+const char descriptor_table_protodef_trade_2eproto[] =
   "\n\013trade.proto\022\016Trade.protobuf\"\225\001\n\005Order\022"
   "\013\n\003uid\030\001 \001(\005\022\016\n\006symbol\030\002 \001(\t\022\'\n\004side\030\003 \001"
   "(\0162\031.Trade.protobuf.OrderSide\022\'\n\004type\030\004 "
@@ -148,7 +147,10 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
   "\0132\025.Trade.protobuf.Order*\036\n\tOrderSide\022\007\n"
   "\003buy\020\000\022\010\n\004sell\020\001*,\n\tOrderType\022\n\n\006market\020"
   "\000\022\t\n\005limit\020\001\022\010\n\004stop\020\002b\006proto3"
-,
+  ;
+::google::protobuf::internal::DescriptorTable descriptor_table_trade_2eproto = {
+  false, InitDefaults_trade_2eproto, 
+  descriptor_table_protodef_trade_2eproto,
   "trade.proto", &assign_descriptors_table_trade_2eproto, 430,
 };
 
@@ -211,13 +213,13 @@ const int Order::kVolumeFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Order::Order()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:Trade.protobuf.Order)
 }
 Order::Order(const Order& from)
   : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
+      _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   symbol_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (from.symbol().size() > 0) {
@@ -275,10 +277,10 @@ const char* Order::_InternalParse(const char* begin, const char* end, void* obje
   auto msg = static_cast<Order*>(object);
   ::google::protobuf::uint32 size; (void)size;
   int depth; (void)depth;
+  ::google::protobuf::uint32 tag;
   ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
   auto ptr = begin;
   while (ptr < end) {
-    ::google::protobuf::uint32 tag;
     ptr = Varint::Parse32Inline(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
@@ -298,14 +300,17 @@ const char* Order::_InternalParse(const char* begin, const char* end, void* obje
         ptr = Varint::Parse32Inline(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ctx->extra_parse_data().SetFieldName("Trade.protobuf.Order.symbol");
-        parser_till_end = ::google::protobuf::internal::StringParserUTF8;
-        ::std::string* str = msg->mutable_symbol();
-        str->clear();
-        object = str;
-        if (size > end - ptr) goto len_delim_till_end;
-        auto newend = ptr + size;
-        if (size) ptr = parser_till_end(ptr, newend, object, ctx);
-        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr == newend);
+        auto str = msg->mutable_symbol();
+        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
+          object = str;
+          str->clear();
+          str->reserve(size);
+          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
+          goto len_delim_till_end;
+        }
+        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
+        ::google::protobuf::internal::InlineGreedyStringParser(str, ptr, size, ctx);
+        ptr += size;
         break;
       }
       // .Trade.protobuf.OrderSide side = 3;
@@ -349,13 +354,13 @@ const char* Order::_InternalParse(const char* begin, const char* end, void* obje
       default: {
       handle_unusual: (void)&&handle_unusual;
         if ((tag & 7) == 4 || tag == 0) {
-          bool ok = ctx->ValidEndGroup(tag);
-          GOOGLE_PROTOBUF_PARSER_ASSERT(ok);
+          ctx->EndGroup(tag);
           return ptr;
         }
         auto res = UnknownFieldParse(tag, {_InternalParse, msg},
           ptr, end, msg->_internal_metadata_.mutable_unknown_fields(), ctx);
         ptr = res.first;
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr != nullptr);
         if (res.second) return ptr;
       }
     }  // switch
@@ -366,7 +371,7 @@ len_delim_till_end: (void)&&len_delim_till_end;
                                  {parser_till_end, object}, size);
 group_continues: (void)&&group_continues;
   GOOGLE_DCHECK(ptr >= end);
-  ctx->StoreGroup({_InternalParse, msg}, {parser_till_end, object}, depth);
+  GOOGLE_PROTOBUF_PARSER_ASSERT(ctx->StoreGroup({_InternalParse, msg}, {parser_till_end, object}, depth, tag));
   return ptr;
 }
 #else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
@@ -646,7 +651,7 @@ void Order::MergeFrom(const ::google::protobuf::Message& from) {
   const Order* source =
       ::google::protobuf::DynamicCastToGenerated<Order>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:Trade.protobuf.Order)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
@@ -737,13 +742,13 @@ const int Balance::kAmountFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Balance::Balance()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:Trade.protobuf.Balance)
 }
 Balance::Balance(const Balance& from)
   : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
+      _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   currency_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (from.currency().size() > 0) {
@@ -795,10 +800,10 @@ const char* Balance::_InternalParse(const char* begin, const char* end, void* ob
   auto msg = static_cast<Balance*>(object);
   ::google::protobuf::uint32 size; (void)size;
   int depth; (void)depth;
+  ::google::protobuf::uint32 tag;
   ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
   auto ptr = begin;
   while (ptr < end) {
-    ::google::protobuf::uint32 tag;
     ptr = Varint::Parse32Inline(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
@@ -808,14 +813,17 @@ const char* Balance::_InternalParse(const char* begin, const char* end, void* ob
         ptr = Varint::Parse32Inline(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ctx->extra_parse_data().SetFieldName("Trade.protobuf.Balance.currency");
-        parser_till_end = ::google::protobuf::internal::StringParserUTF8;
-        ::std::string* str = msg->mutable_currency();
-        str->clear();
-        object = str;
-        if (size > end - ptr) goto len_delim_till_end;
-        auto newend = ptr + size;
-        if (size) ptr = parser_till_end(ptr, newend, object, ctx);
-        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr == newend);
+        auto str = msg->mutable_currency();
+        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
+          object = str;
+          str->clear();
+          str->reserve(size);
+          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
+          goto len_delim_till_end;
+        }
+        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
+        ::google::protobuf::internal::InlineGreedyStringParser(str, ptr, size, ctx);
+        ptr += size;
         break;
       }
       // double amount = 2;
@@ -830,13 +838,13 @@ const char* Balance::_InternalParse(const char* begin, const char* end, void* ob
       default: {
       handle_unusual: (void)&&handle_unusual;
         if ((tag & 7) == 4 || tag == 0) {
-          bool ok = ctx->ValidEndGroup(tag);
-          GOOGLE_PROTOBUF_PARSER_ASSERT(ok);
+          ctx->EndGroup(tag);
           return ptr;
         }
         auto res = UnknownFieldParse(tag, {_InternalParse, msg},
           ptr, end, msg->_internal_metadata_.mutable_unknown_fields(), ctx);
         ptr = res.first;
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr != nullptr);
         if (res.second) return ptr;
       }
     }  // switch
@@ -847,7 +855,7 @@ len_delim_till_end: (void)&&len_delim_till_end;
                                  {parser_till_end, object}, size);
 group_continues: (void)&&group_continues;
   GOOGLE_DCHECK(ptr >= end);
-  ctx->StoreGroup({_InternalParse, msg}, {parser_till_end, object}, depth);
+  GOOGLE_PROTOBUF_PARSER_ASSERT(ctx->StoreGroup({_InternalParse, msg}, {parser_till_end, object}, depth, tag));
   return ptr;
 }
 #else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
@@ -1005,7 +1013,7 @@ void Balance::MergeFrom(const ::google::protobuf::Message& from) {
   const Balance* source =
       ::google::protobuf::DynamicCastToGenerated<Balance>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:Trade.protobuf.Balance)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
@@ -1089,13 +1097,13 @@ const int Account::kOrdersFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Account::Account()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:Trade.protobuf.Account)
 }
 Account::Account(const Account& from)
   : ::google::protobuf::Message(),
-      _internal_metadata_(NULL),
+      _internal_metadata_(nullptr),
       orders_(from.orders_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -1105,7 +1113,7 @@ Account::Account(const Account& from)
   if (from.has_wallet()) {
     wallet_ = new ::Trade::protobuf::Balance(*from.wallet_);
   } else {
-    wallet_ = NULL;
+    wallet_ = nullptr;
   }
   uid_ = from.uid_;
   // @@protoc_insertion_point(copy_constructor:Trade.protobuf.Account)
@@ -1147,10 +1155,10 @@ void Account::Clear() {
 
   orders_.Clear();
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (GetArenaNoVirtual() == NULL && wallet_ != NULL) {
+  if (GetArenaNoVirtual() == nullptr && wallet_ != nullptr) {
     delete wallet_;
   }
-  wallet_ = NULL;
+  wallet_ = nullptr;
   uid_ = 0;
   _internal_metadata_.Clear();
 }
@@ -1161,10 +1169,10 @@ const char* Account::_InternalParse(const char* begin, const char* end, void* ob
   auto msg = static_cast<Account*>(object);
   ::google::protobuf::uint32 size; (void)size;
   int depth; (void)depth;
+  ::google::protobuf::uint32 tag;
   ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
   auto ptr = begin;
   while (ptr < end) {
-    ::google::protobuf::uint32 tag;
     ptr = Varint::Parse32Inline(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
@@ -1184,14 +1192,17 @@ const char* Account::_InternalParse(const char* begin, const char* end, void* ob
         ptr = Varint::Parse32Inline(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ctx->extra_parse_data().SetFieldName("Trade.protobuf.Account.name");
-        parser_till_end = ::google::protobuf::internal::StringParserUTF8;
-        ::std::string* str = msg->mutable_name();
-        str->clear();
-        object = str;
-        if (size > end - ptr) goto len_delim_till_end;
-        auto newend = ptr + size;
-        if (size) ptr = parser_till_end(ptr, newend, object, ctx);
-        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr == newend);
+        auto str = msg->mutable_name();
+        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
+          object = str;
+          str->clear();
+          str->reserve(size);
+          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
+          goto len_delim_till_end;
+        }
+        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
+        ::google::protobuf::internal::InlineGreedyStringParser(str, ptr, size, ctx);
+        ptr += size;
         break;
       }
       // .Trade.protobuf.Balance wallet = 3;
@@ -1230,13 +1241,13 @@ const char* Account::_InternalParse(const char* begin, const char* end, void* ob
       default: {
       handle_unusual: (void)&&handle_unusual;
         if ((tag & 7) == 4 || tag == 0) {
-          bool ok = ctx->ValidEndGroup(tag);
-          GOOGLE_PROTOBUF_PARSER_ASSERT(ok);
+          ctx->EndGroup(tag);
           return ptr;
         }
         auto res = UnknownFieldParse(tag, {_InternalParse, msg},
           ptr, end, msg->_internal_metadata_.mutable_unknown_fields(), ctx);
         ptr = res.first;
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr != nullptr);
         if (res.second) return ptr;
       }
     }  // switch
@@ -1247,7 +1258,7 @@ len_delim_till_end: (void)&&len_delim_till_end;
                                  {parser_till_end, object}, size);
 group_continues: (void)&&group_continues;
   GOOGLE_DCHECK(ptr >= end);
-  ctx->StoreGroup({_InternalParse, msg}, {parser_till_end, object}, depth);
+  GOOGLE_PROTOBUF_PARSER_ASSERT(ctx->StoreGroup({_InternalParse, msg}, {parser_till_end, object}, depth, tag));
   return ptr;
 }
 #else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
@@ -1477,7 +1488,7 @@ void Account::MergeFrom(const ::google::protobuf::Message& from) {
   const Account* source =
       ::google::protobuf::DynamicCastToGenerated<Account>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:Trade.protobuf.Account)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {

@@ -164,7 +164,7 @@ class Order : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   // implements Message ----------------------------------------------
 
   inline Order* New() const final {
-    return CreateMaybeMessage<Order>(NULL);
+    return CreateMaybeMessage<Order>(nullptr);
   }
 
   Order* New(::google::protobuf::Arena* arena) const final {
@@ -174,7 +174,7 @@ class Order : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   void MergeFrom(const ::google::protobuf::Message& from) final;
   void CopyFrom(const Order& from);
   void MergeFrom(const Order& from);
-  void Clear() final;
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
   size_t ByteSizeLong() const final;
@@ -198,10 +198,10 @@ class Order : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   void InternalSwap(Order* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return NULL;
+    return nullptr;
   }
   inline void* MaybeArenaPtr() const {
-    return NULL;
+    return nullptr;
   }
   public:
 
@@ -318,7 +318,7 @@ class Balance : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   // implements Message ----------------------------------------------
 
   inline Balance* New() const final {
-    return CreateMaybeMessage<Balance>(NULL);
+    return CreateMaybeMessage<Balance>(nullptr);
   }
 
   Balance* New(::google::protobuf::Arena* arena) const final {
@@ -328,7 +328,7 @@ class Balance : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   void MergeFrom(const ::google::protobuf::Message& from) final;
   void CopyFrom(const Balance& from);
   void MergeFrom(const Balance& from);
-  void Clear() final;
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
   size_t ByteSizeLong() const final;
@@ -352,10 +352,10 @@ class Balance : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   void InternalSwap(Balance* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return NULL;
+    return nullptr;
   }
   inline void* MaybeArenaPtr() const {
-    return NULL;
+    return nullptr;
   }
   public:
 
@@ -444,7 +444,7 @@ class Account : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   // implements Message ----------------------------------------------
 
   inline Account* New() const final {
-    return CreateMaybeMessage<Account>(NULL);
+    return CreateMaybeMessage<Account>(nullptr);
   }
 
   Account* New(::google::protobuf::Arena* arena) const final {
@@ -454,7 +454,7 @@ class Account : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   void MergeFrom(const ::google::protobuf::Message& from) final;
   void CopyFrom(const Account& from);
   void MergeFrom(const Account& from);
-  void Clear() final;
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
   size_t ByteSizeLong() const final;
@@ -478,10 +478,10 @@ class Account : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   void InternalSwap(Account* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return NULL;
+    return nullptr;
   }
   inline void* MaybeArenaPtr() const {
-    return NULL;
+    return nullptr;
   }
   public:
 
@@ -591,7 +591,7 @@ inline void Order::set_symbol(::std::string&& value) {
 }
 #endif
 inline void Order::set_symbol(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
+  GOOGLE_DCHECK(value != nullptr);
   
   symbol_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:Trade.protobuf.Order.symbol)
@@ -613,7 +613,7 @@ inline ::std::string* Order::release_symbol() {
   return symbol_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void Order::set_allocated_symbol(::std::string* symbol) {
-  if (symbol != NULL) {
+  if (symbol != nullptr) {
     
   } else {
     
@@ -704,7 +704,7 @@ inline void Balance::set_currency(::std::string&& value) {
 }
 #endif
 inline void Balance::set_currency(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
+  GOOGLE_DCHECK(value != nullptr);
   
   currency_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:Trade.protobuf.Balance.currency)
@@ -726,7 +726,7 @@ inline ::std::string* Balance::release_currency() {
   return currency_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void Balance::set_allocated_currency(::std::string* currency) {
-  if (currency != NULL) {
+  if (currency != nullptr) {
     
   } else {
     
@@ -789,7 +789,7 @@ inline void Account::set_name(::std::string&& value) {
 }
 #endif
 inline void Account::set_name(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
+  GOOGLE_DCHECK(value != nullptr);
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:Trade.protobuf.Account.name)
@@ -811,7 +811,7 @@ inline ::std::string* Account::release_name() {
   return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void Account::set_allocated_name(::std::string* name) {
-  if (name != NULL) {
+  if (name != nullptr) {
     
   } else {
     
@@ -822,30 +822,30 @@ inline void Account::set_allocated_name(::std::string* name) {
 
 // .Trade.protobuf.Balance wallet = 3;
 inline bool Account::has_wallet() const {
-  return this != internal_default_instance() && wallet_ != NULL;
+  return this != internal_default_instance() && wallet_ != nullptr;
 }
 inline void Account::clear_wallet() {
-  if (GetArenaNoVirtual() == NULL && wallet_ != NULL) {
+  if (GetArenaNoVirtual() == nullptr && wallet_ != nullptr) {
     delete wallet_;
   }
-  wallet_ = NULL;
+  wallet_ = nullptr;
 }
 inline const ::Trade::protobuf::Balance& Account::wallet() const {
   const ::Trade::protobuf::Balance* p = wallet_;
   // @@protoc_insertion_point(field_get:Trade.protobuf.Account.wallet)
-  return p != NULL ? *p : *reinterpret_cast<const ::Trade::protobuf::Balance*>(
+  return p != nullptr ? *p : *reinterpret_cast<const ::Trade::protobuf::Balance*>(
       &::Trade::protobuf::_Balance_default_instance_);
 }
 inline ::Trade::protobuf::Balance* Account::release_wallet() {
   // @@protoc_insertion_point(field_release:Trade.protobuf.Account.wallet)
   
   ::Trade::protobuf::Balance* temp = wallet_;
-  wallet_ = NULL;
+  wallet_ = nullptr;
   return temp;
 }
 inline ::Trade::protobuf::Balance* Account::mutable_wallet() {
   
-  if (wallet_ == NULL) {
+  if (wallet_ == nullptr) {
     auto* p = CreateMaybeMessage<::Trade::protobuf::Balance>(GetArenaNoVirtual());
     wallet_ = p;
   }
@@ -854,11 +854,11 @@ inline ::Trade::protobuf::Balance* Account::mutable_wallet() {
 }
 inline void Account::set_allocated_wallet(::Trade::protobuf::Balance* wallet) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
+  if (message_arena == nullptr) {
     delete wallet_;
   }
   if (wallet) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
+    ::google::protobuf::Arena* submessage_arena = nullptr;
     if (message_arena != submessage_arena) {
       wallet = ::google::protobuf::internal::GetOwnedMessage(
           message_arena, wallet, submessage_arena);

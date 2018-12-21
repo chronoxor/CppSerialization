@@ -40,6 +40,7 @@ inline const char * const *EnumNamesOrderSide() {
 }
 
 inline const char *EnumNameOrderSide(OrderSide e) {
+  if (e < OrderSide::buy || e > OrderSide::sell) return "";
   const size_t index = static_cast<int>(e);
   return EnumNamesOrderSide()[index];
 }
@@ -72,12 +73,13 @@ inline const char * const *EnumNamesOrderType() {
 }
 
 inline const char *EnumNameOrderType(OrderType e) {
+  if (e < OrderType::market || e > OrderType::stop) return "";
   const size_t index = static_cast<int>(e);
   return EnumNamesOrderType()[index];
 }
 
 struct Order FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_UID = 4,
     VT_SYMBOL = 6,
     VT_SIDE = 8,
@@ -175,10 +177,11 @@ inline flatbuffers::Offset<Order> CreateOrderDirect(
     OrderType type = OrderType::market,
     double price = 0.0,
     double volume = 0.0) {
+  auto symbol__ = symbol ? _fbb.CreateString(symbol) : 0;
   return Trade::flatbuf::CreateOrder(
       _fbb,
       uid,
-      symbol ? _fbb.CreateString(symbol) : 0,
+      symbol__,
       side,
       type,
       price,
@@ -186,7 +189,7 @@ inline flatbuffers::Offset<Order> CreateOrderDirect(
 }
 
 struct Balance FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_CURRENCY = 4,
     VT_AMOUNT = 6
   };
@@ -240,14 +243,15 @@ inline flatbuffers::Offset<Balance> CreateBalanceDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *currency = nullptr,
     double amount = 0.0) {
+  auto currency__ = currency ? _fbb.CreateString(currency) : 0;
   return Trade::flatbuf::CreateBalance(
       _fbb,
-      currency ? _fbb.CreateString(currency) : 0,
+      currency__,
       amount);
 }
 
 struct Account FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  enum {
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_UID = 4,
     VT_NAME = 6,
     VT_WALLET = 8,
@@ -326,12 +330,14 @@ inline flatbuffers::Offset<Account> CreateAccountDirect(
     const char *name = nullptr,
     flatbuffers::Offset<Balance> wallet = 0,
     const std::vector<flatbuffers::Offset<Order>> *orders = nullptr) {
+  auto name__ = name ? _fbb.CreateString(name) : 0;
+  auto orders__ = orders ? _fbb.CreateVector<flatbuffers::Offset<Order>>(*orders) : 0;
   return Trade::flatbuf::CreateAccount(
       _fbb,
       uid,
-      name ? _fbb.CreateString(name) : 0,
+      name__,
       wallet,
-      orders ? _fbb.CreateVector<flatbuffers::Offset<Order>>(*orders) : 0);
+      orders__);
 }
 
 inline const Trade::flatbuf::Account *GetAccount(const void *buf) {
