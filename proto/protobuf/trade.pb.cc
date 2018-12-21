@@ -281,14 +281,14 @@ const char* Order::_InternalParse(const char* begin, const char* end, void* obje
   ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
   auto ptr = begin;
   while (ptr < end) {
-    ptr = Varint::Parse32Inline(ptr, &tag);
+    ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
       // int32 uid = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
         ::google::protobuf::uint64 val;
-        ptr = Varint::Parse64(ptr, &val);
+        ptr = ::google::protobuf::io::Parse64(ptr, &val);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ::google::protobuf::int32 value = val;
         msg->set_uid(value);
@@ -297,7 +297,7 @@ const char* Order::_InternalParse(const char* begin, const char* end, void* obje
       // string symbol = 2;
       case 2: {
         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
-        ptr = Varint::Parse32Inline(ptr, &size);
+        ptr = ::google::protobuf::io::Parse32(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ctx->extra_parse_data().SetFieldName("Trade.protobuf.Order.symbol");
         auto str = msg->mutable_symbol();
@@ -317,7 +317,7 @@ const char* Order::_InternalParse(const char* begin, const char* end, void* obje
       case 3: {
         if (static_cast<::google::protobuf::uint8>(tag) != 24) goto handle_unusual;
         ::google::protobuf::uint64 val;
-        ptr = Varint::Parse64(ptr, &val);
+        ptr = ::google::protobuf::io::Parse64(ptr, &val);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ::Trade::protobuf::OrderSide value = static_cast<::Trade::protobuf::OrderSide>(val);
         msg->set_side(value);
@@ -327,7 +327,7 @@ const char* Order::_InternalParse(const char* begin, const char* end, void* obje
       case 4: {
         if (static_cast<::google::protobuf::uint8>(tag) != 32) goto handle_unusual;
         ::google::protobuf::uint64 val;
-        ptr = Varint::Parse64(ptr, &val);
+        ptr = ::google::protobuf::io::Parse64(ptr, &val);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ::Trade::protobuf::OrderType value = static_cast<::Trade::protobuf::OrderType>(val);
         msg->set_type(value);
@@ -352,7 +352,7 @@ const char* Order::_InternalParse(const char* begin, const char* end, void* obje
         break;
       }
       default: {
-      handle_unusual: (void)&&handle_unusual;
+      handle_unusual:
         if ((tag & 7) == 4 || tag == 0) {
           ctx->EndGroup(tag);
           return ptr;
@@ -366,13 +366,9 @@ const char* Order::_InternalParse(const char* begin, const char* end, void* obje
     }  // switch
   }  // while
   return ptr;
-len_delim_till_end: (void)&&len_delim_till_end;
+len_delim_till_end:
   return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
-                                 {parser_till_end, object}, size);
-group_continues: (void)&&group_continues;
-  GOOGLE_DCHECK(ptr >= end);
-  GOOGLE_PROTOBUF_PARSER_ASSERT(ctx->StoreGroup({_InternalParse, msg}, {parser_till_end, object}, depth, tag));
-  return ptr;
+                               {parser_till_end, object}, size);
 }
 #else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool Order::MergePartialFromCodedStream(
@@ -539,8 +535,7 @@ void Order::SerializeWithCachedSizes(
 }
 
 ::google::protobuf::uint8* Order::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:Trade.protobuf.Order)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
@@ -804,13 +799,13 @@ const char* Balance::_InternalParse(const char* begin, const char* end, void* ob
   ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
   auto ptr = begin;
   while (ptr < end) {
-    ptr = Varint::Parse32Inline(ptr, &tag);
+    ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
       // string currency = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
-        ptr = Varint::Parse32Inline(ptr, &size);
+        ptr = ::google::protobuf::io::Parse32(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ctx->extra_parse_data().SetFieldName("Trade.protobuf.Balance.currency");
         auto str = msg->mutable_currency();
@@ -836,7 +831,7 @@ const char* Balance::_InternalParse(const char* begin, const char* end, void* ob
         break;
       }
       default: {
-      handle_unusual: (void)&&handle_unusual;
+      handle_unusual:
         if ((tag & 7) == 4 || tag == 0) {
           ctx->EndGroup(tag);
           return ptr;
@@ -850,13 +845,9 @@ const char* Balance::_InternalParse(const char* begin, const char* end, void* ob
     }  // switch
   }  // while
   return ptr;
-len_delim_till_end: (void)&&len_delim_till_end;
+len_delim_till_end:
   return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
-                                 {parser_till_end, object}, size);
-group_continues: (void)&&group_continues;
-  GOOGLE_DCHECK(ptr >= end);
-  GOOGLE_PROTOBUF_PARSER_ASSERT(ctx->StoreGroup({_InternalParse, msg}, {parser_till_end, object}, depth, tag));
-  return ptr;
+                               {parser_till_end, object}, size);
 }
 #else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool Balance::MergePartialFromCodedStream(
@@ -947,8 +938,7 @@ void Balance::SerializeWithCachedSizes(
 }
 
 ::google::protobuf::uint8* Balance::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:Trade.protobuf.Balance)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
@@ -1173,14 +1163,14 @@ const char* Account::_InternalParse(const char* begin, const char* end, void* ob
   ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
   auto ptr = begin;
   while (ptr < end) {
-    ptr = Varint::Parse32Inline(ptr, &tag);
+    ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
       // int32 uid = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
         ::google::protobuf::uint64 val;
-        ptr = Varint::Parse64(ptr, &val);
+        ptr = ::google::protobuf::io::Parse64(ptr, &val);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ::google::protobuf::int32 value = val;
         msg->set_uid(value);
@@ -1189,7 +1179,7 @@ const char* Account::_InternalParse(const char* begin, const char* end, void* ob
       // string name = 2;
       case 2: {
         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
-        ptr = Varint::Parse32Inline(ptr, &size);
+        ptr = ::google::protobuf::io::Parse32(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ctx->extra_parse_data().SetFieldName("Trade.protobuf.Account.name");
         auto str = msg->mutable_name();
@@ -1208,7 +1198,7 @@ const char* Account::_InternalParse(const char* begin, const char* end, void* ob
       // .Trade.protobuf.Balance wallet = 3;
       case 3: {
         if (static_cast<::google::protobuf::uint8>(tag) != 26) goto handle_unusual;
-        ptr = Varint::Parse32Inline(ptr, &size);
+        ptr = ::google::protobuf::io::Parse32(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         parser_till_end = ::Trade::protobuf::Balance::_InternalParse;
         object = msg->mutable_wallet();
@@ -1224,7 +1214,7 @@ const char* Account::_InternalParse(const char* begin, const char* end, void* ob
       case 4: {
         if (static_cast<::google::protobuf::uint8>(tag) != 34) goto handle_unusual;
         do {
-          ptr = Varint::Parse32Inline(ptr, &size);
+          ptr = ::google::protobuf::io::Parse32(ptr, &size);
           GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
           parser_till_end = ::Trade::protobuf::Order::_InternalParse;
           object = msg->add_orders();
@@ -1239,7 +1229,7 @@ const char* Account::_InternalParse(const char* begin, const char* end, void* ob
         break;
       }
       default: {
-      handle_unusual: (void)&&handle_unusual;
+      handle_unusual:
         if ((tag & 7) == 4 || tag == 0) {
           ctx->EndGroup(tag);
           return ptr;
@@ -1253,13 +1243,9 @@ const char* Account::_InternalParse(const char* begin, const char* end, void* ob
     }  // switch
   }  // while
   return ptr;
-len_delim_till_end: (void)&&len_delim_till_end;
+len_delim_till_end:
   return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
-                                 {parser_till_end, object}, size);
-group_continues: (void)&&group_continues;
-  GOOGLE_DCHECK(ptr >= end);
-  GOOGLE_PROTOBUF_PARSER_ASSERT(ctx->StoreGroup({_InternalParse, msg}, {parser_till_end, object}, depth, tag));
-  return ptr;
+                               {parser_till_end, object}, size);
 }
 #else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool Account::MergePartialFromCodedStream(
@@ -1387,8 +1373,7 @@ void Account::SerializeWithCachedSizes(
 }
 
 ::google::protobuf::uint8* Account::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:Trade.protobuf.Account)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
@@ -1413,7 +1398,7 @@ void Account::SerializeWithCachedSizes(
   if (this->has_wallet()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        3, HasBitSetters::wallet(this), deterministic, target);
+        3, HasBitSetters::wallet(this), target);
   }
 
   // repeated .Trade.protobuf.Order orders = 4;
@@ -1421,7 +1406,7 @@ void Account::SerializeWithCachedSizes(
       n = static_cast<unsigned int>(this->orders_size()); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        4, this->orders(static_cast<int>(i)), deterministic, target);
+        4, this->orders(static_cast<int>(i)), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {

@@ -18,15 +18,8 @@
 #endif
 #include "capnp/serialize.h"
 #include "capnproto/trade.capnp.h"
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
 #include "fbe/trade.h"
 #include "flatbuffers/trade_generated.h"
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4127) // C4127: conditional expression is constant
-#endif
 #include "protobuf/trade.pb.h"
 #if defined(_MSC_VER)
 #pragma warning(pop)
