@@ -9,6 +9,14 @@
 #ifndef CPPSERIALIZATION_PROTO_TRADE_H
 #define CPPSERIALIZATION_PROTO_TRADE_H
 
+#if defined(__clang__)
+#pragma clang system_header
+#elif defined(__GNUC__)
+#pragma GCC system_header
+#elif defined(_MSC_VER)
+#pragma system_header
+#endif
+
 #if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4127) // C4127: conditional expression is constant
