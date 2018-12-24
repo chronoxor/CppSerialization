@@ -15,7 +15,7 @@ enum OrderType : byte
 
 table Order 
 {
-    uid : int;
+    id : int;
     symbol : string;
     side : OrderSide;
     type : OrderType;
@@ -31,7 +31,7 @@ table Balance
 
 table Account
 {
-    uid : int;
+    id : int;
     name : string;
     wallet : Balance;
     orders : [Order];

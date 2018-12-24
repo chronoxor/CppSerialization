@@ -94,7 +94,7 @@ const ::google::protobuf::uint32 TableStruct_trade_2eproto::offsets[] PROTOBUF_S
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, uid_),
+  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, id_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, symbol_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, side_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, type_),
@@ -112,7 +112,7 @@ const ::google::protobuf::uint32 TableStruct_trade_2eproto::offsets[] PROTOBUF_S
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, uid_),
+  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, id_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, name_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, wallet_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, orders_),
@@ -136,22 +136,22 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_trade_2eproto[] =
-  "\n\013trade.proto\022\016Trade.protobuf\"\225\001\n\005Order\022"
-  "\013\n\003uid\030\001 \001(\005\022\016\n\006symbol\030\002 \001(\t\022\'\n\004side\030\003 \001"
-  "(\0162\031.Trade.protobuf.OrderSide\022\'\n\004type\030\004 "
-  "\001(\0162\031.Trade.protobuf.OrderType\022\r\n\005price\030"
-  "\005 \001(\001\022\016\n\006volume\030\006 \001(\001\"+\n\007Balance\022\020\n\010curr"
-  "ency\030\001 \001(\t\022\016\n\006amount\030\002 \001(\001\"t\n\007Account\022\013\n"
-  "\003uid\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\'\n\006wallet\030\003 \001(\013"
-  "2\027.Trade.protobuf.Balance\022%\n\006orders\030\004 \003("
-  "\0132\025.Trade.protobuf.Order*\036\n\tOrderSide\022\007\n"
-  "\003buy\020\000\022\010\n\004sell\020\001*,\n\tOrderType\022\n\n\006market\020"
-  "\000\022\t\n\005limit\020\001\022\010\n\004stop\020\002b\006proto3"
+  "\n\013trade.proto\022\016Trade.protobuf\"\224\001\n\005Order\022"
+  "\n\n\002id\030\001 \001(\005\022\016\n\006symbol\030\002 \001(\t\022\'\n\004side\030\003 \001("
+  "\0162\031.Trade.protobuf.OrderSide\022\'\n\004type\030\004 \001"
+  "(\0162\031.Trade.protobuf.OrderType\022\r\n\005price\030\005"
+  " \001(\001\022\016\n\006volume\030\006 \001(\001\"+\n\007Balance\022\020\n\010curre"
+  "ncy\030\001 \001(\t\022\016\n\006amount\030\002 \001(\001\"s\n\007Account\022\n\n\002"
+  "id\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\'\n\006wallet\030\003 \001(\0132\027"
+  ".Trade.protobuf.Balance\022%\n\006orders\030\004 \003(\0132"
+  "\025.Trade.protobuf.Order*\036\n\tOrderSide\022\007\n\003b"
+  "uy\020\000\022\010\n\004sell\020\001*,\n\tOrderType\022\n\n\006market\020\000\022"
+  "\t\n\005limit\020\001\022\010\n\004stop\020\002b\006proto3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_trade_2eproto = {
   false, InitDefaults_trade_2eproto, 
   descriptor_table_protodef_trade_2eproto,
-  "trade.proto", &assign_descriptors_table_trade_2eproto, 430,
+  "trade.proto", &assign_descriptors_table_trade_2eproto, 428,
 };
 
 void AddDescriptors_trade_2eproto() {
@@ -204,7 +204,7 @@ class Order::HasBitSetters {
 };
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int Order::kUidFieldNumber;
+const int Order::kIdFieldNumber;
 const int Order::kSymbolFieldNumber;
 const int Order::kSideFieldNumber;
 const int Order::kTypeFieldNumber;
@@ -225,9 +225,9 @@ Order::Order(const Order& from)
   if (from.symbol().size() > 0) {
     symbol_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.symbol_);
   }
-  ::memcpy(&uid_, &from.uid_,
+  ::memcpy(&id_, &from.id_,
     static_cast<size_t>(reinterpret_cast<char*>(&type_) -
-    reinterpret_cast<char*>(&uid_)) + sizeof(type_));
+    reinterpret_cast<char*>(&id_)) + sizeof(type_));
   // @@protoc_insertion_point(copy_constructor:Trade.protobuf.Order)
 }
 
@@ -235,9 +235,9 @@ void Order::SharedCtor() {
   ::google::protobuf::internal::InitSCC(
       &scc_info_Order_trade_2eproto.base);
   symbol_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  ::memset(&uid_, 0, static_cast<size_t>(
+  ::memset(&id_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&type_) -
-      reinterpret_cast<char*>(&uid_)) + sizeof(type_));
+      reinterpret_cast<char*>(&id_)) + sizeof(type_));
 }
 
 Order::~Order() {
@@ -265,9 +265,9 @@ void Order::Clear() {
   (void) cached_has_bits;
 
   symbol_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  ::memset(&uid_, 0, static_cast<size_t>(
+  ::memset(&id_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&type_) -
-      reinterpret_cast<char*>(&uid_)) + sizeof(type_));
+      reinterpret_cast<char*>(&id_)) + sizeof(type_));
   _internal_metadata_.Clear();
 }
 
@@ -284,14 +284,14 @@ const char* Order::_InternalParse(const char* begin, const char* end, void* obje
     ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
-      // int32 uid = 1;
+      // int32 id = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
         ::google::protobuf::uint64 val;
         ptr = ::google::protobuf::io::Parse64(ptr, &val);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ::google::protobuf::int32 value = val;
-        msg->set_uid(value);
+        msg->set_id(value);
         break;
       }
       // string symbol = 2;
@@ -381,13 +381,13 @@ bool Order::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // int32 uid = 1;
+      // int32 id = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (8 & 0xFF)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &uid_)));
+                 input, &id_)));
         } else {
           goto handle_unusual;
         }
@@ -490,9 +490,9 @@ void Order::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 uid = 1;
-  if (this->uid() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->uid(), output);
+  // int32 id = 1;
+  if (this->id() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->id(), output);
   }
 
   // string symbol = 2;
@@ -540,9 +540,9 @@ void Order::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 uid = 1;
-  if (this->uid() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->uid(), target);
+  // int32 id = 1;
+  if (this->id() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->id(), target);
   }
 
   // string symbol = 2;
@@ -606,11 +606,11 @@ size_t Order::ByteSizeLong() const {
         this->symbol());
   }
 
-  // int32 uid = 1;
-  if (this->uid() != 0) {
+  // int32 id = 1;
+  if (this->id() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->uid());
+        this->id());
   }
 
   // .Trade.protobuf.OrderSide side = 3;
@@ -666,8 +666,8 @@ void Order::MergeFrom(const Order& from) {
 
     symbol_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.symbol_);
   }
-  if (from.uid() != 0) {
-    set_uid(from.uid());
+  if (from.id() != 0) {
+    set_id(from.id());
   }
   if (from.side() != 0) {
     set_side(from.side());
@@ -710,7 +710,7 @@ void Order::InternalSwap(Order* other) {
   _internal_metadata_.Swap(&other->_internal_metadata_);
   symbol_.Swap(&other->symbol_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
-  swap(uid_, other->uid_);
+  swap(id_, other->id_);
   swap(side_, other->side_);
   swap(price_, other->price_);
   swap(volume_, other->volume_);
@@ -1080,7 +1080,7 @@ Account::HasBitSetters::wallet(const Account* msg) {
   return *msg->wallet_;
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int Account::kUidFieldNumber;
+const int Account::kIdFieldNumber;
 const int Account::kNameFieldNumber;
 const int Account::kWalletFieldNumber;
 const int Account::kOrdersFieldNumber;
@@ -1105,7 +1105,7 @@ Account::Account(const Account& from)
   } else {
     wallet_ = nullptr;
   }
-  uid_ = from.uid_;
+  id_ = from.id_;
   // @@protoc_insertion_point(copy_constructor:Trade.protobuf.Account)
 }
 
@@ -1114,8 +1114,8 @@ void Account::SharedCtor() {
       &scc_info_Account_trade_2eproto.base);
   name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(&wallet_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&uid_) -
-      reinterpret_cast<char*>(&wallet_)) + sizeof(uid_));
+      reinterpret_cast<char*>(&id_) -
+      reinterpret_cast<char*>(&wallet_)) + sizeof(id_));
 }
 
 Account::~Account() {
@@ -1149,7 +1149,7 @@ void Account::Clear() {
     delete wallet_;
   }
   wallet_ = nullptr;
-  uid_ = 0;
+  id_ = 0;
   _internal_metadata_.Clear();
 }
 
@@ -1166,14 +1166,14 @@ const char* Account::_InternalParse(const char* begin, const char* end, void* ob
     ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
-      // int32 uid = 1;
+      // int32 id = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
         ::google::protobuf::uint64 val;
         ptr = ::google::protobuf::io::Parse64(ptr, &val);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ::google::protobuf::int32 value = val;
-        msg->set_uid(value);
+        msg->set_id(value);
         break;
       }
       // string name = 2;
@@ -1258,13 +1258,13 @@ bool Account::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // int32 uid = 1;
+      // int32 id = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (8 & 0xFF)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &uid_)));
+                 input, &id_)));
         } else {
           goto handle_unusual;
         }
@@ -1335,9 +1335,9 @@ void Account::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 uid = 1;
-  if (this->uid() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->uid(), output);
+  // int32 id = 1;
+  if (this->id() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->id(), output);
   }
 
   // string name = 2;
@@ -1378,9 +1378,9 @@ void Account::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 uid = 1;
-  if (this->uid() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->uid(), target);
+  // int32 id = 1;
+  if (this->id() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->id(), target);
   }
 
   // string name = 2;
@@ -1455,11 +1455,11 @@ size_t Account::ByteSizeLong() const {
         *wallet_);
   }
 
-  // int32 uid = 1;
-  if (this->uid() != 0) {
+  // int32 id = 1;
+  if (this->id() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->uid());
+        this->id());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -1497,8 +1497,8 @@ void Account::MergeFrom(const Account& from) {
   if (from.has_wallet()) {
     mutable_wallet()->::Trade::protobuf::Balance::MergeFrom(from.wallet());
   }
-  if (from.uid() != 0) {
-    set_uid(from.uid());
+  if (from.id() != 0) {
+    set_id(from.id());
   }
 }
 
@@ -1531,7 +1531,7 @@ void Account::InternalSwap(Account* other) {
   name_.Swap(&other->name_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   swap(wallet_, other->wallet_);
-  swap(uid_, other->uid_);
+  swap(id_, other->id_);
 }
 
 ::google::protobuf::Metadata Account::GetMetadata() const {

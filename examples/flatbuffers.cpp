@@ -31,13 +31,13 @@ int main(int argc, char** argv)
 
     // Show account content
     std::cout << std::endl;
-    std::cout << "Account.Uid = " << deserialized.Uid << std::endl;
+    std::cout << "Account.Id = " << deserialized.Id << std::endl;
     std::cout << "Account.Name = " << deserialized.Name << std::endl;
     std::cout << "Account.Wallet.Currency = " << deserialized.Wallet.Currency << std::endl;
     std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
     for (auto& order : deserialized.Orders)
     {
-        std::cout << "Account.Order => Uid: " << order.Uid
+        std::cout << "Account.Order => Id: " << order.Id
             << ", Symbol: " << order.Symbol
             << ", Side: " << (int)order.Side
             << ", Type: " << (int)order.Type

@@ -30,24 +30,24 @@ TEST_CASE("Protobuf", "[CppSerialization]")
     TradeProto::Account deserialized;
     deserialized.Deserialize(input);
 
-    REQUIRE(deserialized.Uid == 1);
+    REQUIRE(deserialized.Id == 1);
     REQUIRE(deserialized.Name == "Test");
     REQUIRE(std::string(deserialized.Wallet.Currency) == "USD");
     REQUIRE(deserialized.Wallet.Amount == 1000);
     REQUIRE(deserialized.Orders.size() == 3);
-    REQUIRE(deserialized.Orders[0].Uid == 1);
+    REQUIRE(deserialized.Orders[0].Id == 1);
     REQUIRE(std::string(deserialized.Orders[0].Symbol) == "EURUSD");
     REQUIRE(deserialized.Orders[0].Side == TradeProto::OrderSide::BUY);
     REQUIRE(deserialized.Orders[0].Type == TradeProto::OrderType::MARKET);
     REQUIRE(deserialized.Orders[0].Price == 1.23456);
     REQUIRE(deserialized.Orders[0].Volume == 1000);
-    REQUIRE(deserialized.Orders[1].Uid == 2);
+    REQUIRE(deserialized.Orders[1].Id == 2);
     REQUIRE(std::string(deserialized.Orders[1].Symbol) == "EURUSD");
     REQUIRE(deserialized.Orders[1].Side == TradeProto::OrderSide::SELL);
     REQUIRE(deserialized.Orders[1].Type == TradeProto::OrderType::LIMIT);
     REQUIRE(deserialized.Orders[1].Price == 1.0);
     REQUIRE(deserialized.Orders[1].Volume == 100);
-    REQUIRE(deserialized.Orders[2].Uid == 3);
+    REQUIRE(deserialized.Orders[2].Id == 3);
     REQUIRE(std::string(deserialized.Orders[2].Symbol) == "EURUSD");
     REQUIRE(deserialized.Orders[2].Side == TradeProto::OrderSide::BUY);
     REQUIRE(deserialized.Orders[2].Type == TradeProto::OrderType::STOP);

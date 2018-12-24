@@ -57,7 +57,7 @@ enum class OrderType : uint8_t
 
 struct Order
 {
-    int Uid;
+    int Id;
     char Symbol[10];
     OrderSide Side;
     OrderType Type;
@@ -65,9 +65,9 @@ struct Order
     double Volume;
 
     Order() : Order(0, "<\?\?\?>", OrderSide::BUY, OrderType::MARKET, 0.0, 0.0) {}
-    Order(int uid, const std::string& symbol, OrderSide side, OrderType type, double price, double volume)
+    Order(int id, const std::string& symbol, OrderSide side, OrderType type, double price, double volume)
     {
-        Uid = uid;
+        Id = id;
         std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = side;
         Type = type;
@@ -79,7 +79,7 @@ struct Order
 
     void Serialize(Trade::capnproto::Order::Builder& builder)
     {
-        builder.setUid(Uid);
+        builder.setId(Id);
         builder.setSymbol(Symbol);
         builder.setSide((Trade::capnproto::OrderSide)Side);
         builder.setType((Trade::capnproto::OrderType)Type);
@@ -89,7 +89,7 @@ struct Order
 
     void Deserialize(const Trade::capnproto::Order::Reader& reader)
     {
-        Uid = reader.getUid();
+        Id = reader.getId();
         std::string symbol = reader.getSymbol();
         std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)reader.getSide();
@@ -104,7 +104,7 @@ struct Order
     void Serialize(FBE::FieldModel<TBuffer, trade::Order>& model)
     {
         size_t model_begin = model.set_begin();
-        model.uid.set(Uid);
+        model.id.set(Id);
         model.symbol.set(Symbol);
         model.side.set((trade::OrderSide)Side);
         model.type.set((trade::OrderType)Type);
@@ -117,7 +117,7 @@ struct Order
     void Deserialize(const FBE::FieldModel<TBuffer, trade::Order>& model)
     {
         size_t model_begin = model.get_begin();
-        model.uid.get(Uid);
+        model.id.get(Id);
         model.symbol.get(Symbol);
         trade::OrderSide side;
         model.side.get(side);
@@ -134,12 +134,12 @@ struct Order
 
     flatbuffers::Offset<Trade::flatbuf::Order> Serialize(flatbuffers::FlatBufferBuilder& builder)
     {
-        return Trade::flatbuf::CreateOrderDirect(builder, Uid, Symbol, (Trade::flatbuf::OrderSide)Side, (Trade::flatbuf::OrderType)Type, Price, Volume);
+        return Trade::flatbuf::CreateOrderDirect(builder, Id, Symbol, (Trade::flatbuf::OrderSide)Side, (Trade::flatbuf::OrderType)Type, Price, Volume);
     }
 
     void Deserialize(const Trade::flatbuf::Order& value)
     {
-        Uid = value.uid();
+        Id = value.id();
         std::string symbol = value.symbol()->str();
         std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)value.side();
@@ -152,7 +152,7 @@ struct Order
 
     Trade::protobuf::Order& Serialize(Trade::protobuf::Order& value)
     {
-        value.set_uid(Uid);
+        value.set_id(Id);
         value.set_symbol(Symbol);
         value.set_side((Trade::protobuf::OrderSide)Side);
         value.set_type((Trade::protobuf::OrderType)Type);
@@ -163,7 +163,7 @@ struct Order
 
     void Deserialize(const Trade::protobuf::Order& value)
     {
-        Uid = value.uid();
+        Id = value.id();
         std::string symbol = value.symbol();
         std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)value.side();
@@ -178,7 +178,7 @@ struct Order
     void Serialize(CppSerialization::JSON::Serializer<OutputStream>& serializer)
     {
         serializer.StartObject();
-        serializer.Pair("uid", Uid);
+        serializer.Pair("id", Id);
         serializer.Pair("symbol", Symbol);
         serializer.Pair("side", (int)Side);
         serializer.Pair("type", (int)Type);
@@ -192,7 +192,7 @@ struct Order
     {
         using namespace CppSerialization::JSON;
 
-        Deserializer::Find(json, "uid", Uid);
+        Deserializer::Find(json, "id", Id);
         Deserializer::Find(json, "symbol", Symbol);
         int side = 0; Deserializer::Find(json, "side", side); Side = (OrderSide)side;
         int type = 0; Deserializer::Find(json, "type", type); Type = (OrderType)type;
@@ -301,15 +301,15 @@ struct Balance
 
 struct Account
 {
-    int Uid;
+    int Id;
     std::string Name;
     Balance Wallet;
     std::vector<Order> Orders;
 
     Account() : Account(0, "<<\?\?\?>>", "<<\?\?\?>>", 0.0) {}
-    Account(int uid, const char* name, const char* currency, double amount) : Wallet(currency, amount)
+    Account(int id, const char* name, const char* currency, double amount) : Wallet(currency, amount)
     {
-        Uid = uid;
+        Id = id;
         Name = name;
     }
 
@@ -317,7 +317,7 @@ struct Account
 
     void Serialize(Trade::capnproto::Account::Builder& builder)
     {
-        builder.setUid(Uid);
+        builder.setId(Id);
         builder.setName(Name);
         auto wallet = builder.initWallet();
         Wallet.Serialize(wallet);
@@ -332,7 +332,7 @@ struct Account
 
     void Deserialize(const Trade::capnproto::Account::Reader& reader)
     {
-        Uid = reader.getUid();
+        Id = reader.getId();
         Name = reader.getName().cStr();
         Wallet.Deserialize(reader.getWallet());
         Orders.clear();
@@ -350,7 +350,7 @@ struct Account
     void Serialize(FBE::FieldModel<TBuffer, trade::Account>& model)
     {
         size_t model_begin = model.set_begin();
-        model.uid.set(Uid);
+        model.id.set(Id);
         model.name.set(Name);
         Wallet.Serialize(model.wallet);
         auto order_model = model.orders.resize(Orders.size());
@@ -366,7 +366,7 @@ struct Account
     void Deserialize(const FBE::FieldModel<TBuffer, trade::Account>& model)
     {
         size_t model_begin = model.get_begin();
-        model.uid.get(Uid);
+        model.id.get(Id);
         model.name.get(Name);
         Wallet.Deserialize(model.wallet);
         Orders.clear();
@@ -387,12 +387,12 @@ struct Account
         std::vector<flatbuffers::Offset<Trade::flatbuf::Order>> orders;
         for (auto& order : Orders)
             orders.emplace_back(order.Serialize(builder));
-        return Trade::flatbuf::CreateAccountDirect(builder, Uid, Name.c_str(), wallet, &orders);
+        return Trade::flatbuf::CreateAccountDirect(builder, Id, Name.c_str(), wallet, &orders);
     }
 
     void Deserialize(const Trade::flatbuf::Account& value)
     {
-        Uid = value.uid();
+        Id = value.id();
         Name = value.name()->str();
         Wallet.Deserialize(*value.wallet());
         Orders.clear();
@@ -408,7 +408,7 @@ struct Account
 
     Trade::protobuf::Account& Serialize(Trade::protobuf::Account& value)
     {
-        value.set_uid(Uid);
+        value.set_id(Id);
         value.set_name(Name);
         value.set_allocated_wallet(&Wallet.Serialize(*value.wallet().New(value.GetArena())));
         for (auto& order : Orders)
@@ -418,7 +418,7 @@ struct Account
 
     void Deserialize(const Trade::protobuf::Account& value)
     {
-        Uid = value.uid();
+        Id = value.id();
         Name = value.name();
         Wallet.Deserialize(value.wallet());
         Orders.clear();
@@ -436,7 +436,7 @@ struct Account
     void Serialize(CppSerialization::JSON::Serializer<OutputStream>& serializer)
     {
         serializer.StartObject();
-        serializer.Pair("uid", Uid);
+        serializer.Pair("id", Id);
         serializer.Pair("name", Name);
         serializer.Key("wallet");
         Wallet.Serialize(serializer);
@@ -453,7 +453,7 @@ struct Account
     {
         using namespace CppSerialization::JSON;
 
-        Deserializer::Find(json, "uid", Uid);
+        Deserializer::Find(json, "id", Id);
         Deserializer::Find(json, "name", Name);
         Deserializer::FindObject(json, "wallet", [this](const Value::ConstObject& object)
         {

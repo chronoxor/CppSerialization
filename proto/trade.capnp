@@ -19,7 +19,7 @@ enum OrderType
 
 struct Order 
 {
-    uid @0 : Int32;
+    id @0 : Int32;
     symbol @1 : Text;
     side @2 : OrderSide;
     type @3 : OrderType;
@@ -35,7 +35,7 @@ struct Balance
 
 struct Account
 {
-    uid @0 : Int32;
+    id @0 : Int32;
     name @1 : Text;
     wallet @2 : Balance;
     orders @3 : List(Order);
