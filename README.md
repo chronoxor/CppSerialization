@@ -8,17 +8,18 @@
 
 C++ Serialization Library provides functionality to serialize/deserialize
 objects using different protocols such as Cap'n'Proto, FastBinaryEncoding,
-Flatbuffers, Protobuf, JSON.
+Flatbuffers, Protobuf, SimpleBinaryEncoding, JSON.
 
 Performance comparison based on the [Domain model](#domain-model):
 
-| Protocol                                                              | Message size | Serialization time | Deserialization time |
-| :-------------------------------------------------------------------: | -----------: | -----------------: | -------------------: |
-| [Cap'n'Proto](https://capnproto.org)                                  |    208 bytes |             558 ns |               359 ns |
-| [FastBinaryEncoding](https://github.com/chronoxor/FastBinaryEncoding) |    234 bytes |              66 ns |                82 ns |
-| [FlatBuffers](https://google.github.io/flatbuffers)                   |    280 bytes |             830 ns |               290 ns |
-| [Protobuf](https://developers.google.com/protocol-buffers)            |    120 bytes |             628 ns |               759 ns |
-| [JSON](http://rapidjson.org)                                          |    301 bytes |             740 ns |               500 ns |
+| Protocol                                                                     | Message size | Serialization time | Deserialization time |
+| :--------------------------------------------------------------------------: | -----------: | -----------------: | -------------------: |
+| [Cap'n'Proto](https://capnproto.org)                                         |    208 bytes |             558 ns |               359 ns |
+| [FastBinaryEncoding](https://github.com/chronoxor/FastBinaryEncoding)        |    234 bytes |              66 ns |                82 ns |
+| [FlatBuffers](https://google.github.io/flatbuffers)                          |    280 bytes |             830 ns |               290 ns |
+| [Protobuf](https://developers.google.com/protocol-buffers)                   |    120 bytes |             628 ns |               759 ns |
+| [SimpleBinaryEncoding](https://github.com/real-logic/simple-binary-encoding) |    138 bytes |              35 ns |                85 ns |
+| [JSON](http://rapidjson.org)                                                 |    301 bytes |             740 ns |               500 ns |
 
 [CppSerialization API reference](https://chronoxor.github.io/CppSerialization/index.html)
 
@@ -51,6 +52,12 @@ Performance comparison based on the [Domain model](#domain-model):
     * [Protobuf serialization methods](#protobuf-serialization-methods)
     * [Protobuf example](#protobuf-example)
     * [Protobuf performance](#protobuf-performance)
+  * [SimpleBinaryEncoding serialization](#simplebinaryencoding-serialization)
+    * [SimpleBinaryEncoding schema](#simplebinaryencoding-schema)
+    * [SimpleBinaryEncoding schema compilation](#simplebinaryencoding-schema-compilation)
+    * [SimpleBinaryEncoding serialization methods](#simplebinaryencoding-serialization-methods)
+    * [SimpleBinaryEncoding example](#simplebinaryencoding-example)
+    * [SimpleBinaryEncoding performance](#simplebinaryencoding-performance)
   * [JSON serialization](#json-serialization)
     * [JSON serialization methods](#json-serialization-methods)
     * [JSON example](#json-example)
@@ -62,6 +69,7 @@ Performance comparison based on the [Domain model](#domain-model):
 * Binary serialization using [FastBinaryEncoding library](https://github.com/chronoxor/FastBinaryEncoding)
 * Binary serialization using [FlatBuffers library](https://google.github.io/flatbuffers)
 * Binary serialization using [Protobuf library](https://developers.google.com/protocol-buffers)
+* Binary serialization using [SimpleBinaryEncoding library](https://github.com/real-logic/simple-binary-encoding)
 * JSON serialization using [RapidJSON library](http://rapidjson.org)
 
 # Requirements
@@ -1464,6 +1472,328 @@ Custom values:
 ===============================================================================
 ```
 
+# SimpleBinaryEncoding serialization
+SimpleBinaryEncoding serialization is based on [SimpleBinaryEncoding library](https://github.com/real-logic/simple-binary-encoding).
+
+## SimpleBinaryEncoding schema
+SimpleBinaryEncoding serialization starts with describing a model schema. For our
+domain model the schema will be the following:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<sbe:messageSchema xmlns:sbe="http://fixprotocol.io/2016/sbe" package="sbe" id="1" version="1" semanticVersion="5.2" description="Trade schema" byteOrder="littleEndian">
+    <types>
+        <composite name="messageHeader" description="Message identifiers and length of message root">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="templateId" primitiveType="uint16"/>
+            <type name="schemaId" primitiveType="uint16"/>
+            <type name="version" primitiveType="uint16"/>
+        </composite>
+        <composite name="groupSizeEncoding" description="Repeating group dimensions">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="numInGroup" primitiveType="uint16"/>
+        </composite>
+        <composite name="varStringEncoding">
+            <type name="length" primitiveType="uint32" maxValue="1073741824"/>
+            <type name="varData" primitiveType="uint8" length="0" characterEncoding="UTF-8"/>
+        </composite>
+    </types>
+    <types>
+        <enum name="OrderSide" encodingType="uint8">
+            <validValue name="buy">0</validValue>
+            <validValue name="sell">1</validValue>
+        </enum>
+        <enum name="OrderType" encodingType="uint8">
+            <validValue name="market">0</validValue>
+            <validValue name="limit">1</validValue>
+            <validValue name="stop">2</validValue>
+        </enum>
+        <composite name="Order">
+            <type name="id" primitiveType="int32"/>
+            <type name="symbol" primitiveType="char" length="10" characterEncoding="UTF-8"/>
+            <ref name="side" type="OrderSide"/>
+            <ref name="type" type="OrderType"/>
+            <type name="price" primitiveType="double"/>
+            <type name="volume" primitiveType="double"/>
+        </composite>
+        <composite name="Balance">
+        	<type name="currency" primitiveType="char" length="10" characterEncoding="UTF-8"/>
+            <type name="amount" primitiveType="double"/>
+        </composite>
+        <type name="AccountId" primitiveType="int32"/>
+    </types>
+    <sbe:message name="Account" id="1">
+        <field name="id" id="1" type="AccountId"/>
+        <field name="wallet" id="2" type="Balance"/>
+        <group name="orders" id="3" dimensionType="groupSizeEncoding">
+            <field name="order" id="4" type="Order"/>
+        </group>
+        <data name="name" id="5" type="varStringEncoding"/>
+    </sbe:message>
+</sbe:messageSchema>
+```
+
+## SimpleBinaryEncoding schema compilation
+The next step is a schema compilation using 'sbe' utility which will create
+a generated code for required programming language.
+
+The following command will create a C++ generated code:
+```shell
+java -Dsbe.target.language=cpp -jar sbe-all-1.10.1.jar trade.sbe.xml
+```
+
+As the result required C++ header files will be generated.
+
+## SimpleBinaryEncoding serialization methods
+Finally you should extend your domain model with a SimpleBinaryEncoding serialization
+methods:
+
+```c++
+#include "fbe/trade.h"
+
+#include <algorithm>
+
+namespace TradeProto {
+
+struct Order
+{
+    ...
+
+    // SimpleBinaryEncoding serialization
+
+    void Serialize(sbe::Order& model)
+    {
+        model.id(Id);
+        model.putSymbol(Symbol);
+        model.side((sbe::OrderSide::Value)Side);
+        model.type((sbe::OrderType::Value)Type);
+        model.price(Price);
+        model.volume(Volume);
+    }
+
+    void Deserialize(sbe::Order& model)
+    {
+        Id = model.id();
+        model.getSymbol(Symbol, sizeof(Symbol));
+        Side = (OrderSide)model.side();
+        Type = (OrderType)model.type();
+        Price = model.price();
+        Volume = model.volume();
+    }
+
+    ...
+};
+
+struct Balance
+{
+    ...
+
+    // SimpleBinaryEncoding serialization
+
+    void Serialize(sbe::Balance& model)
+    {
+        model.putCurrency(Currency);
+        model.amount(Amount);
+    }
+
+    void Deserialize(sbe::Balance& model)
+    {
+        model.getCurrency(Currency, sizeof(Currency));
+        Amount = model.amount();
+    }
+
+    ...
+};
+
+struct Account
+{
+    ...
+
+    // SimpleBinaryEncoding serialization
+
+    void Serialize(sbe::Account& model)
+    {
+        model.id(Id);
+        model.putName(Name);
+        Wallet.Serialize(model.wallet());
+        auto orders = model.ordersCount((uint16_t)Orders.size());
+        for (auto& order : Orders)
+            order.Serialize(orders.next().order());
+    }
+
+    void Deserialize(sbe::Account& model)
+    {
+        Id = model.id();
+        Name = model.getNameAsString();
+        Wallet.Deserialize(model.wallet());
+        Orders.clear();
+        auto orders = model.orders();
+        for (int i = 0; i < orders.count(); ++i)
+        {
+            Order order;
+            order.Deserialize(orders.next().order());
+            Orders.emplace_back(order);
+        }
+    }
+
+    ...
+};
+
+} // namespace TradeProto
+```
+
+## SimpleBinaryEncoding example
+Here comes the usage example of SimpleBinaryEncoding serialize/deserialize functionality:
+
+```c++
+#include "../proto/trade.h"
+
+#include <iostream>
+
+int main(int argc, char** argv)
+{
+    // Create a new account with some orders
+    TradeProto::Account account(1, "Test", "USD", 1000);
+    account.Orders.emplace_back(TradeProto::Order(1, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::MARKET, 1.23456, 1000));
+    account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
+    account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
+
+    // Serialize the account to the SBE stream
+    char buffer[1024];
+    sbe::MessageHeader header;
+    header.wrap(buffer, 0, 1, sizeof(buffer))
+       .blockLength(sbe::Account::sbeBlockLength())
+       .templateId(sbe::Account::sbeTemplateId())
+       .schemaId(sbe::Account::sbeSchemaId())
+       .version(sbe::Account::sbeSchemaVersion());
+    sbe::Account message;
+    message.wrapForEncode(buffer, header.encodedLength(), sizeof(buffer));
+    account.Serialize(message);
+
+    // Show the serialized SBE size
+    std::cout << "SBE size: " << header.encodedLength() + message.encodedLength() << std::endl;
+
+    // Deserialize the account from the SBE stream
+    header.wrap(buffer, 0, 1, sizeof(buffer));
+    int actingVersion = header.version();
+    int actingBlockLength = header.blockLength();
+    message.wrapForDecode(buffer, header.encodedLength(), actingBlockLength, actingVersion, sizeof(buffer));
+    TradeProto::Account deserialized;
+    deserialized.Deserialize(message);
+
+    // Show account content
+    std::cout << std::endl;
+    std::cout << "Account.Id = " << deserialized.Id << std::endl;
+    std::cout << "Account.Name = " << deserialized.Name << std::endl;
+    std::cout << "Account.Wallet.Currency = " << deserialized.Wallet.Currency << std::endl;
+    std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
+    for (auto& order : deserialized.Orders)
+    {
+        std::cout << "Account.Order => Id: " << order.Id
+            << ", Symbol: " << order.Symbol
+            << ", Side: " << (int)order.Side
+            << ", Type: " << (int)order.Type
+            << ", Price: " << order.Price
+            << ", Volume: " << order.Volume
+            << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output of the example is the following:
+```
+SBE size: 138
+
+Account.Id = 1
+Account.Name = Test
+Account.Wallet.Currency = USD
+Account.Wallet.Amount = 1000
+Account.Order => Id: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
+Account.Order => Id: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
+Account.Order => Id: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
+```
+
+## SimpleBinaryEncoding performance
+SimpleBinaryEncoding serialization performance of the provided domain model is the
+following:
+```
+===============================================================================
+CppBenchmark report. Version 1.0.0.0
+===============================================================================
+CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+CPU logical cores: 8
+CPU physical cores: 4
+CPU clock speed: 3.998 GHz
+CPU Hyper-Threading: enabled
+RAM total: 31.962 GiB
+RAM free: 16.910 GiB
+===============================================================================
+OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS bits: 64-bit
+Process bits: 64-bit
+Process configuaraion: release
+Local timestamp: Wed Jan  2 05:34:26 2019
+UTC timestamp: Wed Jan  2 02:34:26 2019
+===============================================================================
+Benchmark: SimpleBinaryEncoding-Serialize
+Attempts: 5
+Duration: 5 seconds
+-------------------------------------------------------------------------------
+Phase: SimpleBinaryEncoding-Serialize
+Average time: 35 ns/op
+Minimal time: 35 ns/op
+Maximal time: 38 ns/op
+Total time: 2.398 s
+Total operations: 67877907
+Total bytes: 8.741 GiB
+Operations throughput: 28296533 ops/s
+Bytes throughput: 3.652 GiB/s
+Custom values:
+        Size: 138
+===============================================================================
+```
+
+SimpleBinaryEncoding deserialization performance of the provided domain model is the
+following:
+```
+===============================================================================
+CppBenchmark report. Version 1.0.0.0
+===============================================================================
+CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
+CPU logical cores: 8
+CPU physical cores: 4
+CPU clock speed: 3.998 GHz
+CPU Hyper-Threading: enabled
+RAM total: 31.962 GiB
+RAM free: 16.884 GiB
+===============================================================================
+OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS bits: 64-bit
+Process bits: 64-bit
+Process configuaraion: release
+Local timestamp: Wed Jan  2 05:35:26 2019
+UTC timestamp: Wed Jan  2 02:35:26 2019
+===============================================================================
+Benchmark: SimpleBinaryEncoding-Deserialize
+Attempts: 5
+Duration: 5 seconds
+-------------------------------------------------------------------------------
+Phase: SimpleBinaryEncoding-Deserialize
+Average time: 85 ns/op
+Minimal time: 85 ns/op
+Maximal time: 88 ns/op
+Total time: 3.629 s
+Total operations: 42653547
+Total bytes: 5.493 GiB
+Operations throughput: 11750351 ops/s
+Bytes throughput: 1.522 GiB/s
+Custom values:
+        Size: 138
+===============================================================================
+```
+
 # JSON serialization
 JSON serialization is based on [RapidJSON library](http://rapidjson.org).
 
@@ -1771,4 +2101,3 @@ Custom values:
         Size: 301
 ===============================================================================
 ```
-..

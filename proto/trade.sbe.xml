@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<sbe:messageSchema xmlns:sbe="http://fixprotocol.io/2016/sbe" package="sbe" id="1" version="1" semanticVersion="5.2" description="Trade schema" byteOrder="littleEndian">
+    <types>
+        <composite name="messageHeader" description="Message identifiers and length of message root">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="templateId" primitiveType="uint16"/>
+            <type name="schemaId" primitiveType="uint16"/>
+            <type name="version" primitiveType="uint16"/>
+        </composite>
+        <composite name="groupSizeEncoding" description="Repeating group dimensions">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="numInGroup" primitiveType="uint16"/>
+        </composite>
+        <composite name="varStringEncoding">
+            <type name="length" primitiveType="uint32" maxValue="1073741824"/>
+            <type name="varData" primitiveType="uint8" length="0" characterEncoding="UTF-8"/>
+        </composite>
+    </types>
+    <types>
+        <enum name="OrderSide" encodingType="uint8">
+            <validValue name="buy">0</validValue>
+            <validValue name="sell">1</validValue>
+        </enum>
+        <enum name="OrderType" encodingType="uint8">
+            <validValue name="market">0</validValue>
+            <validValue name="limit">1</validValue>
+            <validValue name="stop">2</validValue>
+        </enum>
+        <composite name="Order">
+            <type name="id" primitiveType="int32"/>
+            <type name="symbol" primitiveType="char" length="10" characterEncoding="UTF-8"/>
+            <ref name="side" type="OrderSide"/>
+            <ref name="type" type="OrderType"/>
+            <type name="price" primitiveType="double"/>
+            <type name="volume" primitiveType="double"/>
+        </composite>
+        <composite name="Balance">
+        	<type name="currency" primitiveType="char" length="10" characterEncoding="UTF-8"/>
+            <type name="amount" primitiveType="double"/>
+        </composite>
+        <type name="AccountId" primitiveType="int32"/>
+    </types>
+    <sbe:message name="Account" id="1">
+        <field name="id" id="1" type="AccountId"/>
+        <field name="wallet" id="2" type="Balance"/>
+        <group name="orders" id="3" dimensionType="groupSizeEncoding">
+            <field name="order" id="4" type="Order"/>
+        </group>
+        <data name="name" id="5" type="varStringEncoding"/>
+    </sbe:message>
+</sbe:messageSchema>

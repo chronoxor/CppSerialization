@@ -29,6 +29,8 @@
 #include "fbe/trade.h"
 #include "flatbuffers/trade_generated.h"
 #include "protobuf/trade.pb.h"
+#include "sbe/Account.h"
+#include "sbe/MessageHeader.h"
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
@@ -172,6 +174,28 @@ struct Order
         Volume = value.volume();
     }
 
+    // SimpleBinaryEncoding serialization
+
+    void Serialize(sbe::Order& model)
+    {
+        model.id(Id);
+        model.putSymbol(Symbol);
+        model.side((sbe::OrderSide::Value)Side);
+        model.type((sbe::OrderType::Value)Type);
+        model.price(Price);
+        model.volume(Volume);
+    }
+
+    void Deserialize(sbe::Order& model)
+    {
+        Id = model.id();
+        model.getSymbol(Symbol, sizeof(Symbol));
+        Side = (OrderSide)model.side();
+        Type = (OrderType)model.type();
+        Price = model.price();
+        Volume = model.volume();
+    }
+
     // JSON serialization
 
     template<typename OutputStream>
@@ -276,6 +300,20 @@ struct Balance
         std::string currency = value.currency();
         std::memcpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = value.amount();
+    }
+
+    // SimpleBinaryEncoding serialization
+
+    void Serialize(sbe::Balance& model)
+    {
+        model.putCurrency(Currency);
+        model.amount(Amount);
+    }
+
+    void Deserialize(sbe::Balance& model)
+    {
+        model.getCurrency(Currency, sizeof(Currency));
+        Amount = model.amount();
     }
 
     // JSON serialization
@@ -426,6 +464,33 @@ struct Account
         {
             Order order;
             order.Deserialize(value.orders(i));
+            Orders.emplace_back(order);
+        }
+    }
+
+    // SimpleBinaryEncoding serialization
+
+    void Serialize(sbe::Account& model)
+    {
+        model.id(Id);
+        model.putName(Name);
+        Wallet.Serialize(model.wallet());
+        auto orders = model.ordersCount((uint16_t)Orders.size());
+        for (auto& order : Orders)
+            order.Serialize(orders.next().order());
+    }
+
+    void Deserialize(sbe::Account& model)
+    {
+        Id = model.id();
+        Name = model.getNameAsString();
+        Wallet.Deserialize(model.wallet());
+        Orders.clear();
+        auto orders = model.orders();
+        for (int i = 0; i < orders.count(); ++i)
+        {
+            Order order;
+            order.Deserialize(orders.next().order());
             Orders.emplace_back(order);
         }
     }
