@@ -1517,7 +1517,7 @@ domain model the schema will be the following:
             <type name="volume" primitiveType="double"/>
         </composite>
         <composite name="Balance">
-        	<type name="currency" primitiveType="char" length="10" characterEncoding="UTF-8"/>
+            <type name="currency" primitiveType="char" length="10" characterEncoding="UTF-8"/>
             <type name="amount" primitiveType="double"/>
         </composite>
         <type name="AccountId" primitiveType="int32"/>
