@@ -2403,4 +2403,1371 @@ private:
     size_t _offset;
 };
 
+// Fast Binary Encoding base final model
+template <class TBuffer, typename T, typename TBase = T>
+class FinalModelBase
+{
+public:
+    FinalModelBase(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset) {}
+
+    // Get the allocation size
+    size_t fbe_allocation_size(T value) const noexcept { return fbe_size(); }
+
+    // Get the field offset
+    size_t fbe_offset() const noexcept { return _offset; }
+    // Set the field offset
+    size_t fbe_offset(size_t offset) const noexcept { return _offset = offset; }
+
+    // Get the final size
+    size_t fbe_size() const noexcept { return sizeof(TBase); }
+
+    // Shift the current field offset
+    void fbe_shift(size_t size) noexcept { _offset += size; }
+    // Unshift the current field offset
+    void fbe_unshift(size_t size) noexcept { _offset -= size; }
+
+    // Check if the value is valid
+    size_t verify() const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return std::numeric_limits<std::size_t>::max();
+
+        return fbe_size();
+    }
+
+    // Get the field value
+    size_t get(T& value) const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return 0;
+
+        value = (T)(*((const TBase*)(_buffer.data() + _buffer.offset() + fbe_offset())));
+        return fbe_size();
+    }
+
+    // Set the field value
+    size_t set(T value) noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return 0;
+
+        *((TBase*)(_buffer.data() + _buffer.offset() + fbe_offset())) = (TBase)value;
+        return fbe_size();
+    }
+
+private:
+    TBuffer& _buffer;
+    mutable size_t _offset;
+};
+
+// Fast Binary Encoding final model
+template <class TBuffer, typename T>
+class FinalModel : public FinalModelBase<TBuffer, T>
+{
+public:
+    using FinalModelBase<TBuffer, T>::FinalModelBase;
+};
+
+// Fast Binary Encoding final model bool specialization
+template <class TBuffer>
+class FinalModel<TBuffer, bool> : public FinalModelBase<TBuffer, bool, uint8_t>
+{
+public:
+    using FinalModelBase<TBuffer, bool, uint8_t>::FinalModelBase;
+};
+
+// Fast Binary Encoding final model char specialization
+template <class TBuffer>
+class FinalModel<TBuffer, char> : public FinalModelBase<TBuffer, char, uint8_t>
+{
+public:
+    using FinalModelBase<TBuffer, char, uint8_t>::FinalModelBase;
+};
+
+// Fast Binary Encoding final model wchar specialization
+template <class TBuffer>
+class FinalModel<TBuffer, wchar_t> : public FinalModelBase<TBuffer, wchar_t, uint32_t>
+{
+public:
+    using FinalModelBase<TBuffer, wchar_t, uint32_t>::FinalModelBase;
+};
+
+// Fast Binary Encoding final model decimal specialization
+template <class TBuffer>
+class FinalModel<TBuffer, decimal_t>
+{
+public:
+    FinalModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset) {}
+
+    // Get the allocation size
+    size_t fbe_allocation_size(decimal_t value) const noexcept { return fbe_size(); }
+
+    // Get the field offset
+    size_t fbe_offset() const noexcept { return _offset; }
+    // Set the field offset
+    size_t fbe_offset(size_t offset) const noexcept { return _offset = offset; }
+
+    // Get the final size
+    size_t fbe_size() const noexcept { return 16; }
+
+    // Shift the current field offset
+    void fbe_shift(size_t size) noexcept { _offset += size; }
+    // Unshift the current field offset
+    void fbe_unshift(size_t size) noexcept { _offset -= size; }
+
+    // Check if the decimal value is valid
+    size_t verify() const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return std::numeric_limits<std::size_t>::max();
+
+        return fbe_size();
+   }
+
+    // Get the decimal value
+    size_t get(decimal_t& value) const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return 0;
+
+        // Value taken via reverse engineering the double that corresponds to 2^64
+        const double ds2to64 = 1.8446744073709552e+019;
+
+        // Read decimal parts
+        uint64_t low = *((const uint64_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        uint32_t high = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 8));
+        uint32_t flags = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 12));
+
+        // Calculate decimal value
+        double dValue = ((double)low + (double)high * ds2to64) / pow(10.0, (uint8_t)(flags >> 16));
+        if (flags & 0x80000000)
+            dValue = -dValue;
+
+        value = dValue;
+        return fbe_size();
+    }
+
+    // Set the decimal value
+    size_t set(decimal_t value) noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return 0;
+
+        // The most we can scale by is 10^28, which is just slightly more
+        // than 2^93.  So a float with an exponent of -94 could just
+        // barely reach 0.5, but smaller exponents will always round to zero.
+        const uint32_t DBLBIAS = 1022;
+
+        // Get exponent value
+        double dValue = (double)value;
+        int32_t iExp = (int32_t)(((uint32_t)((*(uint64_t*)&dValue) >> 52) & 0x7FFu) - DBLBIAS);
+        if ((iExp < -94) || (iExp > 96))
+        {
+            // Value too big for .NET Decimal (exponent is limited to [-94, 96])
+            memset((uint8_t*)(_buffer.data() + _buffer.offset() + fbe_offset()), 0, 16);
+            return fbe_size();
+        }
+
+        uint32_t flags = 0;
+        if (dValue < 0)
+        {
+            dValue = -dValue;
+            flags = 0x80000000;
+        }
+
+        // Round the input to a 15-digit integer.  The R8 format has
+        // only 15 digits of precision, and we want to keep garbage digits
+        // out of the Decimal were making.
+
+        // Calculate max power of 10 input value could have by multiplying
+        // the exponent by log10(2).  Using scaled integer multiplcation,
+        // log10(2) * 2 ^ 16 = .30103 * 65536 = 19728.3.
+        int32_t iPower = 14 - ((iExp * 19728) >> 16);
+
+        // iPower is between -14 and 43
+        if (iPower >= 0)
+        {
+            // We have less than 15 digits, scale input up.
+            if (iPower > 28)
+                iPower = 28;
+
+            dValue *= pow(10.0, iPower);
+        }
+        else
+        {
+            if ((iPower != -1) || (dValue >= 1E15))
+                dValue /= pow(10.0, -iPower);
+            else
+                iPower = 0; // didn't scale it
+        }
+
+        assert(dValue < 1E15);
+        if ((dValue < 1E14) && (iPower < 28))
+        {
+            dValue *= 10;
+            iPower++;
+            assert(dValue >= 1E14);
+        }
+
+        // Round to int64
+        uint64_t ulMant;
+        ulMant = (uint64_t)(int64_t)dValue;
+        dValue -= (int64_t)ulMant; // difference between input & integer
+        if ((dValue > 0.5) || ((dValue == 0.5) && ((ulMant & 1) != 0)))
+            ulMant++;
+
+        if (ulMant == 0)
+        {
+            // Mantissa is 0
+            memset((uint8_t*)(_buffer.data() + _buffer.offset() + fbe_offset()), 0, 16);
+            return fbe_size();
+        }
+
+        if (iPower < 0)
+        {
+            // Add -iPower factors of 10, -iPower <= (29 - 15) = 14
+            iPower = -iPower;
+            if (iPower < 10)
+            {
+                double pow10 = (double)powl(10.0, iPower);
+                uint64_t low64 = uint32x32((uint32_t)ulMant, (uint32_t)pow10);
+                uint64_t high64 = uint32x32((uint32_t)(ulMant >> 32), (uint32_t)pow10);
+                *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = (uint32_t)low64;
+                high64 += low64 >> 32;
+                *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 4)) = (uint32_t)high64;
+                high64 >>= 32;
+                *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 8)) = (uint32_t)high64;
+            }
+            else
+            {
+                // Have a big power of 10.
+                assert(iPower <= 14);
+                uint64_t low64;
+                uint32_t high32;
+                uint64x64(ulMant, (uint64_t)pow(10.0, iPower), low64, high32);
+                *((uint64_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = low64;
+                *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 8)) = high32;
+            }
+        }
+        else
+        {
+            // Factor out powers of 10 to reduce the scale, if possible.
+            // The maximum number we could factor out would be 14.  This
+            // comes from the fact we have a 15-digit number, and the
+            // MSD must be non-zero -- but the lower 14 digits could be
+            // zero.  Note also the scale factor is never negative, so
+            // we can't scale by any more than the power we used to
+            // get the integer.
+            int lmax = iPower;
+            if (lmax > 14)
+                lmax = 14;
+
+            if ((((uint8_t)ulMant) == 0) && (lmax >= 8))
+            {
+                const uint32_t den = 100000000;
+                uint64_t div = ulMant / den;
+                if ((uint32_t)ulMant == (uint32_t)(div * den))
+                {
+                    ulMant = div;
+                    iPower -= 8;
+                    lmax -= 8;
+                }
+            }
+
+            if ((((uint32_t)ulMant & 0xF) == 0) && (lmax >= 4))
+            {
+                const uint32_t den = 10000;
+                uint64_t div = ulMant / den;
+                if ((uint32_t)ulMant == (uint32_t)(div * den))
+                {
+                    ulMant = div;
+                    iPower -= 4;
+                    lmax -= 4;
+                }
+            }
+
+            if ((((uint32_t)ulMant & 3) == 0) && (lmax >= 2))
+            {
+                const uint32_t den = 100;
+                uint64_t div = ulMant / den;
+                if ((uint32_t)ulMant == (uint32_t)(div * den))
+                {
+                    ulMant = div;
+                    iPower -= 2;
+                    lmax -= 2;
+                }
+            }
+
+            if ((((uint32_t)ulMant & 1) == 0) && (lmax >= 1))
+            {
+                const uint32_t den = 10;
+                uint64_t div = ulMant / den;
+                if ((uint32_t)ulMant == (uint32_t)(div * den))
+                {
+                    ulMant = div;
+                    iPower--;
+                }
+            }
+
+            flags |= (uint32_t)iPower << 16;
+
+            *((uint64_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = ulMant;
+            *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 8)) = 0;
+        }
+
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset() + 12)) = flags;
+        return fbe_size();
+    }
+
+private:
+    TBuffer& _buffer;
+    mutable size_t _offset;
+
+    static uint64_t uint32x32(uint32_t a, uint32_t b) noexcept
+    {
+        return (uint64_t)a * (uint64_t)b;
+    }
+
+    static void uint64x64(uint64_t a, uint64_t b, uint64_t& low64, uint32_t& high32) noexcept
+    {
+        uint64_t low = uint32x32((uint32_t)a, (uint32_t)b);
+        uint64_t mid = uint32x32((uint32_t)a, (uint32_t)(b >> 32));
+        uint64_t high = uint32x32((uint32_t)(a >> 32), (uint32_t)(b >> 32));
+        high += (mid >> 32);
+        low += (mid <<= 32);
+        // Test for carry
+        if (low < mid)
+            high++;
+
+        mid = uint32x32((uint32_t)(a >> 32), (uint32_t)b);
+        high += (mid >> 32);
+        low += (mid <<= 32);
+        // Test for carry
+        if (low < mid)
+            high++;
+
+        if (high > 0xFFFFFFFFu)
+        {
+            low64 = 0;
+            high32 = 0;
+        }
+        low64 = low;
+        high32 = (uint32_t)high;
+    }
+};
+
+// Fast Binary Encoding final model UUID specialization
+template <class TBuffer>
+class FinalModel<TBuffer, uuid_t>
+{
+public:
+    FinalModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset) {}
+
+    // Get the allocation size
+    size_t fbe_allocation_size(uuid_t value) const noexcept { return fbe_size(); }
+
+    // Get the field offset
+    size_t fbe_offset() const noexcept { return _offset; }
+    // Set the field offset
+    size_t fbe_offset(size_t offset) const noexcept { return _offset = offset; }
+
+    // Get the final size
+    size_t fbe_size() const noexcept { return 16; }
+
+    // Shift the current field offset
+    void fbe_shift(size_t size) noexcept { _offset += size; }
+    // Unshift the current field offset
+    void fbe_unshift(size_t size) noexcept { _offset -= size; }
+
+    // Check if the UUID value is valid
+    size_t verify() const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return std::numeric_limits<std::size_t>::max();
+
+        return fbe_size();
+   }
+
+    // Get the UUID value
+    size_t get(uuid_t& value) const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return 0;
+
+        std::memcpy(value.data().data(), (const uint8_t*)(_buffer.data() + _buffer.offset() + fbe_offset()), fbe_size());
+        return fbe_size();
+    }
+
+    // Set the UUID value
+    size_t set(uuid_t value) noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
+            return 0;
+
+        std::memcpy((uint8_t*)(_buffer.data() + _buffer.offset() + fbe_offset()), value.data().data(), fbe_size());
+        return fbe_size();
+    }
+
+private:
+    TBuffer& _buffer;
+    mutable size_t _offset;
+};
+
+// Fast Binary Encoding final model bytes specialization
+template <class TBuffer>
+class FinalModel<TBuffer, buffer_t>
+{
+public:
+    FinalModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset) {}
+
+    // Get the allocation size
+    size_t fbe_allocation_size(const void* data, size_t size) const noexcept { return 4 + size; }
+    template <size_t N>
+    size_t fbe_allocation_size(const uint8_t (&data)[N]) const noexcept { return 4 + N; }
+    template <size_t N>
+    size_t fbe_allocation_size(const std::array<uint8_t, N>& data) const noexcept { return 4 + N; }
+    size_t fbe_allocation_size(const std::vector<uint8_t>& value) const noexcept { return 4 + value.size(); }
+    size_t fbe_allocation_size(const buffer_t& value) const noexcept { return 4 + value.size(); }
+
+    // Get the field offset
+    size_t fbe_offset() const noexcept { return _offset; }
+    // Set the field offset
+    size_t fbe_offset(size_t offset) const noexcept { return _offset = offset; }
+
+    // Shift the current field offset
+    void fbe_shift(size_t size) noexcept { _offset += size; }
+    // Unshift the current field offset
+    void fbe_unshift(size_t size) noexcept { _offset -= size; }
+
+    // Check if the bytes value is valid
+    size_t verify() const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return std::numeric_limits<std::size_t>::max();
+
+        uint32_t fbe_bytes_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if ((_buffer.offset() + fbe_offset() + 4 + fbe_bytes_size) > _buffer.size())
+            return std::numeric_limits<std::size_t>::max();
+
+        return 4 + fbe_bytes_size;
+    }
+
+    // Get the bytes value
+    size_t get(void* data, size_t size) const noexcept
+    {
+        assert((data != nullptr) && "Invalid buffer!");
+        if (data == nullptr)
+            return 0;
+
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        uint32_t fbe_bytes_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        assert(((_buffer.offset() + fbe_offset() + 4 + fbe_bytes_size) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4 + fbe_bytes_size) > _buffer.size())
+            return 4;
+
+        size_t result = std::min(size, (size_t)fbe_bytes_size);
+        memcpy(data, (const char*)(_buffer.data() + _buffer.offset() + fbe_offset() + 4), result);
+        return 4 + fbe_bytes_size;
+    }
+
+    // Get the bytes value
+    template <size_t N>
+    size_t get(uint8_t (&data)[N]) const noexcept { return get(data, N); }
+
+    // Get the bytes value
+    template <size_t N>
+    size_t get(std::array<uint8_t, N>& data) const noexcept { return get(data.data(), data.size()); }
+
+    // Get the bytes value
+    size_t get(std::vector<uint8_t>& value) const noexcept
+    {
+        value.clear();
+
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        uint32_t fbe_bytes_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        assert(((_buffer.offset() + fbe_offset() + 4 + fbe_bytes_size) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4 + fbe_bytes_size) > _buffer.size())
+            return 4;
+
+        const char* fbe_bytes = (const char*)(_buffer.data() + _buffer.offset() + fbe_offset() + 4);
+        value.assign(fbe_bytes, fbe_bytes + fbe_bytes_size);
+        return 4 + fbe_bytes_size;
+    }
+
+    // Get the bytes value
+    size_t get(buffer_t& value) const noexcept { return get(value.buffer()); }
+
+    // Set the bytes value
+    size_t set(const void* data, size_t size)
+    {
+        assert((data != nullptr) && "Invalid buffer!");
+        if (data == nullptr)
+            return 0;
+
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        uint32_t fbe_bytes_size = (uint32_t)size;
+        assert(((_buffer.offset() + fbe_offset() + 4 + fbe_bytes_size) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4 + fbe_bytes_size) > _buffer.size())
+            return 4;
+
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_bytes_size;
+
+        memcpy((char*)(_buffer.data() + _buffer.offset() + fbe_offset() + 4), data, fbe_bytes_size);
+        return 4 + fbe_bytes_size;
+    }
+
+    // Set the bytes value
+    template <size_t N>
+    size_t set(const uint8_t (&data)[N]) { return set(data, N); }
+
+    // Set the bytes value
+    template <size_t N>
+    size_t set(const std::array<uint8_t, N>& data) { return set(data.data(), data.size()); }
+
+    // Set the bytes value
+    size_t set(const std::vector<uint8_t>& value) { return set(value.data(), value.size()); }
+
+    // Set the bytes value
+    size_t set(const buffer_t& value) { return set(value.buffer()); }
+
+private:
+    TBuffer& _buffer;
+    mutable size_t _offset;
+};
+
+// Fast Binary Encoding final model string specialization
+template <class TBuffer>
+class FinalModel<TBuffer, std::string>
+{
+public:
+    FinalModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset) {}
+
+    // Get the allocation size
+    size_t fbe_allocation_size(const char* data, size_t size) const noexcept { return 4 + size; }
+    template <size_t N>
+    size_t fbe_allocation_size(const char (&data)[N]) const noexcept { return 4 + N; }
+    template <size_t N>
+    size_t fbe_allocation_size(const std::array<char, N>& data) const noexcept { return 4 + N; }
+    size_t fbe_allocation_size(const std::string& value) const noexcept { return 4 + value.size(); }
+
+    // Get the field offset
+    size_t fbe_offset() const noexcept { return _offset; }
+    // Set the field offset
+    size_t fbe_offset(size_t offset) const noexcept { return _offset = offset; }
+
+    // Shift the current field offset
+    void fbe_shift(size_t size) noexcept { _offset += size; }
+    // Unshift the current field offset
+    void fbe_unshift(size_t size) noexcept { _offset -= size; }
+
+    // Check if the string value is valid
+    size_t verify() const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return std::numeric_limits<std::size_t>::max();
+
+        uint32_t fbe_string_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if ((_buffer.offset() + fbe_offset() + 4 + fbe_string_size) > _buffer.size())
+            return std::numeric_limits<std::size_t>::max();
+
+        return 4 + fbe_string_size;
+    }
+
+    // Get the string value
+    size_t get(char* data, size_t size) const noexcept
+    {
+        assert((data != nullptr) && "Invalid buffer!");
+        if (data == nullptr)
+            return 0;
+
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        uint32_t fbe_string_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        assert(((_buffer.offset() + fbe_offset() + 4 + fbe_string_size) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4 + fbe_string_size) > _buffer.size())
+            return 4;
+
+        size_t result = std::min(size, (size_t)fbe_string_size);
+        memcpy(data, (const char*)(_buffer.data() + _buffer.offset() + fbe_offset() + 4), result);
+        return 4 + fbe_string_size;
+    }
+
+    // Get the string value
+    template <size_t N>
+    size_t get(char (&data)[N]) const noexcept { return get(data, N); }
+
+    // Get the string value
+    template <size_t N>
+    size_t get(std::array<char, N>& data) const noexcept { return get(data.data(), data.size()); }
+
+    // Get the string value
+    size_t get(std::string& value) const noexcept
+    {
+        value.clear();
+
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        uint32_t fbe_string_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        assert(((_buffer.offset() + fbe_offset() + 4 + fbe_string_size) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4 + fbe_string_size) > _buffer.size())
+            return 4;
+
+        value.assign((const char*)(_buffer.data() + _buffer.offset() + fbe_offset() + 4), fbe_string_size);
+        return 4 + fbe_string_size;
+    }
+
+    // Set the string value
+    size_t set(const char* data, size_t size)
+    {
+        assert((data != nullptr) && "Invalid buffer!");
+        if (data == nullptr)
+            return 0;
+
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        uint32_t fbe_string_size = (uint32_t)size;
+        assert(((_buffer.offset() + fbe_offset() + 4 + fbe_string_size) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4 + fbe_string_size) > _buffer.size())
+            return 4;
+
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_string_size;
+
+        memcpy((char*)(_buffer.data() + _buffer.offset() + fbe_offset() + 4), data, fbe_string_size);
+        return 4 + fbe_string_size;
+    }
+
+    // Set the string value
+    template <size_t N>
+    size_t set(const char (&data)[N]) { return set(data, N); }
+
+    // Set the string value
+    template <size_t N>
+    size_t set(const std::array<char, N>& data) { return set(data.data(), data.size()); }
+
+    // Set the string value
+    size_t set(const std::string& value)
+    {
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        uint32_t fbe_string_size = (uint32_t)value.size();
+        assert(((_buffer.offset() + fbe_offset() + 4 + fbe_string_size) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4 + fbe_string_size) > _buffer.size())
+            return 4;
+
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_string_size;
+
+        memcpy((char*)(_buffer.data() + _buffer.offset() + fbe_offset() + 4), value.data(), fbe_string_size);
+        return 4 + fbe_string_size;
+    }
+
+private:
+    TBuffer& _buffer;
+    mutable size_t _offset;
+};
+
+// Fast Binary Encoding final model optional specialization
+template <class TBuffer, typename T>
+class FinalModel<TBuffer, std::optional<T>>
+{
+public:
+    FinalModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset), value(buffer, 0) {}
+
+    // Get the allocation size
+    size_t fbe_allocation_size(const std::optional<T>& opt) const noexcept { return 1 + (opt.has_value() ? value.fbe_allocation_size(opt.value()) : 0); }
+
+    // Get the field offset
+    size_t fbe_offset() const noexcept { return _offset; }
+    // Set the field offset
+    size_t fbe_offset(size_t offset) const noexcept { return _offset = offset; }
+
+    // Shift the current field offset
+    void fbe_shift(size_t size) noexcept { _offset += size; }
+    // Unshift the current field offset
+    void fbe_unshift(size_t size) noexcept { _offset -= size; }
+
+    //! Is the value present?
+    explicit operator bool() const noexcept { return has_value(); }
+
+    // Checks if the object contains a value
+    bool has_value() const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + 1) > _buffer.size())
+            return false;
+
+        uint8_t fbe_has_value = *((const uint8_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        return (fbe_has_value != 0);
+    }
+
+    // Check if the optional value is valid
+    size_t verify() const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + 1) > _buffer.size())
+            return std::numeric_limits<std::size_t>::max();
+
+        uint8_t fbe_has_value = *((const uint8_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if (fbe_has_value == 0)
+            return 1;
+
+        _buffer.shift(fbe_offset() + 1);
+        size_t fbe_result = value.verify();
+        _buffer.unshift(fbe_offset() + 1);
+        return 1 + fbe_result;
+    }
+
+    // Get the optional value
+    size_t get(std::optional<T>& opt) const noexcept
+    {
+        opt = std::nullopt;
+
+        assert(((_buffer.offset() + fbe_offset() + 1) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 1) > _buffer.size())
+            return 0;
+
+        if (!has_value())
+            return 1;
+
+        _buffer.shift(fbe_offset() + 1);
+        T temp = T();
+        size_t size = value.get(temp);
+        opt.emplace(temp);
+        _buffer.unshift(fbe_offset() + 1);
+        return 1 + size;
+    }
+
+    // Set the optional value
+    size_t set(const std::optional<T>& opt)
+    {
+        assert(((_buffer.offset() + fbe_offset() + 1) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 1) > _buffer.size())
+            return 0;
+
+        uint8_t fbe_has_value = opt.has_value() ? 1 : 0;
+        *((uint8_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_has_value;
+        if (fbe_has_value == 0)
+            return 1;
+
+        _buffer.shift(fbe_offset() + 1);
+        size_t size = 0;
+        if (opt.has_value())
+            size = value.set(opt.value());
+        _buffer.unshift(fbe_offset() + 1);
+        return 1 + size;
+    }
+
+private:
+    TBuffer& _buffer;
+    mutable size_t _offset;
+
+public:
+    // Base final model value
+    FinalModel<TBuffer, T> value;
+};
+
+// Fast Binary Encoding final model array
+template <class TBuffer, typename T, size_t N>
+class FinalModelArray
+{
+public:
+    FinalModelArray(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset) {}
+
+    // Get the allocation size
+    template <size_t S>
+    size_t fbe_allocation_size(const T (&values)[S]) const noexcept
+    {
+        size_t size = 0;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset());
+        for (size_t i = 0; (i < S) && (i < N); ++i)
+            size += fbe_model.fbe_allocation_size(values[i]);
+        return size;
+    }
+    template <size_t S>
+    size_t fbe_allocation_size(const std::array<T, S>& values) const noexcept
+    {
+        size_t size = 0;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset());
+        for (size_t i = 0; (i < S) && (i < N); ++i)
+            size += fbe_model.fbe_allocation_size(values[i]);
+        return size;
+    }
+    size_t fbe_allocation_size(const std::vector<T>& values) const noexcept
+    {
+        size_t size = 0;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset());
+        for (size_t i = 0; (i < values.size()) && (i < N); ++i)
+            size += fbe_model.fbe_allocation_size(values[i]);
+        return size;
+    }
+
+    // Get the field offset
+    size_t fbe_offset() const noexcept { return _offset; }
+    // Set the field offset
+    size_t fbe_offset(size_t offset) const noexcept { return _offset = offset; }
+
+    // Shift the current field offset
+    void fbe_shift(size_t size) noexcept { _offset += size; }
+    // Unshift the current field offset
+    void fbe_unshift(size_t size) noexcept { _offset -= size; }
+
+    // Check if the array is valid
+    size_t verify() const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset()) > _buffer.size())
+            return std::numeric_limits<std::size_t>::max();
+
+        size_t size = 0;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset());
+        for (size_t i = N; i-- > 0;)
+        {
+            size_t offset = fbe_model.verify();
+            if (offset == std::numeric_limits<std::size_t>::max())
+                return std::numeric_limits<std::size_t>::max();
+            fbe_model.fbe_shift(offset);
+            size += offset;
+        }
+        return size;
+    }
+
+    // Get the array as C-array
+    template <size_t S>
+    size_t get(T (&values)[S]) const noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset()) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset()) > _buffer.size())
+            return 0;
+
+        size_t size = 0;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset());
+        for (size_t i = 0; (i < S) && (i < N); ++i)
+        {
+            size_t offset = fbe_model.get(values[i]);
+            fbe_model.fbe_shift(offset);
+            size += offset;
+        }
+        return size;
+    }
+
+    // Get the array as std::array
+    template <size_t S>
+    size_t get(std::array<T, S>& values) const noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset()) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset()) > _buffer.size())
+            return 0;
+
+        size_t size = 0;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset());
+        for (size_t i = 0; (i < S) && (i < N); ++i)
+        {
+            size_t offset = fbe_model.get(values[i]);
+            fbe_model.fbe_shift(offset);
+            size += offset;
+        }
+        return size;
+    }
+
+    // Get the array as std::vector
+    size_t get(std::vector<T>& values) const noexcept
+    {
+        values.clear();
+
+        assert(((_buffer.offset() + fbe_offset()) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset()) > _buffer.size())
+            return 0;
+
+        values.reserve(N);
+
+        size_t size = 0;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset());
+        for (size_t i = N; i-- > 0;)
+        {
+            T value = T();
+            size_t offset = fbe_model.get(value);
+            values.emplace_back(value);
+            fbe_model.fbe_shift(offset);
+            size += offset;
+        }
+        return size;
+    }
+
+    // Set the array as C-array
+    template <size_t S>
+    size_t set(const T (&values)[S]) noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset()) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset()) > _buffer.size())
+            return 0;
+
+        size_t size = 0;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset());
+        for (size_t i = 0; (i < S) && (i < N); ++i)
+        {
+            size_t offset = fbe_model.set(values[i]);
+            fbe_model.fbe_shift(offset);
+            size += offset;
+        }
+        return size;
+    }
+
+    // Set the array as std::array
+    template <size_t S>
+    size_t set(const std::array<T, S>& values) noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset()) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset()) > _buffer.size())
+            return 0;
+
+        size_t size = 0;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset());
+        for (size_t i = 0; (i < S) && (i < N); ++i)
+        {
+            size_t offset = fbe_model.set(values[i]);
+            fbe_model.fbe_shift(offset);
+            size += offset;
+        }
+        return size;
+    }
+
+    // Set the array as std::vector
+    size_t set(const std::vector<T>& values) noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset()) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset()) > _buffer.size())
+            return 0;
+
+        size_t size = 0;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset());
+        for (size_t i = 0; (i < values.size()) && (i < N); ++i)
+        {
+            size_t offset = fbe_model.set(values[i]);
+            fbe_model.fbe_shift(offset);
+            size += offset;
+        }
+        return size;
+    }
+
+private:
+    TBuffer& _buffer;
+    mutable size_t _offset;
+};
+
+// Fast Binary Encoding final model vector
+template <class TBuffer, typename T>
+class FinalModelVector
+{
+public:
+    FinalModelVector(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset) {}
+
+    // Get the allocation size
+    size_t fbe_allocation_size(const std::vector<T>& values) const noexcept
+    {
+        size_t size = 4;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset() + 4);
+        for (const auto& value : values)
+            size += fbe_model.fbe_allocation_size(value);
+        return size;
+    }
+    size_t fbe_allocation_size(const std::list<T>& values) const noexcept
+    {
+        size_t size = 4;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset() + 4);
+        for (const auto& value : values)
+            size += fbe_model.fbe_allocation_size(value);
+        return size;
+    }
+    size_t fbe_allocation_size(const std::set<T>& values) const noexcept
+    {
+        size_t size = 4;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset() + 4);
+        for (const auto& value : values)
+            size += fbe_model.fbe_allocation_size(value);
+        return size;
+    }
+
+    // Get the field offset
+    size_t fbe_offset() const noexcept { return _offset; }
+    // Set the field offset
+    size_t fbe_offset(size_t offset) const noexcept { return _offset = offset; }
+
+    // Shift the current field offset
+    void fbe_shift(size_t size) noexcept { _offset += size; }
+    // Unshift the current field offset
+    void fbe_unshift(size_t size) noexcept { _offset -= size; }
+
+    // Check if the vector is valid
+    size_t verify() const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return std::numeric_limits<std::size_t>::max();
+
+        uint32_t fbe_vector_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+
+        size_t size = 4;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset() + 4);
+        for (size_t i = fbe_vector_size; i-- > 0;)
+        {
+            size_t offset = fbe_model.verify();
+            if (offset == std::numeric_limits<std::size_t>::max())
+                return std::numeric_limits<std::size_t>::max();
+            fbe_model.fbe_shift(offset);
+            size += offset;
+        }
+        return size;
+    }
+
+    // Get the vector as std::vector
+    size_t get(std::vector<T>& values) const noexcept
+    {
+        values.clear();
+
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        size_t fbe_vector_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if (fbe_vector_size == 0)
+            return 4;
+
+        values.reserve(fbe_vector_size);
+
+        size_t size = 4;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset() + 4);
+        for (size_t i = fbe_vector_size; i-- > 0;)
+        {
+            T value = T();
+            size_t offset = fbe_model.get(value);
+            values.emplace_back(value);
+            fbe_model.fbe_shift(offset);
+            size += offset;
+        }
+        return size;
+    }
+
+    // Get the vector as std::list
+    size_t get(std::list<T>& values) const noexcept
+    {
+        values.clear();
+
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        size_t fbe_vector_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if (fbe_vector_size == 0)
+            return 4;
+
+        size_t size = 4;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset() + 4);
+        for (size_t i = fbe_vector_size; i-- > 0;)
+        {
+            T value = T();
+            size_t offset = fbe_model.get(value);
+            values.emplace_back(value);
+            fbe_model.fbe_shift(offset);
+            size += offset;
+        }
+        return size;
+    }
+
+    // Get the vector as std::set
+    size_t get(std::set<T>& values) const noexcept
+    {
+        values.clear();
+
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        size_t fbe_vector_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if (fbe_vector_size == 0)
+            return 4;
+
+        size_t size = 4;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset() + 4);
+        for (size_t i = fbe_vector_size; i-- > 0;)
+        {
+            T value = T();
+            size_t offset = fbe_model.get(value);
+            values.emplace(value);
+            fbe_model.fbe_shift(offset);
+            size += offset;
+        }
+        return size;
+    }
+
+    // Set the vector as std::vector
+    size_t set(const std::vector<T>& values) noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = (uint32_t)values.size();
+
+        size_t size = 4;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset() + 4);
+        for (const auto& value : values)
+        {
+            size_t offset = fbe_model.set(value);
+            fbe_model.fbe_shift(offset);
+            size += offset;
+        }
+        return size;
+    }
+
+    // Set the vector as std::list
+    size_t set(const std::list<T>& values) noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = (uint32_t)values.size();
+
+        size_t size = 4;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset() + 4);
+        for (const auto& value : values)
+        {
+            size_t offset = fbe_model.set(value);
+            fbe_model.fbe_shift(offset);
+            size += offset;
+        }
+        return size;
+    }
+
+    // Set the vector as std::set
+    size_t set(const std::set<T>& values) noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = (uint32_t)values.size();
+
+        size_t size = 4;
+        FinalModel<TBuffer, T> fbe_model(_buffer, fbe_offset() + 4);
+        for (const auto& value : values)
+        {
+            size_t offset = fbe_model.set(value);
+            fbe_model.fbe_shift(offset);
+            size += offset;
+        }
+        return size;
+    }
+
+private:
+    TBuffer& _buffer;
+    mutable size_t _offset;
+};
+
+// Fast Binary Encoding final model map
+template <class TBuffer, typename TKey, typename TValue>
+class FinalModelMap
+{
+public:
+    FinalModelMap(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset) {}
+
+    // Get the allocation size
+    size_t fbe_allocation_size(const std::map<TKey, TValue>& values) const noexcept
+    {
+        size_t size = 4;
+        FinalModel<TBuffer, TKey> fbe_model_key(_buffer, fbe_offset() + 4);
+        FinalModel<TBuffer, TValue> fbe_model_value(_buffer, fbe_offset() + 4);
+        for (const auto& value : values)
+        {
+            size += fbe_model_key.fbe_allocation_size(value.first);
+            size += fbe_model_value.fbe_allocation_size(value.second);
+        }
+        return size;
+    }
+    size_t fbe_allocation_size(const std::unordered_map<TKey, TValue>& values) const noexcept
+    {
+        size_t size = 4;
+        FinalModel<TBuffer, TKey> fbe_model_key(_buffer, fbe_offset() + 4);
+        FinalModel<TBuffer, TValue> fbe_model_value(_buffer, fbe_offset() + 4);
+        for (const auto& value : values)
+        {
+            size += fbe_model_key.fbe_allocation_size(value.first);
+            size += fbe_model_value.fbe_allocation_size(value.second);
+        }
+        return size;
+    }
+
+    // Get the field offset
+    size_t fbe_offset() const noexcept { return _offset; }
+    // Set the field offset
+    size_t fbe_offset(size_t offset) const noexcept { return _offset = offset; }
+
+    // Shift the current field offset
+    void fbe_shift(size_t size) noexcept { _offset += size; }
+    // Unshift the current field offset
+    void fbe_unshift(size_t size) noexcept { _offset -= size; }
+
+    // Check if the map is valid
+    size_t verify() const noexcept
+    {
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return std::numeric_limits<std::size_t>::max();
+
+        uint32_t fbe_map_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+
+        size_t size = 4;
+        FinalModel<TBuffer, TKey> fbe_model_key(_buffer, fbe_offset() + 4);
+        FinalModel<TBuffer, TValue> fbe_model_value(_buffer, fbe_offset() + 4);
+        for (size_t i = fbe_map_size; i-- > 0;)
+        {
+            size_t offset_key = fbe_model_key.verify();
+            if (offset_key == std::numeric_limits<std::size_t>::max())
+                return std::numeric_limits<std::size_t>::max();
+            fbe_model_key.fbe_shift(offset_key);
+            fbe_model_value.fbe_shift(offset_key);
+            size += offset_key;
+            size_t offset_value = fbe_model_value.verify();
+            if (offset_value == std::numeric_limits<std::size_t>::max())
+                return std::numeric_limits<std::size_t>::max();
+            fbe_model_key.fbe_shift(offset_value);
+            fbe_model_value.fbe_shift(offset_value);
+            size += offset_value;
+        }
+        return size;
+    }
+
+    // Get the map as std::map
+    size_t get(std::map<TKey, TValue>& values) const noexcept
+    {
+        values.clear();
+
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        size_t fbe_map_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if (fbe_map_size == 0)
+            return 4;
+
+        size_t size = 4;
+        FinalModel<TBuffer, TKey> fbe_model_key(_buffer, fbe_offset() + 4);
+        FinalModel<TBuffer, TValue> fbe_model_value(_buffer, fbe_offset() + 4);
+        for (size_t i = fbe_map_size; i-- > 0;)
+        {
+            TKey key;
+            TValue value;
+            size_t offset_key = fbe_model_key.get(key);
+            fbe_model_key.fbe_shift(offset_key);
+            fbe_model_value.fbe_shift(offset_key);
+            size_t offset_value = fbe_model_value.get(value);
+            fbe_model_key.fbe_shift(offset_value);
+            fbe_model_value.fbe_shift(offset_value);
+            values.emplace(key, value);
+            size += offset_key + offset_value;
+        }
+        return size;
+    }
+
+    // Get the map as std::unordered_map
+    size_t get(std::unordered_map<TKey, TValue>& values) const noexcept
+    {
+        values.clear();
+
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        size_t fbe_map_size = *((const uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset()));
+        if (fbe_map_size == 0)
+            return 4;
+
+        size_t size = 4;
+        FinalModel<TBuffer, TKey> fbe_model_key(_buffer, fbe_offset() + 4);
+        FinalModel<TBuffer, TValue> fbe_model_value(_buffer, fbe_offset() + 4);
+        for (size_t i = fbe_map_size; i-- > 0;)
+        {
+            TKey key;
+            TValue value;
+            size_t offset_key = fbe_model_key.get(key);
+            fbe_model_key.fbe_shift(offset_key);
+            fbe_model_value.fbe_shift(offset_key);
+            size_t offset_value = fbe_model_value.get(value);
+            fbe_model_key.fbe_shift(offset_value);
+            fbe_model_value.fbe_shift(offset_value);
+            values.emplace(key, value);
+            size += offset_key + offset_value;
+        }
+        return size;
+    }
+
+    // Set the map as std::map
+    size_t set(const std::map<TKey, TValue>& values) noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = (uint32_t)values.size();
+
+        size_t size = 4;
+        FinalModel<TBuffer, TKey> fbe_model_key(_buffer, fbe_offset() + 4);
+        FinalModel<TBuffer, TValue> fbe_model_value(_buffer, fbe_offset() + 4);
+        for (const auto& value : values)
+        {
+            size_t offset_key = fbe_model_key.set(value.first);
+            fbe_model_key.fbe_shift(offset_key);
+            fbe_model_value.fbe_shift(offset_key);
+            size_t offset_value = fbe_model_value.set(value.second);
+            fbe_model_key.fbe_shift(offset_value);
+            fbe_model_value.fbe_shift(offset_value);
+            size += offset_key + offset_value;
+        }
+        return size;
+    }
+
+    // Set the map as std::unordered_map
+    size_t set(const std::unordered_map<TKey, TValue>& values) noexcept
+    {
+        assert(((_buffer.offset() + fbe_offset() + 4) <= _buffer.size()) && "Model is broken!");
+        if ((_buffer.offset() + fbe_offset() + 4) > _buffer.size())
+            return 0;
+
+        *((uint32_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = (uint32_t)values.size();
+
+        size_t size = 4;
+        FinalModel<TBuffer, TKey> fbe_model_key(_buffer, fbe_offset() + 4);
+        FinalModel<TBuffer, TValue> fbe_model_value(_buffer, fbe_offset() + 4);
+        for (const auto& value : values)
+        {
+            size_t offset_key = fbe_model_key.set(value.first);
+            fbe_model_key.fbe_shift(offset_key);
+            fbe_model_value.fbe_shift(offset_key);
+            size_t offset_value = fbe_model_value.set(value.second);
+            fbe_model_key.fbe_shift(offset_value);
+            fbe_model_value.fbe_shift(offset_value);
+            size += offset_key + offset_value;
+        }
+        return size;
+    }
+
+private:
+    TBuffer& _buffer;
+    mutable size_t _offset;
+};
+
 } // namespace FBE
