@@ -83,7 +83,7 @@ Performance comparison based on the [Domain model](#domain-model):
 
 Optional:
 * [clang](https://clang.llvm.org)
-* [clion](https://www.jetbrains.com/clion)
+* [CLion](https://www.jetbrains.com/clion)
 * [Cygwin](https://cygwin.com)
 * [MinGW](https://mingw-w64.org/doku.php)
 * [Visual Studio](https://www.visualstudio.com)
