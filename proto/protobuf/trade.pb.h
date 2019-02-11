@@ -117,7 +117,8 @@ inline bool OrderType_Parse(
 }
 // ===================================================================
 
-class Order : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Trade.protobuf.Order) */ {
+class Order final :
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Trade.protobuf.Order) */ {
  public:
   Order();
   virtual ~Order();
@@ -271,7 +272,8 @@ class Order : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
 };
 // -------------------------------------------------------------------
 
-class Balance : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Trade.protobuf.Balance) */ {
+class Balance final :
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Trade.protobuf.Balance) */ {
  public:
   Balance();
   virtual ~Balance();
@@ -397,7 +399,8 @@ class Balance : public ::google::protobuf::Message /* @@protoc_insertion_point(c
 };
 // -------------------------------------------------------------------
 
-class Account : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Trade.protobuf.Account) */ {
+class Account final :
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Trade.protobuf.Account) */ {
  public:
   Account();
   virtual ~Account();

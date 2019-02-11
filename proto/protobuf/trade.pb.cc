@@ -275,7 +275,7 @@ void Order::Clear() {
 const char* Order::_InternalParse(const char* begin, const char* end, void* object,
                   ::google::protobuf::internal::ParseContext* ctx) {
   auto msg = static_cast<Order*>(object);
-  ::google::protobuf::uint32 size; (void)size;
+  ::google::protobuf::int32 size; (void)size;
   int depth; (void)depth;
   ::google::protobuf::uint32 tag;
   ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
@@ -287,68 +287,54 @@ const char* Order::_InternalParse(const char* begin, const char* end, void* obje
       // int32 id = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
-        ::google::protobuf::uint64 val;
-        ptr = ::google::protobuf::io::Parse64(ptr, &val);
+        msg->set_id(::google::protobuf::internal::ReadVarint(&ptr));
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ::google::protobuf::int32 value = val;
-        msg->set_id(value);
         break;
       }
       // string symbol = 2;
       case 2: {
         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
-        ptr = ::google::protobuf::io::Parse32(ptr, &size);
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ctx->extra_parse_data().SetFieldName("Trade.protobuf.Order.symbol");
-        auto str = msg->mutable_symbol();
+        object = msg->mutable_symbol();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
-          object = str;
-          str->clear();
-          str->reserve(size);
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
-          goto len_delim_till_end;
+          goto string_till_end;
         }
         GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
-        ::google::protobuf::internal::InlineGreedyStringParser(str, ptr, size, ctx);
+        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
         ptr += size;
         break;
       }
       // .Trade.protobuf.OrderSide side = 3;
       case 3: {
         if (static_cast<::google::protobuf::uint8>(tag) != 24) goto handle_unusual;
-        ::google::protobuf::uint64 val;
-        ptr = ::google::protobuf::io::Parse64(ptr, &val);
+        ::google::protobuf::uint64 val = ::google::protobuf::internal::ReadVarint(&ptr);
+        msg->set_side(static_cast<::Trade::protobuf::OrderSide>(val));
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ::Trade::protobuf::OrderSide value = static_cast<::Trade::protobuf::OrderSide>(val);
-        msg->set_side(value);
         break;
       }
       // .Trade.protobuf.OrderType type = 4;
       case 4: {
         if (static_cast<::google::protobuf::uint8>(tag) != 32) goto handle_unusual;
-        ::google::protobuf::uint64 val;
-        ptr = ::google::protobuf::io::Parse64(ptr, &val);
+        ::google::protobuf::uint64 val = ::google::protobuf::internal::ReadVarint(&ptr);
+        msg->set_type(static_cast<::Trade::protobuf::OrderType>(val));
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ::Trade::protobuf::OrderType value = static_cast<::Trade::protobuf::OrderType>(val);
-        msg->set_type(value);
         break;
       }
       // double price = 5;
       case 5: {
         if (static_cast<::google::protobuf::uint8>(tag) != 41) goto handle_unusual;
-        double val;
-        ::std::memcpy(&val, ptr, 8);
-        ptr += 8;
-        msg->set_price(val);
+        msg->set_price(::google::protobuf::io::UnalignedLoad<double>(ptr));
+        ptr += sizeof(double);
         break;
       }
       // double volume = 6;
       case 6: {
         if (static_cast<::google::protobuf::uint8>(tag) != 49) goto handle_unusual;
-        double val;
-        ::std::memcpy(&val, ptr, 8);
-        ptr += 8;
-        msg->set_volume(val);
+        msg->set_volume(::google::protobuf::io::UnalignedLoad<double>(ptr));
+        ptr += sizeof(double);
         break;
       }
       default: {
@@ -366,6 +352,10 @@ const char* Order::_InternalParse(const char* begin, const char* end, void* obje
     }  // switch
   }  // while
   return ptr;
+string_till_end:
+  static_cast<::std::string*>(object)->clear();
+  static_cast<::std::string*>(object)->reserve(size);
+  goto len_delim_till_end;
 len_delim_till_end:
   return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
                                {parser_till_end, object}, size);
@@ -793,7 +783,7 @@ void Balance::Clear() {
 const char* Balance::_InternalParse(const char* begin, const char* end, void* object,
                   ::google::protobuf::internal::ParseContext* ctx) {
   auto msg = static_cast<Balance*>(object);
-  ::google::protobuf::uint32 size; (void)size;
+  ::google::protobuf::int32 size; (void)size;
   int depth; (void)depth;
   ::google::protobuf::uint32 tag;
   ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
@@ -805,29 +795,24 @@ const char* Balance::_InternalParse(const char* begin, const char* end, void* ob
       // string currency = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
-        ptr = ::google::protobuf::io::Parse32(ptr, &size);
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ctx->extra_parse_data().SetFieldName("Trade.protobuf.Balance.currency");
-        auto str = msg->mutable_currency();
+        object = msg->mutable_currency();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
-          object = str;
-          str->clear();
-          str->reserve(size);
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
-          goto len_delim_till_end;
+          goto string_till_end;
         }
         GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
-        ::google::protobuf::internal::InlineGreedyStringParser(str, ptr, size, ctx);
+        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
         ptr += size;
         break;
       }
       // double amount = 2;
       case 2: {
         if (static_cast<::google::protobuf::uint8>(tag) != 17) goto handle_unusual;
-        double val;
-        ::std::memcpy(&val, ptr, 8);
-        ptr += 8;
-        msg->set_amount(val);
+        msg->set_amount(::google::protobuf::io::UnalignedLoad<double>(ptr));
+        ptr += sizeof(double);
         break;
       }
       default: {
@@ -845,6 +830,10 @@ const char* Balance::_InternalParse(const char* begin, const char* end, void* ob
     }  // switch
   }  // while
   return ptr;
+string_till_end:
+  static_cast<::std::string*>(object)->clear();
+  static_cast<::std::string*>(object)->reserve(size);
+  goto len_delim_till_end;
 len_delim_till_end:
   return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
                                {parser_till_end, object}, size);
@@ -1157,7 +1146,7 @@ void Account::Clear() {
 const char* Account::_InternalParse(const char* begin, const char* end, void* object,
                   ::google::protobuf::internal::ParseContext* ctx) {
   auto msg = static_cast<Account*>(object);
-  ::google::protobuf::uint32 size; (void)size;
+  ::google::protobuf::int32 size; (void)size;
   int depth; (void)depth;
   ::google::protobuf::uint32 tag;
   ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
@@ -1169,61 +1158,51 @@ const char* Account::_InternalParse(const char* begin, const char* end, void* ob
       // int32 id = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
-        ::google::protobuf::uint64 val;
-        ptr = ::google::protobuf::io::Parse64(ptr, &val);
+        msg->set_id(::google::protobuf::internal::ReadVarint(&ptr));
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ::google::protobuf::int32 value = val;
-        msg->set_id(value);
         break;
       }
       // string name = 2;
       case 2: {
         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
-        ptr = ::google::protobuf::io::Parse32(ptr, &size);
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ctx->extra_parse_data().SetFieldName("Trade.protobuf.Account.name");
-        auto str = msg->mutable_name();
+        object = msg->mutable_name();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
-          object = str;
-          str->clear();
-          str->reserve(size);
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
-          goto len_delim_till_end;
+          goto string_till_end;
         }
         GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
-        ::google::protobuf::internal::InlineGreedyStringParser(str, ptr, size, ctx);
+        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
         ptr += size;
         break;
       }
       // .Trade.protobuf.Balance wallet = 3;
       case 3: {
         if (static_cast<::google::protobuf::uint8>(tag) != 26) goto handle_unusual;
-        ptr = ::google::protobuf::io::Parse32(ptr, &size);
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         parser_till_end = ::Trade::protobuf::Balance::_InternalParse;
         object = msg->mutable_wallet();
         if (size > end - ptr) goto len_delim_till_end;
-        auto newend = ptr + size;
-        bool ok = ctx->ParseExactRange({parser_till_end, object},
-                                       ptr, newend);
-        GOOGLE_PROTOBUF_PARSER_ASSERT(ok);
-        ptr = newend;
+        ptr += size;
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ctx->ParseExactRange(
+            {parser_till_end, object}, ptr - size, ptr));
         break;
       }
       // repeated .Trade.protobuf.Order orders = 4;
       case 4: {
         if (static_cast<::google::protobuf::uint8>(tag) != 34) goto handle_unusual;
         do {
-          ptr = ::google::protobuf::io::Parse32(ptr, &size);
+          ptr = ::google::protobuf::io::ReadSize(ptr, &size);
           GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
           parser_till_end = ::Trade::protobuf::Order::_InternalParse;
           object = msg->add_orders();
           if (size > end - ptr) goto len_delim_till_end;
-          auto newend = ptr + size;
-          bool ok = ctx->ParseExactRange({parser_till_end, object},
-                                         ptr, newend);
-          GOOGLE_PROTOBUF_PARSER_ASSERT(ok);
-          ptr = newend;
+          ptr += size;
+          GOOGLE_PROTOBUF_PARSER_ASSERT(ctx->ParseExactRange(
+              {parser_till_end, object}, ptr - size, ptr));
           if (ptr >= end) break;
         } while ((::google::protobuf::io::UnalignedLoad<::google::protobuf::uint64>(ptr) & 255) == 34 && (ptr += 1));
         break;
@@ -1243,6 +1222,10 @@ const char* Account::_InternalParse(const char* begin, const char* end, void* ob
     }  // switch
   }  // while
   return ptr;
+string_till_end:
+  static_cast<::std::string*>(object)->clear();
+  static_cast<::std::string*>(object)->reserve(size);
+  goto len_delim_till_end;
 len_delim_till_end:
   return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
                                {parser_till_end, object}, size);
