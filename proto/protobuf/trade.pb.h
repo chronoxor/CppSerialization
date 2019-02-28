@@ -32,6 +32,13 @@
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
 #include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
+namespace google {
+namespace protobuf {
+namespace internal {
+class AnyMetadata;
+}  // namespace internal
+}  // namespace protobuf
+}  // namespace google
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 #define PROTOBUF_INTERNAL_EXPORT_trade_2eproto
@@ -79,9 +86,9 @@ enum OrderSide {
   OrderSide_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::google::protobuf::int32>::max()
 };
 bool OrderSide_IsValid(int value);
-const OrderSide OrderSide_MIN = buy;
-const OrderSide OrderSide_MAX = sell;
-const int OrderSide_ARRAYSIZE = OrderSide_MAX + 1;
+constexpr OrderSide OrderSide_MIN = buy;
+constexpr OrderSide OrderSide_MAX = sell;
+constexpr int OrderSide_ARRAYSIZE = OrderSide_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* OrderSide_descriptor();
 inline const ::std::string& OrderSide_Name(OrderSide value) {
@@ -101,9 +108,9 @@ enum OrderType {
   OrderType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::google::protobuf::int32>::max()
 };
 bool OrderType_IsValid(int value);
-const OrderType OrderType_MIN = market;
-const OrderType OrderType_MAX = stop;
-const int OrderType_ARRAYSIZE = OrderType_MAX + 1;
+constexpr OrderType OrderType_MIN = market;
+constexpr OrderType OrderType_MAX = stop;
+constexpr int OrderType_ARRAYSIZE = OrderType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* OrderType_descriptor();
 inline const ::std::string& OrderType_Name(OrderType value) {
@@ -180,8 +187,7 @@ class Order final :
 
   size_t ByteSizeLong() const final;
   #if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-  static const char* _InternalParse(const char* begin, const char* end, void* object, ::google::protobuf::internal::ParseContext* ctx);
-  ::google::protobuf::internal::ParseFunc _ParseFunc() const final { return _InternalParse; }
+  const char* _InternalParse(const char* ptr, ::google::protobuf::internal::ParseContext* ctx) final;
   #else
   bool MergePartialFromCodedStream(
       ::google::protobuf::io::CodedInputStream* input) final;
@@ -193,10 +199,14 @@ class Order final :
   int GetCachedSize() const final { return _cached_size_.Get(); }
 
   private:
-  void SharedCtor();
-  void SharedDtor();
+  inline void SharedCtor();
+  inline void SharedDtor();
   void SetCachedSize(int size) const final;
   void InternalSwap(Order* other);
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::google::protobuf::StringPiece FullMessageName() {
+    return "Trade.protobuf.Order";
+  }
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return nullptr;
@@ -335,8 +345,7 @@ class Balance final :
 
   size_t ByteSizeLong() const final;
   #if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-  static const char* _InternalParse(const char* begin, const char* end, void* object, ::google::protobuf::internal::ParseContext* ctx);
-  ::google::protobuf::internal::ParseFunc _ParseFunc() const final { return _InternalParse; }
+  const char* _InternalParse(const char* ptr, ::google::protobuf::internal::ParseContext* ctx) final;
   #else
   bool MergePartialFromCodedStream(
       ::google::protobuf::io::CodedInputStream* input) final;
@@ -348,10 +357,14 @@ class Balance final :
   int GetCachedSize() const final { return _cached_size_.Get(); }
 
   private:
-  void SharedCtor();
-  void SharedDtor();
+  inline void SharedCtor();
+  inline void SharedDtor();
   void SetCachedSize(int size) const final;
   void InternalSwap(Balance* other);
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::google::protobuf::StringPiece FullMessageName() {
+    return "Trade.protobuf.Balance";
+  }
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return nullptr;
@@ -462,8 +475,7 @@ class Account final :
 
   size_t ByteSizeLong() const final;
   #if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-  static const char* _InternalParse(const char* begin, const char* end, void* object, ::google::protobuf::internal::ParseContext* ctx);
-  ::google::protobuf::internal::ParseFunc _ParseFunc() const final { return _InternalParse; }
+  const char* _InternalParse(const char* ptr, ::google::protobuf::internal::ParseContext* ctx) final;
   #else
   bool MergePartialFromCodedStream(
       ::google::protobuf::io::CodedInputStream* input) final;
@@ -475,10 +487,14 @@ class Account final :
   int GetCachedSize() const final { return _cached_size_.Get(); }
 
   private:
-  void SharedCtor();
-  void SharedDtor();
+  inline void SharedCtor();
+  inline void SharedDtor();
   void SetCachedSize(int size) const final;
   void InternalSwap(Account* other);
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::google::protobuf::StringPiece FullMessageName() {
+    return "Trade.protobuf.Account";
+  }
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return nullptr;

@@ -84,9 +84,9 @@ void InitDefaults_trade_2eproto() {
   ::google::protobuf::internal::InitSCC(&scc_info_Account_trade_2eproto.base);
 }
 
-::google::protobuf::Metadata file_level_metadata_trade_2eproto[3];
-const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors_trade_2eproto[2];
-constexpr ::google::protobuf::ServiceDescriptor const** file_level_service_descriptors_trade_2eproto = nullptr;
+static ::google::protobuf::Metadata file_level_metadata_trade_2eproto[3];
+static const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors_trade_2eproto[2];
+static constexpr ::google::protobuf::ServiceDescriptor const** file_level_service_descriptors_trade_2eproto = nullptr;
 
 const ::google::protobuf::uint32 TableStruct_trade_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
@@ -129,7 +129,7 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::google::protobuf::Message*>(&::Trade::protobuf::_Account_default_instance_),
 };
 
-::google::protobuf::internal::AssignDescriptorsTable assign_descriptors_table_trade_2eproto = {
+static ::google::protobuf::internal::AssignDescriptorsTable assign_descriptors_table_trade_2eproto = {
   {}, AddDescriptors_trade_2eproto, "trade.proto", schemas,
   file_default_instances, TableStruct_trade_2eproto::offsets,
   file_level_metadata_trade_2eproto, 3, file_level_enum_descriptors_trade_2eproto, file_level_service_descriptors_trade_2eproto,
@@ -148,7 +148,7 @@ const char descriptor_table_protodef_trade_2eproto[] =
   "uy\020\000\022\010\n\004sell\020\001*,\n\tOrderType\022\n\n\006market\020\000\022"
   "\t\n\005limit\020\001\022\010\n\004stop\020\002b\006proto3"
   ;
-::google::protobuf::internal::DescriptorTable descriptor_table_trade_2eproto = {
+static ::google::protobuf::internal::DescriptorTable descriptor_table_trade_2eproto = {
   false, InitDefaults_trade_2eproto, 
   descriptor_table_protodef_trade_2eproto,
   "trade.proto", &assign_descriptors_table_trade_2eproto, 428,
@@ -272,93 +272,70 @@ void Order::Clear() {
 }
 
 #if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* Order::_InternalParse(const char* begin, const char* end, void* object,
-                  ::google::protobuf::internal::ParseContext* ctx) {
-  auto msg = static_cast<Order*>(object);
-  ::google::protobuf::int32 size; (void)size;
-  int depth; (void)depth;
-  ::google::protobuf::uint32 tag;
-  ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
-  auto ptr = begin;
-  while (ptr < end) {
-    ptr = ::google::protobuf::io::Parse32(ptr, &tag);
+const char* Order::_InternalParse(const char* ptr, ::google::protobuf::internal::ParseContext* ctx) {
+  while (!ctx->Done(&ptr)) {
+    ::google::protobuf::uint32 tag;
+    ptr = ::google::protobuf::internal::ReadTag(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
       // int32 id = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
-        msg->set_id(::google::protobuf::internal::ReadVarint(&ptr));
+        set_id(::google::protobuf::internal::ReadVarint(&ptr));
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         break;
       }
       // string symbol = 2;
       case 2: {
         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
-        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        ptr = ::google::protobuf::internal::InlineGreedyStringParserUTF8(mutable_symbol(), ptr, ctx, "Trade.protobuf.Order.symbol");
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("Trade.protobuf.Order.symbol");
-        object = msg->mutable_symbol();
-        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
-          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
-          goto string_till_end;
-        }
-        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
-        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
-        ptr += size;
         break;
       }
       // .Trade.protobuf.OrderSide side = 3;
       case 3: {
         if (static_cast<::google::protobuf::uint8>(tag) != 24) goto handle_unusual;
         ::google::protobuf::uint64 val = ::google::protobuf::internal::ReadVarint(&ptr);
-        msg->set_side(static_cast<::Trade::protobuf::OrderSide>(val));
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        set_side(static_cast<::Trade::protobuf::OrderSide>(val));
         break;
       }
       // .Trade.protobuf.OrderType type = 4;
       case 4: {
         if (static_cast<::google::protobuf::uint8>(tag) != 32) goto handle_unusual;
         ::google::protobuf::uint64 val = ::google::protobuf::internal::ReadVarint(&ptr);
-        msg->set_type(static_cast<::Trade::protobuf::OrderType>(val));
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        set_type(static_cast<::Trade::protobuf::OrderType>(val));
         break;
       }
       // double price = 5;
       case 5: {
         if (static_cast<::google::protobuf::uint8>(tag) != 41) goto handle_unusual;
-        msg->set_price(::google::protobuf::io::UnalignedLoad<double>(ptr));
+        set_price(::google::protobuf::internal::UnalignedLoad<double>(ptr));
         ptr += sizeof(double);
         break;
       }
       // double volume = 6;
       case 6: {
         if (static_cast<::google::protobuf::uint8>(tag) != 49) goto handle_unusual;
-        msg->set_volume(::google::protobuf::io::UnalignedLoad<double>(ptr));
+        set_volume(::google::protobuf::internal::UnalignedLoad<double>(ptr));
         ptr += sizeof(double);
         break;
       }
       default: {
       handle_unusual:
         if ((tag & 7) == 4 || tag == 0) {
-          ctx->EndGroup(tag);
+          ctx->SetLastTag(tag);
           return ptr;
         }
-        auto res = UnknownFieldParse(tag, {_InternalParse, msg},
-          ptr, end, msg->_internal_metadata_.mutable_unknown_fields(), ctx);
-        ptr = res.first;
+        ptr = UnknownFieldParse(tag,
+          _internal_metadata_.mutable_unknown_fields(), ptr, ctx);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr != nullptr);
-        if (res.second) return ptr;
+        break;
       }
     }  // switch
   }  // while
   return ptr;
-string_till_end:
-  static_cast<::std::string*>(object)->clear();
-  static_cast<::std::string*>(object)->reserve(size);
-  goto len_delim_till_end;
-len_delim_till_end:
-  return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
-                               {parser_till_end, object}, size);
 }
 #else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool Order::MergePartialFromCodedStream(
@@ -780,63 +757,40 @@ void Balance::Clear() {
 }
 
 #if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* Balance::_InternalParse(const char* begin, const char* end, void* object,
-                  ::google::protobuf::internal::ParseContext* ctx) {
-  auto msg = static_cast<Balance*>(object);
-  ::google::protobuf::int32 size; (void)size;
-  int depth; (void)depth;
-  ::google::protobuf::uint32 tag;
-  ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
-  auto ptr = begin;
-  while (ptr < end) {
-    ptr = ::google::protobuf::io::Parse32(ptr, &tag);
+const char* Balance::_InternalParse(const char* ptr, ::google::protobuf::internal::ParseContext* ctx) {
+  while (!ctx->Done(&ptr)) {
+    ::google::protobuf::uint32 tag;
+    ptr = ::google::protobuf::internal::ReadTag(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
       // string currency = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
-        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        ptr = ::google::protobuf::internal::InlineGreedyStringParserUTF8(mutable_currency(), ptr, ctx, "Trade.protobuf.Balance.currency");
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("Trade.protobuf.Balance.currency");
-        object = msg->mutable_currency();
-        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
-          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
-          goto string_till_end;
-        }
-        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
-        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
-        ptr += size;
         break;
       }
       // double amount = 2;
       case 2: {
         if (static_cast<::google::protobuf::uint8>(tag) != 17) goto handle_unusual;
-        msg->set_amount(::google::protobuf::io::UnalignedLoad<double>(ptr));
+        set_amount(::google::protobuf::internal::UnalignedLoad<double>(ptr));
         ptr += sizeof(double);
         break;
       }
       default: {
       handle_unusual:
         if ((tag & 7) == 4 || tag == 0) {
-          ctx->EndGroup(tag);
+          ctx->SetLastTag(tag);
           return ptr;
         }
-        auto res = UnknownFieldParse(tag, {_InternalParse, msg},
-          ptr, end, msg->_internal_metadata_.mutable_unknown_fields(), ctx);
-        ptr = res.first;
+        ptr = UnknownFieldParse(tag,
+          _internal_metadata_.mutable_unknown_fields(), ptr, ctx);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr != nullptr);
-        if (res.second) return ptr;
+        break;
       }
     }  // switch
   }  // while
   return ptr;
-string_till_end:
-  static_cast<::std::string*>(object)->clear();
-  static_cast<::std::string*>(object)->reserve(size);
-  goto len_delim_till_end;
-len_delim_till_end:
-  return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
-                               {parser_till_end, object}, size);
 }
 #else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool Balance::MergePartialFromCodedStream(
@@ -1143,92 +1097,57 @@ void Account::Clear() {
 }
 
 #if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* Account::_InternalParse(const char* begin, const char* end, void* object,
-                  ::google::protobuf::internal::ParseContext* ctx) {
-  auto msg = static_cast<Account*>(object);
-  ::google::protobuf::int32 size; (void)size;
-  int depth; (void)depth;
-  ::google::protobuf::uint32 tag;
-  ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
-  auto ptr = begin;
-  while (ptr < end) {
-    ptr = ::google::protobuf::io::Parse32(ptr, &tag);
+const char* Account::_InternalParse(const char* ptr, ::google::protobuf::internal::ParseContext* ctx) {
+  while (!ctx->Done(&ptr)) {
+    ::google::protobuf::uint32 tag;
+    ptr = ::google::protobuf::internal::ReadTag(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
       // int32 id = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
-        msg->set_id(::google::protobuf::internal::ReadVarint(&ptr));
+        set_id(::google::protobuf::internal::ReadVarint(&ptr));
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         break;
       }
       // string name = 2;
       case 2: {
         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
-        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        ptr = ::google::protobuf::internal::InlineGreedyStringParserUTF8(mutable_name(), ptr, ctx, "Trade.protobuf.Account.name");
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("Trade.protobuf.Account.name");
-        object = msg->mutable_name();
-        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
-          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
-          goto string_till_end;
-        }
-        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
-        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
-        ptr += size;
         break;
       }
       // .Trade.protobuf.Balance wallet = 3;
       case 3: {
         if (static_cast<::google::protobuf::uint8>(tag) != 26) goto handle_unusual;
-        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        ptr = ctx->ParseMessage(mutable_wallet(), ptr);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        parser_till_end = ::Trade::protobuf::Balance::_InternalParse;
-        object = msg->mutable_wallet();
-        if (size > end - ptr) goto len_delim_till_end;
-        ptr += size;
-        GOOGLE_PROTOBUF_PARSER_ASSERT(ctx->ParseExactRange(
-            {parser_till_end, object}, ptr - size, ptr));
         break;
       }
       // repeated .Trade.protobuf.Order orders = 4;
       case 4: {
         if (static_cast<::google::protobuf::uint8>(tag) != 34) goto handle_unusual;
         do {
-          ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+          ptr = ctx->ParseMessage(add_orders(), ptr);
           GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-          parser_till_end = ::Trade::protobuf::Order::_InternalParse;
-          object = msg->add_orders();
-          if (size > end - ptr) goto len_delim_till_end;
-          ptr += size;
-          GOOGLE_PROTOBUF_PARSER_ASSERT(ctx->ParseExactRange(
-              {parser_till_end, object}, ptr - size, ptr));
-          if (ptr >= end) break;
-        } while ((::google::protobuf::io::UnalignedLoad<::google::protobuf::uint64>(ptr) & 255) == 34 && (ptr += 1));
+          if (ctx->Done(&ptr)) return ptr;
+        } while ((::google::protobuf::internal::UnalignedLoad<::google::protobuf::uint64>(ptr) & 255) == 34 && (ptr += 1));
         break;
       }
       default: {
       handle_unusual:
         if ((tag & 7) == 4 || tag == 0) {
-          ctx->EndGroup(tag);
+          ctx->SetLastTag(tag);
           return ptr;
         }
-        auto res = UnknownFieldParse(tag, {_InternalParse, msg},
-          ptr, end, msg->_internal_metadata_.mutable_unknown_fields(), ctx);
-        ptr = res.first;
+        ptr = UnknownFieldParse(tag,
+          _internal_metadata_.mutable_unknown_fields(), ptr, ctx);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr != nullptr);
-        if (res.second) return ptr;
+        break;
       }
     }  // switch
   }  // while
   return ptr;
-string_till_end:
-  static_cast<::std::string*>(object)->clear();
-  static_cast<::std::string*>(object)->reserve(size);
-  goto len_delim_till_end;
-len_delim_till_end:
-  return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
-                               {parser_till_end, object}, size);
 }
 #else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool Account::MergePartialFromCodedStream(
