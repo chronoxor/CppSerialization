@@ -180,6 +180,11 @@ inline bool Deserializer::FindArray(const JSON& json, const char* key, const std
 template<typename JSON>
 inline bool Deserializer::FindArray(const JSON& json, const char* key, const std::function<void(size_t)>& initialize, const std::function<void(const Value&)>& handler)
 {
+    assert((initialize) && "JSON initialize array handler must be valid!");
+    assert((handler) && "JSON array handler must be valid!");
+    if (!initialize || !handler)
+        return false;
+
     // Try to find a member with the given key
     Value::ConstMemberIterator member = json.FindMember(key);
     if ((member == json.MemberEnd()) || member->value.IsNull())
@@ -199,6 +204,10 @@ inline bool Deserializer::FindArray(const JSON& json, const char* key, const std
 template<typename JSON>
 inline bool Deserializer::FindObject(const JSON& json, const char* key, const std::function<void(const Value::ConstObject&)>& handler)
 {
+    assert((handler) && "JSON array handler must be valid!");
+    if (!handler)
+        return false;
+
     // Try to find a member with the given key
     Value::ConstMemberIterator member = json.FindMember(key);
     if ((member == json.MemberEnd()) || member->value.IsNull())
