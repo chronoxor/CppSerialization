@@ -1415,11 +1415,8 @@ public:
     // Get the bytes value
     size_t get(void* data, size_t size) const noexcept
     {
-        if (size == 0)
-            return 0;
-
-        assert((data != nullptr) && "Invalid buffer!");
-        if (data == nullptr)
+        assert(((size == 0) || (data != nullptr)) && "Invalid buffer!");
+        if ((size > 0) && (data == nullptr))
             return 0;
 
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
@@ -1482,11 +1479,8 @@ public:
     // Set the bytes value
     void set(const void* data, size_t size)
     {
-        if (size == 0)
-            return;
-
-        assert((data != nullptr) && "Invalid buffer!");
-        if (data == nullptr)
+        assert(((size == 0) || (data != nullptr)) && "Invalid buffer!");
+        if ((size > 0) && (data == nullptr))
             return;
 
         assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
@@ -1577,11 +1571,8 @@ public:
     // Get the string value
     size_t get(char* data, size_t size) const noexcept
     {
-        if (size == 0)
-            return 0;
-
-        assert((data != nullptr) && "Invalid buffer!");
-        if (data == nullptr)
+        assert(((size == 0) || (data != nullptr)) && "Invalid buffer!");
+        if ((size > 0) && (data == nullptr))
             return 0;
 
         if ((_buffer.offset() + fbe_offset() + fbe_size()) > _buffer.size())
@@ -1664,11 +1655,8 @@ public:
     // Set the string value
     void set(const char* data, size_t size)
     {
-        if (size == 0)
-            return;
-
-        assert((data != nullptr) && "Invalid buffer!");
-        if (data == nullptr)
+        assert(((size == 0) || (data != nullptr)) && "Invalid buffer!");
+        if ((size > 0) && (data == nullptr))
             return;
 
         assert(((_buffer.offset() + fbe_offset() + fbe_size()) <= _buffer.size()) && "Model is broken!");
