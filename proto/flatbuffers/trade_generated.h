@@ -41,7 +41,7 @@ inline const char * const *EnumNamesOrderSide() {
 
 inline const char *EnumNameOrderSide(OrderSide e) {
   if (e < OrderSide::buy || e > OrderSide::sell) return "";
-  const size_t index = static_cast<int>(e);
+  const size_t index = static_cast<size_t>(e);
   return EnumNamesOrderSide()[index];
 }
 
@@ -74,7 +74,7 @@ inline const char * const *EnumNamesOrderType() {
 
 inline const char *EnumNameOrderType(OrderType e) {
   if (e < OrderType::market || e > OrderType::stop) return "";
-  const size_t index = static_cast<int>(e);
+  const size_t index = static_cast<size_t>(e);
   return EnumNamesOrderType()[index];
 }
 
