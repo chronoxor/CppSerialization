@@ -41,7 +41,7 @@ int main(int argc, char** argv)
     std::cout << "Account.Name = " << deserialized.Name << std::endl;
     std::cout << "Account.Wallet.Currency = " << deserialized.Wallet.Currency << std::endl;
     std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
-    for (auto& order : deserialized.Orders)
+    for (const auto& order : deserialized.Orders)
     {
         std::cout << "Account.Order => Id: " << order.Id
             << ", Symbol: " << order.Symbol

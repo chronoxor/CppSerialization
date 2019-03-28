@@ -79,7 +79,7 @@ struct Order
 
     // Cap'n'Proto serialization
 
-    void Serialize(Trade::capnproto::Order::Builder& builder)
+    void Serialize(Trade::capnproto::Order::Builder& builder) const
     {
         builder.setId(Id);
         builder.setSymbol(Symbol);
@@ -103,7 +103,7 @@ struct Order
     // FastBinaryEncoding serialization
 
     template <class TBuffer>
-    void Serialize(FBE::FieldModel<TBuffer, trade::Order>& model)
+    void Serialize(FBE::FieldModel<TBuffer, trade::Order>& model) const
     {
         size_t model_begin = model.set_begin();
         model.id.set(Id);
@@ -134,7 +134,7 @@ struct Order
 
     // FlatBuffers serialization
 
-    flatbuffers::Offset<Trade::flatbuf::Order> Serialize(flatbuffers::FlatBufferBuilder& builder)
+    flatbuffers::Offset<Trade::flatbuf::Order> Serialize(flatbuffers::FlatBufferBuilder& builder) const
     {
         return Trade::flatbuf::CreateOrderDirect(builder, Id, Symbol, (Trade::flatbuf::OrderSide)Side, (Trade::flatbuf::OrderType)Type, Price, Volume);
     }
@@ -152,7 +152,7 @@ struct Order
 
     // Protobuf serialization
 
-    Trade::protobuf::Order& Serialize(Trade::protobuf::Order& value)
+    Trade::protobuf::Order& Serialize(Trade::protobuf::Order& value) const
     {
         value.set_id(Id);
         value.set_symbol(Symbol);
@@ -176,7 +176,7 @@ struct Order
 
     // SimpleBinaryEncoding serialization
 
-    void Serialize(sbe::Order& model)
+    void Serialize(sbe::Order& model) const
     {
         model.id(Id);
         model.putSymbol(Symbol);
@@ -199,7 +199,7 @@ struct Order
     // JSON serialization
 
     template<typename OutputStream>
-    void Serialize(CppSerialization::JSON::Serializer<OutputStream>& serializer)
+    void Serialize(CppSerialization::JSON::Serializer<OutputStream>& serializer) const
     {
         serializer.StartObject();
         serializer.Pair("id", Id);
@@ -239,7 +239,7 @@ struct Balance
 
     // Cap'n'Proto serialization
 
-    void Serialize(Trade::capnproto::Balance::Builder& builder)
+    void Serialize(Trade::capnproto::Balance::Builder& builder) const
     {
         builder.setCurrency(Currency);
         builder.setAmount(Amount);
@@ -255,7 +255,7 @@ struct Balance
     // FastBinaryEncoding serialization
 
     template <class TBuffer>
-    void Serialize(FBE::FieldModel<TBuffer, trade::Balance>& model)
+    void Serialize(FBE::FieldModel<TBuffer, trade::Balance>& model) const
     {
         size_t model_begin = model.set_begin();
         model.currency.set(Currency);
@@ -274,7 +274,7 @@ struct Balance
 
     // FlatBuffers serialization
 
-    flatbuffers::Offset<Trade::flatbuf::Balance> Serialize(flatbuffers::FlatBufferBuilder& builder)
+    flatbuffers::Offset<Trade::flatbuf::Balance> Serialize(flatbuffers::FlatBufferBuilder& builder) const
     {
         return Trade::flatbuf::CreateBalanceDirect(builder, Currency, Amount);
     }
@@ -288,7 +288,7 @@ struct Balance
 
     // Protobuf serialization
 
-    Trade::protobuf::Balance& Serialize(Trade::protobuf::Balance& value)
+    Trade::protobuf::Balance& Serialize(Trade::protobuf::Balance& value) const
     {
         value.set_currency(Currency);
         value.set_amount(Amount);
@@ -304,7 +304,7 @@ struct Balance
 
     // SimpleBinaryEncoding serialization
 
-    void Serialize(sbe::Balance& model)
+    void Serialize(sbe::Balance& model) const
     {
         model.putCurrency(Currency);
         model.amount(Amount);
@@ -319,7 +319,7 @@ struct Balance
     // JSON serialization
 
     template<typename OutputStream>
-    void Serialize(CppSerialization::JSON::Serializer<OutputStream>& serializer)
+    void Serialize(CppSerialization::JSON::Serializer<OutputStream>& serializer) const
     {
         serializer.StartObject();
         serializer.Pair("currency", Currency);
@@ -353,7 +353,7 @@ struct Account
 
     // Cap'n'Proto serialization
 
-    void Serialize(Trade::capnproto::Account::Builder& builder)
+    void Serialize(Trade::capnproto::Account::Builder& builder) const
     {
         builder.setId(Id);
         builder.setName(Name);
@@ -361,7 +361,7 @@ struct Account
         Wallet.Serialize(wallet);
         auto orders = builder.initOrders((unsigned)Orders.size());
         unsigned index = 0;
-        for (auto& order : Orders)
+        for (const auto& order : Orders)
         {
             auto o = orders[index++];
             order.Serialize(o);
@@ -385,14 +385,14 @@ struct Account
     // FastBinaryEncoding serialization
 
     template <class TBuffer>
-    void Serialize(FBE::FieldModel<TBuffer, trade::Account>& model)
+    void Serialize(FBE::FieldModel<TBuffer, trade::Account>& model) const
     {
         size_t model_begin = model.set_begin();
         model.id.set(Id);
         model.name.set(Name);
         Wallet.Serialize(model.wallet);
         auto order_model = model.orders.resize(Orders.size());
-        for (auto& order : Orders)
+        for (const auto& order : Orders)
         {
             order.Serialize(order_model);
             order_model.fbe_shift(order_model.fbe_size());
@@ -419,11 +419,11 @@ struct Account
 
     // FlatBuffers serialization
 
-    flatbuffers::Offset<Trade::flatbuf::Account> Serialize(flatbuffers::FlatBufferBuilder& builder)
+    flatbuffers::Offset<Trade::flatbuf::Account> Serialize(flatbuffers::FlatBufferBuilder& builder) const
     {
         auto wallet = Wallet.Serialize(builder);
         std::vector<flatbuffers::Offset<Trade::flatbuf::Order>> orders;
-        for (auto& order : Orders)
+        for (const auto& order : Orders)
             orders.emplace_back(order.Serialize(builder));
         return Trade::flatbuf::CreateAccountDirect(builder, Id, Name.c_str(), wallet, &orders);
     }
@@ -444,12 +444,12 @@ struct Account
 
     // Protobuf serialization
 
-    Trade::protobuf::Account& Serialize(Trade::protobuf::Account& value)
+    Trade::protobuf::Account& Serialize(Trade::protobuf::Account& value) const
     {
         value.set_id(Id);
         value.set_name(Name);
         value.set_allocated_wallet(&Wallet.Serialize(*value.wallet().New(value.GetArena())));
-        for (auto& order : Orders)
+        for (const auto& order : Orders)
             order.Serialize(*value.add_orders());
         return value;
     }
@@ -470,13 +470,13 @@ struct Account
 
     // SimpleBinaryEncoding serialization
 
-    void Serialize(sbe::Account& model)
+    void Serialize(sbe::Account& model) const
     {
         model.id(Id);
         model.putName(Name);
         Wallet.Serialize(model.wallet());
         auto orders = model.ordersCount((uint16_t)Orders.size());
-        for (auto& order : Orders)
+        for (const auto& order : Orders)
             order.Serialize(orders.next().order());
     }
 
@@ -498,7 +498,7 @@ struct Account
     // JSON serialization
 
     template<typename OutputStream>
-    void Serialize(CppSerialization::JSON::Serializer<OutputStream>& serializer)
+    void Serialize(CppSerialization::JSON::Serializer<OutputStream>& serializer) const
     {
         serializer.StartObject();
         serializer.Pair("id", Id);
@@ -507,7 +507,7 @@ struct Account
         Wallet.Serialize(serializer);
         serializer.Key("orders");
         serializer.StartArray();
-        for (auto& order : Orders)
+        for (const auto& order : Orders)
             order.Serialize(serializer);
         serializer.EndArray();
         serializer.EndObject();

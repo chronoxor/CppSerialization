@@ -196,7 +196,7 @@ inline bool Deserializer::FindArray(const JSON& json, const char* key, const std
 
     // Handle array items
     initialize(member->value.GetArray().Size());
-    for (auto& item : member->value.GetArray())
+    for (const auto& item : member->value.GetArray())
         handler(item);
     return true;
 }
