@@ -24,11 +24,11 @@ class Parser
 public:
     Parser() = delete;
     Parser(const Parser&) = delete;
-    Parser(Parser&&) noexcept = delete;
+    Parser(Parser&&) = delete;
     ~Parser() = delete;
 
     Parser& operator=(const Parser&) = delete;
-    Parser& operator=(Parser&&) noexcept = delete;
+    Parser& operator=(Parser&&) = delete;
 
     //! Parse the input stream
     template <typename InputStream>
