@@ -31,7 +31,7 @@ inline const OrderSide (&EnumValuesOrderSide())[2] {
 }
 
 inline const char * const *EnumNamesOrderSide() {
-  static const char * const names[] = {
+  static const char * const names[3] = {
     "buy",
     "sell",
     nullptr
@@ -63,7 +63,7 @@ inline const OrderType (&EnumValuesOrderType())[3] {
 }
 
 inline const char * const *EnumNamesOrderType() {
-  static const char * const names[] = {
+  static const char * const names[4] = {
     "market",
     "limit",
     "stop",
