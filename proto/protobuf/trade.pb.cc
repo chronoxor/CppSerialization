@@ -122,7 +122,7 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::Trade::protobuf::_Account_default_instance_),
 };
 
-const char descriptor_table_protodef_trade_2eproto[] =
+const char descriptor_table_protodef_trade_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\013trade.proto\022\016Trade.protobuf\"\224\001\n\005Order\022"
   "\n\n\002id\030\001 \001(\005\022\016\n\006symbol\030\002 \001(\t\022\'\n\004side\030\003 \001("
   "\0162\031.Trade.protobuf.OrderSide\022\'\n\004type\030\004 \001"

@@ -26,7 +26,7 @@
 #endif
 #include "capnp/serialize.h"
 #include "capnproto/trade.capnp.h"
-#include "fbe/trade.h"
+#include "fbe/trade_models.h"
 #include "flatbuffers/trade_generated.h"
 #include "protobuf/trade.pb.h"
 #include "sbe/Account.h"
