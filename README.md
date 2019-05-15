@@ -602,7 +602,7 @@ Finally you should extend your domain model with a FastBinaryEncoding serializat
 methods:
 
 ```c++
-#include "fbe/trade.h"
+#include "fbe/trade_models.h"
 
 #include <algorithm>
 
@@ -1554,7 +1554,7 @@ Finally you should extend your domain model with a SimpleBinaryEncoding serializ
 methods:
 
 ```c++
-#include "fbe/trade.h"
+#include "fbe/trade_models.h"
 
 #include <algorithm>
 
