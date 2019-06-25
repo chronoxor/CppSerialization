@@ -93,11 +93,11 @@ struct Order FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const flatbuffers::String *symbol() const {
     return GetPointer<const flatbuffers::String *>(VT_SYMBOL);
   }
-  OrderSide side() const {
-    return static_cast<OrderSide>(GetField<int8_t>(VT_SIDE, 0));
+  Trade::flatbuf::OrderSide side() const {
+    return static_cast<Trade::flatbuf::OrderSide>(GetField<int8_t>(VT_SIDE, 0));
   }
-  OrderType type() const {
-    return static_cast<OrderType>(GetField<int8_t>(VT_TYPE, 0));
+  Trade::flatbuf::OrderType type() const {
+    return static_cast<Trade::flatbuf::OrderType>(GetField<int8_t>(VT_TYPE, 0));
   }
   double price() const {
     return GetField<double>(VT_PRICE, 0.0);
@@ -127,10 +127,10 @@ struct OrderBuilder {
   void add_symbol(flatbuffers::Offset<flatbuffers::String> symbol) {
     fbb_.AddOffset(Order::VT_SYMBOL, symbol);
   }
-  void add_side(OrderSide side) {
+  void add_side(Trade::flatbuf::OrderSide side) {
     fbb_.AddElement<int8_t>(Order::VT_SIDE, static_cast<int8_t>(side), 0);
   }
-  void add_type(OrderType type) {
+  void add_type(Trade::flatbuf::OrderType type) {
     fbb_.AddElement<int8_t>(Order::VT_TYPE, static_cast<int8_t>(type), 0);
   }
   void add_price(double price) {
@@ -155,8 +155,8 @@ inline flatbuffers::Offset<Order> CreateOrder(
     flatbuffers::FlatBufferBuilder &_fbb,
     int32_t id = 0,
     flatbuffers::Offset<flatbuffers::String> symbol = 0,
-    OrderSide side = OrderSide::buy,
-    OrderType type = OrderType::market,
+    Trade::flatbuf::OrderSide side = Trade::flatbuf::OrderSide::buy,
+    Trade::flatbuf::OrderType type = Trade::flatbuf::OrderType::market,
     double price = 0.0,
     double volume = 0.0) {
   OrderBuilder builder_(_fbb);
@@ -173,8 +173,8 @@ inline flatbuffers::Offset<Order> CreateOrderDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     int32_t id = 0,
     const char *symbol = nullptr,
-    OrderSide side = OrderSide::buy,
-    OrderType type = OrderType::market,
+    Trade::flatbuf::OrderSide side = Trade::flatbuf::OrderSide::buy,
+    Trade::flatbuf::OrderType type = Trade::flatbuf::OrderType::market,
     double price = 0.0,
     double volume = 0.0) {
   auto symbol__ = symbol ? _fbb.CreateString(symbol) : 0;
@@ -263,11 +263,11 @@ struct Account FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const flatbuffers::String *name() const {
     return GetPointer<const flatbuffers::String *>(VT_NAME);
   }
-  const Balance *wallet() const {
-    return GetPointer<const Balance *>(VT_WALLET);
+  const Trade::flatbuf::Balance *wallet() const {
+    return GetPointer<const Trade::flatbuf::Balance *>(VT_WALLET);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<Order>> *orders() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Order>> *>(VT_ORDERS);
+  const flatbuffers::Vector<flatbuffers::Offset<Trade::flatbuf::Order>> *orders() const {
+    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Trade::flatbuf::Order>> *>(VT_ORDERS);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -292,10 +292,10 @@ struct AccountBuilder {
   void add_name(flatbuffers::Offset<flatbuffers::String> name) {
     fbb_.AddOffset(Account::VT_NAME, name);
   }
-  void add_wallet(flatbuffers::Offset<Balance> wallet) {
+  void add_wallet(flatbuffers::Offset<Trade::flatbuf::Balance> wallet) {
     fbb_.AddOffset(Account::VT_WALLET, wallet);
   }
-  void add_orders(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Order>>> orders) {
+  void add_orders(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Trade::flatbuf::Order>>> orders) {
     fbb_.AddOffset(Account::VT_ORDERS, orders);
   }
   explicit AccountBuilder(flatbuffers::FlatBufferBuilder &_fbb)
@@ -314,8 +314,8 @@ inline flatbuffers::Offset<Account> CreateAccount(
     flatbuffers::FlatBufferBuilder &_fbb,
     int32_t id = 0,
     flatbuffers::Offset<flatbuffers::String> name = 0,
-    flatbuffers::Offset<Balance> wallet = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Order>>> orders = 0) {
+    flatbuffers::Offset<Trade::flatbuf::Balance> wallet = 0,
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Trade::flatbuf::Order>>> orders = 0) {
   AccountBuilder builder_(_fbb);
   builder_.add_orders(orders);
   builder_.add_wallet(wallet);
@@ -328,10 +328,10 @@ inline flatbuffers::Offset<Account> CreateAccountDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     int32_t id = 0,
     const char *name = nullptr,
-    flatbuffers::Offset<Balance> wallet = 0,
-    const std::vector<flatbuffers::Offset<Order>> *orders = nullptr) {
+    flatbuffers::Offset<Trade::flatbuf::Balance> wallet = 0,
+    const std::vector<flatbuffers::Offset<Trade::flatbuf::Order>> *orders = nullptr) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
-  auto orders__ = orders ? _fbb.CreateVector<flatbuffers::Offset<Order>>(*orders) : 0;
+  auto orders__ = orders ? _fbb.CreateVector<flatbuffers::Offset<Trade::flatbuf::Order>>(*orders) : 0;
   return Trade::flatbuf::CreateAccount(
       _fbb,
       id,

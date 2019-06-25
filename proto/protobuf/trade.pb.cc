@@ -193,15 +193,6 @@ class Order::_Internal {
  public:
 };
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int Order::kIdFieldNumber;
-const int Order::kSymbolFieldNumber;
-const int Order::kSideFieldNumber;
-const int Order::kTypeFieldNumber;
-const int Order::kPriceFieldNumber;
-const int Order::kVolumeFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
 Order::Order()
   : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
@@ -662,10 +653,6 @@ bool Order::IsInitialized() const {
   return true;
 }
 
-void Order::Swap(Order* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
 void Order::InternalSwap(Order* other) {
   using std::swap;
   _internal_metadata_.Swap(&other->_internal_metadata_);
@@ -690,11 +677,6 @@ void Balance::InitAsDefaultInstance() {
 class Balance::_Internal {
  public:
 };
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int Balance::kCurrencyFieldNumber;
-const int Balance::kAmountFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Balance::Balance()
   : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
@@ -986,10 +968,6 @@ bool Balance::IsInitialized() const {
   return true;
 }
 
-void Balance::Swap(Balance* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
 void Balance::InternalSwap(Balance* other) {
   using std::swap;
   _internal_metadata_.Swap(&other->_internal_metadata_);
@@ -1018,13 +996,6 @@ const ::Trade::protobuf::Balance&
 Account::_Internal::wallet(const Account* msg) {
   return *msg->wallet_;
 }
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int Account::kIdFieldNumber;
-const int Account::kNameFieldNumber;
-const int Account::kWalletFieldNumber;
-const int Account::kOrdersFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
 Account::Account()
   : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
@@ -1424,10 +1395,6 @@ bool Account::IsInitialized() const {
   return true;
 }
 
-void Account::Swap(Account* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
 void Account::InternalSwap(Account* other) {
   using std::swap;
   _internal_metadata_.Swap(&other->_internal_metadata_);
