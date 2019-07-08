@@ -1944,7 +1944,7 @@ public:
         if (fbe_begin == 0)
             return;
 
-        if (opt.has_value())
+        if (opt)
             value.set(opt.value());
 
         set_end(fbe_begin);
@@ -3250,7 +3250,7 @@ public:
     FinalModel(TBuffer& buffer, size_t offset) noexcept : _buffer(buffer), _offset(offset), value(buffer, 0) {}
 
     // Get the allocation size
-    size_t fbe_allocation_size(const std::optional<T>& opt) const noexcept { return 1 + (opt.has_value() ? value.fbe_allocation_size(opt.value()) : 0); }
+    size_t fbe_allocation_size(const std::optional<T>& opt) const noexcept { return 1 + (opt ? value.fbe_allocation_size(opt.value()) : 0); }
 
     // Get the field offset
     size_t fbe_offset() const noexcept { return _offset; }
@@ -3318,14 +3318,14 @@ public:
         if ((_buffer.offset() + fbe_offset() + 1) > _buffer.size())
             return 0;
 
-        uint8_t fbe_has_value = opt.has_value() ? 1 : 0;
+        uint8_t fbe_has_value = opt ? 1 : 0;
         *((uint8_t*)(_buffer.data() + _buffer.offset() + fbe_offset())) = fbe_has_value;
         if (fbe_has_value == 0)
             return 1;
 
         _buffer.shift(fbe_offset() + 1);
         size_t size = 0;
-        if (opt.has_value())
+        if (opt)
             size = value.set(opt.value());
         _buffer.unshift(fbe_offset() + 1);
         return 1 + size;
