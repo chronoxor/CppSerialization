@@ -111,7 +111,7 @@ if(NOT CPPSERIALIZATION_MODULE)
     # C4267: var' : conversion from 'size_t' to 'type', possible loss of data
     set_source_files_properties(${PROTO_FILES} PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} /wd4125 /wd4127 /wd4244 /wd4245 /wd4267")
   else()
-    set_source_files_properties(${PROTO_FILES} PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} -Wno-nested-anon-types -Wno-zero-length-array")
+    set_source_files_properties(${PROTO_FILES} PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} -Wno-pedantic")
   endif()
   add_library(proto ${PROTO_FILES})
   target_link_libraries(proto ${LINKLIBS})
