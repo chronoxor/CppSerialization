@@ -44,7 +44,7 @@ static void InitDefaultsscc_info_Account_trade_2eproto() {
 }
 
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<2> scc_info_Account_trade_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 2, InitDefaultsscc_info_Account_trade_2eproto}, {
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 2, 0, InitDefaultsscc_info_Account_trade_2eproto}, {
       &scc_info_Balance_trade_2eproto.base,
       &scc_info_Order_trade_2eproto.base,}};
 
@@ -60,7 +60,7 @@ static void InitDefaultsscc_info_Balance_trade_2eproto() {
 }
 
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Balance_trade_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_Balance_trade_2eproto}, {}};
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Balance_trade_2eproto}, {}};
 
 static void InitDefaultsscc_info_Order_trade_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -74,7 +74,7 @@ static void InitDefaultsscc_info_Order_trade_2eproto() {
 }
 
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Order_trade_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_Order_trade_2eproto}, {}};
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Order_trade_2eproto}, {}};
 
 static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_trade_2eproto[3];
 static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_trade_2eproto[2];
@@ -202,7 +202,7 @@ Order::Order(const Order& from)
       _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   symbol_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from.symbol().empty()) {
+  if (!from._internal_symbol().empty()) {
     symbol_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.symbol_);
   }
   ::memcpy(&id_, &from.id_,
@@ -268,7 +268,7 @@ const char* Order::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::inte
       // string symbol = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8(mutable_symbol(), ptr, ctx, "Trade.protobuf.Order.symbol");
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8(_internal_mutable_symbol(), ptr, ctx, "Trade.protobuf.Order.symbol");
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -349,9 +349,9 @@ bool Order::MergePartialFromCodedStream(
       case 2: {
         if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (18 & 0xFF)) {
           DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadString(
-                input, this->mutable_symbol()));
+                input, this->_internal_mutable_symbol()));
           DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-            this->symbol().data(), static_cast<int>(this->symbol().length()),
+            this->_internal_symbol().data(), static_cast<int>(this->_internal_symbol().length()),
             ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE,
             "Trade.protobuf.Order.symbol"));
         } else {
@@ -450,11 +450,11 @@ failure:
   // string symbol = 2;
   if (this->symbol().size() > 0) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->symbol().data(), static_cast<int>(this->symbol().length()),
+      this->_internal_symbol().data(), static_cast<int>(this->_internal_symbol().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "Trade.protobuf.Order.symbol");
     target = stream->WriteStringMaybeAliased(
-        2, this->symbol(), target);
+        2, this->_internal_symbol(), target);
   }
 
   // .Trade.protobuf.OrderSide side = 3;
@@ -503,7 +503,7 @@ size_t Order::ByteSizeLong() const {
   if (this->symbol().size() > 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->symbol());
+        this->_internal_symbol());
   }
 
   // int32 id = 1;
@@ -640,7 +640,7 @@ Balance::Balance(const Balance& from)
       _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   currency_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from.currency().empty()) {
+  if (!from._internal_currency().empty()) {
     currency_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.currency_);
   }
   amount_ = from.amount_;
@@ -693,7 +693,7 @@ const char* Balance::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
       // string currency = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8(mutable_currency(), ptr, ctx, "Trade.protobuf.Balance.currency");
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8(_internal_mutable_currency(), ptr, ctx, "Trade.protobuf.Balance.currency");
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -738,9 +738,9 @@ bool Balance::MergePartialFromCodedStream(
       case 1: {
         if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (10 & 0xFF)) {
           DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadString(
-                input, this->mutable_currency()));
+                input, this->_internal_mutable_currency()));
           DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-            this->currency().data(), static_cast<int>(this->currency().length()),
+            this->_internal_currency().data(), static_cast<int>(this->_internal_currency().length()),
             ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE,
             "Trade.protobuf.Balance.currency"));
         } else {
@@ -792,11 +792,11 @@ failure:
   // string currency = 1;
   if (this->currency().size() > 0) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->currency().data(), static_cast<int>(this->currency().length()),
+      this->_internal_currency().data(), static_cast<int>(this->_internal_currency().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "Trade.protobuf.Balance.currency");
     target = stream->WriteStringMaybeAliased(
-        1, this->currency(), target);
+        1, this->_internal_currency(), target);
   }
 
   // double amount = 2;
@@ -825,7 +825,7 @@ size_t Balance::ByteSizeLong() const {
   if (this->currency().size() > 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->currency());
+        this->_internal_currency());
   }
 
   // double amount = 2;
@@ -930,7 +930,7 @@ Account::Account(const Account& from)
       orders_(from.orders_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from.name().empty()) {
+  if (!from._internal_name().empty()) {
     name_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.name_);
   }
   if (from.has_wallet()) {
@@ -1003,7 +1003,7 @@ const char* Account::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
       // string name = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8(mutable_name(), ptr, ctx, "Trade.protobuf.Account.name");
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8(_internal_mutable_name(), ptr, ctx, "Trade.protobuf.Account.name");
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -1023,7 +1023,7 @@ const char* Account::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
             ptr = ctx->ParseMessage(add_orders(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<::PROTOBUF_NAMESPACE_ID::uint8>(ptr) == 34);
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
         } else goto handle_unusual;
         continue;
       default: {
@@ -1073,9 +1073,9 @@ bool Account::MergePartialFromCodedStream(
       case 2: {
         if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (18 & 0xFF)) {
           DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadString(
-                input, this->mutable_name()));
+                input, this->_internal_mutable_name()));
           DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-            this->name().data(), static_cast<int>(this->name().length()),
+            this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
             ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE,
             "Trade.protobuf.Account.name"));
         } else {
@@ -1142,11 +1142,11 @@ failure:
   // string name = 2;
   if (this->name().size() > 0) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->name().data(), static_cast<int>(this->name().length()),
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "Trade.protobuf.Account.name");
     target = stream->WriteStringMaybeAliased(
-        2, this->name(), target);
+        2, this->_internal_name(), target);
   }
 
   // .Trade.protobuf.Balance wallet = 3;
@@ -1158,8 +1158,8 @@ failure:
   }
 
   // repeated .Trade.protobuf.Order orders = 4;
-  for (auto it = this->orders().pointer_begin(),
-            end = this->orders().pointer_end(); it < end; ++it) {
+  for (auto it = this->orders_.pointer_begin(),
+            end = this->orders_.pointer_end(); it < end; ++it) {
     stream->EnsureSpace(&target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessageToArray(4, **it, target, stream);
@@ -1182,21 +1182,17 @@ size_t Account::ByteSizeLong() const {
   (void) cached_has_bits;
 
   // repeated .Trade.protobuf.Order orders = 4;
-  {
-    unsigned int count = static_cast<unsigned int>(this->orders_size());
-    total_size += 1UL * count;
-    for (unsigned int i = 0; i < count; i++) {
-      total_size +=
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          this->orders(static_cast<int>(i)));
-    }
+  total_size += 1UL * this->orders_size();
+  for (const auto& msg : this->orders_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
   // string name = 2;
   if (this->name().size() > 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->name());
+        this->_internal_name());
   }
 
   // .Trade.protobuf.Balance wallet = 3;
@@ -1278,7 +1274,7 @@ bool Account::IsInitialized() const {
 void Account::InternalSwap(Account* other) {
   using std::swap;
   _internal_metadata_.Swap(&other->_internal_metadata_);
-  CastToBase(&orders_)->InternalSwap(CastToBase(&other->orders_));
+  orders_.InternalSwap(&other->orders_);
   name_.Swap(&other->name_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   swap(wallet_, other->wallet_);

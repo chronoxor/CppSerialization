@@ -257,6 +257,11 @@ class Order :
   std::string* mutable_symbol();
   std::string* release_symbol();
   void set_allocated_symbol(std::string* symbol);
+  private:
+  const std::string& _internal_symbol() const;
+  void _internal_set_symbol(const std::string& value);
+  std::string* _internal_mutable_symbol();
+  public:
 
   // int32 id = 1;
   void clear_id();
@@ -423,6 +428,11 @@ class Balance :
   std::string* mutable_currency();
   std::string* release_currency();
   void set_allocated_currency(std::string* currency);
+  private:
+  const std::string& _internal_currency() const;
+  void _internal_set_currency(const std::string& value);
+  std::string* _internal_mutable_currency();
+  public:
 
   // double amount = 2;
   void clear_amount();
@@ -578,9 +588,17 @@ class Account :
   std::string* mutable_name();
   std::string* release_name();
   void set_allocated_name(std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
 
   // .Trade.protobuf.Balance wallet = 3;
   bool has_wallet() const;
+  private:
+  bool _internal_has_wallet() const;
+  public:
   void clear_wallet();
   const ::Trade::protobuf::Balance& wallet() const;
   ::Trade::protobuf::Balance* release_wallet();
@@ -635,12 +653,22 @@ inline void Order::clear_symbol() {
 }
 inline const std::string& Order::symbol() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Order.symbol)
-  return symbol_.GetNoArena();
+  return _internal_symbol();
 }
 inline void Order::set_symbol(const std::string& value) {
+  _internal_set_symbol(value);
+  // @@protoc_insertion_point(field_set:Trade.protobuf.Order.symbol)
+}
+inline std::string* Order::mutable_symbol() {
+  // @@protoc_insertion_point(field_mutable:Trade.protobuf.Order.symbol)
+  return _internal_mutable_symbol();
+}
+inline const std::string& Order::_internal_symbol() const {
+  return symbol_.GetNoArena();
+}
+inline void Order::_internal_set_symbol(const std::string& value) {
   
   symbol_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:Trade.protobuf.Order.symbol)
 }
 inline void Order::set_symbol(std::string&& value) {
   
@@ -660,9 +688,8 @@ inline void Order::set_symbol(const char* value, size_t size) {
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:Trade.protobuf.Order.symbol)
 }
-inline std::string* Order::mutable_symbol() {
+inline std::string* Order::_internal_mutable_symbol() {
   
-  // @@protoc_insertion_point(field_mutable:Trade.protobuf.Order.symbol)
   return symbol_.MutableNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 inline std::string* Order::release_symbol() {
@@ -746,12 +773,22 @@ inline void Balance::clear_currency() {
 }
 inline const std::string& Balance::currency() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Balance.currency)
-  return currency_.GetNoArena();
+  return _internal_currency();
 }
 inline void Balance::set_currency(const std::string& value) {
+  _internal_set_currency(value);
+  // @@protoc_insertion_point(field_set:Trade.protobuf.Balance.currency)
+}
+inline std::string* Balance::mutable_currency() {
+  // @@protoc_insertion_point(field_mutable:Trade.protobuf.Balance.currency)
+  return _internal_mutable_currency();
+}
+inline const std::string& Balance::_internal_currency() const {
+  return currency_.GetNoArena();
+}
+inline void Balance::_internal_set_currency(const std::string& value) {
   
   currency_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:Trade.protobuf.Balance.currency)
 }
 inline void Balance::set_currency(std::string&& value) {
   
@@ -771,9 +808,8 @@ inline void Balance::set_currency(const char* value, size_t size) {
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:Trade.protobuf.Balance.currency)
 }
-inline std::string* Balance::mutable_currency() {
+inline std::string* Balance::_internal_mutable_currency() {
   
-  // @@protoc_insertion_point(field_mutable:Trade.protobuf.Balance.currency)
   return currency_.MutableNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 inline std::string* Balance::release_currency() {
@@ -829,12 +865,22 @@ inline void Account::clear_name() {
 }
 inline const std::string& Account::name() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Account.name)
-  return name_.GetNoArena();
+  return _internal_name();
 }
 inline void Account::set_name(const std::string& value) {
+  _internal_set_name(value);
+  // @@protoc_insertion_point(field_set:Trade.protobuf.Account.name)
+}
+inline std::string* Account::mutable_name() {
+  // @@protoc_insertion_point(field_mutable:Trade.protobuf.Account.name)
+  return _internal_mutable_name();
+}
+inline const std::string& Account::_internal_name() const {
+  return name_.GetNoArena();
+}
+inline void Account::_internal_set_name(const std::string& value) {
   
   name_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:Trade.protobuf.Account.name)
 }
 inline void Account::set_name(std::string&& value) {
   
@@ -854,9 +900,8 @@ inline void Account::set_name(const char* value, size_t size) {
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:Trade.protobuf.Account.name)
 }
-inline std::string* Account::mutable_name() {
+inline std::string* Account::_internal_mutable_name() {
   
-  // @@protoc_insertion_point(field_mutable:Trade.protobuf.Account.name)
   return name_.MutableNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 inline std::string* Account::release_name() {
