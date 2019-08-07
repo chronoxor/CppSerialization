@@ -74,6 +74,8 @@ struct Order
     double price;
     double volume;
 
+    size_t fbe_type() const noexcept { return 1; }
+
     Order()
         : id((int32_t)0ll)
         , symbol()
@@ -184,6 +186,8 @@ struct Balance
     std::string currency;
     double amount;
 
+    size_t fbe_type() const noexcept { return 2; }
+
     Balance()
         : currency()
         , amount((double)0.0)
@@ -279,6 +283,8 @@ struct Account
     std::string name;
     ::trade::Balance wallet;
     std::vector<::trade::Order> orders;
+
+    size_t fbe_type() const noexcept { return 3; }
 
     Account()
         : id((int32_t)0ll)
