@@ -4,7 +4,7 @@ Catch2 modules/Catch2 https://github.com/catchorg/Catch2.git master
 CppBenchmark modules/CppBenchmark https://github.com/chronoxor/CppBenchmark.git master
 CppCommon modules/CppCommon https://github.com/chronoxor/CppCommon.git master
 flatbuffers modules/flatbuffers https://github.com/google/flatbuffers.git master
-protobuf modules/protobuf https://github.com/google/protobuf.git master
+protobuf modules/protobuf https://github.com/protocolbuffers/protobuf master
 rapidjson modules/rapidjson https://github.com/miloyip/rapidjson.git master
 
 # Scripts
