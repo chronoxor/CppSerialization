@@ -329,7 +329,7 @@ failure:
 
   // int32 id = 1;
   if (this->id() != 0) {
-    stream->EnsureSpace(&target);
+    target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->_internal_id(), target);
   }
 
@@ -345,27 +345,27 @@ failure:
 
   // .Trade.protobuf.OrderSide side = 3;
   if (this->side() != 0) {
-    stream->EnsureSpace(&target);
+    target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
       3, this->_internal_side(), target);
   }
 
   // .Trade.protobuf.OrderType type = 4;
   if (this->type() != 0) {
-    stream->EnsureSpace(&target);
+    target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
       4, this->_internal_type(), target);
   }
 
   // double price = 5;
   if (!(this->price() <= 0 && this->price() >= 0)) {
-    stream->EnsureSpace(&target);
+    target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(5, this->_internal_price(), target);
   }
 
   // double volume = 6;
   if (!(this->volume() <= 0 && this->volume() >= 0)) {
-    stream->EnsureSpace(&target);
+    target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(6, this->_internal_volume(), target);
   }
 
@@ -627,7 +627,7 @@ failure:
 
   // double amount = 2;
   if (!(this->amount() <= 0 && this->amount() >= 0)) {
-    stream->EnsureSpace(&target);
+    target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(2, this->_internal_amount(), target);
   }
 
@@ -879,7 +879,7 @@ failure:
 
   // int32 id = 1;
   if (this->id() != 0) {
-    stream->EnsureSpace(&target);
+    target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->_internal_id(), target);
   }
 
@@ -895,7 +895,7 @@ failure:
 
   // .Trade.protobuf.Balance wallet = 3;
   if (this->has_wallet()) {
-    stream->EnsureSpace(&target);
+    target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessageToArray(
         3, _Internal::wallet(this), target, stream);
@@ -904,7 +904,7 @@ failure:
   // repeated .Trade.protobuf.Order orders = 4;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->_internal_orders_size()); i < n; i++) {
-    stream->EnsureSpace(&target);
+    target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessageToArray(4, this->_internal_orders(i), target, stream);
   }
