@@ -30,14 +30,15 @@ matrix:
     - name: "Linux (Clang compiler)"
       os: linux
       compiler: clang
-      env: OS=linux COMPILER=clang CLANG_VERSION=8
+      env: OS=linux COMPILER=clang CLANG_VERSION=10
       addons:
         apt:
           sources:
-            - llvm-toolchain-bionic-8
+            - sourceline: 'ppa:ubuntu-toolchain-r/test'
+            - sourceline: 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
           packages:
-            - clang-8
-            - libstdc++-8-dev
+            - clang-10
             - cmake
             - doxygen
             - graphviz

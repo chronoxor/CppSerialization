@@ -267,7 +267,9 @@ const char* Order::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::inte
       // string symbol = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8(_internal_mutable_symbol(), ptr, ctx, "Trade.protobuf.Order.symbol");
+          auto str = _internal_mutable_symbol();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "Trade.protobuf.Order.symbol"));
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -321,7 +323,7 @@ failure:
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* Order::InternalSerializeWithCachedSizesToArray(
+::PROTOBUF_NAMESPACE_ID::uint8* Order::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:Trade.protobuf.Order)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
@@ -578,7 +580,9 @@ const char* Balance::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
       // string currency = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8(_internal_mutable_currency(), ptr, ctx, "Trade.protobuf.Balance.currency");
+          auto str = _internal_mutable_currency();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "Trade.protobuf.Balance.currency"));
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -609,7 +613,7 @@ failure:
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* Balance::InternalSerializeWithCachedSizesToArray(
+::PROTOBUF_NAMESPACE_ID::uint8* Balance::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:Trade.protobuf.Balance)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
@@ -828,7 +832,9 @@ const char* Account::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
       // string name = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8(_internal_mutable_name(), ptr, ctx, "Trade.protobuf.Account.name");
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "Trade.protobuf.Account.name"));
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -871,7 +877,7 @@ failure:
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* Account::InternalSerializeWithCachedSizesToArray(
+::PROTOBUF_NAMESPACE_ID::uint8* Account::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:Trade.protobuf.Account)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
@@ -897,7 +903,7 @@ failure:
   if (this->has_wallet()) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessageToArray(
+      InternalWriteMessage(
         3, _Internal::wallet(this), target, stream);
   }
 
@@ -906,7 +912,7 @@ failure:
       n = static_cast<unsigned int>(this->_internal_orders_size()); i < n; i++) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessageToArray(4, this->_internal_orders(i), target, stream);
+      InternalWriteMessage(4, this->_internal_orders(i), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
