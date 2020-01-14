@@ -10,10 +10,13 @@ namespace Trade {
 namespace flatbuf {
 
 struct Order;
+struct OrderBuilder;
 
 struct Balance;
+struct BalanceBuilder;
 
 struct Account;
+struct AccountBuilder;
 
 enum class OrderSide : int8_t {
   buy = 0,
@@ -40,7 +43,7 @@ inline const char * const *EnumNamesOrderSide() {
 }
 
 inline const char *EnumNameOrderSide(OrderSide e) {
-  if (e < OrderSide::buy || e > OrderSide::sell) return "";
+  if (flatbuffers::IsOutRange(e, OrderSide::buy, OrderSide::sell)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesOrderSide()[index];
 }
@@ -73,12 +76,13 @@ inline const char * const *EnumNamesOrderType() {
 }
 
 inline const char *EnumNameOrderType(OrderType e) {
-  if (e < OrderType::market || e > OrderType::stop) return "";
+  if (flatbuffers::IsOutRange(e, OrderType::market, OrderType::stop)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesOrderType()[index];
 }
 
 struct Order FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef OrderBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_ID = 4,
     VT_SYMBOL = 6,
@@ -119,6 +123,7 @@ struct Order FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 };
 
 struct OrderBuilder {
+  typedef Order Table;
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
   void add_id(int32_t id) {
@@ -189,6 +194,7 @@ inline flatbuffers::Offset<Order> CreateOrderDirect(
 }
 
 struct Balance FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef BalanceBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_CURRENCY = 4,
     VT_AMOUNT = 6
@@ -209,6 +215,7 @@ struct Balance FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 };
 
 struct BalanceBuilder {
+  typedef Balance Table;
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
   void add_currency(flatbuffers::Offset<flatbuffers::String> currency) {
@@ -251,6 +258,7 @@ inline flatbuffers::Offset<Balance> CreateBalanceDirect(
 }
 
 struct Account FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef AccountBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_ID = 4,
     VT_NAME = 6,
@@ -284,6 +292,7 @@ struct Account FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 };
 
 struct AccountBuilder {
+  typedef Account Table;
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
   void add_id(int32_t id) {
