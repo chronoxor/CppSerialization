@@ -40,7 +40,6 @@ static void InitDefaultsscc_info_Account_trade_2eproto() {
     new (ptr) ::Trade::protobuf::Account();
     ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::Trade::protobuf::Account::InitAsDefaultInstance();
 }
 
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<2> scc_info_Account_trade_2eproto =
@@ -56,7 +55,6 @@ static void InitDefaultsscc_info_Balance_trade_2eproto() {
     new (ptr) ::Trade::protobuf::Balance();
     ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::Trade::protobuf::Balance::InitAsDefaultInstance();
 }
 
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Balance_trade_2eproto =
@@ -70,7 +68,6 @@ static void InitDefaultsscc_info_Order_trade_2eproto() {
     new (ptr) ::Trade::protobuf::Order();
     ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::Trade::protobuf::Order::InitAsDefaultInstance();
 }
 
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Order_trade_2eproto =
@@ -185,8 +182,6 @@ bool OrderType_IsValid(int value) {
 
 // ===================================================================
 
-void Order::InitAsDefaultInstance() {
-}
 class Order::_Internal {
  public:
 };
@@ -522,8 +517,6 @@ void Order::InternalSwap(Order* other) {
 
 // ===================================================================
 
-void Balance::InitAsDefaultInstance() {
-}
 class Balance::_Internal {
  public:
 };
@@ -756,10 +749,6 @@ void Balance::InternalSwap(Balance* other) {
 
 // ===================================================================
 
-void Account::InitAsDefaultInstance() {
-  ::Trade::protobuf::_Account_default_instance_._instance.get_mutable()->wallet_ = const_cast< ::Trade::protobuf::Balance*>(
-      ::Trade::protobuf::Balance::internal_default_instance());
-}
 class Account::_Internal {
  public:
   static const ::Trade::protobuf::Balance& wallet(const Account* msg);
