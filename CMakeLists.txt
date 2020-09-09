@@ -52,14 +52,6 @@ list(APPEND LINKLIBS cppserialization)
 # Additional module components: benchmarks, examples, plugins, tests, tools and install
 if(NOT CPPSERIALIZATION_MODULE)
 
-  # Proto FBE models
-  file(GLOB FBE_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/proto/fbe" "proto/fbe/*.cpp")
-  foreach(FBE_FILE ${FBE_FILES})
-    set(FBE_PROTO_DIR "${CMAKE_CURRENT_SOURCE_DIR}/proto/fbe")
-    set(FBE_SOURCE_FILE "${FBE_PROTO_DIR}/${FBE_FILE}")
-    list(APPEND PROTO_FILES ${FBE_SOURCE_FILE})
-  endforeach()
-
   # Proto Flatbuffers models
   file(GLOB FLATBUFFERS_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/proto" "proto/*.fbs")
   foreach(FLATBUFFERS_FILE ${FLATBUFFERS_FILES})
@@ -110,7 +102,15 @@ if(NOT CPPSERIALIZATION_MODULE)
     list(APPEND PROTO_FILES ${CAPNP_HEADERS} ${CAPNP_SOURCES})
   endforeach()
 
-  # Proto
+  # Proto FBE models
+  file(GLOB FBE_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/proto/fbe" "proto/fbe/*.cpp")
+  foreach(FBE_FILE ${FBE_FILES})
+    set(FBE_PROTO_DIR "${CMAKE_CURRENT_SOURCE_DIR}/proto/fbe")
+    set(FBE_SOURCE_FILE "${FBE_PROTO_DIR}/${FBE_FILE}")
+    list(APPEND PROTO_FILES ${FBE_SOURCE_FILE})
+  endforeach()
+
+  # Proto library
   if(MSVC)
     # C4125: decimal digit terminates octal escape sequence
     # C4127: conditional expression is constant
