@@ -9,7 +9,7 @@
 class SerializationFixture
 {
 protected:
-    FBE::trade::AccountFinalModel<FBE::WriteBuffer> writer;
+    FBE::trade::AccountFinalModel writer;
     trade::Account account;
 
     SerializationFixture()

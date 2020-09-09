@@ -9,8 +9,8 @@
 class DeserializationFixture
 {
 protected:
-    FBE::trade::AccountFinalModel<FBE::WriteBuffer> writer;
-    FBE::trade::AccountFinalModel<FBE::ReadBuffer> reader;
+    FBE::trade::AccountFinalModel writer;
+    FBE::trade::AccountFinalModel reader;
     trade::Account account;
 
     DeserializationFixture()

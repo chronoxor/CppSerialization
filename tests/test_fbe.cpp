@@ -18,7 +18,7 @@ TEST_CASE("FastBinaryEncoding", "[CppSerialization]")
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
     // Serialize the account to the FBE stream
-    FBE::trade::AccountModel<FBE::WriteBuffer> writer;
+    FBE::trade::AccountModel writer;
     size_t model_begin = writer.create_begin();
     account.Serialize(writer.model);
     size_t serialized = writer.create_end(model_begin);
@@ -29,7 +29,7 @@ TEST_CASE("FastBinaryEncoding", "[CppSerialization]")
 
     // Deserialize the account from the FBE stream
     TradeProto::Account deserialized;
-    FBE::trade::AccountModel<FBE::ReadBuffer> reader;
+    FBE::trade::AccountModel reader;
     reader.attach(writer.buffer());
     assert(reader.verify() && "Model is broken!");
     deserialized.Deserialize(reader.model);

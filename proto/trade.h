@@ -27,6 +27,7 @@
 #include "capnp/serialize.h"
 #include "capnproto/trade.capnp.h"
 #include "fbe/trade_models.h"
+#include "fbe/trade_final_models.h"
 #include "flatbuffers/trade_generated.h"
 #include "protobuf/trade.pb.h"
 #include "sbe/Account.h"
@@ -102,8 +103,7 @@ struct Order
 
     // FastBinaryEncoding serialization
 
-    template <class TBuffer>
-    void Serialize(FBE::FieldModel<TBuffer, trade::Order>& model) const
+    void Serialize(FBE::FieldModel<trade::Order>& model) const
     {
         size_t model_begin = model.set_begin();
         model.id.set(Id);
@@ -115,8 +115,7 @@ struct Order
         model.set_end(model_begin);
     }
 
-    template <class TBuffer>
-    void Deserialize(const FBE::FieldModel<TBuffer, trade::Order>& model)
+    void Deserialize(const FBE::FieldModel<trade::Order>& model)
     {
         size_t model_begin = model.get_begin();
         model.id.get(Id);
@@ -254,8 +253,7 @@ struct Balance
 
     // FastBinaryEncoding serialization
 
-    template <class TBuffer>
-    void Serialize(FBE::FieldModel<TBuffer, trade::Balance>& model) const
+    void Serialize(FBE::FieldModel<trade::Balance>& model) const
     {
         size_t model_begin = model.set_begin();
         model.currency.set(Currency);
@@ -263,8 +261,7 @@ struct Balance
         model.set_end(model_begin);
     }
 
-    template <class TBuffer>
-    void Deserialize(const FBE::FieldModel<TBuffer, trade::Balance>& model)
+    void Deserialize(const FBE::FieldModel<trade::Balance>& model)
     {
         size_t model_begin = model.get_begin();
         model.currency.get(Currency);
@@ -384,8 +381,7 @@ struct Account
 
     // FastBinaryEncoding serialization
 
-    template <class TBuffer>
-    void Serialize(FBE::FieldModel<TBuffer, trade::Account>& model) const
+    void Serialize(FBE::FieldModel<trade::Account>& model) const
     {
         size_t model_begin = model.set_begin();
         model.id.set(Id);
@@ -400,8 +396,7 @@ struct Account
         model.set_end(model_begin);
     }
 
-    template <class TBuffer>
-    void Deserialize(const FBE::FieldModel<TBuffer, trade::Account>& model)
+    void Deserialize(const FBE::FieldModel<trade::Account>& model)
     {
         size_t model_begin = model.get_begin();
         model.id.get(Id);
