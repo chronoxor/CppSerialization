@@ -11,6 +11,8 @@
 #endif
 
 
+CAPNP_BEGIN_HEADER
+
 namespace capnp {
 namespace schemas {
 
@@ -664,4 +666,6 @@ inline ::capnp::Orphan< ::capnp::List< ::Trade::capnproto::Order,  ::capnp::Kind
 
 }  // namespace
 }  // namespace
+
+CAPNP_END_HEADER
 
