@@ -115,6 +115,7 @@ if(NOT CPPSERIALIZATION_MODULE)
 
   # Proto library
   add_library(proto ${PROTO_FILES})
+  add_dependencies(proto ${PROTO_DEPENDENCIES})
   if(MSVC)
     # C4125: decimal digit terminates octal escape sequence
     # C4127: conditional expression is constant
@@ -126,7 +127,6 @@ if(NOT CPPSERIALIZATION_MODULE)
     set_target_properties(proto PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} -Wno-pedantic -Wno-array-bounds" FOLDER "proto")
   endif()
   target_link_libraries(proto ${LINKLIBS})
-  add_dependencies(proto ${PROTO_DEPENDENCIES})
   list(APPEND LINKLIBS proto)
 
   # Examples
