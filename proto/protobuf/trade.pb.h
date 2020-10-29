@@ -25,7 +25,6 @@
 #include <google/protobuf/arenastring.h>
 #include <google/protobuf/generated_message_table_driven.h>
 #include <google/protobuf/generated_message_util.h>
-#include <google/protobuf/inlined_string_field.h>
 #include <google/protobuf/metadata_lite.h>
 #include <google/protobuf/generated_message_reflection.h>
 #include <google/protobuf/message.h>
@@ -706,7 +705,7 @@ inline void Order::set_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
 
 // string symbol = 2;
 inline void Order::clear_symbol() {
-  symbol_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  symbol_.ClearToEmpty();
 }
 inline const std::string& Order::symbol() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Order.symbol)
@@ -725,31 +724,30 @@ inline const std::string& Order::_internal_symbol() const {
 }
 inline void Order::_internal_set_symbol(const std::string& value) {
   
-  symbol_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+  symbol_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArena());
 }
 inline void Order::set_symbol(std::string&& value) {
   
   symbol_.Set(
-    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::move(value), GetArena());
   // @@protoc_insertion_point(field_set_rvalue:Trade.protobuf.Order.symbol)
 }
 inline void Order::set_symbol(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
-  symbol_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
-              GetArena());
+  symbol_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(value), GetArena());
   // @@protoc_insertion_point(field_set_char:Trade.protobuf.Order.symbol)
 }
 inline void Order::set_symbol(const char* value,
     size_t size) {
   
-  symbol_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+  symbol_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(
       reinterpret_cast<const char*>(value), size), GetArena());
   // @@protoc_insertion_point(field_set_pointer:Trade.protobuf.Order.symbol)
 }
 inline std::string* Order::_internal_mutable_symbol() {
   
-  return symbol_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  return symbol_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArena());
 }
 inline std::string* Order::release_symbol() {
   // @@protoc_insertion_point(field_release:Trade.protobuf.Order.symbol)
@@ -852,7 +850,7 @@ inline void Order::set_volume(double value) {
 
 // string currency = 1;
 inline void Balance::clear_currency() {
-  currency_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  currency_.ClearToEmpty();
 }
 inline const std::string& Balance::currency() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Balance.currency)
@@ -871,31 +869,30 @@ inline const std::string& Balance::_internal_currency() const {
 }
 inline void Balance::_internal_set_currency(const std::string& value) {
   
-  currency_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+  currency_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArena());
 }
 inline void Balance::set_currency(std::string&& value) {
   
   currency_.Set(
-    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::move(value), GetArena());
   // @@protoc_insertion_point(field_set_rvalue:Trade.protobuf.Balance.currency)
 }
 inline void Balance::set_currency(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
-  currency_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
-              GetArena());
+  currency_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(value), GetArena());
   // @@protoc_insertion_point(field_set_char:Trade.protobuf.Balance.currency)
 }
 inline void Balance::set_currency(const char* value,
     size_t size) {
   
-  currency_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+  currency_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(
       reinterpret_cast<const char*>(value), size), GetArena());
   // @@protoc_insertion_point(field_set_pointer:Trade.protobuf.Balance.currency)
 }
 inline std::string* Balance::_internal_mutable_currency() {
   
-  return currency_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  return currency_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArena());
 }
 inline std::string* Balance::release_currency() {
   // @@protoc_insertion_point(field_release:Trade.protobuf.Balance.currency)
@@ -958,7 +955,7 @@ inline void Account::set_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
 
 // string name = 2;
 inline void Account::clear_name() {
-  name_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  name_.ClearToEmpty();
 }
 inline const std::string& Account::name() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Account.name)
@@ -977,31 +974,30 @@ inline const std::string& Account::_internal_name() const {
 }
 inline void Account::_internal_set_name(const std::string& value) {
   
-  name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+  name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArena());
 }
 inline void Account::set_name(std::string&& value) {
   
   name_.Set(
-    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::move(value), GetArena());
   // @@protoc_insertion_point(field_set_rvalue:Trade.protobuf.Account.name)
 }
 inline void Account::set_name(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
-  name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
-              GetArena());
+  name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(value), GetArena());
   // @@protoc_insertion_point(field_set_char:Trade.protobuf.Account.name)
 }
 inline void Account::set_name(const char* value,
     size_t size) {
   
-  name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+  name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(
       reinterpret_cast<const char*>(value), size), GetArena());
   // @@protoc_insertion_point(field_set_pointer:Trade.protobuf.Account.name)
 }
 inline std::string* Account::_internal_mutable_name() {
   
-  return name_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  return name_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArena());
 }
 inline std::string* Account::release_name() {
   // @@protoc_insertion_point(field_release:Trade.protobuf.Account.name)
