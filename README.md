@@ -1,11 +1,11 @@
 # CppSerialization
 
-[![Linux build status](https://img.shields.io/travis/chronoxor/CppSerialization/master.svg?label=Linux)](https://travis-ci.com/chronoxor/CppSerialization)
-[![OSX build status](https://img.shields.io/travis/chronoxor/CppSerialization/master.svg?label=OSX)](https://travis-ci.com/chronoxor/CppSerialization)
-[![Cygwin build status](https://img.shields.io/appveyor/ci/chronoxor/CppSerialization/master.svg?label=Cygwin)](https://ci.appveyor.com/project/chronoxor/CppSerialization)
-[![MSYS2 build status](https://img.shields.io/appveyor/ci/chronoxor/CppSerialization/master.svg?label=MSYS2)](https://ci.appveyor.com/project/chronoxor/CppSerialization)
-[![MinGW build status](https://img.shields.io/appveyor/ci/chronoxor/CppSerialization/master.svg?label=MinGW)](https://ci.appveyor.com/project/chronoxor/CppSerialization)
-[![Windows build status](https://img.shields.io/appveyor/ci/chronoxor/CppSerialization/master.svg?label=Windows)](https://ci.appveyor.com/project/chronoxor/CppSerialization)
+[![Linux build status](https://img.shields.io/travis/com/chronoxor/CppSerialization/master?label=Linux)](https://travis-ci.com/chronoxor/CppSerialization)
+[![OSX build status](https://img.shields.io/travis/com/chronoxor/CppSerialization/master?label=OSX)](https://travis-ci.com/chronoxor/CppSerialization)
+[![Cygwin build status](https://img.shields.io/appveyor/build/chronoxor/CppSerialization/master?label=Cygwin)](https://ci.appveyor.com/project/chronoxor/CppSerialization)
+[![MSYS2 build status](https://img.shields.io/appveyor/build/chronoxor/CppSerialization/master?label=MSYS2)](https://ci.appveyor.com/project/chronoxor/CppSerialization)
+[![MinGW build status](https://img.shields.io/appveyor/build/chronoxor/CppSerialization/master?label=MinGW)](https://ci.appveyor.com/project/chronoxor/CppSerialization)
+[![Windows build status](https://img.shields.io/appveyor/build/chronoxor/CppSerialization/master?label=Windows)](https://ci.appveyor.com/project/chronoxor/CppSerialization)
 
 C++ Serialization Library provides functionality to serialize/deserialize
 objects using different protocols such as Cap'n'Proto, FastBinaryEncoding,
