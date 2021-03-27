@@ -16,65 +16,57 @@
 #include <google/protobuf/port_def.inc>
 
 PROTOBUF_PRAGMA_INIT_SEG
-extern PROTOBUF_INTERNAL_EXPORT_trade_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Balance_trade_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_trade_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Order_trade_2eproto;
 namespace Trade {
 namespace protobuf {
-class OrderDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Order> _instance;
-} _Order_default_instance_;
-class BalanceDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Balance> _instance;
-} _Balance_default_instance_;
-class AccountDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Account> _instance;
-} _Account_default_instance_;
+constexpr Order::Order(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : symbol_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , id_(0)
+  , side_(0)
+
+  , price_(0)
+  , volume_(0)
+  , type_(0)
+{}
+struct OrderDefaultTypeInternal {
+  constexpr OrderDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~OrderDefaultTypeInternal() {}
+  union {
+    Order _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT OrderDefaultTypeInternal _Order_default_instance_;
+constexpr Balance::Balance(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : currency_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , amount_(0){}
+struct BalanceDefaultTypeInternal {
+  constexpr BalanceDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~BalanceDefaultTypeInternal() {}
+  union {
+    Balance _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT BalanceDefaultTypeInternal _Balance_default_instance_;
+constexpr Account::Account(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : orders_()
+  , name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , wallet_(nullptr)
+  , id_(0){}
+struct AccountDefaultTypeInternal {
+  constexpr AccountDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~AccountDefaultTypeInternal() {}
+  union {
+    Account _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT AccountDefaultTypeInternal _Account_default_instance_;
 }  // namespace protobuf
 }  // namespace Trade
-static void InitDefaultsscc_info_Account_trade_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::Trade::protobuf::_Account_default_instance_;
-    new (ptr) ::Trade::protobuf::Account();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<2> scc_info_Account_trade_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 2, 0, InitDefaultsscc_info_Account_trade_2eproto}, {
-      &scc_info_Balance_trade_2eproto.base,
-      &scc_info_Order_trade_2eproto.base,}};
-
-static void InitDefaultsscc_info_Balance_trade_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::Trade::protobuf::_Balance_default_instance_;
-    new (ptr) ::Trade::protobuf::Balance();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Balance_trade_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Balance_trade_2eproto}, {}};
-
-static void InitDefaultsscc_info_Order_trade_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::Trade::protobuf::_Order_default_instance_;
-    new (ptr) ::Trade::protobuf::Order();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Order_trade_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Order_trade_2eproto}, {}};
-
 static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_trade_2eproto[3];
 static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_trade_2eproto[2];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_trade_2eproto = nullptr;
@@ -133,20 +125,16 @@ const char descriptor_table_protodef_trade_2eproto[] PROTOBUF_SECTION_VARIABLE(p
   "uy\020\000\022\010\n\004sell\020\001*,\n\tOrderType\022\n\n\006market\020\000\022"
   "\t\n\005limit\020\001\022\010\n\004stop\020\002b\006proto3"
   ;
-static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_trade_2eproto_deps[1] = {
-};
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_trade_2eproto_sccs[3] = {
-  &scc_info_Account_trade_2eproto.base,
-  &scc_info_Balance_trade_2eproto.base,
-  &scc_info_Order_trade_2eproto.base,
-};
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_trade_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_trade_2eproto = {
-  false, false, descriptor_table_protodef_trade_2eproto, "trade.proto", 428,
-  &descriptor_table_trade_2eproto_once, descriptor_table_trade_2eproto_sccs, descriptor_table_trade_2eproto_deps, 3, 0,
+  false, false, 428, descriptor_table_protodef_trade_2eproto, "trade.proto", 
+  &descriptor_table_trade_2eproto_once, nullptr, 0, 3,
   schemas, file_default_instances, TableStruct_trade_2eproto::offsets,
-  file_level_metadata_trade_2eproto, 3, file_level_enum_descriptors_trade_2eproto, file_level_service_descriptors_trade_2eproto,
+  file_level_metadata_trade_2eproto, file_level_enum_descriptors_trade_2eproto, file_level_service_descriptors_trade_2eproto,
 };
+PROTOBUF_ATTRIBUTE_WEAK const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable* descriptor_table_trade_2eproto_getter() {
+  return &descriptor_table_trade_2eproto;
+}
 
 // Force running AddDescriptors() at dynamic initialization time.
 PROTOBUF_ATTRIBUTE_INIT_PRIORITY static ::PROTOBUF_NAMESPACE_ID::internal::AddDescriptorsRunner dynamic_init_dummy_trade_2eproto(&descriptor_table_trade_2eproto);
@@ -209,12 +197,11 @@ Order::Order(const Order& from)
 }
 
 void Order::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_Order_trade_2eproto.base);
-  symbol_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-      reinterpret_cast<char*>(&id_) - reinterpret_cast<char*>(this)),
-      0, static_cast<size_t>(reinterpret_cast<char*>(&type_) -
-      reinterpret_cast<char*>(&id_)) + sizeof(type_));
+symbol_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&id_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&type_) -
+    reinterpret_cast<char*>(&id_)) + sizeof(type_));
 }
 
 Order::~Order() {
@@ -237,11 +224,6 @@ void Order::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void Order::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const Order& Order::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_Order_trade_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void Order::Clear() {
 // @@protoc_insertion_point(message_clear_start:Trade.protobuf.Order)
@@ -261,7 +243,6 @@ const char* Order::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::inte
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
     switch (tag >> 3) {
       // int32 id = 1;
       case 1:
@@ -311,7 +292,8 @@ const char* Order::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::inte
         continue;
       default: {
       handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
+        if ((tag == 0) || ((tag & 7) == 4)) {
+          CHK_(ptr);
           ctx->SetLastTag(tag);
           goto success;
         }
@@ -513,9 +495,10 @@ void Order::InternalSwap(Order* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Order::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_trade_2eproto_getter, &descriptor_table_trade_2eproto_once,
+      file_level_metadata_trade_2eproto[0]);
 }
-
 
 // ===================================================================
 
@@ -542,9 +525,8 @@ Balance::Balance(const Balance& from)
 }
 
 void Balance::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_Balance_trade_2eproto.base);
-  currency_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  amount_ = 0;
+currency_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+amount_ = 0;
 }
 
 Balance::~Balance() {
@@ -567,11 +549,6 @@ void Balance::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void Balance::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const Balance& Balance::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_Balance_trade_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void Balance::Clear() {
 // @@protoc_insertion_point(message_clear_start:Trade.protobuf.Balance)
@@ -589,7 +566,6 @@ const char* Balance::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
     switch (tag >> 3) {
       // string currency = 1;
       case 1:
@@ -609,7 +585,8 @@ const char* Balance::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
         continue;
       default: {
       handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
+        if ((tag == 0) || ((tag & 7) == 4)) {
+          CHK_(ptr);
           ctx->SetLastTag(tag);
           goto success;
         }
@@ -744,9 +721,10 @@ void Balance::InternalSwap(Balance* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Balance::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_trade_2eproto_getter, &descriptor_table_trade_2eproto_once,
+      file_level_metadata_trade_2eproto[1]);
 }
-
 
 // ===================================================================
 
@@ -785,12 +763,11 @@ Account::Account(const Account& from)
 }
 
 void Account::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_Account_trade_2eproto.base);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-      reinterpret_cast<char*>(&wallet_) - reinterpret_cast<char*>(this)),
-      0, static_cast<size_t>(reinterpret_cast<char*>(&id_) -
-      reinterpret_cast<char*>(&wallet_)) + sizeof(id_));
+name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&wallet_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&id_) -
+    reinterpret_cast<char*>(&wallet_)) + sizeof(id_));
 }
 
 Account::~Account() {
@@ -814,11 +791,6 @@ void Account::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void Account::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const Account& Account::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_Account_trade_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void Account::Clear() {
 // @@protoc_insertion_point(message_clear_start:Trade.protobuf.Account)
@@ -841,7 +813,6 @@ const char* Account::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
     switch (tag >> 3) {
       // int32 id = 1;
       case 1:
@@ -880,7 +851,8 @@ const char* Account::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
         continue;
       default: {
       handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
+        if ((tag == 0) || ((tag & 7) == 4)) {
+          CHK_(ptr);
           ctx->SetLastTag(tag);
           goto success;
         }
@@ -1057,9 +1029,10 @@ void Account::InternalSwap(Account* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Account::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_trade_2eproto_getter, &descriptor_table_trade_2eproto_once,
+      file_level_metadata_trade_2eproto[2]);
 }
-
 
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace protobuf
