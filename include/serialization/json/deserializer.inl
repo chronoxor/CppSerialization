@@ -218,7 +218,7 @@ inline bool Deserializer::FindObject(const JSON& json, const char* key, const st
         throwex SerializationException("Cannot deserialize JSON object!");
 
     // Handle object
-    handler(member->value.GetObject());
+    handler(member->value.GetObj());
     return true;
 }
 
