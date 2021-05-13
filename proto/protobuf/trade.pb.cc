@@ -188,7 +188,7 @@ Order::Order(const Order& from)
   symbol_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_symbol().empty()) {
     symbol_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_symbol(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   ::memcpy(&id_, &from.id_,
     static_cast<size_t>(reinterpret_cast<char*>(&type_) -
@@ -211,7 +211,7 @@ Order::~Order() {
 }
 
 void Order::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   symbol_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
@@ -326,7 +326,7 @@ failure:
   }
 
   // string symbol = 2;
-  if (this->symbol().size() > 0) {
+  if (!this->symbol().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_symbol().data(), static_cast<int>(this->_internal_symbol().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
@@ -378,7 +378,7 @@ size_t Order::ByteSizeLong() const {
   (void) cached_has_bits;
 
   // string symbol = 2;
-  if (this->symbol().size() > 0) {
+  if (!this->symbol().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_symbol());
@@ -444,7 +444,7 @@ void Order::MergeFrom(const Order& from) {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.symbol().size() > 0) {
+  if (!from.symbol().empty()) {
     _internal_set_symbol(from._internal_symbol());
   }
   if (from.id() != 0) {
@@ -485,7 +485,11 @@ bool Order::IsInitialized() const {
 void Order::InternalSwap(Order* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  symbol_.Swap(&other->symbol_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &symbol_, GetArenaForAllocation(),
+      &other->symbol_, other->GetArenaForAllocation()
+  );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(Order, type_)
       + sizeof(Order::type_)
@@ -518,7 +522,7 @@ Balance::Balance(const Balance& from)
   currency_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_currency().empty()) {
     currency_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_currency(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   amount_ = from.amount_;
   // @@protoc_insertion_point(copy_constructor:Trade.protobuf.Balance)
@@ -536,7 +540,7 @@ Balance::~Balance() {
 }
 
 void Balance::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   currency_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
@@ -613,7 +617,7 @@ failure:
   (void) cached_has_bits;
 
   // string currency = 1;
-  if (this->currency().size() > 0) {
+  if (!this->currency().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_currency().data(), static_cast<int>(this->_internal_currency().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
@@ -645,7 +649,7 @@ size_t Balance::ByteSizeLong() const {
   (void) cached_has_bits;
 
   // string currency = 1;
-  if (this->currency().size() > 0) {
+  if (!this->currency().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_currency());
@@ -687,7 +691,7 @@ void Balance::MergeFrom(const Balance& from) {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.currency().size() > 0) {
+  if (!from.currency().empty()) {
     _internal_set_currency(from._internal_currency());
   }
   if (!(from.amount() <= 0 && from.amount() >= 0)) {
@@ -716,7 +720,11 @@ bool Balance::IsInitialized() const {
 void Balance::InternalSwap(Balance* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  currency_.Swap(&other->currency_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &currency_, GetArenaForAllocation(),
+      &other->currency_, other->GetArenaForAllocation()
+  );
   swap(amount_, other->amount_);
 }
 
@@ -751,7 +759,7 @@ Account::Account(const Account& from)
   name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_name().empty()) {
     name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   if (from._internal_has_wallet()) {
     wallet_ = new ::Trade::protobuf::Balance(*from.wallet_);
@@ -777,7 +785,7 @@ Account::~Account() {
 }
 
 void Account::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (this != internal_default_instance()) delete wallet_;
 }
@@ -800,7 +808,7 @@ void Account::Clear() {
 
   orders_.Clear();
   name_.ClearToEmpty();
-  if (GetArena() == nullptr && wallet_ != nullptr) {
+  if (GetArenaForAllocation() == nullptr && wallet_ != nullptr) {
     delete wallet_;
   }
   wallet_ = nullptr;
@@ -885,7 +893,7 @@ failure:
   }
 
   // string name = 2;
-  if (this->name().size() > 0) {
+  if (!this->name().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
@@ -934,7 +942,7 @@ size_t Account::ByteSizeLong() const {
   }
 
   // string name = 2;
-  if (this->name().size() > 0) {
+  if (!this->name().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_name());
@@ -986,7 +994,7 @@ void Account::MergeFrom(const Account& from) {
   (void) cached_has_bits;
 
   orders_.MergeFrom(from.orders_);
-  if (from.name().size() > 0) {
+  if (!from.name().empty()) {
     _internal_set_name(from._internal_name());
   }
   if (from.has_wallet()) {
@@ -1019,7 +1027,11 @@ void Account::InternalSwap(Account* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   orders_.InternalSwap(&other->orders_);
-  name_.Swap(&other->name_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &name_, GetArenaForAllocation(),
+      &other->name_, other->GetArenaForAllocation()
+  );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(Account, id_)
       + sizeof(Account::id_)
