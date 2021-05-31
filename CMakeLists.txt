@@ -119,9 +119,9 @@ if(NOT CPPSERIALIZATION_MODULE)
   if(MSVC)
     # C4125: decimal digit terminates octal escape sequence
     # C4127: conditional expression is constant
-    # C4244: conversion' conversion from 'type1' to 'type2', possible loss of data
-    # C4245: conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
-    # C4267: var' : conversion from 'size_t' to 'type', possible loss of data
+    # C4244: 'conversion' conversion from 'type1' to 'type2', possible loss of data
+    # C4245: 'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
+    # C4267: 'var' : conversion from 'size_t' to 'type', possible loss of data
     set_target_properties(proto PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} /wd4125 /wd4127 /wd4244 /wd4245 /wd4267" FOLDER "proto")
   else()
     set_target_properties(proto PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} -Wno-pedantic -Wno-array-bounds" FOLDER "proto")
