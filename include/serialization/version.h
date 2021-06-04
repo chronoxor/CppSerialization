@@ -28,7 +28,7 @@ GitHub: https://github.com/chronoxor/CppSerialization
 namespace CppSerialization {
 
 //! Project version
-const char version[] = "1.0.0.0";
+const char version[] = "1.0.1.0";
 
 } // namespace CppSerialization
 
