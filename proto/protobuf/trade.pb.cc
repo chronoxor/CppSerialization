@@ -324,13 +324,13 @@ failure:
   (void) cached_has_bits;
 
   // int32 id = 1;
-  if (this->id() != 0) {
+  if (this->_internal_id() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->_internal_id(), target);
   }
 
   // string symbol = 2;
-  if (!this->symbol().empty()) {
+  if (!this->_internal_symbol().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_symbol().data(), static_cast<int>(this->_internal_symbol().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
@@ -340,27 +340,27 @@ failure:
   }
 
   // .Trade.protobuf.OrderSide side = 3;
-  if (this->side() != 0) {
+  if (this->_internal_side() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
       3, this->_internal_side(), target);
   }
 
   // .Trade.protobuf.OrderType type = 4;
-  if (this->type() != 0) {
+  if (this->_internal_type() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
       4, this->_internal_type(), target);
   }
 
   // double price = 5;
-  if (!(this->price() <= 0 && this->price() >= 0)) {
+  if (!(this->_internal_price() <= 0 && this->_internal_price() >= 0)) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(5, this->_internal_price(), target);
   }
 
   // double volume = 6;
-  if (!(this->volume() <= 0 && this->volume() >= 0)) {
+  if (!(this->_internal_volume() <= 0 && this->_internal_volume() >= 0)) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(6, this->_internal_volume(), target);
   }
@@ -382,37 +382,37 @@ size_t Order::ByteSizeLong() const {
   (void) cached_has_bits;
 
   // string symbol = 2;
-  if (!this->symbol().empty()) {
+  if (!this->_internal_symbol().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_symbol());
   }
 
   // int32 id = 1;
-  if (this->id() != 0) {
+  if (this->_internal_id() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
         this->_internal_id());
   }
 
   // .Trade.protobuf.OrderSide side = 3;
-  if (this->side() != 0) {
+  if (this->_internal_side() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_side());
   }
 
   // double price = 5;
-  if (!(this->price() <= 0 && this->price() >= 0)) {
+  if (!(this->_internal_price() <= 0 && this->_internal_price() >= 0)) {
     total_size += 1 + 8;
   }
 
   // double volume = 6;
-  if (!(this->volume() <= 0 && this->volume() >= 0)) {
+  if (!(this->_internal_volume() <= 0 && this->_internal_volume() >= 0)) {
     total_size += 1 + 8;
   }
 
   // .Trade.protobuf.OrderType type = 4;
-  if (this->type() != 0) {
+  if (this->_internal_type() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_type());
   }
@@ -445,22 +445,22 @@ void Order::MergeFrom(const Order& from) {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (!from.symbol().empty()) {
+  if (!from._internal_symbol().empty()) {
     _internal_set_symbol(from._internal_symbol());
   }
-  if (from.id() != 0) {
+  if (from._internal_id() != 0) {
     _internal_set_id(from._internal_id());
   }
-  if (from.side() != 0) {
+  if (from._internal_side() != 0) {
     _internal_set_side(from._internal_side());
   }
-  if (!(from.price() <= 0 && from.price() >= 0)) {
+  if (!(from._internal_price() <= 0 && from._internal_price() >= 0)) {
     _internal_set_price(from._internal_price());
   }
-  if (!(from.volume() <= 0 && from.volume() >= 0)) {
+  if (!(from._internal_volume() <= 0 && from._internal_volume() >= 0)) {
     _internal_set_volume(from._internal_volume());
   }
-  if (from.type() != 0) {
+  if (from._internal_type() != 0) {
     _internal_set_type(from._internal_type());
   }
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -616,7 +616,7 @@ failure:
   (void) cached_has_bits;
 
   // string currency = 1;
-  if (!this->currency().empty()) {
+  if (!this->_internal_currency().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_currency().data(), static_cast<int>(this->_internal_currency().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
@@ -626,7 +626,7 @@ failure:
   }
 
   // double amount = 2;
-  if (!(this->amount() <= 0 && this->amount() >= 0)) {
+  if (!(this->_internal_amount() <= 0 && this->_internal_amount() >= 0)) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(2, this->_internal_amount(), target);
   }
@@ -648,14 +648,14 @@ size_t Balance::ByteSizeLong() const {
   (void) cached_has_bits;
 
   // string currency = 1;
-  if (!this->currency().empty()) {
+  if (!this->_internal_currency().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_currency());
   }
 
   // double amount = 2;
-  if (!(this->amount() <= 0 && this->amount() >= 0)) {
+  if (!(this->_internal_amount() <= 0 && this->_internal_amount() >= 0)) {
     total_size += 1 + 8;
   }
 
@@ -687,10 +687,10 @@ void Balance::MergeFrom(const Balance& from) {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (!from.currency().empty()) {
+  if (!from._internal_currency().empty()) {
     _internal_set_currency(from._internal_currency());
   }
-  if (!(from.amount() <= 0 && from.amount() >= 0)) {
+  if (!(from._internal_amount() <= 0 && from._internal_amount() >= 0)) {
     _internal_set_amount(from._internal_amount());
   }
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -881,13 +881,13 @@ failure:
   (void) cached_has_bits;
 
   // int32 id = 1;
-  if (this->id() != 0) {
+  if (this->_internal_id() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->_internal_id(), target);
   }
 
   // string name = 2;
-  if (!this->name().empty()) {
+  if (!this->_internal_name().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
@@ -897,7 +897,7 @@ failure:
   }
 
   // .Trade.protobuf.Balance wallet = 3;
-  if (this->has_wallet()) {
+  if (this->_internal_has_wallet()) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessage(
@@ -936,21 +936,21 @@ size_t Account::ByteSizeLong() const {
   }
 
   // string name = 2;
-  if (!this->name().empty()) {
+  if (!this->_internal_name().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_name());
   }
 
   // .Trade.protobuf.Balance wallet = 3;
-  if (this->has_wallet()) {
+  if (this->_internal_has_wallet()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
         *wallet_);
   }
 
   // int32 id = 1;
-  if (this->id() != 0) {
+  if (this->_internal_id() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
         this->_internal_id());
@@ -985,13 +985,13 @@ void Account::MergeFrom(const Account& from) {
   (void) cached_has_bits;
 
   orders_.MergeFrom(from.orders_);
-  if (!from.name().empty()) {
+  if (!from._internal_name().empty()) {
     _internal_set_name(from._internal_name());
   }
-  if (from.has_wallet()) {
+  if (from._internal_has_wallet()) {
     _internal_mutable_wallet()->::Trade::protobuf::Balance::MergeFrom(from._internal_wallet());
   }
-  if (from.id() != 0) {
+  if (from._internal_id() != 0) {
     _internal_set_id(from._internal_id());
   }
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
