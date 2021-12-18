@@ -65,7 +65,7 @@ Performance comparison based on the [Domain model](#domain-model):
     * [JSON performance](#json-performance)
 
 # Features
-* Cross platform (Linux, OSX, Windows)
+* Cross platform (Linux, MacOS, Windows)
 * Binary serialization using [Cap'n'Proto library](https://capnproto.org)
 * Binary serialization using [FastBinaryEncoding library](https://github.com/chronoxor/FastBinaryEncoding)
 * Binary serialization using [FlatBuffers library](https://google.github.io/flatbuffers)
@@ -75,7 +75,7 @@ Performance comparison based on the [Domain model](#domain-model):
 
 # Requirements
 * Linux (binutils-dev uuid-dev)
-* OSX
+* MacOS
 * Windows 10
 * [cmake](https://www.cmake.org)
 * [gcc](https://gcc.gnu.org)
@@ -111,7 +111,7 @@ cd build
 ./unix.sh
 ```
 
-### OSX
+### MacOS
 ```shell
 cd build
 ./unix.sh
