@@ -105,6 +105,25 @@ if(NOT CPPSERIALIZATION_MODULE)
     list(APPEND PROTO_FILES ${CAPNP_HEADERS} ${CAPNP_SOURCES})
   endforeach()
 
+  # Proto SBE models
+  file(GLOB SBE_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/proto" "proto/*.sbe.xml")
+  foreach(SBE_FILE ${SBE_FILES})
+    string(REGEX REPLACE "(.*)\\.sbe.xml" "\\1.sbe.sbeir" SBE_HEADER ${SBE_FILE})
+    set(SBE_INPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/proto")
+    set(SBE_INPUT_FILE "${SBE_INPUT_DIR}/${SBE_FILE}")
+    set(SBE_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/proto")
+    set(SBE_OUTPUT_FILE "${SBE_OUTPUT_DIR}/${SBE_HEADER}")
+    set(SBE_TARGET "${SBE_FILE}_TARGET")
+    add_custom_command(
+        OUTPUT ${SBE_OUTPUT_FILE} DEPENDS ${SBE_INPUT_FILE}
+        COMMAND java -Dsbe.generate.ir=true -Dsbe.target.language=Cpp -Dsbe.target.namespace=sbe -Dsbe.output.dir=${SBE_OUTPUT_DIR} -Dsbe.errorLog=yes -jar ${CMAKE_CURRENT_SOURCE_DIR}/modules/sbe/sbe-all-1.25.1.jar ${SBE_INPUT_FILE} COMMENT "Generating ${SBE_OUTPUT_FILE}..." VERBATIM
+    )
+    add_custom_target(${SBE_TARGET} DEPENDS ${SBE_OUTPUT_FILE})
+    set_target_properties(${SBE_TARGET} PROPERTIES FOLDER "proto")
+    list(APPEND PROTO_DEPENDENCIES ${SBE_TARGET})
+    list(APPEND PROTO_FILES ${SBE_OUTPUT_FILE})
+  endforeach()
+
   # Proto FBE models
   file(GLOB FBE_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/proto/fbe" "proto/fbe/*.cpp")
   foreach(FBE_FILE ${FBE_FILES})
@@ -122,7 +141,8 @@ if(NOT CPPSERIALIZATION_MODULE)
     # C4244: 'conversion' conversion from 'type1' to 'type2', possible loss of data
     # C4245: 'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
     # C4267: 'var' : conversion from 'size_t' to 'type', possible loss of data
-    set_target_properties(proto PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} /wd4125 /wd4127 /wd4244 /wd4245 /wd4267" FOLDER "proto")
+    # C5054: operator 'operator-name': deprecated between enumerations of different types
+    set_target_properties(proto PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} /wd4125 /wd4127 /wd4244 /wd4245 /wd4267 /wd5054" FOLDER "proto")
   else()
     set_target_properties(proto PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} -Wno-pedantic -Wno-array-bounds" FOLDER "proto")
   endif()

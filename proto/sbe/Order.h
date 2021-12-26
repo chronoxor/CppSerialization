@@ -15,12 +15,6 @@
 #endif
 
 #if __cplusplus >= 201103L
-#  include <cstdint>
-#  include <string>
-#  include <cstring>
-#endif
-
-#if __cplusplus >= 201103L
 #  define SBE_CONSTEXPR constexpr
 #  define SBE_NOEXCEPT noexcept
 #else
@@ -28,7 +22,70 @@
 #  define SBE_NOEXCEPT
 #endif
 
-#include <sbe/sbe.h>
+#if __cplusplus >= 201703L
+#  include <string_view>
+#  define SBE_NODISCARD [[nodiscard]]
+#else
+#  define SBE_NODISCARD
+#endif
+
+#if !defined(__STDC_LIMIT_MACROS)
+#  define __STDC_LIMIT_MACROS 1
+#endif
+
+#include <cstdint>
+#include <cstring>
+#include <iomanip>
+#include <limits>
+#include <ostream>
+#include <stdexcept>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <tuple>
+
+#if defined(WIN32) || defined(_WIN32)
+#  define SBE_BIG_ENDIAN_ENCODE_16(v) _byteswap_ushort(v)
+#  define SBE_BIG_ENDIAN_ENCODE_32(v) _byteswap_ulong(v)
+#  define SBE_BIG_ENDIAN_ENCODE_64(v) _byteswap_uint64(v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_16(v) (v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_32(v) (v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_64(v) (v)
+#elif __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#  define SBE_BIG_ENDIAN_ENCODE_16(v) __builtin_bswap16(v)
+#  define SBE_BIG_ENDIAN_ENCODE_32(v) __builtin_bswap32(v)
+#  define SBE_BIG_ENDIAN_ENCODE_64(v) __builtin_bswap64(v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_16(v) (v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_32(v) (v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_64(v) (v)
+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#  define SBE_LITTLE_ENDIAN_ENCODE_16(v) __builtin_bswap16(v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_32(v) __builtin_bswap32(v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_64(v) __builtin_bswap64(v)
+#  define SBE_BIG_ENDIAN_ENCODE_16(v) (v)
+#  define SBE_BIG_ENDIAN_ENCODE_32(v) (v)
+#  define SBE_BIG_ENDIAN_ENCODE_64(v) (v)
+#else
+#  error "Byte Ordering of platform not determined. Set __BYTE_ORDER__ manually before including this file."
+#endif
+
+#if defined(SBE_NO_BOUNDS_CHECK)
+#  define SBE_BOUNDS_CHECK_EXPECT(exp, c) (false)
+#elif defined(_MSC_VER)
+#  define SBE_BOUNDS_CHECK_EXPECT(exp, c) (exp)
+#else
+#  define SBE_BOUNDS_CHECK_EXPECT(exp, c) (__builtin_expect(exp, c))
+#endif
+
+#define SBE_NULLVALUE_INT8 (std::numeric_limits<std::int8_t>::min)()
+#define SBE_NULLVALUE_INT16 (std::numeric_limits<std::int16_t>::min)()
+#define SBE_NULLVALUE_INT32 (std::numeric_limits<std::int32_t>::min)()
+#define SBE_NULLVALUE_INT64 (std::numeric_limits<std::int64_t>::min)()
+#define SBE_NULLVALUE_UINT8 (std::numeric_limits<std::uint8_t>::max)()
+#define SBE_NULLVALUE_UINT16 (std::numeric_limits<std::uint16_t>::max)()
+#define SBE_NULLVALUE_UINT32 (std::numeric_limits<std::uint32_t>::max)()
+#define SBE_NULLVALUE_UINT64 (std::numeric_limits<std::uint64_t>::max)()
+
 
 #include "OrderSide.h"
 #include "OrderType.h"
@@ -38,117 +95,118 @@ namespace sbe {
 class Order
 {
 private:
-    char *m_buffer;
-    std::uint64_t m_bufferLength;
-    std::uint64_t m_offset;
-    std::uint64_t m_actingVersion;
+    char *m_buffer = nullptr;
+    std::uint64_t m_bufferLength = 0;
+    std::uint64_t m_offset = 0;
+    std::uint64_t m_actingVersion = 0;
 
-    inline void reset(char *buffer, const std::uint64_t offset, const std::uint64_t bufferLength, const std::uint64_t actingVersion)
+public:
+    enum MetaAttribute
     {
-        if (SBE_BOUNDS_CHECK_EXPECT(((offset + 32) > bufferLength), false))
+        EPOCH, TIME_UNIT, SEMANTIC_TYPE, PRESENCE
+    };
+
+    union sbe_float_as_uint_u
+    {
+        float fp_value;
+        std::uint32_t uint_value;
+    };
+
+    union sbe_double_as_uint_u
+    {
+        double fp_value;
+        std::uint64_t uint_value;
+    };
+
+    Order() = default;
+
+    Order(
+        char *buffer,
+        const std::uint64_t offset,
+        const std::uint64_t bufferLength,
+        const std::uint64_t actingVersion) :
+        m_buffer(buffer),
+        m_bufferLength(bufferLength),
+        m_offset(offset),
+        m_actingVersion(actingVersion)
+    {
+        if (SBE_BOUNDS_CHECK_EXPECT(((m_offset + 32) > m_bufferLength), false))
         {
             throw std::runtime_error("buffer too short for flyweight [E107]");
         }
-
-        m_buffer = buffer;
-        m_bufferLength = bufferLength;
-        m_offset = offset;
-        m_actingVersion = actingVersion;
     }
 
-public:
-    Order() : m_buffer(nullptr), m_offset(0) {}
-
-    Order(char *buffer, const std::uint64_t bufferLength, const std::uint64_t actingVersion)
+    Order(
+        char *buffer,
+        const std::uint64_t bufferLength,
+        const std::uint64_t actingVersion) :
+        Order(buffer, 0, bufferLength, actingVersion)
     {
-        reset(buffer, 0, bufferLength, actingVersion);
     }
 
-    Order(const Order& codec) :
-        m_buffer(codec.m_buffer),
-        m_bufferLength(codec.m_bufferLength),
-        m_offset(codec.m_offset),
-        m_actingVersion(codec.m_actingVersion){}
-
-#if __cplusplus >= 201103L
-    Order(Order&& codec) :
-        m_buffer(codec.m_buffer),
-        m_bufferLength(codec.m_bufferLength),
-        m_offset(codec.m_offset),
-        m_actingVersion(codec.m_actingVersion){}
-
-    Order& operator=(Order&& codec) SBE_NOEXCEPT
+    Order(
+        char *buffer,
+        const std::uint64_t bufferLength) :
+        Order(buffer, 0, bufferLength, sbeSchemaVersion())
     {
-        m_buffer = codec.m_buffer;
-        m_bufferLength = codec.m_bufferLength;
-        m_offset = codec.m_offset;
-        m_actingVersion = codec.m_actingVersion;
-        return *this;
     }
 
-#endif
-
-    Order& operator=(const Order& codec) SBE_NOEXCEPT
+    Order &wrap(
+        char *buffer,
+        const std::uint64_t offset,
+        const std::uint64_t actingVersion,
+        const std::uint64_t bufferLength)
     {
-        m_buffer = codec.m_buffer;
-        m_bufferLength = codec.m_bufferLength;
-        m_offset = codec.m_offset;
-        m_actingVersion = codec.m_actingVersion;
-        return *this;
+        return *this = Order(buffer, offset, bufferLength, actingVersion);
     }
 
-    Order &wrap(char *buffer, const std::uint64_t offset, const std::uint64_t actingVersion, const std::uint64_t bufferLength)
-    {
-        reset(buffer, offset, bufferLength, actingVersion);
-        return *this;
-    }
-
-    static SBE_CONSTEXPR std::uint64_t encodedLength() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::uint64_t encodedLength() SBE_NOEXCEPT
     {
         return 32;
     }
 
-    std::uint64_t offset() const SBE_NOEXCEPT
+    SBE_NODISCARD std::uint64_t offset() const SBE_NOEXCEPT
     {
         return m_offset;
     }
 
-    const char * buffer() const SBE_NOEXCEPT
+    SBE_NODISCARD const char *buffer() const SBE_NOEXCEPT
     {
         return m_buffer;
     }
 
-    char * buffer() SBE_NOEXCEPT
+    SBE_NODISCARD char *buffer() SBE_NOEXCEPT
     {
         return m_buffer;
     }
 
-    std::uint64_t bufferLength() const SBE_NOEXCEPT
+    SBE_NODISCARD std::uint64_t bufferLength() const SBE_NOEXCEPT
     {
         return m_bufferLength;
     }
 
-    static SBE_CONSTEXPR std::uint16_t sbeSchemaId() SBE_NOEXCEPT
+    SBE_NODISCARD std::uint64_t actingVersion() const SBE_NOEXCEPT
     {
-        return (std::uint16_t)1;
+        return m_actingVersion;
     }
 
-    static SBE_CONSTEXPR std::uint16_t sbeSchemaVersion() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::uint16_t sbeSchemaId() SBE_NOEXCEPT
     {
-        return (std::uint16_t)1;
+        return static_cast<std::uint16_t>(1);
     }
 
-    static const char * idMetaAttribute(const ::sbe::MetaAttribute::Attribute metaAttribute) SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::uint16_t sbeSchemaVersion() SBE_NOEXCEPT
+    {
+        return static_cast<std::uint16_t>(1);
+    }
+
+    SBE_NODISCARD static const char *idMetaAttribute(const MetaAttribute metaAttribute) SBE_NOEXCEPT
     {
         switch (metaAttribute)
         {
-            case ::sbe::MetaAttribute::EPOCH: return "";
-            case ::sbe::MetaAttribute::TIME_UNIT: return "";
-            case ::sbe::MetaAttribute::SEMANTIC_TYPE: return "";
-            case ::sbe::MetaAttribute::PRESENCE: return "required";
+            case MetaAttribute::PRESENCE: return "required";
+            default: return "";
         }
-
-        return "";
     }
 
     static SBE_CONSTEXPR std::uint16_t idId() SBE_NOEXCEPT
@@ -156,12 +214,12 @@ public:
         return -1;
     }
 
-    static SBE_CONSTEXPR std::uint64_t idSinceVersion() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::uint64_t idSinceVersion() SBE_NOEXCEPT
     {
-         return 0;
+        return 0;
     }
 
-    bool idInActingVersion() SBE_NOEXCEPT
+    SBE_NODISCARD bool idInActingVersion() SBE_NOEXCEPT
     {
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -173,9 +231,9 @@ public:
 #endif
     }
 
-    static SBE_CONSTEXPR std::size_t idEncodingOffset() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::size_t idEncodingOffset() SBE_NOEXCEPT
     {
-         return 0;
+        return 0;
     }
 
     static SBE_CONSTEXPR std::int32_t idNullValue() SBE_NOEXCEPT
@@ -185,12 +243,12 @@ public:
 
     static SBE_CONSTEXPR std::int32_t idMinValue() SBE_NOEXCEPT
     {
-        return -2147483647;
+        return INT32_C(-2147483647);
     }
 
     static SBE_CONSTEXPR std::int32_t idMaxValue() SBE_NOEXCEPT
     {
-        return 2147483647;
+        return INT32_C(2147483647);
     }
 
     static SBE_CONSTEXPR std::size_t idEncodingLength() SBE_NOEXCEPT
@@ -198,31 +256,27 @@ public:
         return 4;
     }
 
-    std::int32_t id() const
+    SBE_NODISCARD std::int32_t id() const SBE_NOEXCEPT
     {
         std::int32_t val;
         std::memcpy(&val, m_buffer + m_offset + 0, sizeof(std::int32_t));
         return SBE_LITTLE_ENDIAN_ENCODE_32(val);
     }
 
-    Order &id(const std::int32_t value)
+    Order &id(const std::int32_t value) SBE_NOEXCEPT
     {
         std::int32_t val = SBE_LITTLE_ENDIAN_ENCODE_32(value);
         std::memcpy(m_buffer + m_offset + 0, &val, sizeof(std::int32_t));
         return *this;
     }
 
-    static const char * symbolMetaAttribute(const ::sbe::MetaAttribute::Attribute metaAttribute) SBE_NOEXCEPT
+    SBE_NODISCARD static const char *symbolMetaAttribute(const MetaAttribute metaAttribute) SBE_NOEXCEPT
     {
         switch (metaAttribute)
         {
-            case ::sbe::MetaAttribute::EPOCH: return "";
-            case ::sbe::MetaAttribute::TIME_UNIT: return "";
-            case ::sbe::MetaAttribute::SEMANTIC_TYPE: return "";
-            case ::sbe::MetaAttribute::PRESENCE: return "required";
+            case MetaAttribute::PRESENCE: return "required";
+            default: return "";
         }
-
-        return "";
     }
 
     static SBE_CONSTEXPR std::uint16_t symbolId() SBE_NOEXCEPT
@@ -230,12 +284,12 @@ public:
         return -1;
     }
 
-    static SBE_CONSTEXPR std::uint64_t symbolSinceVersion() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::uint64_t symbolSinceVersion() SBE_NOEXCEPT
     {
-         return 0;
+        return 0;
     }
 
-    bool symbolInActingVersion() SBE_NOEXCEPT
+    SBE_NODISCARD bool symbolInActingVersion() SBE_NOEXCEPT
     {
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -247,24 +301,24 @@ public:
 #endif
     }
 
-    static SBE_CONSTEXPR std::size_t symbolEncodingOffset() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::size_t symbolEncodingOffset() SBE_NOEXCEPT
     {
-         return 4;
+        return 4;
     }
 
     static SBE_CONSTEXPR char symbolNullValue() SBE_NOEXCEPT
     {
-        return (char)0;
+        return static_cast<char>(0);
     }
 
     static SBE_CONSTEXPR char symbolMinValue() SBE_NOEXCEPT
     {
-        return (char)32;
+        return static_cast<char>(32);
     }
 
     static SBE_CONSTEXPR char symbolMaxValue() SBE_NOEXCEPT
     {
-        return (char)126;
+        return static_cast<char>(126);
     }
 
     static SBE_CONSTEXPR std::size_t symbolEncodingLength() SBE_NOEXCEPT
@@ -277,12 +331,17 @@ public:
         return 10;
     }
 
-    const char *symbol() const
+    SBE_NODISCARD const char *symbol() const SBE_NOEXCEPT
     {
-        return (m_buffer + m_offset + 4);
+        return m_buffer + m_offset + 4;
     }
 
-    char symbol(const std::uint64_t index) const
+    SBE_NODISCARD char *symbol() SBE_NOEXCEPT
+    {
+        return m_buffer + m_offset + 4;
+    }
+
+    SBE_NODISCARD char symbol(const std::uint64_t index) const
     {
         if (index >= 10)
         {
@@ -294,7 +353,7 @@ public:
         return (val);
     }
 
-    void symbol(const std::uint64_t index, const char value)
+    Order &symbol(const std::uint64_t index, const char value)
     {
         if (index >= 10)
         {
@@ -303,48 +362,126 @@ public:
 
         char val = (value);
         std::memcpy(m_buffer + m_offset + 4 + (index * 1), &val, sizeof(char));
+        return *this;
     }
 
-    std::uint64_t getSymbol(char *dst, const std::uint64_t length) const
+    std::uint64_t getSymbol(char *const dst, const std::uint64_t length) const
     {
         if (length > 10)
         {
-             throw std::runtime_error("length too large for getSymbol [E106]");
+            throw std::runtime_error("length too large for getSymbol [E106]");
         }
 
-        std::memcpy(dst, m_buffer + m_offset + 4, sizeof(char) * length);
+        std::memcpy(dst, m_buffer + m_offset + 4, sizeof(char) * static_cast<std::size_t>(length));
         return length;
     }
 
-    Order &putSymbol(const char *src)
+    Order &putSymbol(const char *const src) SBE_NOEXCEPT
     {
         std::memcpy(m_buffer + m_offset + 4, src, sizeof(char) * 10);
         return *this;
     }
 
-    std::string getSymbolAsString() const
+    SBE_NODISCARD std::string getSymbolAsString() const
     {
-        std::string result(m_buffer + m_offset + 4, 10);
+        const char *buffer = m_buffer + m_offset + 4;
+        std::size_t length = 0;
+
+        for (; length < 10 && *(buffer + length) != '\0'; ++length);
+        std::string result(buffer, length);
+
         return result;
     }
 
-    Order &putSymbol(const std::string& str)
+    std::string getSymbolAsJsonEscapedString()
     {
-        std::memcpy(m_buffer + m_offset + 4, str.c_str(), 10);
-        return *this;
+        std::ostringstream oss;
+        std::string s = getSymbolAsString();
+
+        for (const auto c : s)
+        {
+            switch (c)
+            {
+                case '"': oss << "\\\""; break;
+                case '\\': oss << "\\\\"; break;
+                case '\b': oss << "\\b"; break;
+                case '\f': oss << "\\f"; break;
+                case '\n': oss << "\\n"; break;
+                case '\r': oss << "\\r"; break;
+                case '\t': oss << "\\t"; break;
+
+                default:
+                    if ('\x00' <= c && c <= '\x1f')
+                    {
+                        oss << "\\u" << std::hex << std::setw(4)
+                            << std::setfill('0') << (int)(c);
+                    }
+                    else
+                    {
+                        oss << c;
+                    }
+            }
+        }
+
+        return oss.str();
     }
 
-    static const char * sideMetaAttribute(const ::sbe::MetaAttribute::Attribute metaAttribute) SBE_NOEXCEPT
+    #if __cplusplus >= 201703L
+    SBE_NODISCARD std::string_view getSymbolAsStringView() const SBE_NOEXCEPT
+    {
+        const char *buffer = m_buffer + m_offset + 4;
+        std::size_t length = 0;
+
+        for (; length < 10 && *(buffer + length) != '\0'; ++length);
+        std::string_view result(buffer, length);
+
+        return result;
+    }
+    #endif
+
+    #if __cplusplus >= 201703L
+    Order &putSymbol(const std::string_view str)
+    {
+        const std::size_t srcLength = str.length();
+        if (srcLength > 10)
+        {
+            throw std::runtime_error("string too large for putSymbol [E106]");
+        }
+
+        std::memcpy(m_buffer + m_offset + 4, str.data(), srcLength);
+        for (std::size_t start = srcLength; start < 10; ++start)
+        {
+            m_buffer[m_offset + 4 + start] = 0;
+        }
+
+        return *this;
+    }
+    #else
+    Order &putSymbol(const std::string &str)
+    {
+        const std::size_t srcLength = str.length();
+        if (srcLength > 10)
+        {
+            throw std::runtime_error("string too large for putSymbol [E106]");
+        }
+
+        std::memcpy(m_buffer + m_offset + 4, str.c_str(), srcLength);
+        for (std::size_t start = srcLength; start < 10; ++start)
+        {
+            m_buffer[m_offset + 4 + start] = 0;
+        }
+
+        return *this;
+    }
+    #endif
+
+    SBE_NODISCARD static const char *sideMetaAttribute(const MetaAttribute metaAttribute) SBE_NOEXCEPT
     {
         switch (metaAttribute)
         {
-            case ::sbe::MetaAttribute::EPOCH: return "";
-            case ::sbe::MetaAttribute::TIME_UNIT: return "";
-            case ::sbe::MetaAttribute::SEMANTIC_TYPE: return "";
-            case ::sbe::MetaAttribute::PRESENCE: return "required";
+            case MetaAttribute::PRESENCE: return "required";
+            default: return "";
         }
-
-        return "";
     }
 
     static SBE_CONSTEXPR std::uint16_t sideId() SBE_NOEXCEPT
@@ -352,12 +489,12 @@ public:
         return -1;
     }
 
-    static SBE_CONSTEXPR std::uint64_t sideSinceVersion() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::uint64_t sideSinceVersion() SBE_NOEXCEPT
     {
-         return 0;
+        return 0;
     }
 
-    bool sideInActingVersion() SBE_NOEXCEPT
+    SBE_NODISCARD bool sideInActingVersion() SBE_NOEXCEPT
     {
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -369,41 +506,44 @@ public:
 #endif
     }
 
-    static SBE_CONSTEXPR std::size_t sideEncodingOffset() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::size_t sideEncodingOffset() SBE_NOEXCEPT
     {
-         return 14;
+        return 14;
     }
 
-    static SBE_CONSTEXPR std::size_t sideEncodingLength() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::size_t sideEncodingLength() SBE_NOEXCEPT
     {
         return 1;
     }
 
-    OrderSide::Value side() const
+    SBE_NODISCARD std::uint8_t sideRaw() const SBE_NOEXCEPT
+    {
+        std::uint8_t val;
+        std::memcpy(&val, m_buffer + m_offset + 14, sizeof(std::uint8_t));
+        return (val);
+    }
+
+    SBE_NODISCARD OrderSide::Value side() const
     {
         std::uint8_t val;
         std::memcpy(&val, m_buffer + m_offset + 14, sizeof(std::uint8_t));
         return OrderSide::get((val));
     }
 
-    Order &side(const OrderSide::Value value)
+    Order &side(const OrderSide::Value value) SBE_NOEXCEPT
     {
         std::uint8_t val = (value);
         std::memcpy(m_buffer + m_offset + 14, &val, sizeof(std::uint8_t));
         return *this;
     }
 
-    static const char * typeMetaAttribute(const ::sbe::MetaAttribute::Attribute metaAttribute) SBE_NOEXCEPT
+    SBE_NODISCARD static const char *typeMetaAttribute(const MetaAttribute metaAttribute) SBE_NOEXCEPT
     {
         switch (metaAttribute)
         {
-            case ::sbe::MetaAttribute::EPOCH: return "";
-            case ::sbe::MetaAttribute::TIME_UNIT: return "";
-            case ::sbe::MetaAttribute::SEMANTIC_TYPE: return "";
-            case ::sbe::MetaAttribute::PRESENCE: return "required";
+            case MetaAttribute::PRESENCE: return "required";
+            default: return "";
         }
-
-        return "";
     }
 
     static SBE_CONSTEXPR std::uint16_t typeId() SBE_NOEXCEPT
@@ -411,12 +551,12 @@ public:
         return -1;
     }
 
-    static SBE_CONSTEXPR std::uint64_t typeSinceVersion() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::uint64_t typeSinceVersion() SBE_NOEXCEPT
     {
-         return 0;
+        return 0;
     }
 
-    bool typeInActingVersion() SBE_NOEXCEPT
+    SBE_NODISCARD bool typeInActingVersion() SBE_NOEXCEPT
     {
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -428,41 +568,44 @@ public:
 #endif
     }
 
-    static SBE_CONSTEXPR std::size_t typeEncodingOffset() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::size_t typeEncodingOffset() SBE_NOEXCEPT
     {
-         return 15;
+        return 15;
     }
 
-    static SBE_CONSTEXPR std::size_t typeEncodingLength() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::size_t typeEncodingLength() SBE_NOEXCEPT
     {
         return 1;
     }
 
-    OrderType::Value type() const
+    SBE_NODISCARD std::uint8_t typeRaw() const SBE_NOEXCEPT
+    {
+        std::uint8_t val;
+        std::memcpy(&val, m_buffer + m_offset + 15, sizeof(std::uint8_t));
+        return (val);
+    }
+
+    SBE_NODISCARD OrderType::Value type() const
     {
         std::uint8_t val;
         std::memcpy(&val, m_buffer + m_offset + 15, sizeof(std::uint8_t));
         return OrderType::get((val));
     }
 
-    Order &type(const OrderType::Value value)
+    Order &type(const OrderType::Value value) SBE_NOEXCEPT
     {
         std::uint8_t val = (value);
         std::memcpy(m_buffer + m_offset + 15, &val, sizeof(std::uint8_t));
         return *this;
     }
 
-    static const char * priceMetaAttribute(const ::sbe::MetaAttribute::Attribute metaAttribute) SBE_NOEXCEPT
+    SBE_NODISCARD static const char *priceMetaAttribute(const MetaAttribute metaAttribute) SBE_NOEXCEPT
     {
         switch (metaAttribute)
         {
-            case ::sbe::MetaAttribute::EPOCH: return "";
-            case ::sbe::MetaAttribute::TIME_UNIT: return "";
-            case ::sbe::MetaAttribute::SEMANTIC_TYPE: return "";
-            case ::sbe::MetaAttribute::PRESENCE: return "required";
+            case MetaAttribute::PRESENCE: return "required";
+            default: return "";
         }
-
-        return "";
     }
 
     static SBE_CONSTEXPR std::uint16_t priceId() SBE_NOEXCEPT
@@ -470,12 +613,12 @@ public:
         return -1;
     }
 
-    static SBE_CONSTEXPR std::uint64_t priceSinceVersion() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::uint64_t priceSinceVersion() SBE_NOEXCEPT
     {
-         return 0;
+        return 0;
     }
 
-    bool priceInActingVersion() SBE_NOEXCEPT
+    SBE_NODISCARD bool priceInActingVersion() SBE_NOEXCEPT
     {
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -487,9 +630,9 @@ public:
 #endif
     }
 
-    static SBE_CONSTEXPR std::size_t priceEncodingOffset() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::size_t priceEncodingOffset() SBE_NOEXCEPT
     {
-         return 16;
+        return 16;
     }
 
     static SBE_CONSTEXPR double priceNullValue() SBE_NOEXCEPT
@@ -512,34 +655,30 @@ public:
         return 8;
     }
 
-    double price() const
+    SBE_NODISCARD double price() const SBE_NOEXCEPT
     {
-        ::sbe::sbe_double_as_uint_t val;
+        union sbe_double_as_uint_u val;
         std::memcpy(&val, m_buffer + m_offset + 16, sizeof(double));
         val.uint_value = SBE_LITTLE_ENDIAN_ENCODE_64(val.uint_value);
         return val.fp_value;
     }
 
-    Order &price(const double value)
+    Order &price(const double value) SBE_NOEXCEPT
     {
-        ::sbe::sbe_double_as_uint_t val;
+        union sbe_double_as_uint_u val;
         val.fp_value = value;
         val.uint_value = SBE_LITTLE_ENDIAN_ENCODE_64(val.uint_value);
         std::memcpy(m_buffer + m_offset + 16, &val, sizeof(double));
         return *this;
     }
 
-    static const char * volumeMetaAttribute(const ::sbe::MetaAttribute::Attribute metaAttribute) SBE_NOEXCEPT
+    SBE_NODISCARD static const char *volumeMetaAttribute(const MetaAttribute metaAttribute) SBE_NOEXCEPT
     {
         switch (metaAttribute)
         {
-            case ::sbe::MetaAttribute::EPOCH: return "";
-            case ::sbe::MetaAttribute::TIME_UNIT: return "";
-            case ::sbe::MetaAttribute::SEMANTIC_TYPE: return "";
-            case ::sbe::MetaAttribute::PRESENCE: return "required";
+            case MetaAttribute::PRESENCE: return "required";
+            default: return "";
         }
-
-        return "";
     }
 
     static SBE_CONSTEXPR std::uint16_t volumeId() SBE_NOEXCEPT
@@ -547,12 +686,12 @@ public:
         return -1;
     }
 
-    static SBE_CONSTEXPR std::uint64_t volumeSinceVersion() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::uint64_t volumeSinceVersion() SBE_NOEXCEPT
     {
-         return 0;
+        return 0;
     }
 
-    bool volumeInActingVersion() SBE_NOEXCEPT
+    SBE_NODISCARD bool volumeInActingVersion() SBE_NOEXCEPT
     {
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -564,9 +703,9 @@ public:
 #endif
     }
 
-    static SBE_CONSTEXPR std::size_t volumeEncodingOffset() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::size_t volumeEncodingOffset() SBE_NOEXCEPT
     {
-         return 24;
+        return 24;
     }
 
     static SBE_CONSTEXPR double volumeNullValue() SBE_NOEXCEPT
@@ -589,22 +728,59 @@ public:
         return 8;
     }
 
-    double volume() const
+    SBE_NODISCARD double volume() const SBE_NOEXCEPT
     {
-        ::sbe::sbe_double_as_uint_t val;
+        union sbe_double_as_uint_u val;
         std::memcpy(&val, m_buffer + m_offset + 24, sizeof(double));
         val.uint_value = SBE_LITTLE_ENDIAN_ENCODE_64(val.uint_value);
         return val.fp_value;
     }
 
-    Order &volume(const double value)
+    Order &volume(const double value) SBE_NOEXCEPT
     {
-        ::sbe::sbe_double_as_uint_t val;
+        union sbe_double_as_uint_u val;
         val.fp_value = value;
         val.uint_value = SBE_LITTLE_ENDIAN_ENCODE_64(val.uint_value);
         std::memcpy(m_buffer + m_offset + 24, &val, sizeof(double));
         return *this;
     }
-};
+
+template<typename CharT, typename Traits>
+friend std::basic_ostream<CharT, Traits> & operator << (
+    std::basic_ostream<CharT, Traits> &builder, Order writer)
+{
+    builder << '{';
+    builder << R"("id": )";
+    builder << +writer.id();
+
+    builder << ", ";
+    builder << R"("symbol": )";
+    builder << '"' <<
+        writer.getSymbolAsJsonEscapedString().c_str() << '"';
+
+    builder << ", ";
+    builder << R"("side": )";
+    builder << '"' << writer.side() << '"';
+
+    builder << ", ";
+    builder << R"("type": )";
+    builder << '"' << writer.type() << '"';
+
+    builder << ", ";
+    builder << R"("price": )";
+    builder << +writer.price();
+
+    builder << ", ";
+    builder << R"("volume": )";
+    builder << +writer.volume();
+
+    builder << '}';
+
+    return builder;
 }
+
+};
+
+}
+
 #endif

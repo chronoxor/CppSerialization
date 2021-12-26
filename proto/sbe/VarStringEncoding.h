@@ -15,12 +15,6 @@
 #endif
 
 #if __cplusplus >= 201103L
-#  include <cstdint>
-#  include <string>
-#  include <cstring>
-#endif
-
-#if __cplusplus >= 201103L
 #  define SBE_CONSTEXPR constexpr
 #  define SBE_NOEXCEPT noexcept
 #else
@@ -28,7 +22,69 @@
 #  define SBE_NOEXCEPT
 #endif
 
-#include <sbe/sbe.h>
+#if __cplusplus >= 201703L
+#  include <string_view>
+#  define SBE_NODISCARD [[nodiscard]]
+#else
+#  define SBE_NODISCARD
+#endif
+
+#if !defined(__STDC_LIMIT_MACROS)
+#  define __STDC_LIMIT_MACROS 1
+#endif
+
+#include <cstdint>
+#include <cstring>
+#include <iomanip>
+#include <limits>
+#include <ostream>
+#include <stdexcept>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <tuple>
+
+#if defined(WIN32) || defined(_WIN32)
+#  define SBE_BIG_ENDIAN_ENCODE_16(v) _byteswap_ushort(v)
+#  define SBE_BIG_ENDIAN_ENCODE_32(v) _byteswap_ulong(v)
+#  define SBE_BIG_ENDIAN_ENCODE_64(v) _byteswap_uint64(v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_16(v) (v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_32(v) (v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_64(v) (v)
+#elif __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#  define SBE_BIG_ENDIAN_ENCODE_16(v) __builtin_bswap16(v)
+#  define SBE_BIG_ENDIAN_ENCODE_32(v) __builtin_bswap32(v)
+#  define SBE_BIG_ENDIAN_ENCODE_64(v) __builtin_bswap64(v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_16(v) (v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_32(v) (v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_64(v) (v)
+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#  define SBE_LITTLE_ENDIAN_ENCODE_16(v) __builtin_bswap16(v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_32(v) __builtin_bswap32(v)
+#  define SBE_LITTLE_ENDIAN_ENCODE_64(v) __builtin_bswap64(v)
+#  define SBE_BIG_ENDIAN_ENCODE_16(v) (v)
+#  define SBE_BIG_ENDIAN_ENCODE_32(v) (v)
+#  define SBE_BIG_ENDIAN_ENCODE_64(v) (v)
+#else
+#  error "Byte Ordering of platform not determined. Set __BYTE_ORDER__ manually before including this file."
+#endif
+
+#if defined(SBE_NO_BOUNDS_CHECK)
+#  define SBE_BOUNDS_CHECK_EXPECT(exp, c) (false)
+#elif defined(_MSC_VER)
+#  define SBE_BOUNDS_CHECK_EXPECT(exp, c) (exp)
+#else
+#  define SBE_BOUNDS_CHECK_EXPECT(exp, c) (__builtin_expect(exp, c))
+#endif
+
+#define SBE_NULLVALUE_INT8 (std::numeric_limits<std::int8_t>::min)()
+#define SBE_NULLVALUE_INT16 (std::numeric_limits<std::int16_t>::min)()
+#define SBE_NULLVALUE_INT32 (std::numeric_limits<std::int32_t>::min)()
+#define SBE_NULLVALUE_INT64 (std::numeric_limits<std::int64_t>::min)()
+#define SBE_NULLVALUE_UINT8 (std::numeric_limits<std::uint8_t>::max)()
+#define SBE_NULLVALUE_UINT16 (std::numeric_limits<std::uint16_t>::max)()
+#define SBE_NULLVALUE_UINT32 (std::numeric_limits<std::uint32_t>::max)()
+#define SBE_NULLVALUE_UINT64 (std::numeric_limits<std::uint64_t>::max)()
 
 
 namespace sbe {
@@ -36,117 +92,118 @@ namespace sbe {
 class VarStringEncoding
 {
 private:
-    char *m_buffer;
-    std::uint64_t m_bufferLength;
-    std::uint64_t m_offset;
-    std::uint64_t m_actingVersion;
+    char *m_buffer = nullptr;
+    std::uint64_t m_bufferLength = 0;
+    std::uint64_t m_offset = 0;
+    std::uint64_t m_actingVersion = 0;
 
-    inline void reset(char *buffer, const std::uint64_t offset, const std::uint64_t bufferLength, const std::uint64_t actingVersion)
+public:
+    enum MetaAttribute
     {
-        if (SBE_BOUNDS_CHECK_EXPECT(((offset + -1) > bufferLength), false))
+        EPOCH, TIME_UNIT, SEMANTIC_TYPE, PRESENCE
+    };
+
+    union sbe_float_as_uint_u
+    {
+        float fp_value;
+        std::uint32_t uint_value;
+    };
+
+    union sbe_double_as_uint_u
+    {
+        double fp_value;
+        std::uint64_t uint_value;
+    };
+
+    VarStringEncoding() = default;
+
+    VarStringEncoding(
+        char *buffer,
+        const std::uint64_t offset,
+        const std::uint64_t bufferLength,
+        const std::uint64_t actingVersion) :
+        m_buffer(buffer),
+        m_bufferLength(bufferLength),
+        m_offset(offset),
+        m_actingVersion(actingVersion)
+    {
+        if (SBE_BOUNDS_CHECK_EXPECT(((m_offset + -1) > m_bufferLength), false))
         {
             throw std::runtime_error("buffer too short for flyweight [E107]");
         }
-
-        m_buffer = buffer;
-        m_bufferLength = bufferLength;
-        m_offset = offset;
-        m_actingVersion = actingVersion;
     }
 
-public:
-    VarStringEncoding() : m_buffer(nullptr), m_offset(0) {}
-
-    VarStringEncoding(char *buffer, const std::uint64_t bufferLength, const std::uint64_t actingVersion)
+    VarStringEncoding(
+        char *buffer,
+        const std::uint64_t bufferLength,
+        const std::uint64_t actingVersion) :
+        VarStringEncoding(buffer, 0, bufferLength, actingVersion)
     {
-        reset(buffer, 0, bufferLength, actingVersion);
     }
 
-    VarStringEncoding(const VarStringEncoding& codec) :
-        m_buffer(codec.m_buffer),
-        m_bufferLength(codec.m_bufferLength),
-        m_offset(codec.m_offset),
-        m_actingVersion(codec.m_actingVersion){}
-
-#if __cplusplus >= 201103L
-    VarStringEncoding(VarStringEncoding&& codec) :
-        m_buffer(codec.m_buffer),
-        m_bufferLength(codec.m_bufferLength),
-        m_offset(codec.m_offset),
-        m_actingVersion(codec.m_actingVersion){}
-
-    VarStringEncoding& operator=(VarStringEncoding&& codec) SBE_NOEXCEPT
+    VarStringEncoding(
+        char *buffer,
+        const std::uint64_t bufferLength) :
+        VarStringEncoding(buffer, 0, bufferLength, sbeSchemaVersion())
     {
-        m_buffer = codec.m_buffer;
-        m_bufferLength = codec.m_bufferLength;
-        m_offset = codec.m_offset;
-        m_actingVersion = codec.m_actingVersion;
-        return *this;
     }
 
-#endif
-
-    VarStringEncoding& operator=(const VarStringEncoding& codec) SBE_NOEXCEPT
+    VarStringEncoding &wrap(
+        char *buffer,
+        const std::uint64_t offset,
+        const std::uint64_t actingVersion,
+        const std::uint64_t bufferLength)
     {
-        m_buffer = codec.m_buffer;
-        m_bufferLength = codec.m_bufferLength;
-        m_offset = codec.m_offset;
-        m_actingVersion = codec.m_actingVersion;
-        return *this;
+        return *this = VarStringEncoding(buffer, offset, bufferLength, actingVersion);
     }
 
-    VarStringEncoding &wrap(char *buffer, const std::uint64_t offset, const std::uint64_t actingVersion, const std::uint64_t bufferLength)
-    {
-        reset(buffer, offset, bufferLength, actingVersion);
-        return *this;
-    }
-
-    static SBE_CONSTEXPR std::uint64_t encodedLength() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::uint64_t encodedLength() SBE_NOEXCEPT
     {
         return -1;
     }
 
-    std::uint64_t offset() const SBE_NOEXCEPT
+    SBE_NODISCARD std::uint64_t offset() const SBE_NOEXCEPT
     {
         return m_offset;
     }
 
-    const char * buffer() const SBE_NOEXCEPT
+    SBE_NODISCARD const char *buffer() const SBE_NOEXCEPT
     {
         return m_buffer;
     }
 
-    char * buffer() SBE_NOEXCEPT
+    SBE_NODISCARD char *buffer() SBE_NOEXCEPT
     {
         return m_buffer;
     }
 
-    std::uint64_t bufferLength() const SBE_NOEXCEPT
+    SBE_NODISCARD std::uint64_t bufferLength() const SBE_NOEXCEPT
     {
         return m_bufferLength;
     }
 
-    static SBE_CONSTEXPR std::uint16_t sbeSchemaId() SBE_NOEXCEPT
+    SBE_NODISCARD std::uint64_t actingVersion() const SBE_NOEXCEPT
     {
-        return (std::uint16_t)1;
+        return m_actingVersion;
     }
 
-    static SBE_CONSTEXPR std::uint16_t sbeSchemaVersion() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::uint16_t sbeSchemaId() SBE_NOEXCEPT
     {
-        return (std::uint16_t)1;
+        return static_cast<std::uint16_t>(1);
     }
 
-    static const char * lengthMetaAttribute(const ::sbe::MetaAttribute::Attribute metaAttribute) SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::uint16_t sbeSchemaVersion() SBE_NOEXCEPT
+    {
+        return static_cast<std::uint16_t>(1);
+    }
+
+    SBE_NODISCARD static const char *lengthMetaAttribute(const MetaAttribute metaAttribute) SBE_NOEXCEPT
     {
         switch (metaAttribute)
         {
-            case ::sbe::MetaAttribute::EPOCH: return "";
-            case ::sbe::MetaAttribute::TIME_UNIT: return "";
-            case ::sbe::MetaAttribute::SEMANTIC_TYPE: return "";
-            case ::sbe::MetaAttribute::PRESENCE: return "required";
+            case MetaAttribute::PRESENCE: return "required";
+            default: return "";
         }
-
-        return "";
     }
 
     static SBE_CONSTEXPR std::uint16_t lengthId() SBE_NOEXCEPT
@@ -154,12 +211,12 @@ public:
         return -1;
     }
 
-    static SBE_CONSTEXPR std::uint64_t lengthSinceVersion() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::uint64_t lengthSinceVersion() SBE_NOEXCEPT
     {
-         return 0;
+        return 0;
     }
 
-    bool lengthInActingVersion() SBE_NOEXCEPT
+    SBE_NODISCARD bool lengthInActingVersion() SBE_NOEXCEPT
     {
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -171,9 +228,9 @@ public:
 #endif
     }
 
-    static SBE_CONSTEXPR std::size_t lengthEncodingOffset() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::size_t lengthEncodingOffset() SBE_NOEXCEPT
     {
-         return 0;
+        return 0;
     }
 
     static SBE_CONSTEXPR std::uint32_t lengthNullValue() SBE_NOEXCEPT
@@ -183,12 +240,12 @@ public:
 
     static SBE_CONSTEXPR std::uint32_t lengthMinValue() SBE_NOEXCEPT
     {
-        return 0;
+        return UINT32_C(0x0);
     }
 
     static SBE_CONSTEXPR std::uint32_t lengthMaxValue() SBE_NOEXCEPT
     {
-        return 1073741824;
+        return UINT32_C(0x40000000);
     }
 
     static SBE_CONSTEXPR std::size_t lengthEncodingLength() SBE_NOEXCEPT
@@ -196,31 +253,27 @@ public:
         return 4;
     }
 
-    std::uint32_t length() const
+    SBE_NODISCARD std::uint32_t length() const SBE_NOEXCEPT
     {
         std::uint32_t val;
         std::memcpy(&val, m_buffer + m_offset + 0, sizeof(std::uint32_t));
         return SBE_LITTLE_ENDIAN_ENCODE_32(val);
     }
 
-    VarStringEncoding &length(const std::uint32_t value)
+    VarStringEncoding &length(const std::uint32_t value) SBE_NOEXCEPT
     {
         std::uint32_t val = SBE_LITTLE_ENDIAN_ENCODE_32(value);
         std::memcpy(m_buffer + m_offset + 0, &val, sizeof(std::uint32_t));
         return *this;
     }
 
-    static const char * varDataMetaAttribute(const ::sbe::MetaAttribute::Attribute metaAttribute) SBE_NOEXCEPT
+    SBE_NODISCARD static const char *varDataMetaAttribute(const MetaAttribute metaAttribute) SBE_NOEXCEPT
     {
         switch (metaAttribute)
         {
-            case ::sbe::MetaAttribute::EPOCH: return "";
-            case ::sbe::MetaAttribute::TIME_UNIT: return "";
-            case ::sbe::MetaAttribute::SEMANTIC_TYPE: return "";
-            case ::sbe::MetaAttribute::PRESENCE: return "required";
+            case MetaAttribute::PRESENCE: return "required";
+            default: return "";
         }
-
-        return "";
     }
 
     static SBE_CONSTEXPR std::uint16_t varDataId() SBE_NOEXCEPT
@@ -228,12 +281,12 @@ public:
         return -1;
     }
 
-    static SBE_CONSTEXPR std::uint64_t varDataSinceVersion() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::uint64_t varDataSinceVersion() SBE_NOEXCEPT
     {
-         return 0;
+        return 0;
     }
 
-    bool varDataInActingVersion() SBE_NOEXCEPT
+    SBE_NODISCARD bool varDataInActingVersion() SBE_NOEXCEPT
     {
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -245,9 +298,9 @@ public:
 #endif
     }
 
-    static SBE_CONSTEXPR std::size_t varDataEncodingOffset() SBE_NOEXCEPT
+    SBE_NODISCARD static SBE_CONSTEXPR std::size_t varDataEncodingOffset() SBE_NOEXCEPT
     {
-         return 4;
+        return 4;
     }
 
     static SBE_CONSTEXPR std::uint8_t varDataNullValue() SBE_NOEXCEPT
@@ -257,18 +310,34 @@ public:
 
     static SBE_CONSTEXPR std::uint8_t varDataMinValue() SBE_NOEXCEPT
     {
-        return (std::uint8_t)0;
+        return static_cast<std::uint8_t>(0);
     }
 
     static SBE_CONSTEXPR std::uint8_t varDataMaxValue() SBE_NOEXCEPT
     {
-        return (std::uint8_t)254;
+        return static_cast<std::uint8_t>(254);
     }
 
     static SBE_CONSTEXPR std::size_t varDataEncodingLength() SBE_NOEXCEPT
     {
         return -1;
     }
-};
+
+template<typename CharT, typename Traits>
+friend std::basic_ostream<CharT, Traits> & operator << (
+    std::basic_ostream<CharT, Traits> &builder, VarStringEncoding writer)
+{
+    builder << '{';
+    builder << R"("length": )";
+    builder << +writer.length();
+
+    builder << '}';
+
+    return builder;
 }
+
+};
+
+}
+
 #endif

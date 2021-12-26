@@ -2,58 +2,71 @@
 #ifndef _SBE_ORDERSIDE_H_
 #define _SBE_ORDERSIDE_H_
 
-#if defined(SBE_HAVE_CMATH)
-/* cmath needed for std::numeric_limits<double>::quiet_NaN() */
-#  include <cmath>
-#  define SBE_FLOAT_NAN std::numeric_limits<float>::quiet_NaN()
-#  define SBE_DOUBLE_NAN std::numeric_limits<double>::quiet_NaN()
-#else
-/* math.h needed for NAN */
-#  include <math.h>
-#  define SBE_FLOAT_NAN NAN
-#  define SBE_DOUBLE_NAN NAN
+#if !defined(__STDC_LIMIT_MACROS)
+#  define __STDC_LIMIT_MACROS 1
 #endif
 
-#if __cplusplus >= 201103L
-#  include <cstdint>
-#  include <string>
-#  include <cstring>
-#endif
+#include <cstdint>
+#include <iomanip>
+#include <limits>
+#include <ostream>
+#include <stdexcept>
+#include <sstream>
+#include <string>
 
-#if __cplusplus >= 201103L
-#  define SBE_CONSTEXPR constexpr
-#  define SBE_NOEXCEPT noexcept
-#else
-#  define SBE_CONSTEXPR
-#  define SBE_NOEXCEPT
-#endif
-
-#include <sbe/sbe.h>
+#define SBE_NULLVALUE_INT8 (std::numeric_limits<std::int8_t>::min)()
+#define SBE_NULLVALUE_INT16 (std::numeric_limits<std::int16_t>::min)()
+#define SBE_NULLVALUE_INT32 (std::numeric_limits<std::int32_t>::min)()
+#define SBE_NULLVALUE_INT64 (std::numeric_limits<std::int64_t>::min)()
+#define SBE_NULLVALUE_UINT8 (std::numeric_limits<std::uint8_t>::max)()
+#define SBE_NULLVALUE_UINT16 (std::numeric_limits<std::uint16_t>::max)()
+#define SBE_NULLVALUE_UINT32 (std::numeric_limits<std::uint32_t>::max)()
+#define SBE_NULLVALUE_UINT64 (std::numeric_limits<std::uint64_t>::max)()
 
 namespace sbe {
 
 class OrderSide
 {
 public:
-
-    enum Value 
+    enum Value
     {
-        buy = (std::uint8_t)0,
-        sell = (std::uint8_t)1,
-        NULL_VALUE = (std::uint8_t)255
+        buy = static_cast<std::uint8_t>(0),
+        sell = static_cast<std::uint8_t>(1),
+        NULL_VALUE = static_cast<std::uint8_t>(255)
     };
 
     static OrderSide::Value get(const std::uint8_t value)
     {
         switch (value)
         {
-            case 0: return buy;
-            case 1: return sell;
-            case 255: return NULL_VALUE;
+            case static_cast<std::uint8_t>(0): return buy;
+            case static_cast<std::uint8_t>(1): return sell;
+            case static_cast<std::uint8_t>(255): return NULL_VALUE;
         }
 
         throw std::runtime_error("unknown value for enum OrderSide [E103]");
     }
+
+    static const char *c_str(const OrderSide::Value value)
+    {
+        switch (value)
+        {
+            case buy: return "buy";
+            case sell: return "sell";
+            case NULL_VALUE: return "NULL_VALUE";
+        }
+
+        throw std::runtime_error("unknown value for enum OrderSide [E103]:");
+    }
+
+    template<typename CharT, typename Traits>
+    friend std::basic_ostream<CharT, Traits> & operator << (
+        std::basic_ostream<CharT, Traits> &os, OrderSide::Value m)
+    {
+        return os << OrderSide::c_str(m);
+    }
 };
+
 }
+
 #endif

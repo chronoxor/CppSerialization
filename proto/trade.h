@@ -24,6 +24,7 @@
 #pragma warning(disable: 4245) // C4244: 'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
 #pragma warning(disable: 4267) // C4267: 'var' : conversion from 'size_t' to 'type', possible loss of data
 #pragma warning(disable: 4505) // C4505: 'var': unreferenced local function has been removed
+#pragma warning(disable: 5054) // C5054: operator 'operator-name': deprecated between enumerations of different types
 #endif
 #include "capnp/serialize.h"
 #include "capnproto/trade.capnp.h"
