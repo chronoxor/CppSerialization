@@ -144,7 +144,7 @@ if(NOT CPPSERIALIZATION_MODULE)
     # C5054: operator 'operator-name': deprecated between enumerations of different types
     set_target_properties(proto PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} /wd4125 /wd4127 /wd4244 /wd4245 /wd4267 /wd5054" FOLDER "proto")
   else()
-    set_target_properties(proto PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} -Wno-pedantic -Wno-array-bounds" FOLDER "proto")
+    set_target_properties(proto PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} -Wno-pedantic -Wno-array-bounds -Wno-shadow" FOLDER "proto")
   endif()
   target_link_libraries(proto ${LINKLIBS})
   list(APPEND LINKLIBS proto)

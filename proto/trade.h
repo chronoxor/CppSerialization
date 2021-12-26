@@ -17,10 +17,7 @@
 #pragma system_header
 #endif
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wshadow" // GCC: warning: declaration of 'expression' shadows a parameter or member
-#elif defined(_MSC_VER)
+#if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4127) // C4127: conditional expression is constant
 #pragma warning(disable: 4244) // C4244: 'conversion' conversion from 'type1' to 'type2', possible loss of data
@@ -37,9 +34,7 @@
 #include "protobuf/trade.pb.h"
 #include "sbe/Account.h"
 #include "sbe/MessageHeader.h"
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
+#if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
 
