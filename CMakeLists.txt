@@ -144,8 +144,9 @@ if(NOT CPPSERIALIZATION_MODULE)
     # C4244: 'conversion' conversion from 'type1' to 'type2', possible loss of data
     # C4245: 'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
     # C4267: 'var' : conversion from 'size_t' to 'type', possible loss of data
+    # C4251: 'type' : class 'type1' needs to have dll-interface to be used by clients of class 'type2'
     # C5054: operator 'operator-name': deprecated between enumerations of different types
-    set_target_properties(proto PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} /wd4125 /wd4127 /wd4244 /wd4245 /wd4267 /wd5054" FOLDER "proto")
+    set_target_properties(proto PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} /wd4125 /wd4127 /wd4244 /wd4245 /wd4251 /wd4267 /wd5054" FOLDER "proto")
   else()
     set_target_properties(proto PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS} -Wno-pedantic -Wno-array-bounds -Wno-shadow" FOLDER "proto")
   endif()
