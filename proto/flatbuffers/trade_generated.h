@@ -111,13 +111,13 @@ struct Order FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_ID) &&
+           VerifyField<int32_t>(verifier, VT_ID, 4) &&
            VerifyOffset(verifier, VT_SYMBOL) &&
            verifier.VerifyString(symbol()) &&
-           VerifyField<int8_t>(verifier, VT_SIDE) &&
-           VerifyField<int8_t>(verifier, VT_TYPE) &&
-           VerifyField<double>(verifier, VT_PRICE) &&
-           VerifyField<double>(verifier, VT_VOLUME) &&
+           VerifyField<int8_t>(verifier, VT_SIDE, 1) &&
+           VerifyField<int8_t>(verifier, VT_TYPE, 1) &&
+           VerifyField<double>(verifier, VT_PRICE, 8) &&
+           VerifyField<double>(verifier, VT_VOLUME, 8) &&
            verifier.EndTable();
   }
 };
@@ -208,7 +208,7 @@ struct Balance FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_CURRENCY) &&
            verifier.VerifyString(currency()) &&
-           VerifyField<double>(verifier, VT_AMOUNT) &&
+           VerifyField<double>(verifier, VT_AMOUNT, 8) &&
            verifier.EndTable();
   }
 };
@@ -277,7 +277,7 @@ struct Account FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_ID) &&
+           VerifyField<int32_t>(verifier, VT_ID, 4) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
            VerifyOffset(verifier, VT_WALLET) &&
