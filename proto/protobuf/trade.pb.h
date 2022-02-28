@@ -23,7 +23,6 @@
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/arena.h>
 #include <google/protobuf/arenastring.h>
-#include <google/protobuf/generated_message_table_driven.h>
 #include <google/protobuf/generated_message_util.h>
 #include <google/protobuf/metadata_lite.h>
 #include <google/protobuf/generated_message_reflection.h>
@@ -43,14 +42,6 @@ PROTOBUF_NAMESPACE_CLOSE
 
 // Internal implementation detail -- do not use these members.
 struct TableStruct_trade_2eproto {
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTableField entries[]
-    PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
-    PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[3]
-    PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
-  static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
   static const uint32_t offsets[];
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_trade_2eproto;
@@ -235,9 +226,6 @@ class Order final :
   protected:
   explicit Order(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
-  private:
-  static void ArenaDtor(void* object);
-  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   public:
 
   static const ClassData _class_data_;
@@ -441,9 +429,6 @@ class Balance final :
   protected:
   explicit Balance(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
-  private:
-  static void ArenaDtor(void* object);
-  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   public:
 
   static const ClassData _class_data_;
@@ -603,9 +588,6 @@ class Account final :
   protected:
   explicit Account(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
-  private:
-  static void ArenaDtor(void* object);
-  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   public:
 
   static const ClassData _class_data_;
@@ -739,7 +721,7 @@ template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void Order::set_symbol(ArgT0&& arg0, ArgT... args) {
  
- symbol_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+ symbol_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:Trade.protobuf.Order.symbol)
 }
 inline std::string* Order::mutable_symbol() {
@@ -752,15 +734,15 @@ inline const std::string& Order::_internal_symbol() const {
 }
 inline void Order::_internal_set_symbol(const std::string& value) {
   
-  symbol_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+  symbol_.Set(value, GetArenaForAllocation());
 }
 inline std::string* Order::_internal_mutable_symbol() {
   
-  return symbol_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+  return symbol_.Mutable(GetArenaForAllocation());
 }
 inline std::string* Order::release_symbol() {
   // @@protoc_insertion_point(field_release:Trade.protobuf.Order.symbol)
-  return symbol_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+  return symbol_.Release();
 }
 inline void Order::set_allocated_symbol(std::string* symbol) {
   if (symbol != nullptr) {
@@ -768,11 +750,10 @@ inline void Order::set_allocated_symbol(std::string* symbol) {
   } else {
     
   }
-  symbol_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), symbol,
-      GetArenaForAllocation());
+  symbol_.SetAllocated(symbol, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (symbol_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
-    symbol_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  if (symbol_.IsDefault()) {
+    symbol_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:Trade.protobuf.Order.symbol)
@@ -874,7 +855,7 @@ template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void Balance::set_currency(ArgT0&& arg0, ArgT... args) {
  
- currency_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+ currency_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:Trade.protobuf.Balance.currency)
 }
 inline std::string* Balance::mutable_currency() {
@@ -887,15 +868,15 @@ inline const std::string& Balance::_internal_currency() const {
 }
 inline void Balance::_internal_set_currency(const std::string& value) {
   
-  currency_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+  currency_.Set(value, GetArenaForAllocation());
 }
 inline std::string* Balance::_internal_mutable_currency() {
   
-  return currency_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+  return currency_.Mutable(GetArenaForAllocation());
 }
 inline std::string* Balance::release_currency() {
   // @@protoc_insertion_point(field_release:Trade.protobuf.Balance.currency)
-  return currency_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+  return currency_.Release();
 }
 inline void Balance::set_allocated_currency(std::string* currency) {
   if (currency != nullptr) {
@@ -903,11 +884,10 @@ inline void Balance::set_allocated_currency(std::string* currency) {
   } else {
     
   }
-  currency_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), currency,
-      GetArenaForAllocation());
+  currency_.SetAllocated(currency, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (currency_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
-    currency_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  if (currency_.IsDefault()) {
+    currency_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:Trade.protobuf.Balance.currency)
@@ -969,7 +949,7 @@ template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void Account::set_name(ArgT0&& arg0, ArgT... args) {
  
- name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+ name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:Trade.protobuf.Account.name)
 }
 inline std::string* Account::mutable_name() {
@@ -982,15 +962,15 @@ inline const std::string& Account::_internal_name() const {
 }
 inline void Account::_internal_set_name(const std::string& value) {
   
-  name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+  name_.Set(value, GetArenaForAllocation());
 }
 inline std::string* Account::_internal_mutable_name() {
   
-  return name_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+  return name_.Mutable(GetArenaForAllocation());
 }
 inline std::string* Account::release_name() {
   // @@protoc_insertion_point(field_release:Trade.protobuf.Account.name)
-  return name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+  return name_.Release();
 }
 inline void Account::set_allocated_name(std::string* name) {
   if (name != nullptr) {
@@ -998,11 +978,10 @@ inline void Account::set_allocated_name(std::string* name) {
   } else {
     
   }
-  name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), name,
-      GetArenaForAllocation());
+  name_.SetAllocated(name, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (name_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
-    name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  if (name_.IsDefault()) {
+    name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:Trade.protobuf.Account.name)
@@ -1085,7 +1064,7 @@ inline void Account::set_allocated_wallet(::Trade::protobuf::Balance* wallet) {
   }
   if (wallet) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::Trade::protobuf::Balance>::GetOwningArena(wallet);
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(wallet);
     if (message_arena != submessage_arena) {
       wallet = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, wallet, submessage_arena);

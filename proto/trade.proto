@@ -14,7 +14,7 @@ enum OrderType
     stop = 2;
 }
 
-message Order 
+message Order
 {
     int32 id = 1;
     string symbol = 2;
@@ -24,7 +24,7 @@ message Order
     double volume = 6;
 }
 
-message Balance 
+message Balance
 {
     string currency = 1;
     double amount = 2;

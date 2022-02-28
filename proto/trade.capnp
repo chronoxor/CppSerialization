@@ -17,7 +17,7 @@ enum OrderType
     stop @2;
 }
 
-struct Order 
+struct Order
 {
     id @0 : Int32;
     symbol @1 : Text;
@@ -27,7 +27,7 @@ struct Order
     volume @5 : Float64 = 0.0;
 }
 
-struct Balance 
+struct Balance
 {
     currency @0 : Text;
     amount @1 : Float64 = 0.0;

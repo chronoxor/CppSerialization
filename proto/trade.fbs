@@ -13,7 +13,7 @@ enum OrderType : byte
     stop
 }
 
-table Order 
+table Order
 {
     id : int;
     symbol : string;
@@ -23,7 +23,7 @@ table Order
     volume : double = 0.0;
 }
 
-table Balance 
+table Balance
 {
     currency : string;
     amount : double = 0.0;
