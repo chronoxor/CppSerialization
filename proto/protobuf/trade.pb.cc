@@ -22,7 +22,7 @@ namespace _pbi = _pb::internal;
 
 namespace Trade {
 namespace protobuf {
-constexpr Order::Order(
+PROTOBUF_CONSTEXPR Order::Order(
     ::_pbi::ConstantInitialized)
   : symbol_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
   , id_(0)
@@ -33,7 +33,7 @@ constexpr Order::Order(
   , type_(0)
 {}
 struct OrderDefaultTypeInternal {
-  constexpr OrderDefaultTypeInternal()
+  PROTOBUF_CONSTEXPR OrderDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
   ~OrderDefaultTypeInternal() {}
   union {
@@ -41,12 +41,12 @@ struct OrderDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 OrderDefaultTypeInternal _Order_default_instance_;
-constexpr Balance::Balance(
+PROTOBUF_CONSTEXPR Balance::Balance(
     ::_pbi::ConstantInitialized)
   : currency_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
   , amount_(0){}
 struct BalanceDefaultTypeInternal {
-  constexpr BalanceDefaultTypeInternal()
+  PROTOBUF_CONSTEXPR BalanceDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
   ~BalanceDefaultTypeInternal() {}
   union {
@@ -54,14 +54,14 @@ struct BalanceDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 BalanceDefaultTypeInternal _Balance_default_instance_;
-constexpr Account::Account(
+PROTOBUF_CONSTEXPR Account::Account(
     ::_pbi::ConstantInitialized)
   : orders_()
   , name_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
   , wallet_(nullptr)
   , id_(0){}
 struct AccountDefaultTypeInternal {
-  constexpr AccountDefaultTypeInternal()
+  PROTOBUF_CONSTEXPR AccountDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
   ~AccountDefaultTypeInternal() {}
   union {
