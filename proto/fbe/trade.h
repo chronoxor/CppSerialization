@@ -33,6 +33,10 @@ enum class OrderSide : uint8_t
 
 std::ostream& operator<<(std::ostream& stream, OrderSide value);
 
+#if defined(FMT_VERSION)
+} template <> struct fmt::formatter<trade::OrderSide> : ostream_formatter {}; namespace trade {
+#endif
+
 #if defined(LOGGING_PROTOCOL)
 CppLogging::Record& operator<<(CppLogging::Record& record, OrderSide value);
 #endif
@@ -45,6 +49,10 @@ enum class OrderType : uint8_t
 };
 
 std::ostream& operator<<(std::ostream& stream, OrderType value);
+
+#if defined(FMT_VERSION)
+} template <> struct fmt::formatter<trade::OrderType> : ostream_formatter {}; namespace trade {
+#endif
 
 #if defined(LOGGING_PROTOCOL)
 CppLogging::Record& operator<<(CppLogging::Record& record, OrderType value);
@@ -87,10 +95,12 @@ struct Order
 
 } // namespace trade
 
-namespace std {
+#if defined(FMT_VERSION)
+template <> struct fmt::formatter<trade::Order> : ostream_formatter {};
+#endif
 
 template<>
-struct hash<trade::Order>
+struct std::hash<trade::Order>
 {
     typedef trade::Order argument_type;
     typedef size_t result_type;
@@ -102,8 +112,6 @@ struct hash<trade::Order>
         return result;
     }
 };
-
-} // namespace std
 
 namespace trade {
 
@@ -140,10 +148,12 @@ struct Balance
 
 } // namespace trade
 
-namespace std {
+#if defined(FMT_VERSION)
+template <> struct fmt::formatter<trade::Balance> : ostream_formatter {};
+#endif
 
 template<>
-struct hash<trade::Balance>
+struct std::hash<trade::Balance>
 {
     typedef trade::Balance argument_type;
     typedef size_t result_type;
@@ -155,8 +165,6 @@ struct hash<trade::Balance>
         return result;
     }
 };
-
-} // namespace std
 
 namespace trade {
 
@@ -195,10 +203,12 @@ struct Account
 
 } // namespace trade
 
-namespace std {
+#if defined(FMT_VERSION)
+template <> struct fmt::formatter<trade::Account> : ostream_formatter {};
+#endif
 
 template<>
-struct hash<trade::Account>
+struct std::hash<trade::Account>
 {
     typedef trade::Account argument_type;
     typedef size_t result_type;
@@ -210,8 +220,6 @@ struct hash<trade::Account>
         return result;
     }
 };
-
-} // namespace std
 
 namespace trade {
 
