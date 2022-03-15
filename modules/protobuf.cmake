@@ -13,7 +13,7 @@ if(NOT TARGET protobuf)
   SET(protobuf_WITH_ZLIB OFF CACHE BOOL "Build with zlib support" FORCE)  
 
   # Module subdirectory
-  add_subdirectory("protobuf/cmake")
+  add_subdirectory("protobuf")
 
   # Module folder
   set_target_properties(libprotobuf PROPERTIES FOLDER "modules/protobuf")
