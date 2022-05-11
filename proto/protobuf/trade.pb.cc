@@ -194,6 +194,7 @@ Order::Order(::PROTOBUF_NAMESPACE_ID::Arena* arena,
 }
 Order::Order(const Order& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
+  Order* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.symbol_){}
     , decltype(_impl_.id_){}
@@ -209,8 +210,8 @@ Order::Order(const Order& from)
     _impl_.symbol_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_symbol().empty()) {
-    _impl_.symbol_.Set(from._internal_symbol(), 
-      GetArenaForAllocation());
+    _this->_impl_.symbol_.Set(from._internal_symbol(), 
+      _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.id_, &from._impl_.id_,
     static_cast<size_t>(reinterpret_cast<char*>(&_impl_.type_) -
@@ -467,51 +468,47 @@ size_t Order::ByteSizeLong() const {
 }
 
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData Order::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
     Order::MergeImpl
 };
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Order::GetClassData() const { return &_class_data_; }
 
-void Order::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
-                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<Order *>(to)->MergeFrom(
-      static_cast<const Order &>(from));
-}
 
-
-void Order::MergeFrom(const Order& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:Trade.protobuf.Order)
-  GOOGLE_DCHECK_NE(&from, this);
+void Order::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<Order*>(&to_msg);
+  auto& from = static_cast<const Order&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Trade.protobuf.Order)
+  GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (!from._internal_symbol().empty()) {
-    _internal_set_symbol(from._internal_symbol());
+    _this->_internal_set_symbol(from._internal_symbol());
   }
   if (from._internal_id() != 0) {
-    _internal_set_id(from._internal_id());
+    _this->_internal_set_id(from._internal_id());
   }
   if (from._internal_side() != 0) {
-    _internal_set_side(from._internal_side());
+    _this->_internal_set_side(from._internal_side());
   }
   static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
   double tmp_price = from._internal_price();
   uint64_t raw_price;
   memcpy(&raw_price, &tmp_price, sizeof(tmp_price));
   if (raw_price != 0) {
-    _internal_set_price(from._internal_price());
+    _this->_internal_set_price(from._internal_price());
   }
   static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
   double tmp_volume = from._internal_volume();
   uint64_t raw_volume;
   memcpy(&raw_volume, &tmp_volume, sizeof(tmp_volume));
   if (raw_volume != 0) {
-    _internal_set_volume(from._internal_volume());
+    _this->_internal_set_volume(from._internal_volume());
   }
   if (from._internal_type() != 0) {
-    _internal_set_type(from._internal_type());
+    _this->_internal_set_type(from._internal_type());
   }
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void Order::CopyFrom(const Order& from) {
@@ -562,6 +559,7 @@ Balance::Balance(::PROTOBUF_NAMESPACE_ID::Arena* arena,
 }
 Balance::Balance(const Balance& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
+  Balance* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.currency_){}
     , decltype(_impl_.amount_){}
@@ -573,10 +571,10 @@ Balance::Balance(const Balance& from)
     _impl_.currency_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_currency().empty()) {
-    _impl_.currency_.Set(from._internal_currency(), 
-      GetArenaForAllocation());
+    _this->_impl_.currency_.Set(from._internal_currency(), 
+      _this->GetArenaForAllocation());
   }
-  _impl_.amount_ = from._impl_.amount_;
+  _this->_impl_.amount_ = from._impl_.amount_;
   // @@protoc_insertion_point(copy_constructor:Trade.protobuf.Balance)
 }
 
@@ -733,35 +731,31 @@ size_t Balance::ByteSizeLong() const {
 }
 
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData Balance::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
     Balance::MergeImpl
 };
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Balance::GetClassData() const { return &_class_data_; }
 
-void Balance::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
-                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<Balance *>(to)->MergeFrom(
-      static_cast<const Balance &>(from));
-}
 
-
-void Balance::MergeFrom(const Balance& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:Trade.protobuf.Balance)
-  GOOGLE_DCHECK_NE(&from, this);
+void Balance::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<Balance*>(&to_msg);
+  auto& from = static_cast<const Balance&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Trade.protobuf.Balance)
+  GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (!from._internal_currency().empty()) {
-    _internal_set_currency(from._internal_currency());
+    _this->_internal_set_currency(from._internal_currency());
   }
   static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
   double tmp_amount = from._internal_amount();
   uint64_t raw_amount;
   memcpy(&raw_amount, &tmp_amount, sizeof(tmp_amount));
   if (raw_amount != 0) {
-    _internal_set_amount(from._internal_amount());
+    _this->_internal_set_amount(from._internal_amount());
   }
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void Balance::CopyFrom(const Balance& from) {
@@ -812,6 +806,7 @@ Account::Account(::PROTOBUF_NAMESPACE_ID::Arena* arena,
 }
 Account::Account(const Account& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
+  Account* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.orders_){from._impl_.orders_}
     , decltype(_impl_.name_){}
@@ -825,13 +820,13 @@ Account::Account(const Account& from)
     _impl_.name_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_name().empty()) {
-    _impl_.name_.Set(from._internal_name(), 
-      GetArenaForAllocation());
+    _this->_impl_.name_.Set(from._internal_name(), 
+      _this->GetArenaForAllocation());
   }
   if (from._internal_has_wallet()) {
-    _impl_.wallet_ = new ::Trade::protobuf::Balance(*from._impl_.wallet_);
+    _this->_impl_.wallet_ = new ::Trade::protobuf::Balance(*from._impl_.wallet_);
   }
-  _impl_.id_ = from._impl_.id_;
+  _this->_impl_.id_ = from._impl_.id_;
   // @@protoc_insertion_point(copy_constructor:Trade.protobuf.Account)
 }
 
@@ -1039,35 +1034,32 @@ size_t Account::ByteSizeLong() const {
 }
 
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData Account::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
     Account::MergeImpl
 };
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Account::GetClassData() const { return &_class_data_; }
 
-void Account::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
-                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<Account *>(to)->MergeFrom(
-      static_cast<const Account &>(from));
-}
 
-
-void Account::MergeFrom(const Account& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:Trade.protobuf.Account)
-  GOOGLE_DCHECK_NE(&from, this);
+void Account::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<Account*>(&to_msg);
+  auto& from = static_cast<const Account&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Trade.protobuf.Account)
+  GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  _impl_.orders_.MergeFrom(from._impl_.orders_);
+  _this->_impl_.orders_.MergeFrom(from._impl_.orders_);
   if (!from._internal_name().empty()) {
-    _internal_set_name(from._internal_name());
+    _this->_internal_set_name(from._internal_name());
   }
   if (from._internal_has_wallet()) {
-    _internal_mutable_wallet()->::Trade::protobuf::Balance::MergeFrom(from._internal_wallet());
+    _this->_internal_mutable_wallet()->::Trade::protobuf::Balance::MergeFrom(
+        from._internal_wallet());
   }
   if (from._internal_id() != 0) {
-    _internal_set_id(from._internal_id());
+    _this->_internal_set_id(from._internal_id());
   }
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void Account::CopyFrom(const Account& from) {
