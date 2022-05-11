@@ -603,13 +603,13 @@ a generated code for required programming language.
 
 The following command will create a C++ generated code:
 ```shell
-fbec --c++ --input=trade.fbe --output=.
+fbec --cpp --input=trade.fbe --output=.
 ```
 
 It is possible to use add_custom_command() in CMakeLists.txt to generate code
 using 'cmake' utility:
 ```cmake
-add_custom_command(TARGET example POST_BUILD COMMAND fbec --c++ --input=trade.fbe --output=.)
+add_custom_command(TARGET example POST_BUILD COMMAND fbec --cpp --input=trade.fbe --output=.)
 ```
 
 As the result 'fbe.h' and 'trade.h' files will be generated.

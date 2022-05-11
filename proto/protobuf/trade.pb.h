@@ -210,10 +210,10 @@ class Order final :
   const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
   uint8_t* _InternalSerialize(
       uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
 
   private:
-  void SharedCtor();
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
   void InternalSwap(Order* other);
@@ -311,13 +311,16 @@ class Order final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr symbol_;
-  int32_t id_;
-  int side_;
-  double price_;
-  double volume_;
-  int type_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr symbol_;
+    int32_t id_;
+    int side_;
+    double price_;
+    double volume_;
+    int type_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
   friend struct ::TableStruct_trade_2eproto;
 };
 // -------------------------------------------------------------------
@@ -413,10 +416,10 @@ class Balance final :
   const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
   uint8_t* _InternalSerialize(
       uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
 
   private:
-  void SharedCtor();
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
   void InternalSwap(Balance* other);
@@ -474,9 +477,12 @@ class Balance final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr currency_;
-  double amount_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr currency_;
+    double amount_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
   friend struct ::TableStruct_trade_2eproto;
 };
 // -------------------------------------------------------------------
@@ -572,10 +578,10 @@ class Account final :
   const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
   uint8_t* _InternalSerialize(
       uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
 
   private:
-  void SharedCtor();
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
   void InternalSwap(Account* other);
@@ -671,11 +677,14 @@ class Account final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Trade::protobuf::Order > orders_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
-  ::Trade::protobuf::Balance* wallet_;
-  int32_t id_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Trade::protobuf::Order > orders_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+    ::Trade::protobuf::Balance* wallet_;
+    int32_t id_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
   friend struct ::TableStruct_trade_2eproto;
 };
 // ===================================================================
@@ -691,10 +700,10 @@ class Account final :
 
 // int32 id = 1;
 inline void Order::clear_id() {
-  id_ = 0;
+  _impl_.id_ = 0;
 }
 inline int32_t Order::_internal_id() const {
-  return id_;
+  return _impl_.id_;
 }
 inline int32_t Order::id() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Order.id)
@@ -702,7 +711,7 @@ inline int32_t Order::id() const {
 }
 inline void Order::_internal_set_id(int32_t value) {
   
-  id_ = value;
+  _impl_.id_ = value;
 }
 inline void Order::set_id(int32_t value) {
   _internal_set_id(value);
@@ -711,7 +720,7 @@ inline void Order::set_id(int32_t value) {
 
 // string symbol = 2;
 inline void Order::clear_symbol() {
-  symbol_.ClearToEmpty();
+  _impl_.symbol_.ClearToEmpty();
 }
 inline const std::string& Order::symbol() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Order.symbol)
@@ -721,7 +730,7 @@ template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void Order::set_symbol(ArgT0&& arg0, ArgT... args) {
  
- symbol_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+ _impl_.symbol_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:Trade.protobuf.Order.symbol)
 }
 inline std::string* Order::mutable_symbol() {
@@ -730,19 +739,19 @@ inline std::string* Order::mutable_symbol() {
   return _s;
 }
 inline const std::string& Order::_internal_symbol() const {
-  return symbol_.Get();
+  return _impl_.symbol_.Get();
 }
 inline void Order::_internal_set_symbol(const std::string& value) {
   
-  symbol_.Set(value, GetArenaForAllocation());
+  _impl_.symbol_.Set(value, GetArenaForAllocation());
 }
 inline std::string* Order::_internal_mutable_symbol() {
   
-  return symbol_.Mutable(GetArenaForAllocation());
+  return _impl_.symbol_.Mutable(GetArenaForAllocation());
 }
 inline std::string* Order::release_symbol() {
   // @@protoc_insertion_point(field_release:Trade.protobuf.Order.symbol)
-  return symbol_.Release();
+  return _impl_.symbol_.Release();
 }
 inline void Order::set_allocated_symbol(std::string* symbol) {
   if (symbol != nullptr) {
@@ -750,10 +759,10 @@ inline void Order::set_allocated_symbol(std::string* symbol) {
   } else {
     
   }
-  symbol_.SetAllocated(symbol, GetArenaForAllocation());
+  _impl_.symbol_.SetAllocated(symbol, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (symbol_.IsDefault()) {
-    symbol_.Set("", GetArenaForAllocation());
+  if (_impl_.symbol_.IsDefault()) {
+    _impl_.symbol_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:Trade.protobuf.Order.symbol)
@@ -761,10 +770,10 @@ inline void Order::set_allocated_symbol(std::string* symbol) {
 
 // .Trade.protobuf.OrderSide side = 3;
 inline void Order::clear_side() {
-  side_ = 0;
+  _impl_.side_ = 0;
 }
 inline ::Trade::protobuf::OrderSide Order::_internal_side() const {
-  return static_cast< ::Trade::protobuf::OrderSide >(side_);
+  return static_cast< ::Trade::protobuf::OrderSide >(_impl_.side_);
 }
 inline ::Trade::protobuf::OrderSide Order::side() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Order.side)
@@ -772,7 +781,7 @@ inline ::Trade::protobuf::OrderSide Order::side() const {
 }
 inline void Order::_internal_set_side(::Trade::protobuf::OrderSide value) {
   
-  side_ = value;
+  _impl_.side_ = value;
 }
 inline void Order::set_side(::Trade::protobuf::OrderSide value) {
   _internal_set_side(value);
@@ -781,10 +790,10 @@ inline void Order::set_side(::Trade::protobuf::OrderSide value) {
 
 // .Trade.protobuf.OrderType type = 4;
 inline void Order::clear_type() {
-  type_ = 0;
+  _impl_.type_ = 0;
 }
 inline ::Trade::protobuf::OrderType Order::_internal_type() const {
-  return static_cast< ::Trade::protobuf::OrderType >(type_);
+  return static_cast< ::Trade::protobuf::OrderType >(_impl_.type_);
 }
 inline ::Trade::protobuf::OrderType Order::type() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Order.type)
@@ -792,7 +801,7 @@ inline ::Trade::protobuf::OrderType Order::type() const {
 }
 inline void Order::_internal_set_type(::Trade::protobuf::OrderType value) {
   
-  type_ = value;
+  _impl_.type_ = value;
 }
 inline void Order::set_type(::Trade::protobuf::OrderType value) {
   _internal_set_type(value);
@@ -801,10 +810,10 @@ inline void Order::set_type(::Trade::protobuf::OrderType value) {
 
 // double price = 5;
 inline void Order::clear_price() {
-  price_ = 0;
+  _impl_.price_ = 0;
 }
 inline double Order::_internal_price() const {
-  return price_;
+  return _impl_.price_;
 }
 inline double Order::price() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Order.price)
@@ -812,7 +821,7 @@ inline double Order::price() const {
 }
 inline void Order::_internal_set_price(double value) {
   
-  price_ = value;
+  _impl_.price_ = value;
 }
 inline void Order::set_price(double value) {
   _internal_set_price(value);
@@ -821,10 +830,10 @@ inline void Order::set_price(double value) {
 
 // double volume = 6;
 inline void Order::clear_volume() {
-  volume_ = 0;
+  _impl_.volume_ = 0;
 }
 inline double Order::_internal_volume() const {
-  return volume_;
+  return _impl_.volume_;
 }
 inline double Order::volume() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Order.volume)
@@ -832,7 +841,7 @@ inline double Order::volume() const {
 }
 inline void Order::_internal_set_volume(double value) {
   
-  volume_ = value;
+  _impl_.volume_ = value;
 }
 inline void Order::set_volume(double value) {
   _internal_set_volume(value);
@@ -845,7 +854,7 @@ inline void Order::set_volume(double value) {
 
 // string currency = 1;
 inline void Balance::clear_currency() {
-  currency_.ClearToEmpty();
+  _impl_.currency_.ClearToEmpty();
 }
 inline const std::string& Balance::currency() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Balance.currency)
@@ -855,7 +864,7 @@ template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void Balance::set_currency(ArgT0&& arg0, ArgT... args) {
  
- currency_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+ _impl_.currency_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:Trade.protobuf.Balance.currency)
 }
 inline std::string* Balance::mutable_currency() {
@@ -864,19 +873,19 @@ inline std::string* Balance::mutable_currency() {
   return _s;
 }
 inline const std::string& Balance::_internal_currency() const {
-  return currency_.Get();
+  return _impl_.currency_.Get();
 }
 inline void Balance::_internal_set_currency(const std::string& value) {
   
-  currency_.Set(value, GetArenaForAllocation());
+  _impl_.currency_.Set(value, GetArenaForAllocation());
 }
 inline std::string* Balance::_internal_mutable_currency() {
   
-  return currency_.Mutable(GetArenaForAllocation());
+  return _impl_.currency_.Mutable(GetArenaForAllocation());
 }
 inline std::string* Balance::release_currency() {
   // @@protoc_insertion_point(field_release:Trade.protobuf.Balance.currency)
-  return currency_.Release();
+  return _impl_.currency_.Release();
 }
 inline void Balance::set_allocated_currency(std::string* currency) {
   if (currency != nullptr) {
@@ -884,10 +893,10 @@ inline void Balance::set_allocated_currency(std::string* currency) {
   } else {
     
   }
-  currency_.SetAllocated(currency, GetArenaForAllocation());
+  _impl_.currency_.SetAllocated(currency, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (currency_.IsDefault()) {
-    currency_.Set("", GetArenaForAllocation());
+  if (_impl_.currency_.IsDefault()) {
+    _impl_.currency_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:Trade.protobuf.Balance.currency)
@@ -895,10 +904,10 @@ inline void Balance::set_allocated_currency(std::string* currency) {
 
 // double amount = 2;
 inline void Balance::clear_amount() {
-  amount_ = 0;
+  _impl_.amount_ = 0;
 }
 inline double Balance::_internal_amount() const {
-  return amount_;
+  return _impl_.amount_;
 }
 inline double Balance::amount() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Balance.amount)
@@ -906,7 +915,7 @@ inline double Balance::amount() const {
 }
 inline void Balance::_internal_set_amount(double value) {
   
-  amount_ = value;
+  _impl_.amount_ = value;
 }
 inline void Balance::set_amount(double value) {
   _internal_set_amount(value);
@@ -919,10 +928,10 @@ inline void Balance::set_amount(double value) {
 
 // int32 id = 1;
 inline void Account::clear_id() {
-  id_ = 0;
+  _impl_.id_ = 0;
 }
 inline int32_t Account::_internal_id() const {
-  return id_;
+  return _impl_.id_;
 }
 inline int32_t Account::id() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Account.id)
@@ -930,7 +939,7 @@ inline int32_t Account::id() const {
 }
 inline void Account::_internal_set_id(int32_t value) {
   
-  id_ = value;
+  _impl_.id_ = value;
 }
 inline void Account::set_id(int32_t value) {
   _internal_set_id(value);
@@ -939,7 +948,7 @@ inline void Account::set_id(int32_t value) {
 
 // string name = 2;
 inline void Account::clear_name() {
-  name_.ClearToEmpty();
+  _impl_.name_.ClearToEmpty();
 }
 inline const std::string& Account::name() const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Account.name)
@@ -949,7 +958,7 @@ template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void Account::set_name(ArgT0&& arg0, ArgT... args) {
  
- name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+ _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:Trade.protobuf.Account.name)
 }
 inline std::string* Account::mutable_name() {
@@ -958,19 +967,19 @@ inline std::string* Account::mutable_name() {
   return _s;
 }
 inline const std::string& Account::_internal_name() const {
-  return name_.Get();
+  return _impl_.name_.Get();
 }
 inline void Account::_internal_set_name(const std::string& value) {
   
-  name_.Set(value, GetArenaForAllocation());
+  _impl_.name_.Set(value, GetArenaForAllocation());
 }
 inline std::string* Account::_internal_mutable_name() {
   
-  return name_.Mutable(GetArenaForAllocation());
+  return _impl_.name_.Mutable(GetArenaForAllocation());
 }
 inline std::string* Account::release_name() {
   // @@protoc_insertion_point(field_release:Trade.protobuf.Account.name)
-  return name_.Release();
+  return _impl_.name_.Release();
 }
 inline void Account::set_allocated_name(std::string* name) {
   if (name != nullptr) {
@@ -978,10 +987,10 @@ inline void Account::set_allocated_name(std::string* name) {
   } else {
     
   }
-  name_.SetAllocated(name, GetArenaForAllocation());
+  _impl_.name_.SetAllocated(name, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (name_.IsDefault()) {
-    name_.Set("", GetArenaForAllocation());
+  if (_impl_.name_.IsDefault()) {
+    _impl_.name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:Trade.protobuf.Account.name)
@@ -989,19 +998,19 @@ inline void Account::set_allocated_name(std::string* name) {
 
 // .Trade.protobuf.Balance wallet = 3;
 inline bool Account::_internal_has_wallet() const {
-  return this != internal_default_instance() && wallet_ != nullptr;
+  return this != internal_default_instance() && _impl_.wallet_ != nullptr;
 }
 inline bool Account::has_wallet() const {
   return _internal_has_wallet();
 }
 inline void Account::clear_wallet() {
-  if (GetArenaForAllocation() == nullptr && wallet_ != nullptr) {
-    delete wallet_;
+  if (GetArenaForAllocation() == nullptr && _impl_.wallet_ != nullptr) {
+    delete _impl_.wallet_;
   }
-  wallet_ = nullptr;
+  _impl_.wallet_ = nullptr;
 }
 inline const ::Trade::protobuf::Balance& Account::_internal_wallet() const {
-  const ::Trade::protobuf::Balance* p = wallet_;
+  const ::Trade::protobuf::Balance* p = _impl_.wallet_;
   return p != nullptr ? *p : reinterpret_cast<const ::Trade::protobuf::Balance&>(
       ::Trade::protobuf::_Balance_default_instance_);
 }
@@ -1012,9 +1021,9 @@ inline const ::Trade::protobuf::Balance& Account::wallet() const {
 inline void Account::unsafe_arena_set_allocated_wallet(
     ::Trade::protobuf::Balance* wallet) {
   if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(wallet_);
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.wallet_);
   }
-  wallet_ = wallet;
+  _impl_.wallet_ = wallet;
   if (wallet) {
     
   } else {
@@ -1024,8 +1033,8 @@ inline void Account::unsafe_arena_set_allocated_wallet(
 }
 inline ::Trade::protobuf::Balance* Account::release_wallet() {
   
-  ::Trade::protobuf::Balance* temp = wallet_;
-  wallet_ = nullptr;
+  ::Trade::protobuf::Balance* temp = _impl_.wallet_;
+  _impl_.wallet_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
   temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
@@ -1040,17 +1049,17 @@ inline ::Trade::protobuf::Balance* Account::release_wallet() {
 inline ::Trade::protobuf::Balance* Account::unsafe_arena_release_wallet() {
   // @@protoc_insertion_point(field_release:Trade.protobuf.Account.wallet)
   
-  ::Trade::protobuf::Balance* temp = wallet_;
-  wallet_ = nullptr;
+  ::Trade::protobuf::Balance* temp = _impl_.wallet_;
+  _impl_.wallet_ = nullptr;
   return temp;
 }
 inline ::Trade::protobuf::Balance* Account::_internal_mutable_wallet() {
   
-  if (wallet_ == nullptr) {
+  if (_impl_.wallet_ == nullptr) {
     auto* p = CreateMaybeMessage<::Trade::protobuf::Balance>(GetArenaForAllocation());
-    wallet_ = p;
+    _impl_.wallet_ = p;
   }
-  return wallet_;
+  return _impl_.wallet_;
 }
 inline ::Trade::protobuf::Balance* Account::mutable_wallet() {
   ::Trade::protobuf::Balance* _msg = _internal_mutable_wallet();
@@ -1060,7 +1069,7 @@ inline ::Trade::protobuf::Balance* Account::mutable_wallet() {
 inline void Account::set_allocated_wallet(::Trade::protobuf::Balance* wallet) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
-    delete wallet_;
+    delete _impl_.wallet_;
   }
   if (wallet) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
@@ -1073,38 +1082,38 @@ inline void Account::set_allocated_wallet(::Trade::protobuf::Balance* wallet) {
   } else {
     
   }
-  wallet_ = wallet;
+  _impl_.wallet_ = wallet;
   // @@protoc_insertion_point(field_set_allocated:Trade.protobuf.Account.wallet)
 }
 
 // repeated .Trade.protobuf.Order orders = 4;
 inline int Account::_internal_orders_size() const {
-  return orders_.size();
+  return _impl_.orders_.size();
 }
 inline int Account::orders_size() const {
   return _internal_orders_size();
 }
 inline void Account::clear_orders() {
-  orders_.Clear();
+  _impl_.orders_.Clear();
 }
 inline ::Trade::protobuf::Order* Account::mutable_orders(int index) {
   // @@protoc_insertion_point(field_mutable:Trade.protobuf.Account.orders)
-  return orders_.Mutable(index);
+  return _impl_.orders_.Mutable(index);
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Trade::protobuf::Order >*
 Account::mutable_orders() {
   // @@protoc_insertion_point(field_mutable_list:Trade.protobuf.Account.orders)
-  return &orders_;
+  return &_impl_.orders_;
 }
 inline const ::Trade::protobuf::Order& Account::_internal_orders(int index) const {
-  return orders_.Get(index);
+  return _impl_.orders_.Get(index);
 }
 inline const ::Trade::protobuf::Order& Account::orders(int index) const {
   // @@protoc_insertion_point(field_get:Trade.protobuf.Account.orders)
   return _internal_orders(index);
 }
 inline ::Trade::protobuf::Order* Account::_internal_add_orders() {
-  return orders_.Add();
+  return _impl_.orders_.Add();
 }
 inline ::Trade::protobuf::Order* Account::add_orders() {
   ::Trade::protobuf::Order* _add = _internal_add_orders();
@@ -1114,7 +1123,7 @@ inline ::Trade::protobuf::Order* Account::add_orders() {
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Trade::protobuf::Order >&
 Account::orders() const {
   // @@protoc_insertion_point(field_list:Trade.protobuf.Account.orders)
-  return orders_;
+  return _impl_.orders_;
 }
 
 #ifdef __GNUC__

@@ -23,15 +23,14 @@ namespace _pbi = _pb::internal;
 namespace Trade {
 namespace protobuf {
 PROTOBUF_CONSTEXPR Order::Order(
-    ::_pbi::ConstantInitialized)
-  : symbol_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
-  , id_(0)
-  , side_(0)
-
-  , price_(0)
-  , volume_(0)
-  , type_(0)
-{}
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.symbol_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.id_)*/0
+  , /*decltype(_impl_.side_)*/0
+  , /*decltype(_impl_.price_)*/0
+  , /*decltype(_impl_.volume_)*/0
+  , /*decltype(_impl_.type_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
 struct OrderDefaultTypeInternal {
   PROTOBUF_CONSTEXPR OrderDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -42,9 +41,10 @@ struct OrderDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 OrderDefaultTypeInternal _Order_default_instance_;
 PROTOBUF_CONSTEXPR Balance::Balance(
-    ::_pbi::ConstantInitialized)
-  : currency_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
-  , amount_(0){}
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.currency_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.amount_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
 struct BalanceDefaultTypeInternal {
   PROTOBUF_CONSTEXPR BalanceDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -55,11 +55,12 @@ struct BalanceDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 BalanceDefaultTypeInternal _Balance_default_instance_;
 PROTOBUF_CONSTEXPR Account::Account(
-    ::_pbi::ConstantInitialized)
-  : orders_()
-  , name_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
-  , wallet_(nullptr)
-  , id_(0){}
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.orders_)*/{}
+  , /*decltype(_impl_.name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.wallet_)*/nullptr
+  , /*decltype(_impl_.id_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
 struct AccountDefaultTypeInternal {
   PROTOBUF_CONSTEXPR AccountDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -82,30 +83,30 @@ const uint32_t TableStruct_trade_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, id_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, symbol_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, side_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, type_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, price_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, volume_),
+  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.id_),
+  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.symbol_),
+  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.side_),
+  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.type_),
+  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.price_),
+  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.volume_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Balance, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Balance, currency_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Balance, amount_),
+  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Balance, _impl_.currency_),
+  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Balance, _impl_.amount_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, id_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, name_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, wallet_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, orders_),
+  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.id_),
+  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.name_),
+  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.wallet_),
+  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.orders_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Trade::protobuf::Order)},
@@ -188,35 +189,52 @@ class Order::_Internal {
 Order::Order(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor();
+  SharedCtor(arena, is_message_owned);
   // @@protoc_insertion_point(arena_constructor:Trade.protobuf.Order)
 }
 Order::Order(const Order& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
+  new (&_impl_) Impl_{
+      decltype(_impl_.symbol_){}
+    , decltype(_impl_.id_){}
+    , decltype(_impl_.side_){}
+    , decltype(_impl_.price_){}
+    , decltype(_impl_.volume_){}
+    , decltype(_impl_.type_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  symbol_.InitDefault();
+  _impl_.symbol_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    symbol_.Set("", GetArenaForAllocation());
+    _impl_.symbol_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_symbol().empty()) {
-    symbol_.Set(from._internal_symbol(), 
+    _impl_.symbol_.Set(from._internal_symbol(), 
       GetArenaForAllocation());
   }
-  ::memcpy(&id_, &from.id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&type_) -
-    reinterpret_cast<char*>(&id_)) + sizeof(type_));
+  ::memcpy(&_impl_.id_, &from._impl_.id_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.type_) -
+    reinterpret_cast<char*>(&_impl_.id_)) + sizeof(_impl_.type_));
   // @@protoc_insertion_point(copy_constructor:Trade.protobuf.Order)
 }
 
-inline void Order::SharedCtor() {
-symbol_.InitDefault();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  symbol_.Set("", GetArenaForAllocation());
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-    reinterpret_cast<char*>(&id_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&type_) -
-    reinterpret_cast<char*>(&id_)) + sizeof(type_));
+inline void Order::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.symbol_){}
+    , decltype(_impl_.id_){0}
+    , decltype(_impl_.side_){0}
+    , decltype(_impl_.price_){0}
+    , decltype(_impl_.volume_){0}
+    , decltype(_impl_.type_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.symbol_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.symbol_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 Order::~Order() {
@@ -230,11 +248,11 @@ Order::~Order() {
 
 inline void Order::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  symbol_.Destroy();
+  _impl_.symbol_.Destroy();
 }
 
 void Order::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  _impl_._cached_size_.Set(size);
 }
 
 void Order::Clear() {
@@ -243,10 +261,10 @@ void Order::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  symbol_.ClearToEmpty();
-  ::memset(&id_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&type_) -
-      reinterpret_cast<char*>(&id_)) + sizeof(type_));
+  _impl_.symbol_.ClearToEmpty();
+  ::memset(&_impl_.id_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.type_) -
+      reinterpret_cast<char*>(&_impl_.id_)) + sizeof(_impl_.type_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -259,7 +277,7 @@ const char* Order::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
       // int32 id = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          _impl_.id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -295,7 +313,7 @@ const char* Order::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
       // double price = 5;
       case 5:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 41)) {
-          price_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          _impl_.price_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
           ptr += sizeof(double);
         } else
           goto handle_unusual;
@@ -303,7 +321,7 @@ const char* Order::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
       // double volume = 6;
       case 6:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 49)) {
-          volume_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          _impl_.volume_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
           ptr += sizeof(double);
         } else
           goto handle_unusual;
@@ -445,7 +463,7 @@ size_t Order::ByteSizeLong() const {
       ::_pbi::WireFormatLite::EnumSize(this->_internal_type());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData Order::_class_data_ = {
@@ -513,15 +531,15 @@ void Order::InternalSwap(Order* other) {
   auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &symbol_, lhs_arena,
-      &other->symbol_, rhs_arena
+      &_impl_.symbol_, lhs_arena,
+      &other->_impl_.symbol_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Order, type_)
-      + sizeof(Order::type_)
-      - PROTOBUF_FIELD_OFFSET(Order, id_)>(
-          reinterpret_cast<char*>(&id_),
-          reinterpret_cast<char*>(&other->id_));
+      PROTOBUF_FIELD_OFFSET(Order, _impl_.type_)
+      + sizeof(Order::_impl_.type_)
+      - PROTOBUF_FIELD_OFFSET(Order, _impl_.id_)>(
+          reinterpret_cast<char*>(&_impl_.id_),
+          reinterpret_cast<char*>(&other->_impl_.id_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Order::GetMetadata() const {
@@ -539,30 +557,42 @@ class Balance::_Internal {
 Balance::Balance(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor();
+  SharedCtor(arena, is_message_owned);
   // @@protoc_insertion_point(arena_constructor:Trade.protobuf.Balance)
 }
 Balance::Balance(const Balance& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
+  new (&_impl_) Impl_{
+      decltype(_impl_.currency_){}
+    , decltype(_impl_.amount_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  currency_.InitDefault();
+  _impl_.currency_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    currency_.Set("", GetArenaForAllocation());
+    _impl_.currency_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_currency().empty()) {
-    currency_.Set(from._internal_currency(), 
+    _impl_.currency_.Set(from._internal_currency(), 
       GetArenaForAllocation());
   }
-  amount_ = from.amount_;
+  _impl_.amount_ = from._impl_.amount_;
   // @@protoc_insertion_point(copy_constructor:Trade.protobuf.Balance)
 }
 
-inline void Balance::SharedCtor() {
-currency_.InitDefault();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  currency_.Set("", GetArenaForAllocation());
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-amount_ = 0;
+inline void Balance::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.currency_){}
+    , decltype(_impl_.amount_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.currency_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.currency_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 Balance::~Balance() {
@@ -576,11 +606,11 @@ Balance::~Balance() {
 
 inline void Balance::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  currency_.Destroy();
+  _impl_.currency_.Destroy();
 }
 
 void Balance::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  _impl_._cached_size_.Set(size);
 }
 
 void Balance::Clear() {
@@ -589,8 +619,8 @@ void Balance::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  currency_.ClearToEmpty();
-  amount_ = 0;
+  _impl_.currency_.ClearToEmpty();
+  _impl_.amount_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -613,7 +643,7 @@ const char* Balance::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) 
       // double amount = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 17)) {
-          amount_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          _impl_.amount_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
           ptr += sizeof(double);
         } else
           goto handle_unusual;
@@ -699,7 +729,7 @@ size_t Balance::ByteSizeLong() const {
     total_size += 1 + 8;
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData Balance::_class_data_ = {
@@ -751,10 +781,10 @@ void Balance::InternalSwap(Balance* other) {
   auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &currency_, lhs_arena,
-      &other->currency_, rhs_arena
+      &_impl_.currency_, lhs_arena,
+      &other->_impl_.currency_, rhs_arena
   );
-  swap(amount_, other->amount_);
+  swap(_impl_.amount_, other->_impl_.amount_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Balance::GetMetadata() const {
@@ -772,45 +802,54 @@ class Account::_Internal {
 
 const ::Trade::protobuf::Balance&
 Account::_Internal::wallet(const Account* msg) {
-  return *msg->wallet_;
+  return *msg->_impl_.wallet_;
 }
 Account::Account(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
-  orders_(arena) {
-  SharedCtor();
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
   // @@protoc_insertion_point(arena_constructor:Trade.protobuf.Account)
 }
 Account::Account(const Account& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message(),
-      orders_(from.orders_) {
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  new (&_impl_) Impl_{
+      decltype(_impl_.orders_){from._impl_.orders_}
+    , decltype(_impl_.name_){}
+    , decltype(_impl_.wallet_){nullptr}
+    , decltype(_impl_.id_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  name_.InitDefault();
+  _impl_.name_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    name_.Set("", GetArenaForAllocation());
+    _impl_.name_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_name().empty()) {
-    name_.Set(from._internal_name(), 
+    _impl_.name_.Set(from._internal_name(), 
       GetArenaForAllocation());
   }
   if (from._internal_has_wallet()) {
-    wallet_ = new ::Trade::protobuf::Balance(*from.wallet_);
-  } else {
-    wallet_ = nullptr;
+    _impl_.wallet_ = new ::Trade::protobuf::Balance(*from._impl_.wallet_);
   }
-  id_ = from.id_;
+  _impl_.id_ = from._impl_.id_;
   // @@protoc_insertion_point(copy_constructor:Trade.protobuf.Account)
 }
 
-inline void Account::SharedCtor() {
-name_.InitDefault();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  name_.Set("", GetArenaForAllocation());
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-    reinterpret_cast<char*>(&wallet_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&id_) -
-    reinterpret_cast<char*>(&wallet_)) + sizeof(id_));
+inline void Account::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.orders_){arena}
+    , decltype(_impl_.name_){}
+    , decltype(_impl_.wallet_){nullptr}
+    , decltype(_impl_.id_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 Account::~Account() {
@@ -824,12 +863,13 @@ Account::~Account() {
 
 inline void Account::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  name_.Destroy();
-  if (this != internal_default_instance()) delete wallet_;
+  _impl_.orders_.~RepeatedPtrField();
+  _impl_.name_.Destroy();
+  if (this != internal_default_instance()) delete _impl_.wallet_;
 }
 
 void Account::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  _impl_._cached_size_.Set(size);
 }
 
 void Account::Clear() {
@@ -838,13 +878,13 @@ void Account::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  orders_.Clear();
-  name_.ClearToEmpty();
-  if (GetArenaForAllocation() == nullptr && wallet_ != nullptr) {
-    delete wallet_;
+  _impl_.orders_.Clear();
+  _impl_.name_.ClearToEmpty();
+  if (GetArenaForAllocation() == nullptr && _impl_.wallet_ != nullptr) {
+    delete _impl_.wallet_;
   }
-  wallet_ = nullptr;
-  id_ = 0;
+  _impl_.wallet_ = nullptr;
+  _impl_.id_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -857,7 +897,7 @@ const char* Account::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) 
       // int32 id = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          _impl_.id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -971,7 +1011,7 @@ size_t Account::ByteSizeLong() const {
 
   // repeated .Trade.protobuf.Order orders = 4;
   total_size += 1UL * this->_internal_orders_size();
-  for (const auto& msg : this->orders_) {
+  for (const auto& msg : this->_impl_.orders_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
@@ -987,7 +1027,7 @@ size_t Account::ByteSizeLong() const {
   if (this->_internal_has_wallet()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *wallet_);
+        *_impl_.wallet_);
   }
 
   // int32 id = 1;
@@ -995,7 +1035,7 @@ size_t Account::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_id());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData Account::_class_data_ = {
@@ -1017,7 +1057,7 @@ void Account::MergeFrom(const Account& from) {
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  orders_.MergeFrom(from.orders_);
+  _impl_.orders_.MergeFrom(from._impl_.orders_);
   if (!from._internal_name().empty()) {
     _internal_set_name(from._internal_name());
   }
@@ -1046,17 +1086,17 @@ void Account::InternalSwap(Account* other) {
   auto* lhs_arena = GetArenaForAllocation();
   auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  orders_.InternalSwap(&other->orders_);
+  _impl_.orders_.InternalSwap(&other->_impl_.orders_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &name_, lhs_arena,
-      &other->name_, rhs_arena
+      &_impl_.name_, lhs_arena,
+      &other->_impl_.name_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Account, id_)
-      + sizeof(Account::id_)
-      - PROTOBUF_FIELD_OFFSET(Account, wallet_)>(
-          reinterpret_cast<char*>(&wallet_),
-          reinterpret_cast<char*>(&other->wallet_));
+      PROTOBUF_FIELD_OFFSET(Account, _impl_.id_)
+      + sizeof(Account::_impl_.id_)
+      - PROTOBUF_FIELD_OFFSET(Account, _impl_.wallet_)>(
+          reinterpret_cast<char*>(&_impl_.wallet_),
+          reinterpret_cast<char*>(&other->_impl_.wallet_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Account::GetMetadata() const {
