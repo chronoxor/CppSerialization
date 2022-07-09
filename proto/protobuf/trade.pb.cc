@@ -83,6 +83,8 @@ const uint32_t TableStruct_trade_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  ~0u,  // no _split_
+  ~0u,  // no sizeof(Split)
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.id_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.symbol_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.side_),
@@ -95,6 +97,8 @@ const uint32_t TableStruct_trade_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  ~0u,  // no _split_
+  ~0u,  // no sizeof(Split)
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Balance, _impl_.currency_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Balance, _impl_.amount_),
   ~0u,  // no _has_bits_
@@ -103,6 +107,8 @@ const uint32_t TableStruct_trade_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  ~0u,  // no _split_
+  ~0u,  // no sizeof(Split)
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.id_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.name_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.wallet_),
@@ -110,8 +116,8 @@ const uint32_t TableStruct_trade_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Trade::protobuf::Order)},
-  { 12, -1, -1, sizeof(::Trade::protobuf::Balance)},
-  { 20, -1, -1, sizeof(::Trade::protobuf::Account)},
+  { 14, -1, -1, sizeof(::Trade::protobuf::Balance)},
+  { 24, -1, -1, sizeof(::Trade::protobuf::Account)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
