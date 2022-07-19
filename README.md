@@ -1,4 +1,4 @@
- CppSerialization
+# CppSerialization
 
 [![Linux (clang)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-linux-clang.yml/badge.svg)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-linux-clang.yml)
 [![Linux (gcc)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-linux-gcc.yml/badge.svg)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-linux-gcc.yml)
