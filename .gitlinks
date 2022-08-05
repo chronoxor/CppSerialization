@@ -3,7 +3,7 @@ capnproto modules/capnproto https://github.com/capnproto/capnproto.git master
 Catch2 modules/Catch2 https://github.com/catchorg/Catch2.git v2.x
 CppBenchmark modules/CppBenchmark https://github.com/chronoxor/CppBenchmark.git master
 CppCommon modules/CppCommon https://github.com/chronoxor/CppCommon.git master
-flatbuffers modules/flatbuffers https://github.com/google/flatbuffers.git master
+flatbuffers modules/flatbuffers https://github.com/chronoxor/flatbuffers.git master
 protobuf modules/protobuf https://github.com/google/protobuf.git main
 rapidjson modules/rapidjson https://github.com/miloyip/rapidjson.git master
 
