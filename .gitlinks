@@ -6,6 +6,7 @@ CppCommon modules/CppCommon https://github.com/chronoxor/CppCommon.git master
 flatbuffers modules/flatbuffers https://github.com/google/flatbuffers.git master
 protobuf modules/protobuf https://github.com/google/protobuf.git main
 rapidjson modules/rapidjson https://github.com/miloyip/rapidjson.git master
+zpp_bits modules/zpp_bits https://github.com/eyalz800/zpp_bits.git v4.4.10
 
 # Scripts
 build build https://github.com/chronoxor/CppBuildScripts.git master
