@@ -83,12 +83,8 @@ inline const std::string& OrderSide_Name(T enum_t_value) {
   static_assert(::std::is_same<T, OrderSide>::value ||
     ::std::is_integral<T>::value,
     "Incorrect type passed to function OrderSide_Name.");
-  return OrderSide_Name(static_cast<OrderSide>(enum_t_value));
-}
-template<>
-inline const std::string& OrderSide_Name(OrderSide value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfDenseEnum
-    <OrderSide_descriptor, 0, 1>(static_cast<int>(value));
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    OrderSide_descriptor(), enum_t_value);
 }
 inline bool OrderSide_Parse(
     ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, OrderSide* value) {
@@ -113,12 +109,8 @@ inline const std::string& OrderType_Name(T enum_t_value) {
   static_assert(::std::is_same<T, OrderType>::value ||
     ::std::is_integral<T>::value,
     "Incorrect type passed to function OrderType_Name.");
-  return OrderType_Name(static_cast<OrderType>(enum_t_value));
-}
-template<>
-inline const std::string& OrderType_Name(OrderType value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfDenseEnum
-    <OrderType_descriptor, 0, 2>(static_cast<int>(value));
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    OrderType_descriptor(), enum_t_value);
 }
 inline bool OrderType_Parse(
     ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, OrderType* value) {
