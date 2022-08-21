@@ -29,3 +29,8 @@ jobs:
         run: |
           cd build
           ./unix.sh
+
+      - name: "Benchmark"
+        run: |
+          cd bin
+          find . -name "*performance*" -exec {} \;
