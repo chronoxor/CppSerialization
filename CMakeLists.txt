@@ -39,6 +39,7 @@ list(APPEND LINKLIBS cppcommon)
 
 # System directories
 include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/modules")
+include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/modules/protobuf/third_party/abseil-cpp")
 
 # Library
 file(GLOB_RECURSE LIB_HEADER_FILES "include/*.h" "source/*.h")

@@ -302,7 +302,7 @@ const char* Order::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
       // .Trade.protobuf.OrderSide side = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          uint32_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
           _internal_set_side(static_cast<::Trade::protobuf::OrderSide>(val));
         } else
@@ -311,7 +311,7 @@ const char* Order::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
       // .Trade.protobuf.OrderType type = 4;
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
-          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          uint32_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
           _internal_set_type(static_cast<::Trade::protobuf::OrderType>(val));
         } else
