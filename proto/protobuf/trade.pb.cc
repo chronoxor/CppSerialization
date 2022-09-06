@@ -83,6 +83,8 @@ const uint32_t TableStruct_trade_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  ~0u,  // no _split_
+  ~0u,  // no sizeof(Split)
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.id_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.symbol_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.side_),
@@ -95,6 +97,8 @@ const uint32_t TableStruct_trade_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  ~0u,  // no _split_
+  ~0u,  // no sizeof(Split)
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Balance, _impl_.currency_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Balance, _impl_.amount_),
   ~0u,  // no _has_bits_
@@ -103,6 +107,8 @@ const uint32_t TableStruct_trade_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  ~0u,  // no _split_
+  ~0u,  // no sizeof(Split)
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.id_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.name_),
   PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.wallet_),
@@ -110,8 +116,8 @@ const uint32_t TableStruct_trade_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Trade::protobuf::Order)},
-  { 12, -1, -1, sizeof(::Trade::protobuf::Balance)},
-  { 20, -1, -1, sizeof(::Trade::protobuf::Account)},
+  { 14, -1, -1, sizeof(::Trade::protobuf::Balance)},
+  { 24, -1, -1, sizeof(::Trade::protobuf::Account)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -133,7 +139,7 @@ const char descriptor_table_protodef_trade_2eproto[] PROTOBUF_SECTION_VARIABLE(p
   "uy\020\000\022\010\n\004sell\020\001*,\n\tOrderType\022\n\n\006market\020\000\022"
   "\t\n\005limit\020\001\022\010\n\004stop\020\002b\006proto3"
   ;
-static ::_pbi::once_flag descriptor_table_trade_2eproto_once;
+static ::absl::once_flag descriptor_table_trade_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_trade_2eproto = {
     false, false, 428, descriptor_table_protodef_trade_2eproto,
     "trade.proto",
@@ -296,7 +302,7 @@ const char* Order::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
       // .Trade.protobuf.OrderSide side = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          uint32_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
           _internal_set_side(static_cast<::Trade::protobuf::OrderSide>(val));
         } else
@@ -305,7 +311,7 @@ const char* Order::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
       // .Trade.protobuf.OrderType type = 4;
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
-          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          uint32_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
           _internal_set_type(static_cast<::Trade::protobuf::OrderType>(val));
         } else
