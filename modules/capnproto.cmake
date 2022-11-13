@@ -26,10 +26,8 @@ if(NOT TARGET capnproto)
   set_target_properties(capnpc_cpp PROPERTIES FOLDER "modules/capnproto")
   set_target_properties(kj PROPERTIES FOLDER "modules/capnproto")
   set_target_properties(kj-async PROPERTIES FOLDER "modules/capnproto")
-  set_target_properties(kj-gzip PROPERTIES FOLDER "modules/capnproto")
   set_target_properties(kj-http PROPERTIES FOLDER "modules/capnproto")
   set_target_properties(kj-test PROPERTIES FOLDER "modules/capnproto")
-  set_target_properties(kj-tls PROPERTIES FOLDER "modules/capnproto")
 
   # Module definition
   set(capnproto "${CMAKE_CURRENT_SOURCE_DIR}/capnproto/c++/src" PARENT_SCOPE)

@@ -4,22 +4,20 @@
 #include "trade.pb.h"
 
 #include <algorithm>
-
-#include <google/protobuf/io/coded_stream.h>
-#include <google/protobuf/extension_set.h>
-#include <google/protobuf/wire_format_lite.h>
-#include <google/protobuf/descriptor.h>
-#include <google/protobuf/generated_message_reflection.h>
-#include <google/protobuf/reflection_ops.h>
-#include <google/protobuf/wire_format.h>
+#include "google/protobuf/io/coded_stream.h"
+#include "google/protobuf/extension_set.h"
+#include "google/protobuf/wire_format_lite.h"
+#include "google/protobuf/descriptor.h"
+#include "google/protobuf/generated_message_reflection.h"
+#include "google/protobuf/reflection_ops.h"
+#include "google/protobuf/wire_format.h"
 // @@protoc_insertion_point(includes)
-#include <google/protobuf/port_def.inc>
 
+// Must be included last.
+#include "google/protobuf/port_def.inc"
 PROTOBUF_PRAGMA_INIT_SEG
-
 namespace _pb = ::PROTOBUF_NAMESPACE_ID;
-namespace _pbi = _pb::internal;
-
+namespace _pbi = ::PROTOBUF_NAMESPACE_ID::internal;
 namespace Trade {
 namespace protobuf {
 PROTOBUF_CONSTEXPR Order::Order(
@@ -32,28 +30,30 @@ PROTOBUF_CONSTEXPR Order::Order(
   , /*decltype(_impl_.type_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct OrderDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR OrderDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
+  PROTOBUF_CONSTEXPR OrderDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
   ~OrderDefaultTypeInternal() {}
   union {
     Order _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 OrderDefaultTypeInternal _Order_default_instance_;
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 OrderDefaultTypeInternal _Order_default_instance_;
 PROTOBUF_CONSTEXPR Balance::Balance(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.currency_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.amount_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct BalanceDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR BalanceDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
+  PROTOBUF_CONSTEXPR BalanceDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
   ~BalanceDefaultTypeInternal() {}
   union {
     Balance _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 BalanceDefaultTypeInternal _Balance_default_instance_;
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 BalanceDefaultTypeInternal _Balance_default_instance_;
 PROTOBUF_CONSTEXPR Account::Account(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.orders_)*/{}
@@ -62,98 +62,122 @@ PROTOBUF_CONSTEXPR Account::Account(
   , /*decltype(_impl_.id_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct AccountDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR AccountDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
+  PROTOBUF_CONSTEXPR AccountDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
   ~AccountDefaultTypeInternal() {}
   union {
     Account _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 AccountDefaultTypeInternal _Account_default_instance_;
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 AccountDefaultTypeInternal _Account_default_instance_;
 }  // namespace protobuf
 }  // namespace Trade
 static ::_pb::Metadata file_level_metadata_trade_2eproto[3];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_trade_2eproto[2];
-static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_trade_2eproto = nullptr;
-
-const uint32_t TableStruct_trade_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  ~0u,  // no _split_
-  ~0u,  // no sizeof(Split)
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.id_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.symbol_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.side_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.type_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.price_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.volume_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Balance, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  ~0u,  // no _split_
-  ~0u,  // no sizeof(Split)
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Balance, _impl_.currency_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Balance, _impl_.amount_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  ~0u,  // no _split_
-  ~0u,  // no sizeof(Split)
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.id_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.name_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.wallet_),
-  PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.orders_),
+static constexpr const ::_pb::ServiceDescriptor**
+    file_level_service_descriptors_trade_2eproto = nullptr;
+const ::uint32_t TableStruct_trade_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
+    protodesc_cold) = {
+    ~0u,  // no _has_bits_
+    PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _internal_metadata_),
+    ~0u,  // no _extensions_
+    ~0u,  // no _oneof_case_
+    ~0u,  // no _weak_field_map_
+    ~0u,  // no _inlined_string_donated_
+    ~0u,  // no _split_
+    ~0u,  // no sizeof(Split)
+    PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.id_),
+    PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.symbol_),
+    PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.side_),
+    PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.type_),
+    PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.price_),
+    PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Order, _impl_.volume_),
+    ~0u,  // no _has_bits_
+    PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Balance, _internal_metadata_),
+    ~0u,  // no _extensions_
+    ~0u,  // no _oneof_case_
+    ~0u,  // no _weak_field_map_
+    ~0u,  // no _inlined_string_donated_
+    ~0u,  // no _split_
+    ~0u,  // no sizeof(Split)
+    PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Balance, _impl_.currency_),
+    PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Balance, _impl_.amount_),
+    ~0u,  // no _has_bits_
+    PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _internal_metadata_),
+    ~0u,  // no _extensions_
+    ~0u,  // no _oneof_case_
+    ~0u,  // no _weak_field_map_
+    ~0u,  // no _inlined_string_donated_
+    ~0u,  // no _split_
+    ~0u,  // no sizeof(Split)
+    PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.id_),
+    PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.name_),
+    PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.wallet_),
+    PROTOBUF_FIELD_OFFSET(::Trade::protobuf::Account, _impl_.orders_),
 };
-static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, -1, sizeof(::Trade::protobuf::Order)},
-  { 14, -1, -1, sizeof(::Trade::protobuf::Balance)},
-  { 24, -1, -1, sizeof(::Trade::protobuf::Account)},
+
+static const ::_pbi::MigrationSchema
+    schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
+        { 0, -1, -1, sizeof(::Trade::protobuf::Order)},
+        { 14, -1, -1, sizeof(::Trade::protobuf::Balance)},
+        { 24, -1, -1, sizeof(::Trade::protobuf::Account)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
-  &::Trade::protobuf::_Order_default_instance_._instance,
-  &::Trade::protobuf::_Balance_default_instance_._instance,
-  &::Trade::protobuf::_Account_default_instance_._instance,
+    &::Trade::protobuf::_Order_default_instance_._instance,
+    &::Trade::protobuf::_Balance_default_instance_._instance,
+    &::Trade::protobuf::_Account_default_instance_._instance,
 };
-
-const char descriptor_table_protodef_trade_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\013trade.proto\022\016Trade.protobuf\"\224\001\n\005Order\022"
-  "\n\n\002id\030\001 \001(\005\022\016\n\006symbol\030\002 \001(\t\022\'\n\004side\030\003 \001("
-  "\0162\031.Trade.protobuf.OrderSide\022\'\n\004type\030\004 \001"
-  "(\0162\031.Trade.protobuf.OrderType\022\r\n\005price\030\005"
-  " \001(\001\022\016\n\006volume\030\006 \001(\001\"+\n\007Balance\022\020\n\010curre"
-  "ncy\030\001 \001(\t\022\016\n\006amount\030\002 \001(\001\"s\n\007Account\022\n\n\002"
-  "id\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\'\n\006wallet\030\003 \001(\0132\027"
-  ".Trade.protobuf.Balance\022%\n\006orders\030\004 \003(\0132"
-  "\025.Trade.protobuf.Order*\036\n\tOrderSide\022\007\n\003b"
-  "uy\020\000\022\010\n\004sell\020\001*,\n\tOrderType\022\n\n\006market\020\000\022"
-  "\t\n\005limit\020\001\022\010\n\004stop\020\002b\006proto3"
-  ;
+const char descriptor_table_protodef_trade_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
+    "\n\013trade.proto\022\016Trade.protobuf\"\224\001\n\005Order\022"
+    "\n\n\002id\030\001 \001(\005\022\016\n\006symbol\030\002 \001(\t\022\'\n\004side\030\003 \001("
+    "\0162\031.Trade.protobuf.OrderSide\022\'\n\004type\030\004 \001"
+    "(\0162\031.Trade.protobuf.OrderType\022\r\n\005price\030\005"
+    " \001(\001\022\016\n\006volume\030\006 \001(\001\"+\n\007Balance\022\020\n\010curre"
+    "ncy\030\001 \001(\t\022\016\n\006amount\030\002 \001(\001\"s\n\007Account\022\n\n\002"
+    "id\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\'\n\006wallet\030\003 \001(\0132\027"
+    ".Trade.protobuf.Balance\022%\n\006orders\030\004 \003(\0132"
+    "\025.Trade.protobuf.Order*\036\n\tOrderSide\022\007\n\003b"
+    "uy\020\000\022\010\n\004sell\020\001*,\n\tOrderType\022\n\n\006market\020\000\022"
+    "\t\n\005limit\020\001\022\010\n\004stop\020\002b\006proto3"
+};
 static ::absl::once_flag descriptor_table_trade_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_trade_2eproto = {
-    false, false, 428, descriptor_table_protodef_trade_2eproto,
+    false,
+    false,
+    428,
+    descriptor_table_protodef_trade_2eproto,
     "trade.proto",
-    &descriptor_table_trade_2eproto_once, nullptr, 0, 3,
-    schemas, file_default_instances, TableStruct_trade_2eproto::offsets,
-    file_level_metadata_trade_2eproto, file_level_enum_descriptors_trade_2eproto,
+    &descriptor_table_trade_2eproto_once,
+    nullptr,
+    0,
+    3,
+    schemas,
+    file_default_instances,
+    TableStruct_trade_2eproto::offsets,
+    file_level_metadata_trade_2eproto,
+    file_level_enum_descriptors_trade_2eproto,
     file_level_service_descriptors_trade_2eproto,
 };
+
+// This function exists to be marked as weak.
+// It can significantly speed up compilation by breaking up LLVM's SCC
+// in the .pb.cc translation units. Large translation units see a
+// reduction of more than 35% of walltime for optimized builds. Without
+// the weak attribute all the messages in the file, including all the
+// vtables and everything they use become part of the same SCC through
+// a cycle like:
+// GetMetadata -> descriptor table -> default instances ->
+//   vtables -> GetMetadata
+// By adding a weak function here we break the connection from the
+// individual vtables back into the descriptor table.
 PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_trade_2eproto_getter() {
   return &descriptor_table_trade_2eproto;
 }
-
 // Force running AddDescriptors() at dynamic initialization time.
-PROTOBUF_ATTRIBUTE_INIT_PRIORITY2 static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_trade_2eproto(&descriptor_table_trade_2eproto);
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY2
+static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_trade_2eproto(&descriptor_table_trade_2eproto);
 namespace Trade {
 namespace protobuf {
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* OrderSide_descriptor() {
@@ -169,7 +193,6 @@ bool OrderSide_IsValid(int value) {
       return false;
   }
 }
-
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* OrderType_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_trade_2eproto);
   return file_level_enum_descriptors_trade_2eproto[1];
@@ -184,8 +207,6 @@ bool OrderType_IsValid(int value) {
       return false;
   }
 }
-
-
 // ===================================================================
 
 class Order::_Internal {
@@ -220,7 +241,7 @@ Order::Order(const Order& from)
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.id_, &from._impl_.id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.type_) -
+    static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.type_) -
     reinterpret_cast<char*>(&_impl_.id_)) + sizeof(_impl_.type_));
   // @@protoc_insertion_point(copy_constructor:Trade.protobuf.Order)
 }
@@ -264,74 +285,81 @@ void Order::SetCachedSize(int size) const {
 
 void Order::Clear() {
 // @@protoc_insertion_point(message_clear_start:Trade.protobuf.Order)
-  uint32_t cached_has_bits = 0;
+  ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
   _impl_.symbol_.ClearToEmpty();
-  ::memset(&_impl_.id_, 0, static_cast<size_t>(
+  ::memset(&_impl_.id_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.type_) -
       reinterpret_cast<char*>(&_impl_.id_)) + sizeof(_impl_.type_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
 const char* Order::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
-    uint32_t tag;
+    ::uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // int32 id = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 8)) {
           _impl_.id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else
+        } else {
           goto handle_unusual;
+        }
         continue;
       // string symbol = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 18)) {
           auto str = _internal_mutable_symbol();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
           CHK_(::_pbi::VerifyUTF8(str, "Trade.protobuf.Order.symbol"));
-        } else
+        } else {
           goto handle_unusual;
+        }
         continue;
       // .Trade.protobuf.OrderSide side = 3;
       case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          uint32_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 24)) {
+          ::uint32_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
           _internal_set_side(static_cast<::Trade::protobuf::OrderSide>(val));
-        } else
+        } else {
           goto handle_unusual;
+        }
         continue;
       // .Trade.protobuf.OrderType type = 4;
       case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
-          uint32_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 32)) {
+          ::uint32_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
           _internal_set_type(static_cast<::Trade::protobuf::OrderType>(val));
-        } else
+        } else {
           goto handle_unusual;
+        }
         continue;
       // double price = 5;
       case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 41)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 41)) {
           _impl_.price_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
           ptr += sizeof(double);
-        } else
+        } else {
           goto handle_unusual;
+        }
         continue;
       // double volume = 6;
       case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 49)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 49)) {
           _impl_.volume_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
           ptr += sizeof(double);
-        } else
+        } else {
           goto handle_unusual;
+        }
         continue;
       default:
         goto handle_unusual;
@@ -356,10 +384,11 @@ failure:
 #undef CHK_
 }
 
-uint8_t* Order::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+::uint8_t* Order::_InternalSerialize(
+    ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+
   // @@protoc_insertion_point(serialize_to_array_start:Trade.protobuf.Order)
-  uint32_t cached_has_bits = 0;
+  ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   // int32 id = 1;
@@ -393,9 +422,9 @@ uint8_t* Order::_InternalSerialize(
   }
 
   // double price = 5;
-  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  static_assert(sizeof(::uint64_t) == sizeof(double), "Code assumes ::uint64_t and double are the same size.");
   double tmp_price = this->_internal_price();
-  uint64_t raw_price;
+  ::uint64_t raw_price;
   memcpy(&raw_price, &tmp_price, sizeof(tmp_price));
   if (raw_price != 0) {
     target = stream->EnsureSpace(target);
@@ -403,9 +432,9 @@ uint8_t* Order::_InternalSerialize(
   }
 
   // double volume = 6;
-  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  static_assert(sizeof(::uint64_t) == sizeof(double), "Code assumes ::uint64_t and double are the same size.");
   double tmp_volume = this->_internal_volume();
-  uint64_t raw_volume;
+  ::uint64_t raw_volume;
   memcpy(&raw_volume, &tmp_volume, sizeof(tmp_volume));
   if (raw_volume != 0) {
     target = stream->EnsureSpace(target);
@@ -420,11 +449,12 @@ uint8_t* Order::_InternalSerialize(
   return target;
 }
 
-size_t Order::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:Trade.protobuf.Order)
-  size_t total_size = 0;
+::size_t Order::ByteSizeLong() const {
 
-  uint32_t cached_has_bits = 0;
+// @@protoc_insertion_point(message_byte_size_start:Trade.protobuf.Order)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -447,18 +477,18 @@ size_t Order::ByteSizeLong() const {
   }
 
   // double price = 5;
-  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  static_assert(sizeof(::uint64_t) == sizeof(double), "Code assumes ::uint64_t and double are the same size.");
   double tmp_price = this->_internal_price();
-  uint64_t raw_price;
+  ::uint64_t raw_price;
   memcpy(&raw_price, &tmp_price, sizeof(tmp_price));
   if (raw_price != 0) {
     total_size += 1 + 8;
   }
 
   // double volume = 6;
-  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  static_assert(sizeof(::uint64_t) == sizeof(double), "Code assumes ::uint64_t and double are the same size.");
   double tmp_volume = this->_internal_volume();
-  uint64_t raw_volume;
+  ::uint64_t raw_volume;
   memcpy(&raw_volume, &tmp_volume, sizeof(tmp_volume));
   if (raw_volume != 0) {
     total_size += 1 + 8;
@@ -483,9 +513,10 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Order::GetClassData() const { 
 void Order::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
   auto* const _this = static_cast<Order*>(&to_msg);
   auto& from = static_cast<const Order&>(from_msg);
+
   // @@protoc_insertion_point(class_specific_merge_from_start:Trade.protobuf.Order)
   GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
+  ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (!from._internal_symbol().empty()) {
@@ -497,16 +528,16 @@ void Order::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF
   if (from._internal_side() != 0) {
     _this->_internal_set_side(from._internal_side());
   }
-  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  static_assert(sizeof(::uint64_t) == sizeof(double), "Code assumes ::uint64_t and double are the same size.");
   double tmp_price = from._internal_price();
-  uint64_t raw_price;
+  ::uint64_t raw_price;
   memcpy(&raw_price, &tmp_price, sizeof(tmp_price));
   if (raw_price != 0) {
     _this->_internal_set_price(from._internal_price());
   }
-  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  static_assert(sizeof(::uint64_t) == sizeof(double), "Code assumes ::uint64_t and double are the same size.");
   double tmp_volume = from._internal_volume();
-  uint64_t raw_volume;
+  ::uint64_t raw_volume;
   memcpy(&raw_volume, &tmp_volume, sizeof(tmp_volume));
   if (raw_volume != 0) {
     _this->_internal_set_volume(from._internal_volume());
@@ -546,11 +577,11 @@ void Order::InternalSwap(Order* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Order::GetMetadata() const {
+
   return ::_pbi::AssignDescriptors(
       &descriptor_table_trade_2eproto_getter, &descriptor_table_trade_2eproto_once,
       file_level_metadata_trade_2eproto[0]);
 }
-
 // ===================================================================
 
 class Balance::_Internal {
@@ -619,7 +650,7 @@ void Balance::SetCachedSize(int size) const {
 
 void Balance::Clear() {
 // @@protoc_insertion_point(message_clear_start:Trade.protobuf.Balance)
-  uint32_t cached_has_bits = 0;
+  ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -629,28 +660,31 @@ void Balance::Clear() {
 }
 
 const char* Balance::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
-    uint32_t tag;
+    ::uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // string currency = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 10)) {
           auto str = _internal_mutable_currency();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
           CHK_(::_pbi::VerifyUTF8(str, "Trade.protobuf.Balance.currency"));
-        } else
+        } else {
           goto handle_unusual;
+        }
         continue;
       // double amount = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 17)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 17)) {
           _impl_.amount_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
           ptr += sizeof(double);
-        } else
+        } else {
           goto handle_unusual;
+        }
         continue;
       default:
         goto handle_unusual;
@@ -675,10 +709,11 @@ failure:
 #undef CHK_
 }
 
-uint8_t* Balance::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+::uint8_t* Balance::_InternalSerialize(
+    ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+
   // @@protoc_insertion_point(serialize_to_array_start:Trade.protobuf.Balance)
-  uint32_t cached_has_bits = 0;
+  ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   // string currency = 1;
@@ -692,9 +727,9 @@ uint8_t* Balance::_InternalSerialize(
   }
 
   // double amount = 2;
-  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  static_assert(sizeof(::uint64_t) == sizeof(double), "Code assumes ::uint64_t and double are the same size.");
   double tmp_amount = this->_internal_amount();
-  uint64_t raw_amount;
+  ::uint64_t raw_amount;
   memcpy(&raw_amount, &tmp_amount, sizeof(tmp_amount));
   if (raw_amount != 0) {
     target = stream->EnsureSpace(target);
@@ -709,11 +744,12 @@ uint8_t* Balance::_InternalSerialize(
   return target;
 }
 
-size_t Balance::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:Trade.protobuf.Balance)
-  size_t total_size = 0;
+::size_t Balance::ByteSizeLong() const {
 
-  uint32_t cached_has_bits = 0;
+// @@protoc_insertion_point(message_byte_size_start:Trade.protobuf.Balance)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -725,9 +761,9 @@ size_t Balance::ByteSizeLong() const {
   }
 
   // double amount = 2;
-  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  static_assert(sizeof(::uint64_t) == sizeof(double), "Code assumes ::uint64_t and double are the same size.");
   double tmp_amount = this->_internal_amount();
-  uint64_t raw_amount;
+  ::uint64_t raw_amount;
   memcpy(&raw_amount, &tmp_amount, sizeof(tmp_amount));
   if (raw_amount != 0) {
     total_size += 1 + 8;
@@ -746,17 +782,18 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Balance::GetClassData() const 
 void Balance::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
   auto* const _this = static_cast<Balance*>(&to_msg);
   auto& from = static_cast<const Balance&>(from_msg);
+
   // @@protoc_insertion_point(class_specific_merge_from_start:Trade.protobuf.Balance)
   GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
+  ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (!from._internal_currency().empty()) {
     _this->_internal_set_currency(from._internal_currency());
   }
-  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  static_assert(sizeof(::uint64_t) == sizeof(double), "Code assumes ::uint64_t and double are the same size.");
   double tmp_amount = from._internal_amount();
-  uint64_t raw_amount;
+  ::uint64_t raw_amount;
   memcpy(&raw_amount, &tmp_amount, sizeof(tmp_amount));
   if (raw_amount != 0) {
     _this->_internal_set_amount(from._internal_amount());
@@ -788,11 +825,11 @@ void Balance::InternalSwap(Balance* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Balance::GetMetadata() const {
+
   return ::_pbi::AssignDescriptors(
       &descriptor_table_trade_2eproto_getter, &descriptor_table_trade_2eproto_once,
       file_level_metadata_trade_2eproto[1]);
 }
-
 // ===================================================================
 
 class Account::_Internal {
@@ -875,7 +912,7 @@ void Account::SetCachedSize(int size) const {
 
 void Account::Clear() {
 // @@protoc_insertion_point(message_clear_start:Trade.protobuf.Account)
-  uint32_t cached_has_bits = 0;
+  ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -890,40 +927,44 @@ void Account::Clear() {
 }
 
 const char* Account::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
-    uint32_t tag;
+    ::uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // int32 id = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 8)) {
           _impl_.id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else
+        } else {
           goto handle_unusual;
+        }
         continue;
       // string name = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 18)) {
           auto str = _internal_mutable_name();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
           CHK_(::_pbi::VerifyUTF8(str, "Trade.protobuf.Account.name"));
-        } else
+        } else {
           goto handle_unusual;
+        }
         continue;
       // .Trade.protobuf.Balance wallet = 3;
       case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 26)) {
           ptr = ctx->ParseMessage(_internal_mutable_wallet(), ptr);
           CHK_(ptr);
-        } else
+        } else {
           goto handle_unusual;
+        }
         continue;
       // repeated .Trade.protobuf.Order orders = 4;
       case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 34)) {
           ptr -= 1;
           do {
             ptr += 1;
@@ -931,8 +972,9 @@ const char* Account::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) 
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
-        } else
+        } else {
           goto handle_unusual;
+        }
         continue;
       default:
         goto handle_unusual;
@@ -957,10 +999,11 @@ failure:
 #undef CHK_
 }
 
-uint8_t* Account::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+::uint8_t* Account::_InternalSerialize(
+    ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+
   // @@protoc_insertion_point(serialize_to_array_start:Trade.protobuf.Account)
-  uint32_t cached_has_bits = 0;
+  ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   // int32 id = 1;
@@ -1002,11 +1045,12 @@ uint8_t* Account::_InternalSerialize(
   return target;
 }
 
-size_t Account::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:Trade.protobuf.Account)
-  size_t total_size = 0;
+::size_t Account::ByteSizeLong() const {
 
-  uint32_t cached_has_bits = 0;
+// @@protoc_insertion_point(message_byte_size_start:Trade.protobuf.Account)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -1049,9 +1093,10 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Account::GetClassData() const 
 void Account::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
   auto* const _this = static_cast<Account*>(&to_msg);
   auto& from = static_cast<const Account&>(from_msg);
+
   // @@protoc_insertion_point(class_specific_merge_from_start:Trade.protobuf.Account)
   GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
+  ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_impl_.orders_.MergeFrom(from._impl_.orders_);
@@ -1098,11 +1143,11 @@ void Account::InternalSwap(Account* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Account::GetMetadata() const {
+
   return ::_pbi::AssignDescriptors(
       &descriptor_table_trade_2eproto_getter, &descriptor_table_trade_2eproto_once,
       file_level_metadata_trade_2eproto[2]);
 }
-
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace protobuf
 }  // namespace Trade
@@ -1120,6 +1165,5 @@ Arena::CreateMaybeMessage< ::Trade::protobuf::Account >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Trade::protobuf::Account >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
-
 // @@protoc_insertion_point(global_scope)
-#include <google/protobuf/port_undef.inc>
+#include "google/protobuf/port_undef.inc"
