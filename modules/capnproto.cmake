@@ -12,9 +12,6 @@ if(NOT TARGET capnproto)
   # Module subdirectory
   add_subdirectory("capnproto")
 
-  # Cygwin workaround: https://github.com/capnproto/capnproto/pull/696
-  set_target_properties(kj PROPERTIES INTERFACE_COMPILE_FEATURES "")
-
   # Module folder
   set_target_properties(capnp PROPERTIES FOLDER "modules/capnproto")
   set_target_properties(capnp-json PROPERTIES FOLDER "modules/capnproto")
