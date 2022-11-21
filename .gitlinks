@@ -1,5 +1,5 @@
 # Modules
-capnproto modules/capnproto https://github.com/chronoxor/capnproto.git master
+capnproto modules/capnproto https://github.com/capnproto/capnproto.git master
 Catch2 modules/Catch2 https://github.com/catchorg/Catch2.git v2.x
 CppBenchmark modules/CppBenchmark https://github.com/chronoxor/CppBenchmark.git master
 CppCommon modules/CppCommon https://github.com/chronoxor/CppCommon.git master
