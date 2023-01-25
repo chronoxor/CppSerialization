@@ -1,4 +1,4 @@
-if(NOT TARGET flatbuf)
+if(NOT flatbuf)
 
   # Restore origin compile flags
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_ORIGIN}")
