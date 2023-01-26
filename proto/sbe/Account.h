@@ -543,17 +543,6 @@ public:
             return m_count;
         }
 
-    #if __cplusplus < 201103L
-        template<class Func> inline void forEach(Func &func)
-        {
-            while (hasNext())
-            {
-                next();
-                func(*this);
-            }
-        }
-
-    #else
         template<class Func> inline void forEach(Func &&func)
         {
             while (hasNext())
@@ -563,7 +552,6 @@ public:
             }
         }
 
-    #endif
 
         SBE_NODISCARD static const char *orderMetaAttribute(const MetaAttribute metaAttribute) SBE_NOEXCEPT
         {
@@ -921,7 +909,11 @@ friend std::basic_ostream<CharT, Traits> & operator << (
 
 void skip()
 {
-    orders().forEach([](Orders &e){ e.skip(); });
+    auto &ordersGroup { orders() };
+    while (ordersGroup.hasNext())
+    {
+        ordersGroup.next().skip();
+    }
     skipName();
 }
 

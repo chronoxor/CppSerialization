@@ -1553,7 +1553,7 @@ a generated code for required programming language.
 
 The following command will create a C++ generated code:
 ```shell
-java -Dsbe.target.language=cpp -jar sbe-all-1.10.1.jar trade.sbe.xml
+java -Dsbe.target.language=cpp -jar sbe-all-1.27.0.jar trade.sbe.xml
 ```
 
 As the result required C++ header files will be generated.

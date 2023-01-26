@@ -8,9 +8,9 @@
 
 // Ensure the included flatbuffers.h is the same version as when this file was
 // generated, otherwise it may not be compatible.
-static_assert(FLATBUFFERS_VERSION_MAJOR == 22 &&
-              FLATBUFFERS_VERSION_MINOR == 10 &&
-              FLATBUFFERS_VERSION_REVISION == 26,
+static_assert(FLATBUFFERS_VERSION_MAJOR == 23 &&
+              FLATBUFFERS_VERSION_MINOR == 1 &&
+              FLATBUFFERS_VERSION_REVISION == 21,
              "Non-compatible flatbuffers version included");
 
 namespace Trade {
@@ -50,7 +50,7 @@ inline const char * const *EnumNamesOrderSide() {
 }
 
 inline const char *EnumNameOrderSide(OrderSide e) {
-  if (flatbuffers::IsOutRange(e, OrderSide::buy, OrderSide::sell)) return "";
+  if (::flatbuffers::IsOutRange(e, OrderSide::buy, OrderSide::sell)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesOrderSide()[index];
 }
@@ -83,12 +83,12 @@ inline const char * const *EnumNamesOrderType() {
 }
 
 inline const char *EnumNameOrderType(OrderType e) {
-  if (flatbuffers::IsOutRange(e, OrderType::market, OrderType::stop)) return "";
+  if (::flatbuffers::IsOutRange(e, OrderType::market, OrderType::stop)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesOrderType()[index];
 }
 
-struct Order FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Order FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef OrderBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_ID = 4,
@@ -101,8 +101,8 @@ struct Order FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int32_t id() const {
     return GetField<int32_t>(VT_ID, 0);
   }
-  const flatbuffers::String *symbol() const {
-    return GetPointer<const flatbuffers::String *>(VT_SYMBOL);
+  const ::flatbuffers::String *symbol() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_SYMBOL);
   }
   Trade::flatbuf::OrderSide side() const {
     return static_cast<Trade::flatbuf::OrderSide>(GetField<int8_t>(VT_SIDE, 0));
@@ -116,7 +116,7 @@ struct Order FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   double volume() const {
     return GetField<double>(VT_VOLUME, 0.0);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<int32_t>(verifier, VT_ID, 4) &&
            VerifyOffset(verifier, VT_SYMBOL) &&
@@ -131,12 +131,12 @@ struct Order FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct OrderBuilder {
   typedef Order Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
   void add_id(int32_t id) {
     fbb_.AddElement<int32_t>(Order::VT_ID, id, 0);
   }
-  void add_symbol(flatbuffers::Offset<flatbuffers::String> symbol) {
+  void add_symbol(::flatbuffers::Offset<::flatbuffers::String> symbol) {
     fbb_.AddOffset(Order::VT_SYMBOL, symbol);
   }
   void add_side(Trade::flatbuf::OrderSide side) {
@@ -151,21 +151,21 @@ struct OrderBuilder {
   void add_volume(double volume) {
     fbb_.AddElement<double>(Order::VT_VOLUME, volume, 0.0);
   }
-  explicit OrderBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit OrderBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<Order> Finish() {
+  ::flatbuffers::Offset<Order> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Order>(end);
+    auto o = ::flatbuffers::Offset<Order>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<Order> CreateOrder(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Order> CreateOrder(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     int32_t id = 0,
-    flatbuffers::Offset<flatbuffers::String> symbol = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> symbol = 0,
     Trade::flatbuf::OrderSide side = Trade::flatbuf::OrderSide::buy,
     Trade::flatbuf::OrderType type = Trade::flatbuf::OrderType::market,
     double price = 0.0,
@@ -180,8 +180,8 @@ inline flatbuffers::Offset<Order> CreateOrder(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<Order> CreateOrderDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Order> CreateOrderDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     int32_t id = 0,
     const char *symbol = nullptr,
     Trade::flatbuf::OrderSide side = Trade::flatbuf::OrderSide::buy,
@@ -199,19 +199,19 @@ inline flatbuffers::Offset<Order> CreateOrderDirect(
       volume);
 }
 
-struct Balance FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Balance FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef BalanceBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_CURRENCY = 4,
     VT_AMOUNT = 6
   };
-  const flatbuffers::String *currency() const {
-    return GetPointer<const flatbuffers::String *>(VT_CURRENCY);
+  const ::flatbuffers::String *currency() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_CURRENCY);
   }
   double amount() const {
     return GetField<double>(VT_AMOUNT, 0.0);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_CURRENCY) &&
            verifier.VerifyString(currency()) &&
@@ -222,28 +222,28 @@ struct Balance FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct BalanceBuilder {
   typedef Balance Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_currency(flatbuffers::Offset<flatbuffers::String> currency) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_currency(::flatbuffers::Offset<::flatbuffers::String> currency) {
     fbb_.AddOffset(Balance::VT_CURRENCY, currency);
   }
   void add_amount(double amount) {
     fbb_.AddElement<double>(Balance::VT_AMOUNT, amount, 0.0);
   }
-  explicit BalanceBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit BalanceBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<Balance> Finish() {
+  ::flatbuffers::Offset<Balance> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Balance>(end);
+    auto o = ::flatbuffers::Offset<Balance>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<Balance> CreateBalance(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> currency = 0,
+inline ::flatbuffers::Offset<Balance> CreateBalance(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> currency = 0,
     double amount = 0.0) {
   BalanceBuilder builder_(_fbb);
   builder_.add_amount(amount);
@@ -251,8 +251,8 @@ inline flatbuffers::Offset<Balance> CreateBalance(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<Balance> CreateBalanceDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Balance> CreateBalanceDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *currency = nullptr,
     double amount = 0.0) {
   auto currency__ = currency ? _fbb.CreateString(currency) : 0;
@@ -262,7 +262,7 @@ inline flatbuffers::Offset<Balance> CreateBalanceDirect(
       amount);
 }
 
-struct Account FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Account FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef AccountBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_ID = 4,
@@ -273,16 +273,16 @@ struct Account FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int32_t id() const {
     return GetField<int32_t>(VT_ID, 0);
   }
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
   const Trade::flatbuf::Balance *wallet() const {
     return GetPointer<const Trade::flatbuf::Balance *>(VT_WALLET);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<Trade::flatbuf::Order>> *orders() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Trade::flatbuf::Order>> *>(VT_ORDERS);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<Trade::flatbuf::Order>> *orders() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<Trade::flatbuf::Order>> *>(VT_ORDERS);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<int32_t>(verifier, VT_ID, 4) &&
            VerifyOffset(verifier, VT_NAME) &&
@@ -298,37 +298,37 @@ struct Account FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct AccountBuilder {
   typedef Account Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
   void add_id(int32_t id) {
     fbb_.AddElement<int32_t>(Account::VT_ID, id, 0);
   }
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(Account::VT_NAME, name);
   }
-  void add_wallet(flatbuffers::Offset<Trade::flatbuf::Balance> wallet) {
+  void add_wallet(::flatbuffers::Offset<Trade::flatbuf::Balance> wallet) {
     fbb_.AddOffset(Account::VT_WALLET, wallet);
   }
-  void add_orders(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Trade::flatbuf::Order>>> orders) {
+  void add_orders(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<Trade::flatbuf::Order>>> orders) {
     fbb_.AddOffset(Account::VT_ORDERS, orders);
   }
-  explicit AccountBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit AccountBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<Account> Finish() {
+  ::flatbuffers::Offset<Account> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Account>(end);
+    auto o = ::flatbuffers::Offset<Account>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<Account> CreateAccount(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Account> CreateAccount(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     int32_t id = 0,
-    flatbuffers::Offset<flatbuffers::String> name = 0,
-    flatbuffers::Offset<Trade::flatbuf::Balance> wallet = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Trade::flatbuf::Order>>> orders = 0) {
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0,
+    ::flatbuffers::Offset<Trade::flatbuf::Balance> wallet = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<Trade::flatbuf::Order>>> orders = 0) {
   AccountBuilder builder_(_fbb);
   builder_.add_orders(orders);
   builder_.add_wallet(wallet);
@@ -337,14 +337,14 @@ inline flatbuffers::Offset<Account> CreateAccount(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<Account> CreateAccountDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Account> CreateAccountDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     int32_t id = 0,
     const char *name = nullptr,
-    flatbuffers::Offset<Trade::flatbuf::Balance> wallet = 0,
-    const std::vector<flatbuffers::Offset<Trade::flatbuf::Order>> *orders = nullptr) {
+    ::flatbuffers::Offset<Trade::flatbuf::Balance> wallet = 0,
+    const std::vector<::flatbuffers::Offset<Trade::flatbuf::Order>> *orders = nullptr) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
-  auto orders__ = orders ? _fbb.CreateVector<flatbuffers::Offset<Trade::flatbuf::Order>>(*orders) : 0;
+  auto orders__ = orders ? _fbb.CreateVector<::flatbuffers::Offset<Trade::flatbuf::Order>>(*orders) : 0;
   return Trade::flatbuf::CreateAccount(
       _fbb,
       id,
@@ -354,32 +354,32 @@ inline flatbuffers::Offset<Account> CreateAccountDirect(
 }
 
 inline const Trade::flatbuf::Account *GetAccount(const void *buf) {
-  return flatbuffers::GetRoot<Trade::flatbuf::Account>(buf);
+  return ::flatbuffers::GetRoot<Trade::flatbuf::Account>(buf);
 }
 
 inline const Trade::flatbuf::Account *GetSizePrefixedAccount(const void *buf) {
-  return flatbuffers::GetSizePrefixedRoot<Trade::flatbuf::Account>(buf);
+  return ::flatbuffers::GetSizePrefixedRoot<Trade::flatbuf::Account>(buf);
 }
 
 inline bool VerifyAccountBuffer(
-    flatbuffers::Verifier &verifier) {
+    ::flatbuffers::Verifier &verifier) {
   return verifier.VerifyBuffer<Trade::flatbuf::Account>(nullptr);
 }
 
 inline bool VerifySizePrefixedAccountBuffer(
-    flatbuffers::Verifier &verifier) {
+    ::flatbuffers::Verifier &verifier) {
   return verifier.VerifySizePrefixedBuffer<Trade::flatbuf::Account>(nullptr);
 }
 
 inline void FinishAccountBuffer(
-    flatbuffers::FlatBufferBuilder &fbb,
-    flatbuffers::Offset<Trade::flatbuf::Account> root) {
+    ::flatbuffers::FlatBufferBuilder &fbb,
+    ::flatbuffers::Offset<Trade::flatbuf::Account> root) {
   fbb.Finish(root);
 }
 
 inline void FinishSizePrefixedAccountBuffer(
-    flatbuffers::FlatBufferBuilder &fbb,
-    flatbuffers::Offset<Trade::flatbuf::Account> root) {
+    ::flatbuffers::FlatBufferBuilder &fbb,
+    ::flatbuffers::Offset<Trade::flatbuf::Account> root) {
   fbb.FinishSizePrefixed(root);
 }
 
