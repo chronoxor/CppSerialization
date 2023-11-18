@@ -22,7 +22,8 @@ int main(int argc, char** argv)
     flatbuffers::FlatBufferBuilder builder;
     builder.Finish(account.Serialize(builder));
 
-    // Show the serialized FlatBuffer size
+    // Show original and FlatBuffer serialized sizes
+    std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "FlatBuffer size: " << builder.GetSize() << std::endl;
 
     // Deserialize the account from the FlatBuffer stream

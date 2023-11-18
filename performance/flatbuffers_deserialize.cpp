@@ -29,10 +29,12 @@ protected:
 BENCHMARK_FIXTURE(DeserializationFixture, "FlatBuffers-Deserialize")
 {
     context.metrics().AddBytes(builder.GetSize());
-    context.metrics().SetCustom("Size", builder.GetSize());
+    context.metrics().SetCustom("MessageSize", builder.GetSize());
 
     // Deserialize the account from the FlatBuffer stream
     deserialized.Deserialize(*Trade::flatbuf::GetAccount(builder.GetBufferPointer()));
+
+    context.metrics().SetCustom("OriginalSize", (unsigned)deserialized.size());
 }
 
 BENCHMARK_MAIN()

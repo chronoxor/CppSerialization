@@ -36,12 +36,14 @@ protected:
 BENCHMARK_FIXTURE(DeserializationFixture, "Cap'n'Proto-Deserialize")
 {
     context.metrics().AddBytes(local::buffer.getArray().size());
-    context.metrics().SetCustom("Size", (unsigned)local::buffer.getArray().size());
+    context.metrics().SetCustom("MessageSize", (unsigned)local::buffer.getArray().size());
 
     // Deserialize the account from the Cap'n'Proto stream
     kj::ArrayInputStream array(local::buffer.getArray());
     capnp::InputStreamMessageReader input(array);
     deserialized.Deserialize(input.getRoot<Trade::capnproto::Account>());
+
+    context.metrics().SetCustom("OriginalSize", (unsigned)deserialized.size());
 }
 
 BENCHMARK_MAIN()

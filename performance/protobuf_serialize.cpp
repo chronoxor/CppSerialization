@@ -35,7 +35,8 @@ BENCHMARK_FIXTURE(SerializationFixture, "Protobuf-Serialize")
     output.SerializeToString(&buffer);
 
     context.metrics().AddBytes(buffer.size());
-    context.metrics().SetCustom("Size", (unsigned)buffer.size());
+    context.metrics().SetCustom("OriginalSize", (unsigned)account.size());
+    context.metrics().SetCustom("MessageSize", (unsigned)buffer.size());
 }
 
 BENCHMARK_MAIN()

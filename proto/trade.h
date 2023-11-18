@@ -81,6 +81,8 @@ struct Order
         Volume = volume;
     }
 
+    constexpr size_t size() const { return sizeof(Order); }
+
     // Cap'n'Proto serialization
 
     void Serialize(Trade::capnproto::Order::Builder& builder) const
@@ -239,6 +241,8 @@ struct Balance
         Amount = amount;
     }
 
+    constexpr size_t size() const { return sizeof(Balance); }
+
     // Cap'n'Proto serialization
 
     void Serialize(Trade::capnproto::Balance::Builder& builder) const
@@ -350,6 +354,8 @@ struct Account
         Id = id;
         Name = name;
     }
+
+    constexpr size_t size() const { return sizeof(int) + Name.size() + Wallet.size() + std::accumulate(Orders.begin(), Orders.end(), 0, [](size_t sum, const Order& order) { return sum + order.size(); }); }
 
     // Cap'n'Proto serialization
 

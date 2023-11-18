@@ -30,7 +30,8 @@ int main(int argc, char** argv)
     message.wrapForEncode(buffer, header.encodedLength(), sizeof(buffer));
     account.Serialize(message);
 
-    // Show the serialized SBE size
+    // Show original and SBE serialized sizes
+    std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "SBE size: " << header.encodedLength() + message.encodedLength() << std::endl;
 
     // Deserialize the account from the SBE stream

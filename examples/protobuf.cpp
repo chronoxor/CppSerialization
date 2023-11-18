@@ -23,7 +23,8 @@ int main(int argc, char** argv)
     account.Serialize(output);
     auto buffer = output.SerializeAsString();
 
-    // Show the serialized Protobuf size
+    // Show original and Protobuf serialized sizes
+    std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "Protobuf size: " << buffer.size() << std::endl;
 
     // Deserialize the account from the Protobuf stream

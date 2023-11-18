@@ -38,7 +38,7 @@ BENCHMARK_FIXTURE(DeserializationFixture, "FastBinaryEncoding-Final-Deserialize"
     size_t deserialized = reader.deserialize(account);
 
     context.metrics().AddBytes(deserialized);
-    context.metrics().SetCustom("Size", (unsigned)deserialized);
+    context.metrics().SetCustom("MessageSize", (unsigned)deserialized);
 }
 
 BENCHMARK_MAIN()

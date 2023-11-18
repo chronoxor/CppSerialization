@@ -36,7 +36,8 @@ BENCHMARK_FIXTURE(SerializationFixture, "SimpleBinaryEncoding-Serialize")
     size_t serialized = header.encodedLength() + message.encodedLength();
 
     context.metrics().AddBytes(serialized);
-    context.metrics().SetCustom("Size", (unsigned)serialized);
+    context.metrics().SetCustom("OriginalSize", (unsigned)account.size());
+    context.metrics().SetCustom("MessageSize", (unsigned)serialized);
 }
 
 BENCHMARK_MAIN()

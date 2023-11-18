@@ -30,7 +30,8 @@ BENCHMARK_FIXTURE(SerializationFixture, "FastBinaryEncoding-Serialize")
     size_t serialized = writer.create_end(model_begin);
 
     context.metrics().AddBytes(serialized);
-    context.metrics().SetCustom("Size", (unsigned)serialized);
+    context.metrics().SetCustom("OriginalSize", (unsigned)account.size());
+    context.metrics().SetCustom("MessageSize", (unsigned)serialized);
 }
 
 BENCHMARK_MAIN()

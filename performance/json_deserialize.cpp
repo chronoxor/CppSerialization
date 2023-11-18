@@ -39,10 +39,12 @@ protected:
 BENCHMARK_FIXTURE(DeserializationFixture, "JSON-Deserialize")
 {
     context.metrics().AddBytes(json.Size());
-    context.metrics().SetCustom("Size", (unsigned)size);
+    context.metrics().SetCustom("MessageSize", (unsigned)size);
 
     // Deserialize the account from the JSON stream
     deserialized.Deserialize(json);
+
+    context.metrics().SetCustom("OriginalSize", (unsigned)deserialized.size());
 }
 
 BENCHMARK_MAIN()

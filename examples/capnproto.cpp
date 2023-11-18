@@ -25,8 +25,9 @@ int main(int argc, char** argv)
     kj::VectorOutputStream buffer;
     writeMessage(buffer, output);
 
-    // Show the serialized Cap'n'Proto size
-    std::cout << "Protobuf size: " << buffer.getArray().size() << std::endl;
+    // Show original and Cap'n'Proto serialized sizes
+    std::cout << "Original size: " << account.size() << std::endl;
+    std::cout << "Cap'n'Proto size: " << buffer.getArray().size() << std::endl;
 
     // Deserialize the account from the Cap'n'Proto stream
     kj::ArrayInputStream array(buffer.getArray());

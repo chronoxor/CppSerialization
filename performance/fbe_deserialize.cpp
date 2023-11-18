@@ -34,10 +34,12 @@ protected:
 BENCHMARK_FIXTURE(DeserializationFixture, "FastBinaryEncoding-Deserialize")
 {
     context.metrics().AddBytes(reader.buffer().size());
-    context.metrics().SetCustom("Size", (unsigned)reader.buffer().size());
+    context.metrics().SetCustom("MessageSize", (unsigned)reader.buffer().size());
 
     // Deserialize the account from the FBE stream
     deserialized.Deserialize(reader.model);
+
+    context.metrics().SetCustom("OriginalSize", (unsigned)deserialized.size());
 }
 
 BENCHMARK_MAIN()

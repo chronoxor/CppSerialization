@@ -25,7 +25,8 @@ int main(int argc, char** argv)
     size_t serialized = writer.create_end(model_begin);
     assert(writer.verify() && "Model is broken!");
 
-    // Show the serialized FBE size
+    // Show original and FBE serialized sizes
+    std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "FBE size: " << serialized << std::endl;
 
     // Deserialize the account from the FBE stream

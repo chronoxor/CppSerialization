@@ -32,7 +32,7 @@ protected:
 BENCHMARK_FIXTURE(ParserFixture, "JSON-Parse")
 {
     context.metrics().AddBytes(buffer.GetSize());
-    context.metrics().SetCustom("Size", (unsigned)buffer.GetSize());
+    context.metrics().SetCustom("MessageSize", (unsigned)buffer.GetSize());
 
     // Parse JSON document from the JSON stream
     Document json = Parser::Parse(buffer.GetString());

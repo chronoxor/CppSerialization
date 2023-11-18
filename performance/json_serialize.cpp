@@ -31,7 +31,8 @@ BENCHMARK_FIXTURE(SerializationFixture, "JSON-Serialize")
     account.Serialize(serializer);
 
     context.metrics().AddBytes(buffer.GetSize());
-    context.metrics().SetCustom("Size", (unsigned)buffer.GetSize());
+    context.metrics().SetCustom("OriginalSize", (unsigned)account.size());
+    context.metrics().SetCustom("MessageSize", (unsigned)buffer.GetSize());
 }
 
 BENCHMARK_MAIN()

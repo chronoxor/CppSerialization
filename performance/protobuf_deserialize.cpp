@@ -36,12 +36,14 @@ protected:
 BENCHMARK_FIXTURE(DeserializationFixture, "Protobuf-Deserialize")
 {
     context.metrics().AddBytes(buffer.size());
-    context.metrics().SetCustom("Size", (unsigned)buffer.size());
+    context.metrics().SetCustom("MessageSize", (unsigned)buffer.size());
 
     // Deserialize the account from the Protobuf stream
     Trade::protobuf::Account input;
     input.ParseFromString(buffer);
     deserialized.Deserialize(input);
+
+    context.metrics().SetCustom("OriginalSize", (unsigned)deserialized.size());
 }
 
 BENCHMARK_MAIN()

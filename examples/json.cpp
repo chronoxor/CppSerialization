@@ -25,9 +25,9 @@ int main(int argc, char** argv)
     CppSerialization::JSON::Serializer<CppSerialization::JSON::StringBuffer> serializer(buffer);
     account.Serialize(serializer);
 
-    // Show the serialized JSON content
+    // Show original and JSON serialized sizes
+    std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "JSON content: " << buffer.GetString() << std::endl;
-    // Show the serialized JSON size
     std::cout << "JSON size: " << buffer.GetSize() << std::endl;
 
     // Parse JSON string

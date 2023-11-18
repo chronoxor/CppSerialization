@@ -120,7 +120,7 @@ if(NOT CPPSERIALIZATION_MODULE)
     set(SBE_TARGET "${SBE_FILE}_TARGET")
     add_custom_command(
         OUTPUT ${SBE_OUTPUT_FILE} DEPENDS ${SBE_INPUT_FILE}
-        COMMAND ${Java_JAVA_EXECUTABLE} -Dsbe.generate.ir=true -Dsbe.target.language=Cpp -Dsbe.target.namespace=sbe -Dsbe.output.dir=${SBE_OUTPUT_DIR} -Dsbe.errorLog=yes -jar ${CMAKE_CURRENT_SOURCE_DIR}/modules/sbe/sbe-all.jar ${SBE_INPUT_FILE} COMMENT "Generating ${SBE_OUTPUT_FILE}..." VERBATIM
+        COMMAND ${Java_JAVA_EXECUTABLE} -Dsbe.generate.ir=true -Dsbe.target.language=Cpp -Dsbe.target.namespace=sbe -Dsbe.output.dir=${SBE_OUTPUT_DIR} -Dsbe.errorLog=yes -jar ${CMAKE_CURRENT_SOURCE_DIR}/modules/sbe/sbe-all-1.29.0.jar ${SBE_INPUT_FILE} COMMENT "Generating ${SBE_OUTPUT_FILE}..." VERBATIM
     )
     add_custom_target(${SBE_TARGET} DEPENDS ${SBE_OUTPUT_FILE})
     set_target_properties(${SBE_TARGET} PROPERTIES FOLDER "proto")

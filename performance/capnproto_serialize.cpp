@@ -30,7 +30,8 @@ BENCHMARK_FIXTURE(SerializationFixture, "Cap'n'Proto-Serialize")
     writeMessage(buffer, output);
 
     context.metrics().AddBytes(buffer.getArray().size());
-    context.metrics().SetCustom("Size", (unsigned)buffer.getArray().size());
+    context.metrics().SetCustom("OriginalSize", (unsigned)account.size());
+    context.metrics().SetCustom("MessageSize", (unsigned)buffer.getArray().size());
 }
 
 BENCHMARK_MAIN()

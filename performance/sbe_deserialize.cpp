@@ -38,7 +38,7 @@ protected:
 BENCHMARK_FIXTURE(DeserializationFixture, "SimpleBinaryEncoding-Deserialize")
 {
     context.metrics().AddBytes(serialized);
-    context.metrics().SetCustom("Size", (unsigned)serialized);
+    context.metrics().SetCustom("MessageSize", (unsigned)serialized);
 
     // Deserialize the account from the SBE stream
     header.wrap(buffer, 0, 1, sizeof(buffer));
@@ -46,6 +46,8 @@ BENCHMARK_FIXTURE(DeserializationFixture, "SimpleBinaryEncoding-Deserialize")
     int actingBlockLength = header.blockLength();
     message.wrapForDecode(buffer, header.encodedLength(), actingBlockLength, actingVersion, sizeof(buffer));
     deserialized.Deserialize(message);
+
+    context.metrics().SetCustom("OriginalSize", (unsigned)deserialized.size());
 }
 
 BENCHMARK_MAIN()

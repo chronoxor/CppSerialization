@@ -15,7 +15,8 @@ C++ Serialization Library provides functionality to serialize/deserialize
 objects using different protocols such as Cap'n'Proto, FastBinaryEncoding,
 Flatbuffers, Protobuf, SimpleBinaryEncoding, JSON.
 
-Performance comparison based on the [Domain model](#domain-model):
+Performance comparison based on the [Domain model](#domain-model) with one
+account, one wallet and three orders total size of 128 bytes:
 
 | Protocol                                                                     | Message size | Serialization time | Deserialization time |
 | :--------------------------------------------------------------------------: | -----------: | -----------------: | -------------------: |
@@ -421,8 +422,9 @@ int main(int argc, char** argv)
     kj::VectorOutputStream buffer;
     writeMessage(buffer, output);
 
-    // Show the serialized Cap'n'Proto size
-    std::cout << "Protobuf size: " << buffer.getArray().size() << std::endl;
+    // Show original and Cap'n'Proto serialized sizes
+    std::cout << "Original size: " << account.size() << std::endl;
+    std::cout << "Cap'n'Proto size: " << buffer.getArray().size() << std::endl;
 
     // Deserialize the account from the Cap'n'Proto stream
     kj::ArrayInputStream array(buffer.getArray());
@@ -453,7 +455,8 @@ int main(int argc, char** argv)
 
 Output of the example is the following:
 ```
-Protobuf size: 208
+Original size: 128
+Cap'n'Proto size: 208
 
 Account.Id = 1
 Account.Name = Test
@@ -500,7 +503,8 @@ Total bytes: 1.674 GiB
 Operations throughput: 1789911 ops/s
 Bytes throughput: 355.055 MiB/s
 Custom values:
-        Size: 208
+        MessageSize: 208
+        OriginalSize: 128
 ===============================================================================
 ```
 
@@ -539,7 +543,8 @@ Total bytes: 2.618 GiB
 Operations throughput: 2783738 ops/s
 Bytes throughput: 552.198 MiB/s
 Custom values:
-        Size: 208
+        MessageSize: 208
+        OriginalSize: 128
 ===============================================================================
 ```
 
@@ -753,7 +758,8 @@ int main(int argc, char** argv)
     size_t serialized = writer.create_end(model_begin);
     assert(writer.verify() && "Model is broken!");
 
-    // Show the serialized FBE size
+    // Show original and FBE serialized sizes
+    std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "FBE size: " << serialized << std::endl;
 
     // Deserialize the account from the FBE stream
@@ -786,6 +792,7 @@ int main(int argc, char** argv)
 
 Output of the example is the following:
 ```
+Original size: 128
 FBE size: 234
 
 Account.Id = 1
@@ -833,7 +840,8 @@ Total bytes: 11.853 GiB
 Operations throughput: 15090301 ops/s
 Bytes throughput: 3.295 GiB/s
 Custom values:
-        Size: 234
+        MessageSize: 234
+        OriginalSize: 128
 ===============================================================================
 ```
 
@@ -872,7 +880,8 @@ Total bytes: 8.792 GiB
 Operations throughput: 12190362 ops/s
 Bytes throughput: 2.672 GiB/s
 Custom values:
-        Size: 234
+        MessageSize: 234
+        OriginalSize: 128
 ===============================================================================
 ```
 
@@ -1055,7 +1064,8 @@ int main(int argc, char** argv)
     flatbuffers::FlatBufferBuilder builder;
     builder.Finish(account.Serialize(builder));
 
-    // Show the serialized FlatBuffer size
+    // Show original and FlatBuffer serialized sizes
+    std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "FlatBuffer size: " << builder.GetSize() << std::endl;
 
     // Deserialize the account from the FlatBuffer stream
@@ -1085,6 +1095,7 @@ int main(int argc, char** argv)
 
 Output of the example is the following:
 ```
+Original size: 128
 FlatBuffer size: 280
 
 Account.Id = 1
@@ -1132,7 +1143,8 @@ Total bytes: 1.529 GiB
 Operations throughput: 1204142 ops/s
 Bytes throughput: 321.553 MiB/s
 Custom values:
-        Size: 280
+        MessageSize: 280
+        OriginalSize: 128
 ===============================================================================
 ```
 
@@ -1171,7 +1183,8 @@ Total bytes: 4.214 GiB
 Operations throughput: 3441995 ops/s
 Bytes throughput: 919.114 MiB/s
 Custom values:
-        Size: 280
+        MessageSize: 280
+        OriginalSize: 128
 ===============================================================================
 ```
 
@@ -1363,7 +1376,8 @@ int main(int argc, char** argv)
     account.Serialize(output);
     auto buffer = output.SerializeAsString();
 
-    // Show the serialized Protobuf size
+    // Show original and Protobuf serialized sizes
+    std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "Protobuf size: " << buffer.size() << std::endl;
 
     // Deserialize the account from the Protobuf stream
@@ -1398,6 +1412,7 @@ int main(int argc, char** argv)
 
 Output of the example is the following:
 ```
+Original size: 128
 Protobuf size: 120
 
 Account.Id = 1
@@ -1445,7 +1460,8 @@ Total bytes: 828.653 MiB
 Operations throughput: 1590357 ops/s
 Bytes throughput: 182.002 MiB/s
 Custom values:
-        Size: 120
+        MessageSize: 120
+        OriginalSize: 128
 ===============================================================================
 ```
 
@@ -1484,7 +1500,8 @@ Total bytes: 717.261 MiB
 Operations throughput: 1317322 ops/s
 Bytes throughput: 150.773 MiB/s
 Custom values:
-        Size: 120
+        MessageSize: 120
+        OriginalSize: 128
 ===============================================================================
 ```
 
@@ -1686,7 +1703,8 @@ int main(int argc, char** argv)
     message.wrapForEncode(buffer, header.encodedLength(), sizeof(buffer));
     account.Serialize(message);
 
-    // Show the serialized SBE size
+    // Show original and SBE serialized sizes
+    std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "SBE size: " << header.encodedLength() + message.encodedLength() << std::endl;
 
     // Deserialize the account from the SBE stream
@@ -1720,6 +1738,7 @@ int main(int argc, char** argv)
 
 Output of the example is the following:
 ```
+Original size: 128
 SBE size: 138
 
 Account.Id = 1
@@ -1767,7 +1786,8 @@ Total bytes: 8.741 GiB
 Operations throughput: 28296533 ops/s
 Bytes throughput: 3.652 GiB/s
 Custom values:
-        Size: 138
+        MessageSize: 138
+        OriginalSize: 128
 ===============================================================================
 ```
 
@@ -1806,7 +1826,8 @@ Total bytes: 5.493 GiB
 Operations throughput: 11750351 ops/s
 Bytes throughput: 1.522 GiB/s
 Custom values:
-        Size: 138
+        MessageSize: 138
+        OriginalSize: 128
 ===============================================================================
 ```
 
@@ -1956,9 +1977,9 @@ int main(int argc, char** argv)
     CppSerialization::JSON::Serializer<CppSerialization::JSON::StringBuffer> serializer(buffer);
     account.Serialize(serializer);
 
-    // Show the serialized JSON content
+    // Show original and JSON serialized sizes
+    std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "JSON content: " << buffer.GetString() << std::endl;
-    // Show the serialized JSON size
     std::cout << "JSON size: " << buffer.GetSize() << std::endl;
 
     // Parse JSON string
@@ -1991,8 +2012,9 @@ int main(int argc, char** argv)
 
 Output of the example is the following:
 ```
+Original size: 128
 JSON content: {"id":1,"name":"Test","wallet":{"currency":"USD","amount":1000.0},"orders":[{"id":1,"symbol":"EURUSD","side":0,"type":0,"price":1.23456,"volume":1000.0},{"id":2,"symbol":"EURUSD","side":1,"type":1,"price":1.0,"volume":100.0},{"id":3,"symbol":"EURUSD","side":0,"type":2,"price":1.5,"volume":10.0}]}
-JSON size: 301
+JSON size: 297
 
 Account.Id = 1
 Account.Name = Test
@@ -2038,7 +2060,8 @@ Total bytes: 1.857 GiB
 Operations throughput: 1350543 ops/s
 Bytes throughput: 387.697 MiB/s
 Custom values:
-        Size: 301
+        MessageSize: 301
+        OriginalSize: 128
 ===============================================================================
 ```
 
@@ -2076,7 +2099,7 @@ Total bytes: 685.715 MiB
 Operations throughput: 484713 ops/s
 Bytes throughput: 139.143 MiB/s
 Custom values:
-        Size: 301
+        MessageSize: 301
 ===============================================================================
 ```
 
@@ -2114,6 +2137,7 @@ Total bytes: 36.195 MiB
 Operations throughput: 1997556 ops/s
 Bytes throughput: 7.634 MiB/s
 Custom values:
-        Size: 301
+        MessageSize: 301
+        OriginalSize: 128
 ===============================================================================
 ```

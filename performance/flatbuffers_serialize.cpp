@@ -29,7 +29,8 @@ BENCHMARK_FIXTURE(SerializationFixture, "FlatBuffers-Serialize")
     builder.Finish(account.Serialize(builder));
 
     context.metrics().AddBytes(builder.GetSize());
-    context.metrics().SetCustom("Size", builder.GetSize());
+    context.metrics().SetCustom("OriginalSize", (unsigned)account.size());
+    context.metrics().SetCustom("MessageSize", builder.GetSize());
 }
 
 BENCHMARK_MAIN()
