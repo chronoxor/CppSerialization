@@ -355,7 +355,7 @@ struct Account
         Name = name;
     }
 
-    constexpr size_t size() const { return sizeof(int) + Name.size() + Wallet.size() + std::accumulate(Orders.begin(), Orders.end(), 0, [](size_t sum, const Order& order) { return sum + order.size(); }); }
+    size_t size() const { return sizeof(int) + Name.size() + Wallet.size() + std::accumulate(Orders.begin(), Orders.end(), 0, [](size_t sum, const Order& order) { return sum + order.size(); }); }
 
     // Cap'n'Proto serialization
 
