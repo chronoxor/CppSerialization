@@ -1,8 +1,10 @@
 # CppSerialization
 
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Release](https://img.shields.io/github/release/chronoxor/CppSerialization.svg?sort=semver)](https://github.com/chronoxor/CppSerialization/releases)
+<br/>
 [![Linux (clang)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-linux-clang.yml/badge.svg)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-linux-clang.yml)
 [![Linux (gcc)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-linux-gcc.yml/badge.svg)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-linux-gcc.yml)
-<br/>
 [![MacOS](https://github.com/chronoxor/CppSerialization/actions/workflows/build-macos.yml/badge.svg)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-macos.yml)
 <br/>
 [![Windows (MSYS2)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-windows-msys2.yml/badge.svg)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-windows-msys2.yml)
@@ -1553,7 +1555,7 @@ a generated code for required programming language.
 
 The following command will create a C++ generated code:
 ```shell
-java -Dsbe.target.language=cpp -jar sbe-all-1.27.0.jar trade.sbe.xml
+java -Dsbe.target.language=cpp -jar sbe-all-1.29.0.jar trade.sbe.xml
 ```
 
 As the result required C++ header files will be generated.

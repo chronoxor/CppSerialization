@@ -1,6 +1,6 @@
 /* Generated SBE (Simple Binary Encoding) message codec */
-#ifndef _SBE_ORDER_H_
-#define _SBE_ORDER_H_
+#ifndef _SBE_ORDER_CXX_H_
+#define _SBE_ORDER_CXX_H_
 
 #if defined(SBE_HAVE_CMATH)
 /* cmath needed for std::numeric_limits<double>::quiet_NaN() */
@@ -69,12 +69,15 @@
 #  error "Byte Ordering of platform not determined. Set __BYTE_ORDER__ manually before including this file."
 #endif
 
-#if defined(SBE_NO_BOUNDS_CHECK)
-#  define SBE_BOUNDS_CHECK_EXPECT(exp, c) (false)
-#elif defined(_MSC_VER)
-#  define SBE_BOUNDS_CHECK_EXPECT(exp, c) (exp)
-#else
-#  define SBE_BOUNDS_CHECK_EXPECT(exp, c) (__builtin_expect(exp, c))
+#if !defined(SBE_BOUNDS_CHECK_EXPECT)
+#  if defined(SBE_NO_BOUNDS_CHECK)
+#    define SBE_BOUNDS_CHECK_EXPECT(exp, c) (false)
+#  elif defined(_MSC_VER)
+#    define SBE_BOUNDS_CHECK_EXPECT(exp, c) (exp)
+#  else 
+#    define SBE_BOUNDS_CHECK_EXPECT(exp, c) (__builtin_expect(exp, c))
+#  endif
+
 #endif
 
 #define SBE_NULLVALUE_INT8 (std::numeric_limits<std::int8_t>::min)()
@@ -221,14 +224,7 @@ public:
 
     SBE_NODISCARD bool idInActingVersion() SBE_NOEXCEPT
     {
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-compare"
-#endif
-        return m_actingVersion >= idSinceVersion();
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+        return true;
     }
 
     SBE_NODISCARD static SBE_CONSTEXPR std::size_t idEncodingOffset() SBE_NOEXCEPT
@@ -291,14 +287,7 @@ public:
 
     SBE_NODISCARD bool symbolInActingVersion() SBE_NOEXCEPT
     {
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-compare"
-#endif
-        return m_actingVersion >= symbolSinceVersion();
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+        return true;
     }
 
     SBE_NODISCARD static SBE_CONSTEXPR std::size_t symbolEncodingOffset() SBE_NOEXCEPT
@@ -496,14 +485,7 @@ public:
 
     SBE_NODISCARD bool sideInActingVersion() SBE_NOEXCEPT
     {
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-compare"
-#endif
-        return m_actingVersion >= sideSinceVersion();
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+        return true;
     }
 
     SBE_NODISCARD static SBE_CONSTEXPR std::size_t sideEncodingOffset() SBE_NOEXCEPT
@@ -558,14 +540,7 @@ public:
 
     SBE_NODISCARD bool typeInActingVersion() SBE_NOEXCEPT
     {
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-compare"
-#endif
-        return m_actingVersion >= typeSinceVersion();
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+        return true;
     }
 
     SBE_NODISCARD static SBE_CONSTEXPR std::size_t typeEncodingOffset() SBE_NOEXCEPT
@@ -620,14 +595,7 @@ public:
 
     SBE_NODISCARD bool priceInActingVersion() SBE_NOEXCEPT
     {
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-compare"
-#endif
-        return m_actingVersion >= priceSinceVersion();
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+        return true;
     }
 
     SBE_NODISCARD static SBE_CONSTEXPR std::size_t priceEncodingOffset() SBE_NOEXCEPT
@@ -693,14 +661,7 @@ public:
 
     SBE_NODISCARD bool volumeInActingVersion() SBE_NOEXCEPT
     {
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-compare"
-#endif
-        return m_actingVersion >= volumeSinceVersion();
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+        return true;
     }
 
     SBE_NODISCARD static SBE_CONSTEXPR std::size_t volumeEncodingOffset() SBE_NOEXCEPT
@@ -747,7 +708,7 @@ public:
 
 template<typename CharT, typename Traits>
 friend std::basic_ostream<CharT, Traits> & operator << (
-    std::basic_ostream<CharT, Traits> &builder, Order writer)
+    std::basic_ostream<CharT, Traits> &builder, Order &writer)
 {
     builder << '{';
     builder << R"("id": )";

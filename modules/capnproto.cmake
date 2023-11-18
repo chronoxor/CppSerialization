@@ -5,8 +5,8 @@ if(NOT capnproto)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_ORIGIN}")
 
   # Set options
-  SET(WITH_FIBERS OFF CACHE STRINGS "Whether or not to build libkj-async with fibers." FORCE)
-  SET(WITH_OPENSSL OFF CACHE STRINGS "Whether or not to build libkj-tls by linking against openssl." FORCE)
+  SET(WITH_FIBERS OFF CACHE STRING "Whether or not to build libkj-async with fibers." FORCE)
+  SET(WITH_OPENSSL OFF CACHE STRING "Whether or not to build libkj-tls by linking against openssl." FORCE)
   SET(BUILD_TESTING OFF CACHE BOOL "Build unit tests and enable CTest 'check' target." FORCE)
 
   # Module subdirectory

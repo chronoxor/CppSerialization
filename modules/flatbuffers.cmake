@@ -14,7 +14,6 @@ if(NOT flatbuf)
   # Module folder
   set_target_properties(flatbuffers PROPERTIES FOLDER "modules/flatbuffers/flatbuffers")
   set_target_properties(flatc PROPERTIES FOLDER "modules/flatbuffers/flatc")
-  set_target_properties(flathash PROPERTIES FOLDER "modules/flatbuffers/flathash")
 
   # Module definition
   set(flatbuf "${CMAKE_CURRENT_SOURCE_DIR}/flatbuffers/include" PARENT_SCOPE)

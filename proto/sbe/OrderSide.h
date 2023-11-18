@@ -1,6 +1,6 @@
 /* Generated SBE (Simple Binary Encoding) message codec */
-#ifndef _SBE_ORDERSIDE_H_
-#define _SBE_ORDERSIDE_H_
+#ifndef _SBE_ORDERSIDE_CXX_H_
+#define _SBE_ORDERSIDE_CXX_H_
 
 #if !defined(__STDC_LIMIT_MACROS)
 #  define __STDC_LIMIT_MACROS 1

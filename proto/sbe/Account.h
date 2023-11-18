@@ -1,6 +1,6 @@
 /* Generated SBE (Simple Binary Encoding) message codec */
-#ifndef _SBE_ACCOUNT_H_
-#define _SBE_ACCOUNT_H_
+#ifndef _SBE_ACCOUNT_CXX_H_
+#define _SBE_ACCOUNT_CXX_H_
 
 #if defined(SBE_HAVE_CMATH)
 /* cmath needed for std::numeric_limits<double>::quiet_NaN() */
@@ -69,12 +69,15 @@
 #  error "Byte Ordering of platform not determined. Set __BYTE_ORDER__ manually before including this file."
 #endif
 
-#if defined(SBE_NO_BOUNDS_CHECK)
-#  define SBE_BOUNDS_CHECK_EXPECT(exp, c) (false)
-#elif defined(_MSC_VER)
-#  define SBE_BOUNDS_CHECK_EXPECT(exp, c) (exp)
-#else
-#  define SBE_BOUNDS_CHECK_EXPECT(exp, c) (__builtin_expect(exp, c))
+#if !defined(SBE_BOUNDS_CHECK_EXPECT)
+#  if defined(SBE_NO_BOUNDS_CHECK)
+#    define SBE_BOUNDS_CHECK_EXPECT(exp, c) (false)
+#  elif defined(_MSC_VER)
+#    define SBE_BOUNDS_CHECK_EXPECT(exp, c) (exp)
+#  else 
+#    define SBE_BOUNDS_CHECK_EXPECT(exp, c) (__builtin_expect(exp, c))
+#  endif
+
 #endif
 
 #define SBE_NULLVALUE_INT8 (std::numeric_limits<std::int8_t>::min)()
@@ -117,6 +120,7 @@ public:
     static const std::uint16_t SBE_TEMPLATE_ID = static_cast<std::uint16_t>(1);
     static const std::uint16_t SBE_SCHEMA_ID = static_cast<std::uint16_t>(1);
     static const std::uint16_t SBE_SCHEMA_VERSION = static_cast<std::uint16_t>(1);
+    static constexpr const char* SBE_SEMANTIC_VERSION = "5.2";
 
     enum MetaAttribute
     {
@@ -191,6 +195,11 @@ public:
     SBE_NODISCARD static SBE_CONSTEXPR std::uint16_t sbeSchemaVersion() SBE_NOEXCEPT
     {
         return static_cast<std::uint16_t>(1);
+    }
+
+    SBE_NODISCARD static const char *sbeSemanticVersion() SBE_NOEXCEPT
+    {
+        return "5.2";
     }
 
     SBE_NODISCARD static SBE_CONSTEXPR const char *sbeSemanticType() SBE_NOEXCEPT
@@ -314,14 +323,7 @@ public:
 
     SBE_NODISCARD bool idInActingVersion() SBE_NOEXCEPT
     {
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-compare"
-#endif
-        return m_actingVersion >= idSinceVersion();
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+        return true;
     }
 
     SBE_NODISCARD static SBE_CONSTEXPR std::size_t idEncodingOffset() SBE_NOEXCEPT
@@ -384,14 +386,7 @@ public:
 
     SBE_NODISCARD bool walletInActingVersion() SBE_NOEXCEPT
     {
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-compare"
-#endif
-        return m_actingVersion >= walletSinceVersion();
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+        return true;
     }
 
     SBE_NODISCARD static SBE_CONSTEXPR std::size_t walletEncodingOffset() SBE_NOEXCEPT
@@ -574,14 +569,7 @@ public:
 
         SBE_NODISCARD bool orderInActingVersion() SBE_NOEXCEPT
         {
-    #if defined(__clang__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wtautological-compare"
-    #endif
-            return m_actingVersion >= orderSinceVersion();
-    #if defined(__clang__)
-    #pragma clang diagnostic pop
-    #endif
+            return true;
         }
 
         SBE_NODISCARD static SBE_CONSTEXPR std::size_t orderEncodingOffset() SBE_NOEXCEPT
@@ -601,7 +589,7 @@ public:
 
         template<typename CharT, typename Traits>
         friend std::basic_ostream<CharT, Traits> & operator << (
-            std::basic_ostream<CharT, Traits> &builder, Orders writer)
+            std::basic_ostream<CharT, Traits> &builder, Orders &writer)
         {
             builder << '{';
             builder << R"("order": )";
@@ -664,14 +652,7 @@ public:
 
     SBE_NODISCARD bool ordersInActingVersion() const SBE_NOEXCEPT
     {
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-compare"
-#endif
-        return m_actingVersion >= ordersSinceVersion();
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+        return true;
     }
 
     SBE_NODISCARD static const char *nameMetaAttribute(const MetaAttribute metaAttribute) SBE_NOEXCEPT
@@ -695,14 +676,7 @@ public:
 
     bool nameInActingVersion() SBE_NOEXCEPT
     {
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-compare"
-#endif
-        return m_actingVersion >= nameSinceVersion();
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+        return true;
     }
 
     static SBE_CONSTEXPR std::uint16_t nameId() SBE_NOEXCEPT
@@ -858,7 +832,7 @@ public:
 
 template<typename CharT, typename Traits>
 friend std::basic_ostream<CharT, Traits> & operator << (
-    std::basic_ostream<CharT, Traits> &builder, Account _writer)
+    std::basic_ostream<CharT, Traits> &builder, const Account &_writer)
 {
     Account writer(
         _writer.m_buffer,

@@ -1,6 +1,6 @@
 /* Generated SBE (Simple Binary Encoding) message codec */
-#ifndef _SBE_GROUPSIZEENCODING_H_
-#define _SBE_GROUPSIZEENCODING_H_
+#ifndef _SBE_GROUPSIZEENCODING_CXX_H_
+#define _SBE_GROUPSIZEENCODING_CXX_H_
 
 #if defined(SBE_HAVE_CMATH)
 /* cmath needed for std::numeric_limits<double>::quiet_NaN() */
@@ -69,12 +69,15 @@
 #  error "Byte Ordering of platform not determined. Set __BYTE_ORDER__ manually before including this file."
 #endif
 
-#if defined(SBE_NO_BOUNDS_CHECK)
-#  define SBE_BOUNDS_CHECK_EXPECT(exp, c) (false)
-#elif defined(_MSC_VER)
-#  define SBE_BOUNDS_CHECK_EXPECT(exp, c) (exp)
-#else
-#  define SBE_BOUNDS_CHECK_EXPECT(exp, c) (__builtin_expect(exp, c))
+#if !defined(SBE_BOUNDS_CHECK_EXPECT)
+#  if defined(SBE_NO_BOUNDS_CHECK)
+#    define SBE_BOUNDS_CHECK_EXPECT(exp, c) (false)
+#  elif defined(_MSC_VER)
+#    define SBE_BOUNDS_CHECK_EXPECT(exp, c) (exp)
+#  else 
+#    define SBE_BOUNDS_CHECK_EXPECT(exp, c) (__builtin_expect(exp, c))
+#  endif
+
 #endif
 
 #define SBE_NULLVALUE_INT8 (std::numeric_limits<std::int8_t>::min)()
@@ -218,14 +221,7 @@ public:
 
     SBE_NODISCARD bool blockLengthInActingVersion() SBE_NOEXCEPT
     {
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-compare"
-#endif
-        return m_actingVersion >= blockLengthSinceVersion();
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+        return true;
     }
 
     SBE_NODISCARD static SBE_CONSTEXPR std::size_t blockLengthEncodingOffset() SBE_NOEXCEPT
@@ -288,14 +284,7 @@ public:
 
     SBE_NODISCARD bool numInGroupInActingVersion() SBE_NOEXCEPT
     {
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-compare"
-#endif
-        return m_actingVersion >= numInGroupSinceVersion();
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+        return true;
     }
 
     SBE_NODISCARD static SBE_CONSTEXPR std::size_t numInGroupEncodingOffset() SBE_NOEXCEPT
@@ -339,7 +328,7 @@ public:
 
 template<typename CharT, typename Traits>
 friend std::basic_ostream<CharT, Traits> & operator << (
-    std::basic_ostream<CharT, Traits> &builder, GroupSizeEncoding writer)
+    std::basic_ostream<CharT, Traits> &builder, GroupSizeEncoding &writer)
 {
     builder << '{';
     builder << R"("blockLength": )";
