@@ -2,18 +2,6 @@
 #ifndef _SBE_ACCOUNT_CXX_H_
 #define _SBE_ACCOUNT_CXX_H_
 
-#if defined(SBE_HAVE_CMATH)
-/* cmath needed for std::numeric_limits<double>::quiet_NaN() */
-#  include <cmath>
-#  define SBE_FLOAT_NAN std::numeric_limits<float>::quiet_NaN()
-#  define SBE_DOUBLE_NAN std::numeric_limits<double>::quiet_NaN()
-#else
-/* math.h needed for NAN */
-#  include <math.h>
-#  define SBE_FLOAT_NAN NAN
-#  define SBE_DOUBLE_NAN NAN
-#endif
-
 #if __cplusplus >= 201103L
 #  define SBE_CONSTEXPR constexpr
 #  define SBE_NOEXCEPT noexcept
@@ -34,9 +22,9 @@
 #endif
 
 #include <cstdint>
+#include <limits>
 #include <cstring>
 #include <iomanip>
-#include <limits>
 #include <ostream>
 #include <stdexcept>
 #include <sstream>
@@ -80,6 +68,8 @@
 
 #endif
 
+#define SBE_FLOAT_NAN std::numeric_limits<float>::quiet_NaN()
+#define SBE_DOUBLE_NAN std::numeric_limits<double>::quiet_NaN()
 #define SBE_NULLVALUE_INT8 (std::numeric_limits<std::int8_t>::min)()
 #define SBE_NULLVALUE_INT16 (std::numeric_limits<std::int16_t>::min)()
 #define SBE_NULLVALUE_INT32 (std::numeric_limits<std::int32_t>::min)()
@@ -214,7 +204,13 @@ public:
 
     Account &wrapForEncode(char *buffer, const std::uint64_t offset, const std::uint64_t bufferLength)
     {
-        return *this = Account(buffer, offset, bufferLength, sbeBlockLength(), sbeSchemaVersion());
+        m_buffer = buffer;
+        m_bufferLength = bufferLength;
+        m_offset = offset;
+        m_actingBlockLength = sbeBlockLength();
+        m_actingVersion = sbeSchemaVersion();
+        m_position = sbeCheckPosition(m_offset + m_actingBlockLength);
+        return *this;
     }
 
     Account &wrapAndApplyHeader(char *buffer, const std::uint64_t offset, const std::uint64_t bufferLength)
@@ -227,12 +223,13 @@ public:
             .schemaId(sbeSchemaId())
             .version(sbeSchemaVersion());
 
-        return *this = Account(
-            buffer,
-            offset + messageHeader::encodedLength(),
-            bufferLength,
-            sbeBlockLength(),
-            sbeSchemaVersion());
+        m_buffer = buffer;
+        m_bufferLength = bufferLength;
+        m_offset = offset + messageHeader::encodedLength();
+        m_actingBlockLength = sbeBlockLength();
+        m_actingVersion = sbeSchemaVersion();
+        m_position = sbeCheckPosition(m_offset + m_actingBlockLength);
+        return *this;
     }
 
     Account &wrapForDecode(
@@ -242,7 +239,13 @@ public:
         const std::uint64_t actingVersion,
         const std::uint64_t bufferLength)
     {
-        return *this = Account(buffer, offset, bufferLength, actingBlockLength, actingVersion);
+        m_buffer = buffer;
+        m_bufferLength = bufferLength;
+        m_offset = offset;
+        m_actingBlockLength = actingBlockLength;
+        m_actingVersion = actingVersion;
+        m_position = sbeCheckPosition(m_offset + m_actingBlockLength);
+        return *this;
     }
 
     Account &sbeRewind()
@@ -423,6 +426,8 @@ public:
         }
 
     public:
+        Orders() = default;
+
         inline void wrapForDecode(
             char *buffer,
             std::uint64_t *pos,

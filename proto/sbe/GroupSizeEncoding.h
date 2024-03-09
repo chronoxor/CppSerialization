@@ -2,18 +2,6 @@
 #ifndef _SBE_GROUPSIZEENCODING_CXX_H_
 #define _SBE_GROUPSIZEENCODING_CXX_H_
 
-#if defined(SBE_HAVE_CMATH)
-/* cmath needed for std::numeric_limits<double>::quiet_NaN() */
-#  include <cmath>
-#  define SBE_FLOAT_NAN std::numeric_limits<float>::quiet_NaN()
-#  define SBE_DOUBLE_NAN std::numeric_limits<double>::quiet_NaN()
-#else
-/* math.h needed for NAN */
-#  include <math.h>
-#  define SBE_FLOAT_NAN NAN
-#  define SBE_DOUBLE_NAN NAN
-#endif
-
 #if __cplusplus >= 201103L
 #  define SBE_CONSTEXPR constexpr
 #  define SBE_NOEXCEPT noexcept
@@ -34,9 +22,9 @@
 #endif
 
 #include <cstdint>
+#include <limits>
 #include <cstring>
 #include <iomanip>
-#include <limits>
 #include <ostream>
 #include <stdexcept>
 #include <sstream>
@@ -80,6 +68,8 @@
 
 #endif
 
+#define SBE_FLOAT_NAN std::numeric_limits<float>::quiet_NaN()
+#define SBE_DOUBLE_NAN std::numeric_limits<double>::quiet_NaN()
 #define SBE_NULLVALUE_INT8 (std::numeric_limits<std::int8_t>::min)()
 #define SBE_NULLVALUE_INT16 (std::numeric_limits<std::int16_t>::min)()
 #define SBE_NULLVALUE_INT32 (std::numeric_limits<std::int32_t>::min)()
@@ -157,7 +147,17 @@ public:
         const std::uint64_t actingVersion,
         const std::uint64_t bufferLength)
     {
-        return *this = GroupSizeEncoding(buffer, offset, bufferLength, actingVersion);
+        m_buffer = buffer;
+        m_bufferLength = bufferLength;
+        m_offset = offset;
+        m_actingVersion = actingVersion;
+
+        if (SBE_BOUNDS_CHECK_EXPECT(((m_offset + 4) > m_bufferLength), false))
+        {
+            throw std::runtime_error("buffer too short for flyweight [E107]");
+        }
+
+        return *this;
     }
 
     SBE_NODISCARD static SBE_CONSTEXPR std::uint64_t encodedLength() SBE_NOEXCEPT
