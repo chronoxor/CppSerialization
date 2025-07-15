@@ -13,8 +13,18 @@
 #if __cplusplus >= 201703L
 #  include <string_view>
 #  define SBE_NODISCARD [[nodiscard]]
+#  if !defined(SBE_USE_STRING_VIEW)
+#    define SBE_USE_STRING_VIEW 1
+#  endif
 #else
 #  define SBE_NODISCARD
+#endif
+
+#if __cplusplus >= 202002L
+#  include <span>
+#  if !defined(SBE_USE_SPAN)
+#    define SBE_USE_SPAN 1
+#  endif
 #endif
 
 #if !defined(__STDC_LIMIT_MACROS)
@@ -299,11 +309,50 @@ public:
         return length;
     }
 
+    #ifdef SBE_USE_SPAN
+    SBE_NODISCARD std::span<const char> getCurrencyAsSpan() const SBE_NOEXCEPT
+    {
+        const char *buffer = m_buffer + m_offset + 0;
+        return std::span<const char>(reinterpret_cast<const char*>(buffer), 10);
+    }
+    #endif
+
+    #ifdef SBE_USE_SPAN
+    template <std::size_t N>
+    Balance &putCurrency(std::span<const char, N> src) SBE_NOEXCEPT
+    {
+        static_assert(N <= 10, "array too large for putCurrency");
+
+        std::memcpy(m_buffer + m_offset + 0, src.data(), sizeof(char) * N);
+        for (std::size_t start = N; start < 10; ++start)
+        {
+            m_buffer[m_offset + 0 + start] = 0;
+        }
+
+        return *this;
+    }
+    #endif
+
+    #ifdef SBE_USE_SPAN
+    template <typename T>
+    Balance &putCurrency(T&& src)  SBE_NOEXCEPT requires
+        (std::is_pointer_v<std::remove_reference_t<T>> &&
+         !std::is_array_v<std::remove_reference_t<T>>)
+    #else
     Balance &putCurrency(const char *const src) SBE_NOEXCEPT
+    #endif
     {
         std::memcpy(m_buffer + m_offset + 0, src, sizeof(char) * 10);
         return *this;
     }
+
+    #ifdef SBE_USE_SPAN
+    template <std::size_t N>
+    Balance &putCurrency(const char (&src)[N]) SBE_NOEXCEPT
+    {
+        return putCurrency(std::span<const char, N>(src));
+    }
+    #endif
 
     SBE_NODISCARD std::string getCurrencyAsString() const
     {
@@ -349,7 +398,7 @@ public:
         return oss.str();
     }
 
-    #if __cplusplus >= 201703L
+    #ifdef SBE_USE_STRING_VIEW
     SBE_NODISCARD std::string_view getCurrencyAsStringView() const SBE_NOEXCEPT
     {
         const char *buffer = m_buffer + m_offset + 0;
@@ -362,7 +411,7 @@ public:
     }
     #endif
 
-    #if __cplusplus >= 201703L
+    #ifdef SBE_USE_STRING_VIEW
     Balance &putCurrency(const std::string_view str)
     {
         const std::size_t srcLength = str.length();
@@ -434,7 +483,7 @@ public:
 
     static SBE_CONSTEXPR double amountMinValue() SBE_NOEXCEPT
     {
-        return 4.9E-324;
+        return -1.7976931348623157E308;
     }
 
     static SBE_CONSTEXPR double amountMaxValue() SBE_NOEXCEPT

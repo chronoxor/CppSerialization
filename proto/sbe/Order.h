@@ -13,8 +13,18 @@
 #if __cplusplus >= 201703L
 #  include <string_view>
 #  define SBE_NODISCARD [[nodiscard]]
+#  if !defined(SBE_USE_STRING_VIEW)
+#    define SBE_USE_STRING_VIEW 1
+#  endif
 #else
 #  define SBE_NODISCARD
+#endif
+
+#if __cplusplus >= 202002L
+#  include <span>
+#  if !defined(SBE_USE_SPAN)
+#    define SBE_USE_SPAN 1
+#  endif
 #endif
 
 #if !defined(__STDC_LIMIT_MACROS)
@@ -365,11 +375,50 @@ public:
         return length;
     }
 
+    #ifdef SBE_USE_SPAN
+    SBE_NODISCARD std::span<const char> getSymbolAsSpan() const SBE_NOEXCEPT
+    {
+        const char *buffer = m_buffer + m_offset + 4;
+        return std::span<const char>(reinterpret_cast<const char*>(buffer), 10);
+    }
+    #endif
+
+    #ifdef SBE_USE_SPAN
+    template <std::size_t N>
+    Order &putSymbol(std::span<const char, N> src) SBE_NOEXCEPT
+    {
+        static_assert(N <= 10, "array too large for putSymbol");
+
+        std::memcpy(m_buffer + m_offset + 4, src.data(), sizeof(char) * N);
+        for (std::size_t start = N; start < 10; ++start)
+        {
+            m_buffer[m_offset + 4 + start] = 0;
+        }
+
+        return *this;
+    }
+    #endif
+
+    #ifdef SBE_USE_SPAN
+    template <typename T>
+    Order &putSymbol(T&& src)  SBE_NOEXCEPT requires
+        (std::is_pointer_v<std::remove_reference_t<T>> &&
+         !std::is_array_v<std::remove_reference_t<T>>)
+    #else
     Order &putSymbol(const char *const src) SBE_NOEXCEPT
+    #endif
     {
         std::memcpy(m_buffer + m_offset + 4, src, sizeof(char) * 10);
         return *this;
     }
+
+    #ifdef SBE_USE_SPAN
+    template <std::size_t N>
+    Order &putSymbol(const char (&src)[N]) SBE_NOEXCEPT
+    {
+        return putSymbol(std::span<const char, N>(src));
+    }
+    #endif
 
     SBE_NODISCARD std::string getSymbolAsString() const
     {
@@ -415,7 +464,7 @@ public:
         return oss.str();
     }
 
-    #if __cplusplus >= 201703L
+    #ifdef SBE_USE_STRING_VIEW
     SBE_NODISCARD std::string_view getSymbolAsStringView() const SBE_NOEXCEPT
     {
         const char *buffer = m_buffer + m_offset + 4;
@@ -428,7 +477,7 @@ public:
     }
     #endif
 
-    #if __cplusplus >= 201703L
+    #ifdef SBE_USE_STRING_VIEW
     Order &putSymbol(const std::string_view str)
     {
         const std::size_t srcLength = str.length();
@@ -610,7 +659,7 @@ public:
 
     static SBE_CONSTEXPR double priceMinValue() SBE_NOEXCEPT
     {
-        return 4.9E-324;
+        return -1.7976931348623157E308;
     }
 
     static SBE_CONSTEXPR double priceMaxValue() SBE_NOEXCEPT
@@ -676,7 +725,7 @@ public:
 
     static SBE_CONSTEXPR double volumeMinValue() SBE_NOEXCEPT
     {
-        return 4.9E-324;
+        return -1.7976931348623157E308;
     }
 
     static SBE_CONSTEXPR double volumeMaxValue() SBE_NOEXCEPT
