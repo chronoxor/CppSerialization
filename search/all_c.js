@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['name',['Name',['../struct_my_domain_1_1_account.html#a4a5b895a64f340ef5e97daa404dead96',1,'MyDomain::Account::Name()'],['../struct_my_domain_1_1flat_1_1_f_l_a_t_b_u_f_f_e_r_s___f_i_n_a_l___c_l_a_s_s.html#ae9fef207ef192e5f7a060cec0f599eae',1,'MyDomain::flat::FLATBUFFERS_FINAL_CLASS::Name()']]]
+  ['_7edeserializer_0',['~Deserializer',['../class_cpp_serialization_1_1_j_s_o_n_1_1_deserializer.html#a6b797d29fadcd1fcef2adcaae68eb093',1,'CppSerialization::JSON::Deserializer']]],
+  ['_7eparser_1',['~Parser',['../class_cpp_serialization_1_1_j_s_o_n_1_1_parser.html#a64e0f927da5ffc8329794db062408f08',1,'CppSerialization::JSON::Parser']]],
+  ['_7eserializer_2',['~Serializer',['../class_cpp_serialization_1_1_j_s_o_n_1_1_serializer.html#af8e599588998580e2a54e7ef9c6d0a59',1,'CppSerialization::JSON::Serializer']]]
 ];
