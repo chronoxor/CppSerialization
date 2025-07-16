@@ -27,7 +27,7 @@ include(SetPlatformFeatures)
 include(SystemInformation)
 
 # External packages
-find_package(Java REQUIRED)
+find_package(Java 17 REQUIRED)
 
 # Modules
 add_subdirectory("modules")
