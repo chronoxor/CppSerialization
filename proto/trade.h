@@ -201,6 +201,10 @@ struct Order
         Volume = model.volume();
     }
 
+    // zpp::bits serialization
+
+    using serialize = zpp::bits::members<6>;
+
     // JSON serialization
 
     template<typename OutputStream>
@@ -320,6 +324,10 @@ struct Balance
         model.getCurrency(Currency, sizeof(Currency));
         Amount = model.amount();
     }
+
+    // zpp::bits serialization
+
+    using serialize = zpp::bits::members<2>;
 
     // JSON serialization
 
@@ -500,6 +508,10 @@ struct Account
         }
     }
 
+    // zpp::bits serialization
+
+    using serialize = zpp::bits::members<4>;
+
     // JSON serialization
 
     template<typename OutputStream>
@@ -538,11 +550,6 @@ struct Account
         });
     }
 };
-
-// zpp::bits serialization
-auto serialize(const Order&) -> zpp::bits::members<6>;
-auto serialize(const Balance&) -> zpp::bits::members<2>;
-auto serialize(const Account&) -> zpp::bits::members<4>;
 
 } // namespace Trade
 
