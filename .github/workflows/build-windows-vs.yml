@@ -11,6 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: "Setup Java"
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
       - name: "Setup Visual Studio"
         uses: egor-tensin/vs-shell@v2
 
@@ -23,8 +29,6 @@ jobs:
           gil update
 
       - name: "Build"
-        env:
-          JAVA_HOME: ${{ env.JAVA_HOME_21_X64 }}
         run: |
           cd build
           ./vs.bat

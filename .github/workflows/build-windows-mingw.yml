@@ -11,6 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: "Setup Java"
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
       - name: "Setup cmake"
         run: cmake --version
 
@@ -21,7 +27,6 @@ jobs:
 
       - name: "Build"
         env:
-          JAVA_HOME: ${{ env.JAVA_HOME_21_X64 }}
           INCLUDE: C:\mingw64\x86_64-w64-mingw32\include
           LIB: C:\mingw64\x86_64-w64-mingw32\lib
         run: |
