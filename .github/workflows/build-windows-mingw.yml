@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: windows-latest
     env:
-      JAVA_HOME: ${{ env.JAVA_HOME_21_X64 }}
+      JAVA_HOME: ${{ JAVA_HOME_21_X64 }}
     steps:
       - uses: actions/checkout@v4
 
