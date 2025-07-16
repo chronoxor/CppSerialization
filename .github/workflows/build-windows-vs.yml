@@ -8,8 +8,6 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-    env:
-      JAVA_HOME: ${{ JAVA_HOME_21_X64 }}
     steps:
       - uses: actions/checkout@v4
 
@@ -25,6 +23,8 @@ jobs:
           gil update
 
       - name: "Build"
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME_21_X64 }}
         run: |
           cd build
           ./vs.bat

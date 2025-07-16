@@ -11,8 +11,6 @@ jobs:
     defaults:
       run:
         shell: msys2 {0}
-    env:
-      JAVA_HOME: ${{ JAVA_HOME_21_X64 }}
     steps:
       - uses: actions/checkout@v4
 
