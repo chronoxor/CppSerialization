@@ -23,6 +23,8 @@ jobs:
           gil update
 
       - name: "Build"
+        env:
+          JAVA_HOME: $JAVA_HOME_21_X64
         run: |
           cd build
           ./vs.bat
