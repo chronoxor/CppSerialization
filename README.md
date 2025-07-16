@@ -20,12 +20,13 @@ account, one wallet and three orders total size of 128 bytes:
 
 | Protocol                                                                     | Message size | Serialization time | Deserialization time |
 | :--------------------------------------------------------------------------: | -----------: | -----------------: | -------------------: |
-| [Cap'n'Proto](https://capnproto.org)                                         |    208 bytes |             558 ns |               359 ns |
-| [FastBinaryEncoding](https://github.com/chronoxor/FastBinaryEncoding)        |    234 bytes |              66 ns |                82 ns |
-| [FlatBuffers](https://google.github.io/flatbuffers)                          |    280 bytes |             830 ns |               290 ns |
-| [Protobuf](https://developers.google.com/protocol-buffers)                   |    120 bytes |             628 ns |               759 ns |
-| [SimpleBinaryEncoding](https://github.com/real-logic/simple-binary-encoding) |    138 bytes |              35 ns |                85 ns |
-| [JSON](http://rapidjson.org)                                                 |    301 bytes |             740 ns |               500 ns |
+| [Cap'n'Proto](https://capnproto.org)                                         |    208 bytes |             247 ns |               184 ns |
+| [FastBinaryEncoding](https://github.com/chronoxor/FastBinaryEncoding)        |    234 bytes |              77 ns |                84 ns |
+| [FlatBuffers](https://google.github.io/flatbuffers)                          |    280 bytes |             272 ns |                81 ns |
+| [Protobuf](https://developers.google.com/protocol-buffers)                   |    120 bytes |             322 ns |               351 ns |
+| [SimpleBinaryEncoding](https://github.com/real-logic/simple-binary-encoding) |    138 bytes |              35 ns |                52 ns |
+| [zpp::bits](https://github.com/eyalz800/zpp_bits)                            |    130 bytes |              34 ns |                37 ns |
+| [JSON](http://rapidjson.org)                                                 |    301 bytes |             696 ns |               291 ns |
 
 [CppSerialization API reference](https://chronoxor.github.io/CppSerialization/index.html)
 
@@ -64,6 +65,10 @@ account, one wallet and three orders total size of 128 bytes:
     * [SimpleBinaryEncoding serialization methods](#simplebinaryencoding-serialization-methods)
     * [SimpleBinaryEncoding example](#simplebinaryencoding-example)
     * [SimpleBinaryEncoding performance](#simplebinaryencoding-performance)
+  * [zpp::bits serialization](#zppbits-serialization)
+    * [zpp::bits serialization methods](#zppbits-serialization-methods)
+    * [zpp::bits example](#zppbits-example)
+    * [zpp::bits performance](#zppbits-performance)
   * [JSON serialization](#json-serialization)
     * [JSON serialization methods](#json-serialization-methods)
     * [JSON example](#json-example)
@@ -76,6 +81,7 @@ account, one wallet and three orders total size of 128 bytes:
 * Binary serialization using [FlatBuffers library](https://google.github.io/flatbuffers)
 * Binary serialization using [Protobuf library](https://developers.google.com/protocol-buffers)
 * Binary serialization using [SimpleBinaryEncoding library](https://github.com/real-logic/simple-binary-encoding)
+* Binary serialization using [zpp::bits library](https://github.com/eyalz800/zpp_bits)
 * JSON serialization using [RapidJSON library](http://rapidjson.org)
 
 # Requirements
@@ -400,7 +406,7 @@ struct Account
 ```
 
 ## Cap'n'Proto example
-Here comes the usage example of FlatBuffers serialize/deserialize functionality:
+Here comes the usage example of Cap'n'Proto serialize/deserialize functionality:
 
 ```c++
 #include "../proto/trade.h"
@@ -415,7 +421,7 @@ int main(int argc, char** argv)
     account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the Cap'n'Proto stream
+    // Serialize the account to the Cap'n'Proto buffer
     capnp::MallocMessageBuilder output;
     Trade::capnproto::Account::Builder builder = output.initRoot<Trade::capnproto::Account>();
     account.Serialize(builder);
@@ -426,7 +432,7 @@ int main(int argc, char** argv)
     std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "Cap'n'Proto size: " << buffer.getArray().size() << std::endl;
 
-    // Deserialize the account from the Cap'n'Proto stream
+    // Deserialize the account from the Cap'n'Proto buffer
     kj::ArrayInputStream array(buffer.getArray());
     capnp::InputStreamMessageReader input(array);
     TradeProto::Account deserialized;
@@ -472,36 +478,36 @@ Cap'n'Proto serialization performance of the provided domain model is the
 following:
 ```
 ===============================================================================
-CppBenchmark report. Version 1.0.0.0
+CppBenchmark report. Version 1.0.5.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
-CPU logical cores: 8
-CPU physical cores: 4
-CPU clock speed: 4.008 GHz
-CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 20.431 GiB
+CPU architecture: Apple M1 Pro
+CPU logical cores: 10
+CPU physical cores: 10
+CPU clock speed: 2.400 GHz
+CPU Hyper-Threading: disabled
+RAM total: 32.000 GiB
+RAM free: 1.136 GiB
 ===============================================================================
-OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS version: 24.5.0
 OS bits: 64-bit
 Process bits: 64-bit
-Process configuaraion: release
-Local timestamp: Wed Jul 18 13:21:25 2018
-UTC timestamp: Wed Jul 18 10:21:25 2018
+Process configuration: release
+Local timestamp: Wed Jul 16 19:05:35 2025
+UTC timestamp: Wed Jul 16 17:05:35 2025
 ===============================================================================
 Benchmark: Cap'n'Proto-Serialize
 Attempts: 5
 Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: Cap'n'Proto-Serialize
-Average time: 558 ns/op
-Minimal time: 558 ns/op
-Maximal time: 568 ns/op
-Total time: 4.783 s
-Total operations: 8562741
-Total bytes: 1.674 GiB
-Operations throughput: 1789911 ops/s
-Bytes throughput: 355.055 MiB/s
+Average time: 247 ns/op
+Minimal time: 244 ns/op
+Maximal time: 254 ns/op
+Total time: 4.762 s
+Total operations: 19242126
+Total bytes: 4.484 GiB
+Operations throughput: 4040127 ops/s
+Bytes throughput: 961.717 MiB/s
 Custom values:
         MessageSize: 208
         OriginalSize: 128
@@ -512,36 +518,36 @@ Cap'n'Proto deserialization performance of the provided domain model is the
 following:
 ```
 ===============================================================================
-CppBenchmark report. Version 1.0.0.0
+CppBenchmark report. Version 1.0.5.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
-CPU logical cores: 8
-CPU physical cores: 4
-CPU clock speed: 4.008 GHz
-CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 20.631 GiB
+CPU architecture: Apple M1 Pro
+CPU logical cores: 10
+CPU physical cores: 10
+CPU clock speed: 2.400 GHz
+CPU Hyper-Threading: disabled
+RAM total: 32.000 GiB
+RAM free: 1.116 GiB
 ===============================================================================
-OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS version: 24.5.0
 OS bits: 64-bit
 Process bits: 64-bit
-Process configuaraion: release
-Local timestamp: Wed Jul 18 13:22:27 2018
-UTC timestamp: Wed Jul 18 10:22:27 2018
+Process configuration: release
+Local timestamp: Wed Jul 16 19:06:37 2025
+UTC timestamp: Wed Jul 16 17:06:37 2025
 ===============================================================================
 Benchmark: Cap'n'Proto-Deserialize
 Attempts: 5
 Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: Cap'n'Proto-Deserialize
-Average time: 359 ns/op
-Minimal time: 359 ns/op
-Maximal time: 361 ns/op
-Total time: 4.828 s
-Total operations: 13440063
-Total bytes: 2.618 GiB
-Operations throughput: 2783738 ops/s
-Bytes throughput: 552.198 MiB/s
+Average time: 184 ns/op
+Minimal time: 183 ns/op
+Maximal time: 184 ns/op
+Total time: 4.959 s
+Total operations: 26913647
+Total bytes: 6.262 GiB
+Operations throughput: 5426756 ops/s
+Bytes throughput: 1.267 GiB/s
 Custom values:
         MessageSize: 208
         OriginalSize: 128
@@ -751,7 +757,7 @@ int main(int argc, char** argv)
     account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the FBE stream
+    // Serialize the account to the FBE buffer
     FBE::trade::AccountModel<FBE::WriteBuffer> writer;
     size_t model_begin = writer.create_begin();
     account.Serialize(writer.model);
@@ -762,7 +768,7 @@ int main(int argc, char** argv)
     std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "FBE size: " << serialized << std::endl;
 
-    // Deserialize the account from the FBE stream
+    // Deserialize the account from the FBE buffer
     TradeProto::Account deserialized;
     FBE::trade::AccountModel<FBE::ReadBuffer> reader;
     reader.attach(writer.buffer());
@@ -809,36 +815,36 @@ FastBinaryEncoding serialization performance of the provided domain model is the
 following:
 ```
 ===============================================================================
-CppBenchmark report. Version 1.0.0.0
+CppBenchmark report. Version 1.0.5.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
-CPU logical cores: 8
-CPU physical cores: 4
-CPU clock speed: 4.008 GHz
-CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 20.644 GiB
+CPU architecture: Apple M1 Pro
+CPU logical cores: 10
+CPU physical cores: 10
+CPU clock speed: 2.400 GHz
+CPU Hyper-Threading: disabled
+RAM total: 32.000 GiB
+RAM free: 1.179 GiB
 ===============================================================================
-OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS version: 24.5.0
 OS bits: 64-bit
 Process bits: 64-bit
-Process configuaraion: release
-Local timestamp: Wed Jul 18 13:23:18 2018
-UTC timestamp: Wed Jul 18 10:23:18 2018
+Process configuration: release
+Local timestamp: Wed Jul 16 19:08:14 2025
+UTC timestamp: Wed Jul 16 17:08:14 2025
 ===============================================================================
 Benchmark: FastBinaryEncoding-Serialize
 Attempts: 5
 Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: FastBinaryEncoding-Serialize
-Average time: 66 ns/op
-Minimal time: 66 ns/op
-Maximal time: 67 ns/op
-Total time: 3.598 s
-Total operations: 54301046
-Total bytes: 11.853 GiB
-Operations throughput: 15090301 ops/s
-Bytes throughput: 3.295 GiB/s
+Average time: 77 ns/op
+Minimal time: 77 ns/op
+Maximal time: 81 ns/op
+Total time: 5.204 s
+Total operations: 66877702
+Total bytes: 17.501 GiB
+Operations throughput: 12849579 ops/s
+Bytes throughput: 3.369 GiB/s
 Custom values:
         MessageSize: 234
         OriginalSize: 128
@@ -849,36 +855,36 @@ FastBinaryEncoding deserialization performance of the provided domain model is t
 following:
 ```
 ===============================================================================
-CppBenchmark report. Version 1.0.0.0
+CppBenchmark report. Version 1.0.5.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
-CPU logical cores: 8
-CPU physical cores: 4
-CPU clock speed: 4.008 GHz
-CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 20.520 GiB
+CPU architecture: Apple M1 Pro
+CPU logical cores: 10
+CPU physical cores: 10
+CPU clock speed: 2.400 GHz
+CPU Hyper-Threading: disabled
+RAM total: 32.000 GiB
+RAM free: 1.194 GiB
 ===============================================================================
-OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS version: 24.5.0
 OS bits: 64-bit
 Process bits: 64-bit
-Process configuaraion: release
-Local timestamp: Wed Jul 18 13:24:03 2018
-UTC timestamp: Wed Jul 18 10:24:03 2018
+Process configuration: release
+Local timestamp: Wed Jul 16 19:10:03 2025
+UTC timestamp: Wed Jul 16 17:10:03 2025
 ===============================================================================
 Benchmark: FastBinaryEncoding-Deserialize
 Attempts: 5
 Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: FastBinaryEncoding-Deserialize
-Average time: 82 ns/op
+Average time: 84 ns/op
 Minimal time: 82 ns/op
 Maximal time: 85 ns/op
-Total time: 3.302 s
-Total operations: 40260567
-Total bytes: 8.792 GiB
-Operations throughput: 12190362 ops/s
-Bytes throughput: 2.672 GiB/s
+Total time: 5.271 s
+Total operations: 62074518
+Total bytes: 16.239 GiB
+Operations throughput: 11775531 ops/s
+Bytes throughput: 3.081 GiB/s
 Custom values:
         MessageSize: 234
         OriginalSize: 128
@@ -1060,7 +1066,7 @@ int main(int argc, char** argv)
     account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the FlatBuffer stream
+    // Serialize the account to the FlatBuffer buffer
     flatbuffers::FlatBufferBuilder builder;
     builder.Finish(account.Serialize(builder));
 
@@ -1068,7 +1074,7 @@ int main(int argc, char** argv)
     std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "FlatBuffer size: " << builder.GetSize() << std::endl;
 
-    // Deserialize the account from the FlatBuffer stream
+    // Deserialize the account from the FlatBuffer buffer
     TradeProto::Account deserialized;
     deserialized.Deserialize(*Trade::flatbuf::GetAccount(builder.GetBufferPointer()));
 
@@ -1112,36 +1118,36 @@ FlatBuffers serialization performance of the provided domain model is the
 following:
 ```
 ===============================================================================
-CppBenchmark report. Version 1.0.0.0
+CppBenchmark report. Version 1.0.5.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
-CPU logical cores: 8
-CPU physical cores: 4
-CPU clock speed: 4.008 GHz
-CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 20.624 GiB
+CPU architecture: Apple M1 Pro
+CPU logical cores: 10
+CPU physical cores: 10
+CPU clock speed: 2.400 GHz
+CPU Hyper-Threading: disabled
+RAM total: 32.000 GiB
+RAM free: 1.270 GiB
 ===============================================================================
-OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS version: 24.5.0
 OS bits: 64-bit
 Process bits: 64-bit
-Process configuaraion: release
-Local timestamp: Wed Jul 18 13:24:57 2018
-UTC timestamp: Wed Jul 18 10:24:57 2018
+Process configuration: release
+Local timestamp: Wed Jul 16 19:11:16 2025
+UTC timestamp: Wed Jul 16 17:11:16 2025
 ===============================================================================
 Benchmark: FlatBuffers-Serialize
 Attempts: 5
 Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: FlatBuffers-Serialize
-Average time: 830 ns/op
-Minimal time: 830 ns/op
-Maximal time: 840 ns/op
-Total time: 4.830 s
-Total operations: 5816587
-Total bytes: 1.529 GiB
-Operations throughput: 1204142 ops/s
-Bytes throughput: 321.553 MiB/s
+Average time: 272 ns/op
+Minimal time: 272 ns/op
+Maximal time: 273 ns/op
+Total time: 4.947 s
+Total operations: 18131562
+Total bytes: 5.689 GiB
+Operations throughput: 3664742 ops/s
+Bytes throughput: 1.150 GiB/s
 Custom values:
         MessageSize: 280
         OriginalSize: 128
@@ -1152,36 +1158,36 @@ FlatBuffers deserialization performance of the provided domain model is the
 following:
 ```
 ===============================================================================
-CppBenchmark report. Version 1.0.0.0
+CppBenchmark report. Version 1.0.5.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
-CPU logical cores: 8
-CPU physical cores: 4
-CPU clock speed: 4.008 GHz
-CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 20.631 GiB
+CPU architecture: Apple M1 Pro
+CPU logical cores: 10
+CPU physical cores: 10
+CPU clock speed: 2.400 GHz
+CPU Hyper-Threading: disabled
+RAM total: 32.000 GiB
+RAM free: 1.323 GiB
 ===============================================================================
-OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS version: 24.5.0
 OS bits: 64-bit
 Process bits: 64-bit
-Process configuaraion: release
-Local timestamp: Wed Jul 18 13:25:45 2018
-UTC timestamp: Wed Jul 18 10:25:45 2018
+Process configuration: release
+Local timestamp: Wed Jul 16 19:13:23 2025
+UTC timestamp: Wed Jul 16 17:13:23 2025
 ===============================================================================
 Benchmark: FlatBuffers-Deserialize
 Attempts: 5
 Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: FlatBuffers-Deserialize
-Average time: 290 ns/op
-Minimal time: 290 ns/op
-Maximal time: 293 ns/op
-Total time: 4.690 s
-Total operations: 16143136
-Total bytes: 4.214 GiB
-Operations throughput: 3441995 ops/s
-Bytes throughput: 919.114 MiB/s
+Average time: 81 ns/op
+Minimal time: 77 ns/op
+Maximal time: 81 ns/op
+Total time: 5.320 s
+Total operations: 65603873
+Total bytes: 20.541 GiB
+Operations throughput: 12329743 ops/s
+Bytes throughput: 3.878 GiB/s
 Custom values:
         MessageSize: 280
         OriginalSize: 128
@@ -1371,7 +1377,7 @@ int main(int argc, char** argv)
     account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the Protobuf stream
+    // Serialize the account to the Protobuf buffer
     Trade::protobuf::Account output;
     account.Serialize(output);
     auto buffer = output.SerializeAsString();
@@ -1380,7 +1386,7 @@ int main(int argc, char** argv)
     std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "Protobuf size: " << buffer.size() << std::endl;
 
-    // Deserialize the account from the Protobuf stream
+    // Deserialize the account from the Protobuf buffer
     Trade::protobuf::Account input;
     input.ParseFromString(buffer);
     TradeProto::Account deserialized;
@@ -1429,36 +1435,36 @@ Protobuf serialization performance of the provided domain model is the
 following:
 ```
 ===============================================================================
-CppBenchmark report. Version 1.0.0.0
+CppBenchmark report. Version 1.0.5.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
-CPU logical cores: 8
-CPU physical cores: 4
-CPU clock speed: 4.008 GHz
-CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 20.676 GiB
+CPU architecture: Apple M1 Pro
+CPU logical cores: 10
+CPU physical cores: 10
+CPU clock speed: 2.400 GHz
+CPU Hyper-Threading: disabled
+RAM total: 32.000 GiB
+RAM free: 1.339 GiB
 ===============================================================================
-OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS version: 24.5.0
 OS bits: 64-bit
 Process bits: 64-bit
-Process configuaraion: release
-Local timestamp: Wed Jul 18 13:26:34 2018
-UTC timestamp: Wed Jul 18 10:26:34 2018
+Process configuration: release
+Local timestamp: Wed Jul 16 19:15:26 2025
+UTC timestamp: Wed Jul 16 17:15:26 2025
 ===============================================================================
 Benchmark: Protobuf-Serialize
 Attempts: 5
 Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: Protobuf-Serialize
-Average time: 628 ns/op
-Minimal time: 628 ns/op
-Maximal time: 658 ns/op
-Total time: 4.552 s
-Total operations: 7240754
-Total bytes: 828.653 MiB
-Operations throughput: 1590357 ops/s
-Bytes throughput: 182.002 MiB/s
+Average time: 322 ns/op
+Minimal time: 322 ns/op
+Maximal time: 323 ns/op
+Total time: 4.989 s
+Total operations: 15458464
+Total bytes: 2.074 GiB
+Operations throughput: 3098338 ops/s
+Bytes throughput: 425.503 MiB/s
 Custom values:
         MessageSize: 120
         OriginalSize: 128
@@ -1469,36 +1475,36 @@ Protobuf deserialization performance of the provided domain model is the
 following:
 ```
 ===============================================================================
-CppBenchmark report. Version 1.0.0.0
+CppBenchmark report. Version 1.0.5.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
-CPU logical cores: 8
-CPU physical cores: 4
-CPU clock speed: 4.008 GHz
-CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 20.676 GiB
+CPU architecture: Apple M1 Pro
+CPU logical cores: 10
+CPU physical cores: 10
+CPU clock speed: 2.400 GHz
+CPU Hyper-Threading: disabled
+RAM total: 32.000 GiB
+RAM free: 1.248 GiB
 ===============================================================================
-OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS version: 24.5.0
 OS bits: 64-bit
 Process bits: 64-bit
-Process configuaraion: release
-Local timestamp: Wed Jul 18 13:27:18 2018
-UTC timestamp: Wed Jul 18 10:27:18 2018
+Process configuration: release
+Local timestamp: Wed Jul 16 19:16:37 2025
+UTC timestamp: Wed Jul 16 17:16:37 2025
 ===============================================================================
 Benchmark: Protobuf-Deserialize
 Attempts: 5
 Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: Protobuf-Deserialize
-Average time: 759 ns/op
-Minimal time: 759 ns/op
-Maximal time: 776 ns/op
-Total time: 4.757 s
-Total operations: 6267474
-Total bytes: 717.261 MiB
-Operations throughput: 1317322 ops/s
-Bytes throughput: 150.773 MiB/s
+Average time: 351 ns/op
+Minimal time: 351 ns/op
+Maximal time: 352 ns/op
+Total time: 4.959 s
+Total operations: 14111610
+Total bytes: 1.913 GiB
+Operations throughput: 2845506 ops/s
+Bytes throughput: 390.789 MiB/s
 Custom values:
         MessageSize: 120
         OriginalSize: 128
@@ -1691,7 +1697,7 @@ int main(int argc, char** argv)
     account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the SBE stream
+    // Serialize the account to the SBE buffer
     char buffer[1024];
     sbe::MessageHeader header;
     header.wrap(buffer, 0, 1, sizeof(buffer))
@@ -1707,7 +1713,7 @@ int main(int argc, char** argv)
     std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "SBE size: " << header.encodedLength() + message.encodedLength() << std::endl;
 
-    // Deserialize the account from the SBE stream
+    // Deserialize the account from the SBE buffer
     header.wrap(buffer, 0, 1, sizeof(buffer));
     int actingVersion = header.version();
     int actingBlockLength = header.blockLength();
@@ -1755,22 +1761,22 @@ SimpleBinaryEncoding serialization performance of the provided domain model is t
 following:
 ```
 ===============================================================================
-CppBenchmark report. Version 1.0.0.0
+CppBenchmark report. Version 1.0.5.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
-CPU logical cores: 8
-CPU physical cores: 4
-CPU clock speed: 3.998 GHz
-CPU Hyper-Threading: enabled
-RAM total: 31.962 GiB
-RAM free: 16.910 GiB
+CPU architecture: Apple M1 Pro
+CPU logical cores: 10
+CPU physical cores: 10
+CPU clock speed: 2.400 GHz
+CPU Hyper-Threading: disabled
+RAM total: 32.000 GiB
+RAM free: 1.311 GiB
 ===============================================================================
-OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS version: 24.5.0
 OS bits: 64-bit
 Process bits: 64-bit
-Process configuaraion: release
-Local timestamp: Wed Jan  2 05:34:26 2019
-UTC timestamp: Wed Jan  2 02:34:26 2019
+Process configuration: release
+Local timestamp: Wed Jul 16 19:17:49 2025
+UTC timestamp: Wed Jul 16 17:17:49 2025
 ===============================================================================
 Benchmark: SimpleBinaryEncoding-Serialize
 Attempts: 5
@@ -1779,12 +1785,12 @@ Duration: 5 seconds
 Phase: SimpleBinaryEncoding-Serialize
 Average time: 35 ns/op
 Minimal time: 35 ns/op
-Maximal time: 38 ns/op
-Total time: 2.398 s
-Total operations: 67877907
-Total bytes: 8.741 GiB
-Operations throughput: 28296533 ops/s
-Bytes throughput: 3.652 GiB/s
+Maximal time: 35 ns/op
+Total time: 5.926 s
+Total operations: 168709597
+Total bytes: 26.020 GiB
+Operations throughput: 28467195 ops/s
+Bytes throughput: 4.399 GiB/s
 Custom values:
         MessageSize: 138
         OriginalSize: 128
@@ -1795,38 +1801,230 @@ SimpleBinaryEncoding deserialization performance of the provided domain model is
 following:
 ```
 ===============================================================================
-CppBenchmark report. Version 1.0.0.0
+CppBenchmark report. Version 1.0.5.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
-CPU logical cores: 8
-CPU physical cores: 4
-CPU clock speed: 3.998 GHz
-CPU Hyper-Threading: enabled
-RAM total: 31.962 GiB
-RAM free: 16.884 GiB
+CPU architecture: Apple M1 Pro
+CPU logical cores: 10
+CPU physical cores: 10
+CPU clock speed: 2.400 GHz
+CPU Hyper-Threading: disabled
+RAM total: 32.000 GiB
+RAM free: 1.261 GiB
 ===============================================================================
-OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS version: 24.5.0
 OS bits: 64-bit
 Process bits: 64-bit
-Process configuaraion: release
-Local timestamp: Wed Jan  2 05:35:26 2019
-UTC timestamp: Wed Jan  2 02:35:26 2019
+Process configuration: release
+Local timestamp: Wed Jul 16 19:19:22 2025
+UTC timestamp: Wed Jul 16 17:19:22 2025
 ===============================================================================
 Benchmark: SimpleBinaryEncoding-Deserialize
 Attempts: 5
 Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: SimpleBinaryEncoding-Deserialize
-Average time: 85 ns/op
-Minimal time: 85 ns/op
-Maximal time: 88 ns/op
-Total time: 3.629 s
-Total operations: 42653547
-Total bytes: 5.493 GiB
-Operations throughput: 11750351 ops/s
-Bytes throughput: 1.522 GiB/s
+Average time: 52 ns/op
+Minimal time: 52 ns/op
+Maximal time: 52 ns/op
+Total time: 5.432 s
+Total operations: 104359134
+Total bytes: 16.097 GiB
+Operations throughput: 19211002 ops/s
+Bytes throughput: 2.985 GiB/s
 Custom values:
         MessageSize: 138
+        OriginalSize: 128
+===============================================================================
+```
+
+# zpp::bits serialization
+zpp::bits serialization is based on [zpp::bits library](https://github.com/eyalz800/zpp_bits).
+
+## zpp::bits serialization methods
+Finally you should extend your domain model with a zpp::bits serialization
+methods:
+
+```c++
+#include "fbe/trade_models.h"
+
+#include <algorithm>
+
+namespace TradeProto {
+
+struct Order
+{
+    ...
+
+    // zpp::bits serialization
+
+    using serialize = zpp::bits::members<6>;
+
+    ...
+};
+
+struct Balance
+{
+    ...
+
+    // zpp::bits serialization
+
+    using serialize = zpp::bits::members<2>;
+
+    ...
+};
+
+struct Account
+{
+    ...
+
+    // zpp::bits serialization
+
+    using serialize = zpp::bits::members<4>;
+
+    ...
+};
+
+} // namespace TradeProto
+```
+
+## zpp::bits example
+Here comes the usage example of zpp::bits serialize/deserialize functionality:
+
+```c++
+#include "../proto/trade.h"
+
+#include <iostream>
+
+int main(int argc, char** argv)
+{
+    // Create a new account with some orders
+    TradeProto::Account account(1, "Test", "USD", 1000);
+    account.Orders.emplace_back(TradeProto::Order(1, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::MARKET, 1.23456, 1000));
+    account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
+    account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
+
+    // Serialize the account to the zpp::bits buffer
+    auto [buffer, out] = zpp::bits::data_out();
+    (void) out(account);
+
+    // Show original and zpp::bits serialized sizes
+    std::cout << "Original size: " << account.size() << std::endl;
+    std::cout << "zpp::bits size: " << buffer.size() << std::endl;
+
+    // Deserialize the account from the zpp::bits buffer
+    TradeProto::Account deserialized;
+    (void) zpp::bits::in{buffer}(deserialized);
+
+    // Show account content
+    std::cout << std::endl;
+    std::cout << "Account.Id = " << deserialized.Id << std::endl;
+    std::cout << "Account.Name = " << deserialized.Name << std::endl;
+    std::cout << "Account.Wallet.Currency = " << deserialized.Wallet.Currency << std::endl;
+    std::cout << "Account.Wallet.Amount = " << deserialized.Wallet.Amount << std::endl;
+    for (const auto& order : deserialized.Orders)
+    {
+        std::cout << "Account.Order => Id: " << order.Id
+            << ", Symbol: " << order.Symbol
+            << ", Side: " << (int)order.Side
+            << ", Type: " << (int)order.Type
+            << ", Price: " << order.Price
+            << ", Volume: " << order.Volume
+            << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Output of the example is the following:
+```
+Original size: 128
+zpp::bits size: 130
+
+Account.Id = 1
+Account.Name = Test
+Account.Wallet.Currency = USD
+Account.Wallet.Amount = 1000
+Account.Order => Id: 1, Symbol: EURUSD, Side: 0, Type: 0, Price: 1.23456, Volume: 1000
+Account.Order => Id: 2, Symbol: EURUSD, Side: 1, Type: 1, Price: 1, Volume: 100
+Account.Order => Id: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
+```
+
+## zpp::bits performance
+zpp::bits serialization performance of the provided domain model is the following:
+```
+===============================================================================
+CppBenchmark report. Version 1.0.5.0
+===============================================================================
+CPU architecture: Apple M1 Pro
+CPU logical cores: 10
+CPU physical cores: 10
+CPU clock speed: 2.400 GHz
+CPU Hyper-Threading: disabled
+RAM total: 32.000 GiB
+RAM free: 1.142 GiB
+===============================================================================
+OS version: 24.5.0
+OS bits: 64-bit
+Process bits: 64-bit
+Process configuration: release
+Local timestamp: Wed Jul 16 19:38:54 2025
+UTC timestamp: Wed Jul 16 17:38:54 2025
+===============================================================================
+Benchmark: zpp::bits-Serialize
+Attempts: 5
+Duration: 5 seconds
+-------------------------------------------------------------------------------
+Phase: zpp::bits-Serialize
+Average time: 34 ns/op
+Minimal time: 33 ns/op
+Maximal time: 35 ns/op
+Total time: 5.790 s
+Total operations: 168487238
+Total bytes: 24.490 GiB
+Operations throughput: 29095978 ops/s
+Bytes throughput: 4.232 GiB/s
+Custom values:
+        MessageSize: 130
+        OriginalSize: 128
+===============================================================================
+```
+
+zpp::bits deserialization performance of the provided domain model is the following:
+```
+===============================================================================
+CppBenchmark report. Version 1.0.5.0
+===============================================================================
+CPU architecture: Apple M1 Pro
+CPU logical cores: 10
+CPU physical cores: 10
+CPU clock speed: 2.400 GHz
+CPU Hyper-Threading: disabled
+RAM total: 32.000 GiB
+RAM free: 1.159 GiB
+===============================================================================
+OS version: 24.5.0
+OS bits: 64-bit
+Process bits: 64-bit
+Process configuration: release
+Local timestamp: Wed Jul 16 19:39:52 2025
+UTC timestamp: Wed Jul 16 17:39:52 2025
+===============================================================================
+Benchmark: zpp::bits-Deserialize
+Attempts: 5
+Duration: 5 seconds
+-------------------------------------------------------------------------------
+Phase: zpp::bits-Deserialize
+Average time: 37 ns/op
+Minimal time: 36 ns/op
+Maximal time: 37 ns/op
+Total time: 5.652 s
+Total operations: 152512801
+Total bytes: 22.161 GiB
+Operations throughput: 26982853 ops/s
+Bytes throughput: 3.942 GiB/s
+Custom values:
+        MessageSize: 130
         OriginalSize: 128
 ===============================================================================
 ```
@@ -1972,7 +2170,7 @@ int main(int argc, char** argv)
     account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the JSON stream
+    // Serialize the account to the JSON buffer
     CppSerialization::JSON::StringBuffer buffer;
     CppSerialization::JSON::Serializer<CppSerialization::JSON::StringBuffer> serializer(buffer);
     account.Serialize(serializer);
@@ -1985,7 +2183,7 @@ int main(int argc, char** argv)
     // Parse JSON string
     CppSerialization::JSON::Document json = CppSerialization::JSON::Parser::Parse(buffer.GetString());
 
-    // Deserialize the account from the JSON stream
+    // Deserialize the account from the JSON buffer
     TradeProto::Account deserialized;
     deserialized.Deserialize(json);
 
@@ -2029,38 +2227,38 @@ Account.Order => Id: 3, Symbol: EURUSD, Side: 0, Type: 2, Price: 1.5, Volume: 10
 JSON serialization performance of the provided domain model is the following:
 ```
 ===============================================================================
-CppBenchmark report. Version 1.0.0.0
+CppBenchmark report. Version 1.0.5.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
-CPU logical cores: 8
-CPU physical cores: 4
-CPU clock speed: 4.008 GHz
-CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 20.683 GiB
+CPU architecture: Apple M1 Pro
+CPU logical cores: 10
+CPU physical cores: 10
+CPU clock speed: 2.400 GHz
+CPU Hyper-Threading: disabled
+RAM total: 32.000 GiB
+RAM free: 1.041 GiB
 ===============================================================================
-OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS version: 24.5.0
 OS bits: 64-bit
 Process bits: 64-bit
-Process configuaraion: release
-Local timestamp: Wed Jul 18 13:28:06 2018
-UTC timestamp: Wed Jul 18 10:28:06 2018
+Process configuration: release
+Local timestamp: Wed Jul 16 19:29:18 2025
+UTC timestamp: Wed Jul 16 17:29:18 2025
 ===============================================================================
 Benchmark: JSON-Serialize
 Attempts: 5
 Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: JSON-Serialize
-Average time: 740 ns/op
-Minimal time: 740 ns/op
-Maximal time: 746 ns/op
-Total time: 4.851 s
-Total operations: 6552815
-Total bytes: 1.857 GiB
-Operations throughput: 1350543 ops/s
-Bytes throughput: 387.697 MiB/s
+Average time: 696 ns/op
+Minimal time: 695 ns/op
+Maximal time: 710 ns/op
+Total time: 4.932 s
+Total operations: 7078563
+Total bytes: 2.357 GiB
+Operations throughput: 1435099 ops/s
+Bytes throughput: 487.794 MiB/s
 Custom values:
-        MessageSize: 301
+        MessageSize: 297
         OriginalSize: 128
 ===============================================================================
 ```
@@ -2068,76 +2266,76 @@ Custom values:
 JSON document parsing performance of the provided domain model is the following:
 ```
 ===============================================================================
-CppBenchmark report. Version 1.0.0.0
+CppBenchmark report. Version 1.0.5.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
-CPU logical cores: 8
-CPU physical cores: 4
-CPU clock speed: 4.008 GHz
-CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 20.698 GiB
+CPU architecture: Apple M1 Pro
+CPU logical cores: 10
+CPU physical cores: 10
+CPU clock speed: 2.400 GHz
+CPU Hyper-Threading: disabled
+RAM total: 32.000 GiB
+RAM free: 1.154 GiB
 ===============================================================================
-OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS version: 24.5.0
 OS bits: 64-bit
 Process bits: 64-bit
-Process configuaraion: release
-Local timestamp: Wed Jul 18 13:29:53 2018
-UTC timestamp: Wed Jul 18 10:29:53 2018
+Process configuration: release
+Local timestamp: Wed Jul 16 19:30:48 2025
+UTC timestamp: Wed Jul 16 17:30:48 2025
 ===============================================================================
 Benchmark: JSON-Parse
 Attempts: 5
 Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: JSON-Parse
-Average time: 2.063 mcs/op
-Minimal time: 2.063 mcs/op
-Maximal time: 2.090 mcs/op
-Total time: 4.928 s
-Total operations: 2388728
-Total bytes: 685.715 MiB
-Operations throughput: 484713 ops/s
-Bytes throughput: 139.143 MiB/s
+Average time: 771 ns/op
+Minimal time: 771 ns/op
+Maximal time: 779 ns/op
+Total time: 4.914 s
+Total operations: 6372779
+Total bytes: 2.118 GiB
+Operations throughput: 1296734 ops/s
+Bytes throughput: 440.764 MiB/s
 Custom values:
-        MessageSize: 301
+        MessageSize: 297
 ===============================================================================
 ```
 
 JSON deserialization performance of the provided domain model is the following:
 ```
 ===============================================================================
-CppBenchmark report. Version 1.0.0.0
+CppBenchmark report. Version 1.0.5.0
 ===============================================================================
-CPU architecutre: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
-CPU logical cores: 8
-CPU physical cores: 4
-CPU clock speed: 4.008 GHz
-CPU Hyper-Threading: enabled
-RAM total: 31.903 GiB
-RAM free: 20.706 GiB
+CPU architecture: Apple M1 Pro
+CPU logical cores: 10
+CPU physical cores: 10
+CPU clock speed: 2.400 GHz
+CPU Hyper-Threading: disabled
+RAM total: 32.000 GiB
+RAM free: 1.240 GiB
 ===============================================================================
-OS version: Microsoft Windows 8 Enterprise Edition (build 9200), 64-bit
+OS version: 24.5.0
 OS bits: 64-bit
 Process bits: 64-bit
-Process configuaraion: release
-Local timestamp: Wed Jul 18 13:30:43 2018
-UTC timestamp: Wed Jul 18 10:30:43 2018
+Process configuration: release
+Local timestamp: Wed Jul 16 19:31:50 2025
+UTC timestamp: Wed Jul 16 17:31:50 2025
 ===============================================================================
 Benchmark: JSON-Deserialize
 Attempts: 5
 Duration: 5 seconds
 -------------------------------------------------------------------------------
 Phase: JSON-Deserialize
-Average time: 500 ns/op
-Minimal time: 500 ns/op
-Maximal time: 510 ns/op
-Total time: 4.749 s
-Total operations: 9487106
-Total bytes: 36.195 MiB
-Operations throughput: 1997556 ops/s
-Bytes throughput: 7.634 MiB/s
+Average time: 291 ns/op
+Minimal time: 291 ns/op
+Maximal time: 292 ns/op
+Total time: 4.924 s
+Total operations: 16884318
+Total bytes: 77.297 MiB
+Operations throughput: 3428637 ops/s
+Bytes throughput: 15.711 MiB/s
 Custom values:
-        MessageSize: 301
+        MessageSize: 297
         OriginalSize: 128
 ===============================================================================
 ```
