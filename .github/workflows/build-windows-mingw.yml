@@ -21,6 +21,7 @@ jobs:
 
       - name: "Build"
         env:
+          JAVA_HOME: ${{ env.JAVA_HOME_21_X64 }}
           INCLUDE: C:\mingw64\x86_64-w64-mingw32\include
           LIB: C:\mingw64\x86_64-w64-mingw32\lib
         run: |

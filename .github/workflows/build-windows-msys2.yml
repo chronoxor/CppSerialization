@@ -39,6 +39,7 @@ jobs:
 
       - name: "Build"
         env:
+          JAVA_HOME: ${{ env.JAVA_HOME_21_X64 }}
           INCLUDE: C:\msys64\usr\include\w32api
           LIB: C:\msys64\usr\lib\w32api
         run: |
