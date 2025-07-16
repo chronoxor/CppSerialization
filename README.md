@@ -13,7 +13,7 @@
 
 C++ Serialization Library provides functionality to serialize/deserialize
 objects using different protocols such as Cap'n'Proto, FastBinaryEncoding,
-Flatbuffers, Protobuf, SimpleBinaryEncoding, JSON.
+Flatbuffers, Protobuf, SimpleBinaryEncoding, zpp::bits, JSON.
 
 Performance comparison based on the [Domain model](#domain-model) with one
 account, one wallet and three orders total size of 128 bytes:
