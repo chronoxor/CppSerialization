@@ -20,7 +20,7 @@ protected:
         account.Orders.emplace_back(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100);
         account.Orders.emplace_back(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10);
 
-        // Serialize the account to the Protobuf stream
+        // Serialize the account to the Protobuf buffer
         Trade::protobuf::Account output;
         account.Serialize(output);
         buffer = output.SerializeAsString();
@@ -38,7 +38,7 @@ BENCHMARK_FIXTURE(DeserializationFixture, "Protobuf-Deserialize")
     context.metrics().AddBytes(buffer.size());
     context.metrics().SetCustom("MessageSize", (unsigned)buffer.size());
 
-    // Deserialize the account from the Protobuf stream
+    // Deserialize the account from the Protobuf buffer
     Trade::protobuf::Account input;
     input.ParseFromString(buffer);
     deserialized.Deserialize(input);

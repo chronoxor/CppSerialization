@@ -1,5 +1,5 @@
 //
-// Created by Ivan Shynkarenka on 08.05.2018
+// Created by Ivan Shynkarenka on 16.07.2025
 //
 
 #include "benchmark/cppbenchmark.h"
@@ -9,8 +9,7 @@
 class DeserializationFixture
 {
 protected:
-    FBE::trade::AccountModel writer;
-    FBE::trade::AccountModel reader;
+    std::array<std::byte, 0x1000> buffer;
     TradeProto::Account deserialized;
 
     DeserializationFixture()
@@ -21,24 +20,19 @@ protected:
         account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
         account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-        // Serialize the account to the FBE buffer
-        size_t model_begin = writer.create_begin();
-        account.Serialize(writer.model);
-        writer.create_end(model_begin);
-        assert(writer.verify() && "Model is broken!");
-        reader.attach(writer.buffer());
-        assert(reader.verify() && "Model is broken!");
+        // Serialize the account to the zpp::bits buffer
+        (void) zpp::bits::out{buffer}(account);
     }
 };
 
-BENCHMARK_FIXTURE(DeserializationFixture, "FastBinaryEncoding-Deserialize")
+BENCHMARK_FIXTURE(DeserializationFixture, "zpp::bits-Deserialize")
 {
-    context.metrics().AddBytes(reader.buffer().size());
-    context.metrics().SetCustom("MessageSize", (unsigned)reader.buffer().size());
+    // Deserialize the account from the zpp::bits buffer
+    zpp::bits::in in{buffer};
+    (void) in(deserialized);
 
-    // Deserialize the account from the FBE buffer
-    deserialized.Deserialize(reader.model);
-
+    context.metrics().AddBytes(in.position());
+    context.metrics().SetCustom("MessageSize", (unsigned)in.position());
     context.metrics().SetCustom("OriginalSize", (unsigned)deserialized.size());
 }
 

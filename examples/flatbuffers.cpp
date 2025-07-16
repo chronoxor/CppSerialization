@@ -18,7 +18,7 @@ int main(int argc, char** argv)
     account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the FlatBuffer stream
+    // Serialize the account to the FlatBuffer buffer
     flatbuffers::FlatBufferBuilder builder;
     builder.Finish(account.Serialize(builder));
 
@@ -26,7 +26,7 @@ int main(int argc, char** argv)
     std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "FlatBuffer size: " << builder.GetSize() << std::endl;
 
-    // Deserialize the account from the FlatBuffer stream
+    // Deserialize the account from the FlatBuffer buffer
     TradeProto::Account deserialized;
     deserialized.Deserialize(*Trade::flatbuf::GetAccount(builder.GetBufferPointer()));
 

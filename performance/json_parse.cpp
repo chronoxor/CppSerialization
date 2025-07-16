@@ -23,7 +23,7 @@ protected:
         account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
         account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-        // Serialize the account to the JSON stream
+        // Serialize the account to the JSON buffer
         Serializer<StringBuffer> serializer(buffer);
         account.Serialize(serializer);
     }
@@ -34,7 +34,7 @@ BENCHMARK_FIXTURE(ParserFixture, "JSON-Parse")
     context.metrics().AddBytes(buffer.GetSize());
     context.metrics().SetCustom("MessageSize", (unsigned)buffer.GetSize());
 
-    // Parse JSON document from the JSON stream
+    // Parse JSON document from the JSON buffer
     Document json = Parser::Parse(buffer.GetString());
 }
 

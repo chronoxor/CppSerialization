@@ -25,7 +25,7 @@ protected:
 
 BENCHMARK_FIXTURE(SerializationFixture, "JSON-Serialize")
 {
-    // Serialize the account to the JSON stream
+    // Serialize the account to the JSON buffer
     buffer.Clear();
     serializer.Reset(buffer);
     account.Serialize(serializer);

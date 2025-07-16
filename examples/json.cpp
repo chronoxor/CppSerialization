@@ -20,7 +20,7 @@ int main(int argc, char** argv)
     account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the JSON stream
+    // Serialize the account to the JSON buffer
     CppSerialization::JSON::StringBuffer buffer;
     CppSerialization::JSON::Serializer<CppSerialization::JSON::StringBuffer> serializer(buffer);
     account.Serialize(serializer);
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
     // Parse JSON string
     CppSerialization::JSON::Document json = CppSerialization::JSON::Parser::Parse(buffer.GetString());
 
-    // Deserialize the account from the JSON stream
+    // Deserialize the account from the JSON buffer
     TradeProto::Account deserialized;
     deserialized.Deserialize(json);
 

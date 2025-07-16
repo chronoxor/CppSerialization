@@ -25,7 +25,7 @@ protected:
         account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
         account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-        // Serialize the account to the JSON stream
+        // Serialize the account to the JSON buffer
         StringBuffer buffer;
         Serializer<StringBuffer> serializer(buffer);
         account.Serialize(serializer);
@@ -41,7 +41,7 @@ BENCHMARK_FIXTURE(DeserializationFixture, "JSON-Deserialize")
     context.metrics().AddBytes(json.Size());
     context.metrics().SetCustom("MessageSize", (unsigned)size);
 
-    // Deserialize the account from the JSON stream
+    // Deserialize the account from the JSON buffer
     deserialized.Deserialize(json);
 
     context.metrics().SetCustom("OriginalSize", (unsigned)deserialized.size());

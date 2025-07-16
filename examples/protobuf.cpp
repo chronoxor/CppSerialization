@@ -18,7 +18,7 @@ int main(int argc, char** argv)
     account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the Protobuf stream
+    // Serialize the account to the Protobuf buffer
     Trade::protobuf::Account output;
     account.Serialize(output);
     auto buffer = output.SerializeAsString();
@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "Protobuf size: " << buffer.size() << std::endl;
 
-    // Deserialize the account from the Protobuf stream
+    // Deserialize the account from the Protobuf buffer
     Trade::protobuf::Account input;
     input.ParseFromString(buffer);
     TradeProto::Account deserialized;

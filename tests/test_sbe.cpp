@@ -17,7 +17,7 @@ TEST_CASE("SimpleBinaryEncoding", "[CppSerialization]")
     account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the SBE stream
+    // Serialize the account to the SBE buffer
     char buffer[1024];
     sbe::MessageHeader header;
     header.wrap(buffer, 0, 1, sizeof(buffer))
@@ -32,7 +32,7 @@ TEST_CASE("SimpleBinaryEncoding", "[CppSerialization]")
 
     REQUIRE(serialized > 0);
 
-    // Deserialize the account from the SBE stream
+    // Deserialize the account from the SBE buffer
     header.wrap(buffer, 0, 1, sizeof(buffer));
     int actingVersion = header.version();
     int actingBlockLength = header.blockLength();

@@ -17,14 +17,14 @@ TEST_CASE("FlatBuffers", "[CppSerialization]")
     account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the FlatBuffer stream
+    // Serialize the account to the FlatBuffer buffer
     flatbuffers::FlatBufferBuilder builder;
     builder.Finish(account.Serialize(builder));
 
     REQUIRE(builder.GetSize() > 0);
     REQUIRE(builder.GetBufferPointer() != nullptr);
 
-    // Deserialize the account from the FlatBuffer stream
+    // Deserialize the account from the FlatBuffer buffer
     TradeProto::Account deserialized;
     deserialized.Deserialize(*Trade::flatbuf::GetAccount(builder.GetBufferPointer()));
 

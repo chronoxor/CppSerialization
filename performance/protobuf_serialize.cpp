@@ -29,7 +29,7 @@ protected:
 
 BENCHMARK_FIXTURE(SerializationFixture, "Protobuf-Serialize")
 {
-    // Serialize the account to the Protobuf stream
+    // Serialize the account to the Protobuf buffer
     Trade::protobuf::Account output;
     account.Serialize(output);
     output.SerializeToString(&buffer);

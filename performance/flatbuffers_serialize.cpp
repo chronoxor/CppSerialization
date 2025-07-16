@@ -24,7 +24,7 @@ protected:
 
 BENCHMARK_FIXTURE(SerializationFixture, "FlatBuffers-Serialize")
 {
-    // Serialize the account to the FlatBuffer stream
+    // Serialize the account to the FlatBuffer buffer
     builder.Clear();
     builder.Finish(account.Serialize(builder));
 

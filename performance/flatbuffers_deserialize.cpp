@@ -21,7 +21,7 @@ protected:
         account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
         account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-        // Serialize the account to the FlatBuffer stream
+        // Serialize the account to the FlatBuffer buffer
         builder.Finish(account.Serialize(builder));
     }
 };
@@ -31,7 +31,7 @@ BENCHMARK_FIXTURE(DeserializationFixture, "FlatBuffers-Deserialize")
     context.metrics().AddBytes(builder.GetSize());
     context.metrics().SetCustom("MessageSize", builder.GetSize());
 
-    // Deserialize the account from the FlatBuffer stream
+    // Deserialize the account from the FlatBuffer buffer
     deserialized.Deserialize(*Trade::flatbuf::GetAccount(builder.GetBufferPointer()));
 
     context.metrics().SetCustom("OriginalSize", (unsigned)deserialized.size());

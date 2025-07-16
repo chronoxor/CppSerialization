@@ -35,6 +35,7 @@
 #include "protobuf/trade.pb.h"
 #include "sbe/Account.h"
 #include "sbe/MessageHeader.h"
+#include "zpp_bits/zpp_bits.h"
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
@@ -537,6 +538,11 @@ struct Account
         });
     }
 };
+
+// zpp::bits serialization
+auto serialize(const Order&) -> zpp::bits::members<6>;
+auto serialize(const Balance&) -> zpp::bits::members<2>;
+auto serialize(const Account&) -> zpp::bits::members<4>;
 
 } // namespace Trade
 

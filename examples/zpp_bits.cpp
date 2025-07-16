@@ -1,8 +1,8 @@
 /*!
-    \file sbe.cpp
-    \brief SimpleBinaryEncoding serialization example
+    \file zpp_bits.cpp
+    \brief zpp::bits serialization example
     \author Ivan Shynkarenka
-    \date 02.01.2019
+    \date 16.07.2025
     \copyright MIT License
 */
 
@@ -18,29 +18,17 @@ int main(int argc, char** argv)
     account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the SBE buffer
-    char buffer[1024];
-    sbe::MessageHeader header;
-    header.wrap(buffer, 0, 1, sizeof(buffer))
-       .blockLength(sbe::Account::sbeBlockLength())
-       .templateId(sbe::Account::sbeTemplateId())
-       .schemaId(sbe::Account::sbeSchemaId())
-       .version(sbe::Account::sbeSchemaVersion());
-    sbe::Account message;
-    message.wrapForEncode(buffer, header.encodedLength(), sizeof(buffer));
-    account.Serialize(message);
+    // Serialize the account to the zpp::bits buffer
+    auto [buffer, out] = zpp::bits::data_out();
+    (void) out(account);
 
-    // Show original and SBE serialized sizes
+    // Show original and zpp::bits serialized sizes
     std::cout << "Original size: " << account.size() << std::endl;
-    std::cout << "SBE size: " << header.encodedLength() + message.encodedLength() << std::endl;
+    std::cout << "zpp::bits size: " << buffer.size() << std::endl;
 
-    // Deserialize the account from the SBE buffer
-    header.wrap(buffer, 0, 1, sizeof(buffer));
-    int actingVersion = header.version();
-    int actingBlockLength = header.blockLength();
-    message.wrapForDecode(buffer, header.encodedLength(), actingBlockLength, actingVersion, sizeof(buffer));
+    // Deserialize the account from the zpp::bits buffer
     TradeProto::Account deserialized;
-    deserialized.Deserialize(message);
+    (void) zpp::bits::in{buffer}(deserialized);
 
     // Show account content
     std::cout << std::endl;

@@ -25,7 +25,7 @@ protected:
 
 BENCHMARK_FIXTURE(SerializationFixture, "SimpleBinaryEncoding-Serialize")
 {
-    // Serialize the account to the SBE stream
+    // Serialize the account to the SBE buffer
     header.wrap(buffer, 0, 1, sizeof(buffer))
        .blockLength(sbe::Account::sbeBlockLength())
        .templateId(sbe::Account::sbeTemplateId())

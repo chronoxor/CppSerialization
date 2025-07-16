@@ -19,7 +19,7 @@ TEST_CASE("JSON", "[CppSerialization]")
     account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the JSON file stream
+    // Serialize the account to the JSON file buffer
     StringBuffer buffer;
     Serializer<StringBuffer> serializer(buffer);
     account.Serialize(serializer);
@@ -30,7 +30,7 @@ TEST_CASE("JSON", "[CppSerialization]")
     // Parse JSON string
     Document json = Parser::Parse(buffer.GetString());
 
-    // Deserialize the account from the JSON file stream
+    // Deserialize the account from the JSON file buffer
     TradeProto::Account deserialized;
     deserialized.Deserialize(json);
 

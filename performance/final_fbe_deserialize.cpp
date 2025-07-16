@@ -24,7 +24,7 @@ protected:
         account.orders.emplace_back(trade::Order(2, "EURUSD", trade::OrderSide::sell, trade::OrderType::limit, 1.0, 100));
         account.orders.emplace_back(trade::Order(3, "EURUSD", trade::OrderSide::buy, trade::OrderType::stop, 1.5, 10));
 
-        // Serialize the account to the FBE stream
+        // Serialize the account to the FBE buffer
         writer.serialize(account);
         assert(writer.verify() && "Model is broken!");
         reader.attach(writer.buffer());
@@ -34,7 +34,7 @@ protected:
 
 BENCHMARK_FIXTURE(DeserializationFixture, "FastBinaryEncoding-Final-Deserialize")
 {
-    // Deserialize the account from the FBE stream
+    // Deserialize the account from the FBE buffer
     size_t deserialized = reader.deserialize(account);
 
     context.metrics().AddBytes(deserialized);

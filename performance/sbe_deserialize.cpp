@@ -23,7 +23,7 @@ protected:
         account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
         account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-        // Serialize the account to the SBE stream
+        // Serialize the account to the SBE buffer
         header.wrap(buffer, 0, 1, sizeof(buffer))
            .blockLength(sbe::Account::sbeBlockLength())
            .templateId(sbe::Account::sbeTemplateId())
@@ -40,7 +40,7 @@ BENCHMARK_FIXTURE(DeserializationFixture, "SimpleBinaryEncoding-Deserialize")
     context.metrics().AddBytes(serialized);
     context.metrics().SetCustom("MessageSize", (unsigned)serialized);
 
-    // Deserialize the account from the SBE stream
+    // Deserialize the account from the SBE buffer
     header.wrap(buffer, 0, 1, sizeof(buffer));
     int actingVersion = header.version();
     int actingBlockLength = header.blockLength();

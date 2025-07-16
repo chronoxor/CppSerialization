@@ -1,5 +1,5 @@
 //
-// Created by Ivan Shynkarenka on 31.03.2018
+// Created by Ivan Shynkarenka on 16.07.2025
 //
 
 #include "benchmark/cppbenchmark.h"
@@ -9,6 +9,7 @@
 class SerializationFixture
 {
 protected:
+    std::array<std::byte, 0x1000> buffer;
     TradeProto::Account account;
 
     SerializationFixture() : account(1, "Test", "USD", 1000)
@@ -20,18 +21,15 @@ protected:
     }
 };
 
-BENCHMARK_FIXTURE(SerializationFixture, "Cap'n'Proto-Serialize")
+BENCHMARK_FIXTURE(SerializationFixture, "zpp::bits-Serialize")
 {
-    // Serialize the account to the Cap'n'Proto buffer
-    capnp::MallocMessageBuilder output;
-    Trade::capnproto::Account::Builder builder = output.initRoot<Trade::capnproto::Account>();
-    account.Serialize(builder);
-    kj::VectorOutputStream buffer;
-    writeMessage(buffer, output);
+    // Serialize the account to the zpp::bits buffer
+    zpp::bits::out out{buffer};
+    (void) out(account);
 
-    context.metrics().AddBytes(buffer.getArray().size());
+    context.metrics().AddBytes(out.position());
     context.metrics().SetCustom("OriginalSize", (unsigned)account.size());
-    context.metrics().SetCustom("MessageSize", (unsigned)buffer.getArray().size());
+    context.metrics().SetCustom("MessageSize", (unsigned)out.position());
 }
 
 BENCHMARK_MAIN()

@@ -18,7 +18,7 @@ int main(int argc, char** argv)
     account.Orders.emplace_back(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100);
     account.Orders.emplace_back(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10);
 
-    // Serialize the account to the Cap'n'Proto stream
+    // Serialize the account to the Cap'n'Proto buffer
     capnp::MallocMessageBuilder output;
     Trade::capnproto::Account::Builder builder = output.initRoot<Trade::capnproto::Account>();
     account.Serialize(builder);
@@ -29,7 +29,7 @@ int main(int argc, char** argv)
     std::cout << "Original size: " << account.size() << std::endl;
     std::cout << "Cap'n'Proto size: " << buffer.getArray().size() << std::endl;
 
-    // Deserialize the account from the Cap'n'Proto stream
+    // Deserialize the account from the Cap'n'Proto buffer
     kj::ArrayInputStream array(buffer.getArray());
     capnp::InputStreamMessageReader input(array);
     TradeProto::Account deserialized;

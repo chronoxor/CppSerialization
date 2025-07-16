@@ -23,7 +23,7 @@ protected:
 
 BENCHMARK_FIXTURE(SerializationFixture, "FastBinaryEncoding-Serialize")
 {
-    // Serialize the account to the FBE stream
+    // Serialize the account to the FBE buffer
     writer.reset();
     size_t model_begin = writer.create_begin();
     account.Serialize(writer.model);

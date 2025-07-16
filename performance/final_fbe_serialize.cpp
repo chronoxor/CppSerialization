@@ -27,7 +27,7 @@ protected:
 
 BENCHMARK_FIXTURE(SerializationFixture, "FastBinaryEncoding-Final-Serialize")
 {
-    // Serialize the account to the FBE stream
+    // Serialize the account to the FBE buffer
     writer.reset();
     size_t serialized = writer.serialize(account);
 

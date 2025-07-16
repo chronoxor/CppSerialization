@@ -17,7 +17,7 @@ TEST_CASE("Cap'n'Proto", "[CppSerialization]")
     account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the Cap'n'Proto stream
+    // Serialize the account to the Cap'n'Proto buffer
     capnp::MallocMessageBuilder output;
     Trade::capnproto::Account::Builder builder = output.initRoot<Trade::capnproto::Account>();
     account.Serialize(builder);
@@ -26,7 +26,7 @@ TEST_CASE("Cap'n'Proto", "[CppSerialization]")
 
     REQUIRE(buffer.getArray().size() > 0);
 
-    // Deserialize the account from the Cap'n'Proto stream
+    // Deserialize the account from the Cap'n'Proto buffer
     kj::ArrayInputStream array(buffer.getArray());
     capnp::InputStreamMessageReader input(array);
     TradeProto::Account deserialized;

@@ -1,5 +1,5 @@
 //
-// Created by Ivan Shynkarenka on 30.03.2017
+// Created by Ivan Shynkarenka on 16.07.2025
 //
 
 #include "test.h"
@@ -9,7 +9,7 @@
 using namespace CppCommon;
 using namespace CppSerialization;
 
-TEST_CASE("Protobuf", "[CppSerialization]")
+TEST_CASE("zpp::bits", "[CppSerialization]")
 {
     // Create a new account with some orders
     TradeProto::Account account(1, "Test", "USD", 1000);
@@ -17,18 +17,15 @@ TEST_CASE("Protobuf", "[CppSerialization]")
     account.Orders.emplace_back(TradeProto::Order(2, "EURUSD", TradeProto::OrderSide::SELL, TradeProto::OrderType::LIMIT, 1.0, 100));
     account.Orders.emplace_back(TradeProto::Order(3, "EURUSD", TradeProto::OrderSide::BUY, TradeProto::OrderType::STOP, 1.5, 10));
 
-    // Serialize the account to the Protobuf buffer
-    Trade::protobuf::Account output;
-    account.Serialize(output);
-    auto buffer = output.SerializeAsString();
+    // Serialize the account to the zpp::bits buffer
+    auto [buffer, in, out] = zpp::bits::data_in_out();
+    (void) out(account);
 
     REQUIRE(!buffer.empty());
 
-    // Deserialize the account from the Protobuf buffer
-    Trade::protobuf::Account input;
-    input.ParseFromString(buffer);
+    // Deserialize the account from the zpp::bits buffer
     TradeProto::Account deserialized;
-    deserialized.Deserialize(input);
+    (void) in(deserialized);
 
     REQUIRE(deserialized.Id == 1);
     REQUIRE(deserialized.Name == "Test");
@@ -53,7 +50,4 @@ TEST_CASE("Protobuf", "[CppSerialization]")
     REQUIRE(deserialized.Orders[2].Type == TradeProto::OrderType::STOP);
     REQUIRE(deserialized.Orders[2].Price == 1.5);
     REQUIRE(deserialized.Orders[2].Volume == 10);
-
-    // Delete all global objects allocated by Protobuf
-    google::protobuf::ShutdownProtobufLibrary();
 }
