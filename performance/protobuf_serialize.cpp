@@ -32,7 +32,7 @@ BENCHMARK_FIXTURE(SerializationFixture, "Protobuf-Serialize")
     // Serialize the account to the Protobuf buffer
     Trade::protobuf::Account output;
     account.Serialize(output);
-    output.SerializeToString(&buffer);
+    (void)output.SerializeToString(&buffer);
 
     context.metrics().AddBytes(buffer.size());
     context.metrics().SetCustom("OriginalSize", (unsigned)account.size());

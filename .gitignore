@@ -17,4 +17,5 @@ modules/*
 
 # Temporary
 .idea
+.vscode
 temp

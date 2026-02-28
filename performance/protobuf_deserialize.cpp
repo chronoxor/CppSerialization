@@ -40,7 +40,7 @@ BENCHMARK_FIXTURE(DeserializationFixture, "Protobuf-Deserialize")
 
     // Deserialize the account from the Protobuf buffer
     Trade::protobuf::Account input;
-    input.ParseFromString(buffer);
+    (void)input.ParseFromString(buffer);
     deserialized.Deserialize(input);
 
     context.metrics().SetCustom("OriginalSize", (unsigned)deserialized.size());

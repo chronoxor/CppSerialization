@@ -26,7 +26,7 @@ TEST_CASE("Protobuf", "[CppSerialization]")
 
     // Deserialize the account from the Protobuf buffer
     Trade::protobuf::Account input;
-    input.ParseFromString(buffer);
+    REQUIRE(input.ParseFromString(buffer));
     TradeProto::Account deserialized;
     deserialized.Deserialize(input);
 

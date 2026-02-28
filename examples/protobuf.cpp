@@ -29,7 +29,11 @@ int main(int argc, char** argv)
 
     // Deserialize the account from the Protobuf buffer
     Trade::protobuf::Account input;
-    input.ParseFromString(buffer);
+    if (!input.ParseFromString(buffer))
+    {
+        std::cerr << "Failed to parse Protobuf message!" << std::endl;
+        return -1;
+    }
     TradeProto::Account deserialized;
     deserialized.Deserialize(input);
 
