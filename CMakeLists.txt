@@ -27,7 +27,9 @@ include(SetPlatformFeatures)
 include(SystemInformation)
 
 # External packages
-find_package(Java REQUIRED)
+if (NOT CYGWIN)
+  find_package(Java REQUIRED)
+endif()
 
 # Modules
 add_subdirectory("modules")
@@ -66,7 +68,7 @@ if(NOT CPPSERIALIZATION_MODULE)
     set(FLATBUFFERS_TARGET "${FLATBUFFERS_FILE}_TARGET")
     add_custom_command(
         OUTPUT ${FLATBUFFERS_OUTPUT_FILE} DEPENDS ${FLATBUFFERS_INPUT_FILE}
-        COMMAND $<TARGET_FILE:flatc> --cpp --scoped-enums -o ${FLATBUFFERS_OUTPUT_DIR} ${FLATBUFFERS_INPUT_FILE} COMMENT "Generating ${FLATBUFFERS_OUTPUT_FILE}..." VERBATIM
+        COMMAND flatc --cpp --scoped-enums -o ${FLATBUFFERS_OUTPUT_DIR} ${FLATBUFFERS_INPUT_FILE} COMMENT "Generating ${FLATBUFFERS_OUTPUT_FILE}..." VERBATIM
     )
     add_custom_target(${FLATBUFFERS_TARGET} DEPENDS ${FLATBUFFERS_OUTPUT_FILE})
     set_target_properties(${FLATBUFFERS_TARGET} PROPERTIES FOLDER "proto")
@@ -85,7 +87,7 @@ if(NOT CPPSERIALIZATION_MODULE)
     set(PROTOBUF_TARGET "${PROTOBUF_FILE}_TARGET")
     add_custom_command(
         OUTPUT ${PROTOBUF_OUTPUT_FILE} DEPENDS ${PROTOBUF_INPUT_FILE}
-        COMMAND $<TARGET_FILE:protoc> --proto_path=${PROTOBUF_INPUT_DIR} --cpp_out=${PROTOBUF_OUTPUT_DIR} ${PROTOBUF_INPUT_FILE} COMMENT "Generating ${PROTOBUF_OUTPUT_FILE}..." VERBATIM
+        COMMAND protoc --proto_path=${PROTOBUF_INPUT_DIR} --cpp_out=${PROTOBUF_OUTPUT_DIR} ${PROTOBUF_INPUT_FILE} COMMENT "Generating ${PROTOBUF_OUTPUT_FILE}..." VERBATIM
     )
     add_custom_target(${PROTOBUF_TARGET} DEPENDS ${PROTOBUF_OUTPUT_FILE})
     set_target_properties(${PROTOBUF_TARGET} PROPERTIES FOLDER "proto")
@@ -118,10 +120,12 @@ if(NOT CPPSERIALIZATION_MODULE)
     set(SBE_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/proto")
     set(SBE_OUTPUT_FILE "${SBE_OUTPUT_DIR}/${SBE_HEADER}")
     set(SBE_TARGET "${SBE_FILE}_TARGET")
-    add_custom_command(
-        OUTPUT ${SBE_OUTPUT_FILE} DEPENDS ${SBE_INPUT_FILE}
-        COMMAND ${Java_JAVA_EXECUTABLE} -Dsbe.generate.ir=true -Dsbe.target.language=Cpp -Dsbe.target.namespace=sbe -Dsbe.output.dir=${SBE_OUTPUT_DIR} -Dsbe.errorLog=yes --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -jar ${CMAKE_CURRENT_SOURCE_DIR}/modules/sbe/sbe-all-1.37.1.jar ${SBE_INPUT_FILE} COMMENT "Generating ${SBE_OUTPUT_FILE}..." VERBATIM
-    )
+    if (Java_FOUND)
+      add_custom_command(
+          OUTPUT ${SBE_OUTPUT_FILE} DEPENDS ${SBE_INPUT_FILE}
+          COMMAND ${Java_JAVA_EXECUTABLE} -Dsbe.generate.ir=true -Dsbe.target.language=Cpp -Dsbe.target.namespace=sbe -Dsbe.output.dir=${SBE_OUTPUT_DIR} -Dsbe.errorLog=yes --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -jar ${CMAKE_CURRENT_SOURCE_DIR}/modules/sbe/sbe-all-1.37.1.jar ${SBE_INPUT_FILE} COMMENT "Generating ${SBE_OUTPUT_FILE}..." VERBATIM
+      )
+    endif()
     add_custom_target(${SBE_TARGET} DEPENDS ${SBE_OUTPUT_FILE})
     set_target_properties(${SBE_TARGET} PROPERTIES FOLDER "proto")
     list(APPEND PROTO_DEPENDENCIES ${SBE_TARGET})

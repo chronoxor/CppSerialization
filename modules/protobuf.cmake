@@ -1,4 +1,9 @@
-if(NOT protobuf)
+if(CYGWIN)
+  
+  # Find Protobuf package
+  find_package(Protobuf REQUIRED)
+
+elseif(NOT protobuf)
 
   # Restore origin compile flags
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_ORIGIN}")

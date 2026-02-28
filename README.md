@@ -7,6 +7,7 @@
 [![Linux (gcc)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-linux-gcc.yml/badge.svg)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-linux-gcc.yml)
 [![MacOS](https://github.com/chronoxor/CppSerialization/actions/workflows/build-macos.yml/badge.svg)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-macos.yml)
 <br/>
+[![Windows (Cygwin)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-windows-cygwin.yml/badge.svg)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-windows-cygwin.yml)
 [![Windows (MSYS2)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-windows-msys2.yml/badge.svg)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-windows-msys2.yml)
 [![Windows (MinGW)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-windows-mingw.yml/badge.svg)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-windows-mingw.yml)
 [![Windows (Visual Studio)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-windows-vs.yml/badge.svg)](https://github.com/chronoxor/CppSerialization/actions/workflows/build-windows-vs.yml)
@@ -97,6 +98,7 @@ account, one wallet and three orders total size of 128 bytes:
 Optional:
 * [clang](https://clang.llvm.org)
 * [CLion](https://www.jetbrains.com/clion)
+* [Cygwin](https://cygwin.com)
 * [MSYS2](https://www.msys2.org)
 * [MinGW](https://mingw-w64.org/doku.php)
 * [Visual Studio](https://www.visualstudio.com)
@@ -130,6 +132,12 @@ cd build
 ```shell
 cd build
 ./unix.sh
+```
+
+### Windows (Cygwin)
+```shell
+cd build
+unix.bat
 ```
 
 ### Windows (MSYS2)
