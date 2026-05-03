@@ -814,7 +814,7 @@ public:
         return oss.str();
     }
 
-    #if __cplusplus >= 201703L
+    #ifdef SBE_USE_STRING_VIEW
     std::string_view getNameAsStringView()
     {
         std::uint64_t lengthOfLengthField = 4;
@@ -839,7 +839,7 @@ public:
         return putName(str.data(), static_cast<std::uint32_t>(str.length()));
     }
 
-    #if __cplusplus >= 201703L
+    #ifdef SBE_USE_STRING_VIEW
     Account &putName(const std::string_view str)
     {
         if (str.length() > 1073741824)

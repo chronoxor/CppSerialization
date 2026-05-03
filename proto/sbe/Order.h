@@ -389,7 +389,11 @@ public:
     {
         static_assert(N <= 10, "array too large for putSymbol");
 
-        std::memcpy(m_buffer + m_offset + 4, src.data(), sizeof(char) * N);
+        if (N > 0)
+        {
+            std::memcpy(m_buffer + m_offset + 4, src.data(), sizeof(char) * N);
+        }
+
         for (std::size_t start = N; start < 10; ++start)
         {
             m_buffer[m_offset + 4 + start] = 0;
@@ -486,7 +490,11 @@ public:
             throw std::runtime_error("string too large for putSymbol [E106]");
         }
 
-        std::memcpy(m_buffer + m_offset + 4, str.data(), srcLength);
+        if (srcLength > 0)
+        {
+            std::memcpy(m_buffer + m_offset + 4, str.data(), srcLength);
+        }
+
         for (std::size_t start = srcLength; start < 10; ++start)
         {
             m_buffer[m_offset + 4 + start] = 0;
