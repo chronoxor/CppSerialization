@@ -99,7 +99,7 @@ struct Order
     void Deserialize(const Trade::capnproto::Order::Reader& reader)
     {
         Id = reader.getId();
-        std::string symbol = reader.getSymbol();
+        std::string symbol = reader.getSymbol().cStr();
         std::memcpy(Symbol, symbol.c_str(), std::min(symbol.size() + 1, sizeof(Symbol)));
         Side = (OrderSide)reader.getSide();
         Type = (OrderType)reader.getType();
@@ -258,7 +258,7 @@ struct Balance
 
     void Deserialize(const Trade::capnproto::Balance::Reader& reader)
     {
-        std::string currency = reader.getCurrency();
+        std::string currency = reader.getCurrency().cStr();
         std::memcpy(Currency, currency.c_str(), std::min(currency.size() + 1, sizeof(Currency)));
         Amount = reader.getAmount();
     }
@@ -371,7 +371,7 @@ struct Account
     void Serialize(Trade::capnproto::Account::Builder& builder) const
     {
         builder.setId(Id);
-        builder.setName(Name);
+        builder.setName(Name.c_str());
         auto wallet = builder.initWallet();
         Wallet.Serialize(wallet);
         auto orders = builder.initOrders((unsigned)Orders.size());
